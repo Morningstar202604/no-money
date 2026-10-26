@@ -2,7 +2,7 @@
 name = "flexcalc-pro"
 version = "2.0.0"
 description = "灵算 Pro — 灵活就业者收入精算与权益决策平台"
-authors = ["Your Name <your@email.com>"]
+authors = ["badhope"]
 edition = "2021"
 license = "MIT"
 

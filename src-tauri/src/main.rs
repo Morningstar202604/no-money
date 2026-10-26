@@ -23,9 +23,9 @@ fn main() {
             
             let menu = Menu::with_items(app, &[&show_item, &hide_item, &quit_item])?;
 
-            // 托盘图标
+            // 托盘图标：缺省图标缺失时不 panic（icon 接受 Option），仅无图标显示
             let _tray = TrayIconBuilder::with_id("main-tray")
-                .icon(app.default_window_icon().unwrap().clone())
+                .icon(app.default_window_icon().cloned())
                 .menu(&menu)
                 .show_menu_on_left_click(false)
                 .on_menu_event(|app, event| match event.id.as_ref() {
@@ -81,7 +81,6 @@ fn main() {
             }
         })
         .invoke_handler(tauri::generate_handler![
-            greet,
             get_app_version,
             get_rules_data,
             save_rules_data,
@@ -91,18 +90,27 @@ fn main() {
 }
 
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("你好, {}! 欢迎使用灵算 Pro", name)
-}
-
-#[tauri::command]
 fn get_app_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
+/// city → 规则文件路径。fail-closed：city 只允许纯小写 ASCII 字母，
+/// 使 `../`、`\`、空串、编码绕过不可表达；归一化后仍复核前缀作纵深防御。
+fn rules_path(city: &str) -> Result<std::path::PathBuf, String> {
+    if city.is_empty() || !city.chars().all(|c| c.is_ascii_lowercase()) {
+        return Err(format!("非法城市标识: {}", city));
+    }
+    let path = std::path::PathBuf::from("../public/rules").join(format!("{}.json", city));
+    let normalized: std::path::PathBuf = path.components().collect();
+    if !normalized.starts_with("../public/rules") {
+        return Err("路径越界".to_string());
+    }
+    Ok(normalized)
+}
+
 #[tauri::command]
 async fn get_rules_data(city: String) -> Result<serde_json::Value, String> {
-    let path = format!("../public/rules/{}.json", city);
+    let path = rules_path(&city)?;
     let content = std::fs::read_to_string(&path)
         .map_err(|e| format!("读取规则文件失败: {}", e))?;
     let json: serde_json::Value = serde_json::from_str(&content)
@@ -112,7 +120,7 @@ async fn get_rules_data(city: String) -> Result<serde_json::Value, String> {
 
 #[tauri::command]
 async fn save_rules_data(city: String, data: serde_json::Value) -> Result<(), String> {
-    let path = format!("../public/rules/{}.json", city);
+    let path = rules_path(&city)?;
     let content = serde_json::to_string_pretty(&data)
         .map_err(|e| format!("序列化 JSON 失败: {}", e))?;
     std::fs::write(&path, content)
