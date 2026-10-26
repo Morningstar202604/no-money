@@ -56,7 +56,7 @@
 npm ci
 npm run dev          # http://localhost:3000（Web）
 npm run tauri:dev    # 桌面端（需 Rust 工具链）
-npm test             # vitest，852 例
+npm test             # vitest，879 例（含规则溯源门禁）
 npm run verify       # 引擎自检：净收入恒等式闭合
 npm run build        # vue-tsc --noEmit && vite build
 npm run tauri:build  # 桌面端安装包
