@@ -10,14 +10,29 @@
   <style>
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
+    /* 默认深色（与 variables.css :root 一致），data-theme=light 时覆盖为浅色；
+       Vue 挂载前的首帧按最终主题渲染，避免深色用户每次先闪一帧浅色（FOUC） */
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      background: #111c2e;
+      color: #e8eef6;
+      -webkit-font-smoothing: antialiased;
+    }
+    html[data-theme='light'] body {
       background: #f8fafc;
       color: #1e293b;
-      -webkit-font-smoothing: antialiased;
     }
     #app { height: 100%; }
   </style>
+  <script>
+    ;(function () {
+      try {
+        var t = localStorage.getItem('theme')
+        var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (!dark) document.documentElement.setAttribute('data-theme', 'light')
+      } catch (e) { /* 存储不可用时按默认深色渲染 */ }
+    })()
+  </script>
 </head>
 <body>
   <div id="app"></div>

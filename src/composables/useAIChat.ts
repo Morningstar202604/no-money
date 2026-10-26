@@ -12,6 +12,8 @@ export interface ChatMessage {
   isStreaming?: boolean
   /** ai = 大模型回答；kb = 本地知识库检索应答（离线） */
   source?: 'ai' | 'kb'
+  /** 连接失败等错误气泡：不进模型上下文，也不该被模型当事实复述 */
+  isError?: boolean
 }
 
 export interface ApiConfig {
@@ -63,14 +65,16 @@ function loadConfig(): ApiConfig {
   }
 }
 
-function saveConfig(cfg: ApiConfig) {
+/** @returns 是否全部写盘成功；隐私模式/配额耗尽返回 false，UI 必须如实告知 */
+function saveConfig(cfg: ApiConfig): boolean {
   // endpoint/model/enabled 可安全持久化；Key 单独处理，不随配置对象一起落盘
   const { apiKey: _omit, ...safe } = cfg
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(safe))
     if (cfg.rememberKey) localStorage.setItem(KEY_STORE_KEY, cfg.apiKey)
     else localStorage.removeItem(KEY_STORE_KEY)
-  } catch { /* 隐私模式或配额耗尽时静默降级 */ }
+    return true
+  } catch { return false }
 }
 
 function isValidMessage(m: unknown): m is ChatMessage {
@@ -189,7 +193,8 @@ export function useAIChat() {
 
     const sysPrompt = `你是"灵算Pro"的决策助手，面向灵活就业者（外卖骑手、网约车司机等）。根据用户当前测算数据给出具体可操作建议。硬性要求：不超过205字；只依据下列数据与用户问题作答；不得编造法律法规名称、文号、税率或政策文件；涉及法律或税务结论时必须提示以官方机构或专业人士意见为准。以下是用户数据：\n${context}${kbCtx ? `\n\n${kbCtx}` : ''}`
 
-    const recentMsgs = messages.value.filter(m => !m.isStreaming).slice(-6).map(m => ({ role: m.role, content: m.content }))
+    // 错误气泡（isError）不进上下文：上一轮的"AI连接失败…"被模型当事实复述会污染回答
+    const recentMsgs = messages.value.filter(m => !m.isStreaming && !m.isError).slice(-6).map(m => ({ role: m.role, content: m.content }))
 
     const abort = new AbortController()
     controller.value = abort
@@ -326,7 +331,7 @@ export function useAIChat() {
       } catch (err: unknown) {
         if (err instanceof DOMException && err.name === 'AbortError') return
         const msg = String(err instanceof Error ? err.message : (err ?? '未知错误')).slice(0, 200)
-        messages.value.push({ id: newId('err'), role: 'assistant', content: `⚠️ AI连接失败：${msg}。已切换规则引擎：\n\n` + ruleReply(question, scenarios), timestamp: Date.now() })
+        messages.value.push({ id: newId('err'), role: 'assistant', content: `⚠️ AI连接失败：${msg}。已切换规则引擎：\n\n` + ruleReply(question, scenarios), timestamp: Date.now(), isError: true })
         saveHistory()
         return
       }
@@ -352,7 +357,7 @@ export function useAIChat() {
     saveHistory()
   }
 
-  function updateConfig(c: Partial<ApiConfig>) { Object.assign(config.value, c); saveConfig(config.value) }
+  function updateConfig(c: Partial<ApiConfig>): boolean { Object.assign(config.value, c); return saveConfig(config.value) }
 
   return { config, messages, isStreaming, isOnline, showSettings, sendMessage, stopStreaming, clearHistory, updateConfig }
 }

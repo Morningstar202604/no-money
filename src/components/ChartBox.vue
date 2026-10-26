@@ -22,13 +22,21 @@ const el = ref<HTMLElement>()
 const h = computed(() => props.height || 320)
 const chart = shallowRef<EChartsType | null>(null)
 let ro: ResizeObserver | null = null
+/** 竞态防护：await ensureECharts() 空档可能发生第二次 render 或组件卸载 */
+let renderSeq = 0
+let disposed = false
 
 async function render() {
-  if (!el.value || props.loading || el.value.clientWidth === 0) return
+  if (disposed || !el.value || props.loading || el.value.clientWidth === 0) return
+  const seq = ++renderSeq
   if (!chart.value) {
     const { init } = await ensureECharts()
+    // await 期间组件可能已卸载（chart 被置空）或发起了更新的 render：
+    // 继续执行会对脱离文档的容器 init 出永不 dispose 的孤儿实例
+    if (disposed || seq !== renderSeq || !el.value) return
     chart.value = init(el.value, undefined, { renderer: 'canvas' })
   }
+  if (seq !== renderSeq || !chart.value) return
   chart.value.setOption(props.option, true)
 }
 
@@ -51,6 +59,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  disposed = true
+  renderSeq++
   window.removeEventListener('resize', resize)
   ro?.disconnect()
   ro = null

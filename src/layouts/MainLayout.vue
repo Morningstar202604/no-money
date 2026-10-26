@@ -4,7 +4,7 @@
     <header class="header" :class="{ 'header-scrolled': scrolled }">
       <div class="header-container">
         <!-- Brand -->
-        <div class="header-brand" @click="goDashboard">
+        <a class="header-brand" href="/dashboard" @click.prevent="goDashboard" aria-label="灵算 Pro 首页">
           <div class="brand-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/>
@@ -14,7 +14,7 @@
             <span class="brand-name">灵算</span>
             <span class="brand-ver">Pro</span>
           </div>
-        </div>
+        </a>
 
         <!-- Mobile menu button -->
         <button
@@ -216,16 +216,23 @@ function handleScroll() {
   scrolled.value = window.scrollY > 8
 }
 
+function onGlobalKeydown(e: KeyboardEvent) {
+  // 移动抽屉此前只能点遮罩关闭，键盘用户没有退出路径
+  if (e.key === 'Escape' && mobileSidebarOpen.value) mobileSidebarOpen.value = false
+}
+
 onMounted(() => {
   checkMobile()
   window.addEventListener('resize', checkMobile)
   window.addEventListener('scroll', handleScroll)
+  window.addEventListener('keydown', onGlobalKeydown)
 })
 
 // Cleanup
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
   window.removeEventListener('scroll', handleScroll)
+  window.removeEventListener('keydown', onGlobalKeydown)
 })
 </script>
 
@@ -274,6 +281,9 @@ onUnmounted(() => {
   align-items: center;
   gap: var(--space-2);
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  outline-offset: 2px;
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-md);
   transition: background var(--transition-fast);

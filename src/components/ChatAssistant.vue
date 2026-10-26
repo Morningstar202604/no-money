@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Floating trigger -->
-    <button class="chat-fab" @click="open = !open" :class="{ active: open }">
+    <button class="chat-fab" @click="open = !open" :class="{ active: open }" aria-label="AI 助手" :aria-expanded="open">
       <svg v-if="!open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
@@ -21,7 +21,7 @@
 
         <n-divider style="margin:6px 0" />
 
-        <div class="chat-body" ref="bodyRef">
+        <div class="chat-body" ref="bodyRef" aria-live="polite" aria-label="对话消息">
           <div v-if="!messages.length" class="chat-empty">
             询问关于收入、税务、社保的任何问题
           </div>
@@ -34,11 +34,11 @@
         </div>
 
         <div class="quick-row">
-          <n-tag v-for="q in quickQuestions" :key="q" size="small" class="qq" @click="ask(q)">{{ q }}</n-tag>
+          <n-tag v-for="q in quickQuestions" :key="q" size="small" class="qq" role="button" tabindex="0" @click="ask(q)" @keydown.enter.prevent="ask(q)" @keydown.space.prevent="ask(q)">{{ q }}</n-tag>
         </div>
 
         <div class="chat-input">
-          <n-input v-model:value="input" type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" placeholder="输入问题…" :disabled="isStreaming" @keydown.enter.prevent="onEnter" />
+          <n-input v-model:value="input" type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" placeholder="输入问题，Shift+Enter 换行…" :disabled="isStreaming" @keydown.enter="onEnter" />
           <n-button v-if="isStreaming" size="small" @click="stopStreaming">停止</n-button>
           <n-button v-else type="primary" size="small" @click="sendChat">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
@@ -134,7 +134,12 @@ const quickQuestions = [
 
 function ask(q: string) { input.value = q; sendChat() }
 
-function onEnter() { if (!isStreaming.value) sendChat() }
+function onEnter(e: KeyboardEvent) {
+  // Shift+Enter 换行；n-input 的 textarea 上 @keydown.enter 默认不拦截，只处理无修饰键回车
+  if (e.shiftKey || isStreaming.value) return
+  e.preventDefault()
+  sendChat()
+}
 
 async function sendChat() {
   const q = input.value.trim()
@@ -158,8 +163,19 @@ async function testConnection() {
   testing.value = true
   try {
     const resp = await fetch(derived.url!, { headers: { Authorization: `Bearer ${config.value.apiKey}` } })
-    if (resp.ok) message.success('连接成功')
-    else message.error(`连接失败：HTTP ${resp.status}`)
+    if (!resp.ok) { message.error(`连接失败：HTTP ${resp.status}`); return }
+    // 200 不代表 Key 有效：部分 OpenAI 兼容网关对无效 Key 也回 200 + {error:…}，
+    // 必须解析响应体确认真的列出了模型才报告成功
+    let body: unknown = null
+    try { body = await resp.json() } catch { /* 非 JSON 体按结构异常处理 */ }
+    const errObj = body as { error?: { message?: string } } | null
+    if (errObj?.error) { message.error(`网关返回错误：${errObj.error.message ?? '未知错误'}`); return }
+    const list = body as { data?: unknown[]; object?: string } | null
+    if (Array.isArray(list?.data)) {
+      message.success(`连接成功（可用模型 ${list!.data!.length} 个）`)
+    } else {
+      message.error('响应结构异常（未返回模型列表），请核对 Endpoint 是否为 OpenAI 兼容接口')
+    }
   } catch (e: unknown) {
     message.error(`连接失败：${e instanceof Error ? e.message : '未知错误'}`)
   } finally { testing.value = false }
@@ -167,11 +183,13 @@ async function testConnection() {
 
 function saveAndClose() {
   if (!endpointCheck.value.ok) { message.error(endpointError.value ?? 'Endpoint 不合法'); return }
-  updateConfig({
+  const ok = updateConfig({
     endpoint: config.value.endpoint, apiKey: config.value.apiKey,
     model: config.value.model, enabled: config.value.enabled, rememberKey: config.value.rememberKey,
   })
-  message.success('已保存')
+  // 隐私模式/配额耗尽时写盘会失败：不能假报「已保存」，刷新后配置全丢
+  if (ok) message.success('已保存')
+  else message.warning('当前浏览器禁止本地存储（可能处于隐私模式），配置仅本次会话有效')
   showSettings.value = false
 }
 </script>
@@ -236,6 +254,7 @@ function saveAndClose() {
 
 .quick-row { padding: 4px 12px 4px; display: flex; flex-wrap: wrap; gap: 4px; }
 .qq { cursor: pointer; }
+.qq:focus-visible { outline: 2px solid var(--color-primary-500); outline-offset: 1px; }
 
 .chat-input {
   display: flex; gap: 6px; padding: 8px 12px;

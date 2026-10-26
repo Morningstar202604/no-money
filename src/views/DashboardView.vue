@@ -34,7 +34,7 @@
       <div class="stat">
         <span class="stat-label">有效时薪</span>
         <span class="stat-value">{{ dataReady ? '¥' + bestHourly : '—' }}</span>
-        <span class="stat-foot">{{ store.comparison?.best?.work.dailyHours || 0 }}h/天</span>
+        <span class="stat-foot">{{ dataReady ? (store.comparison?.best?.work.dailyHours ?? '—') + 'h/天' : '—' }}</span>
       </div>
       <div class="stat">
         <span class="stat-label">权益评分</span>

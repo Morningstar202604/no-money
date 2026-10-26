@@ -16,12 +16,26 @@ app.config.errorHandler = (err, _instance, info) => {
 function showFatalError(message: string) {
   const el = document.getElementById('app')
   if (!el) return
-  el.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;font-family:system-ui,sans-serif;background:#f8fafc">'
-    + '<div style="max-width:420px;text-align:center;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:32px">'
-    + '<div style="font-size:15px;font-weight:600;color:#0f172a;margin-bottom:8px">灵算 Pro</div>'
-    + '<div style="font-size:13px;color:#64748b;line-height:1.6;margin-bottom:16px">' + message + '</div>'
-    + '<button onclick="location.reload()" style="background:#0d9488;color:#fff;border:none;border-radius:4px;padding:8px 20px;font-size:13px;cursor:pointer">刷新页面</button>'
-    + '</div></div>'
+  // 用 DOM API 而非 innerHTML 拼接：err.message 可能内嵌用户可篡改的
+  // localStorage 片段（如 JSON.parse 的 SyntaxError 原文），必须按文本节点插入
+  el.replaceChildren()
+  const wrap = document.createElement('div')
+  wrap.style.cssText = 'display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;font-family:system-ui,sans-serif;background:#f8fafc'
+  const card = document.createElement('div')
+  card.style.cssText = 'max-width:420px;text-align:center;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:32px'
+  const title = document.createElement('div')
+  title.style.cssText = 'font-size:15px;font-weight:600;color:#0f172a;margin-bottom:8px'
+  title.textContent = '灵算 Pro'
+  const detail = document.createElement('div')
+  detail.style.cssText = 'font-size:13px;color:#64748b;line-height:1.6;margin-bottom:16px'
+  detail.textContent = message
+  const btn = document.createElement('button')
+  btn.style.cssText = 'background:#0d9488;color:#fff;border:none;border-radius:4px;padding:8px 20px;font-size:13px;cursor:pointer'
+  btn.textContent = '刷新页面'
+  btn.addEventListener('click', () => location.reload())
+  card.append(title, detail, btn)
+  wrap.append(card)
+  el.append(wrap)
 }
 
 // router.onError 派发的 chunk 失败事件，同样给出可见提示
