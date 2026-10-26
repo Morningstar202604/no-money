@@ -1,7 +1,7 @@
 # 灵算 Pro — 灵活就业者收入精算与权益决策平台
 
-[![CI](https://github.com/badhope/flexcalc-pro/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/flexcalc-pro/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/vitest-852%20passed-brightgreen.svg)](#测试覆盖什么)
+[![tests](https://img.shields.io/badge/vitest-858%20passed-brightgreen.svg)](#测试覆盖什么)
+[![audit](https://img.shields.io/badge/npm%20audit-0%20vulnerabilities-brightgreen.svg)](#测试覆盖什么)
 [![cities](https://img.shields.io/badge/cities-15-4a7c8c.svg)](#范围与设计主张)
 [![telemetry](https://img.shields.io/badge/telemetry-none-4a7c8c.svg)](#数据在哪里来自哪里)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -73,17 +73,20 @@ src/
 │   └── benefit/     社保缴费、退休测算
 ├── application/     用例编排：ScenarioService / CompensationService / RightsService
 │                    全部返回 Result<T, AppError>，不向外抛异常
-├── infrastructure/  适配器：localStorage / IndexedDB / HTTP 规则加载 / 密钥 / 日志
 ├── engine/          旧引擎，**仅作为对拍基准保留**（ScenarioEngine / IncomeEngine
 │                    已无生产调用方；TaxEngine / BenefitEngine 仍被税务与退休面板使用）
-├── stores/          Pinia 状态与参数持久化（编排已切到 application/ScenarioService）
+├── stores/          Pinia 状态与参数持久化（编排已切到 application/ScenarioService；
+│                    规则加载与 localStorage 持久化在此层完成 I/O）
 ├── components/      UI 组件与面板
 └── views/           五个页面
 ```
 
-分层原则：domain 不依赖 Vue/框架/网络；application 只做编排不含公式；
-infrastructure 承担全部 I/O 与副作用。**异步边界被隔离在 infrastructure**——
-领域层的规则提供端口保持同步，网络不确定性不泄漏进计算逻辑。
+分层原则：domain 不依赖 Vue/框架/网络（网络不确定性不泄漏进计算逻辑，
+领域层规则端口保持同步）；application 只做编排不含公式；I/O 与副作用
+集中在 stores（规则 fetch、参数持久化、AI 请求在 useAIChat）。
+此前 infrastructure/ 下的五个适配器模块（localStorage / IndexedDB /
+HTTP 规则加载 / 密钥 / 日志）从未被任何运行时路径接线，属死代码，
+已整体移除——真实 I/O 路径只在 stores 与 composables，避免双轨漂移。
 
 ## 换算约定
 
@@ -198,7 +201,7 @@ infrastructure 承担全部 I/O 与副作用。**异步边界被隔离在 infras
 - **参数读写对称**：`medicalTierId` 与自选缴费基数刷新后必须读回；非有限值与越界值被夹取，区间内的正常值原样保留；`vehicleType` 这类联合类型做枚举校验
 - **缴费基数可自选**：指定最低档时月缴按 `baseMin` 计；未指定时保持按申报收入夹取；自选值越界时被夹回规则区间
 - **endpoint 校验**：拒绝 http、相对路径、非法 URL、内嵌凭据的 URL；接受 https 并返回 host；models 地址推导覆盖 Azure 的 deployments 形态
-- **增值税与个税口径分离**：各城 `soleProprietorship` 配置中增值税与个税分列且各有来源；旧字段 `tax.soleRate` 不得残留（CI 校验阻断）
+- **增值税与个税口径分离**：各城 `soleProprietorship` 配置中增值税与个税分列且各有来源；旧字段 `tax.soleRate` 不得残留（测试阻断）
 - **核定征收公式正确实现**：应纳税所得额 = 经营额 × 行业所得率 − 费用减除 × 12，再套 5%-35% 经营所得税率表；低收入时税额为 0；12 期之和等于年度税额
 - **占位值不得驱动节税结论**：个税核定来源为 `unverified` 时，UI 不得展示节税金额，只展示增值税
 - **峰时补贴按占比折算**：`peakHours` 合计时长 ÷ 日均工时，上限 100%；折算后工时上升时峰时补贴下降，故"多跑 2 小时不减少净收入"这类旧断言须改写为锁定基础计件不变
@@ -206,4 +209,4 @@ infrastructure 承担全部 I/O 与副作用。**异步边界被隔离在 infras
 - 东莞三档医保费率必须分离，且外地城收到东莞档次 id 时回落默认档（跨城不串值）
 - 规则文件溯源约束：official 必须有文号或链接、`verified` 不得与实际置信度冲突、平台计价必须标 `unverified`
 
-CI（`.github/workflows/ci.yml`）跑类型检查、测试、构建与规则文件溯源校验。
+验证入口收敛为两条命令：`npm test`（858 例，含规则文件溯源门禁 `tests/rulesGate.spec.ts`）与 `npm run verify`（引擎自检：净收入恒等式闭合）；`npm run build` 跑类型检查与构建。
