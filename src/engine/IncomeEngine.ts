@@ -25,8 +25,8 @@ export class IncomeEngine {
     // 不做折算会把默认参数下的毛收入虚高约 455 元/月
     const peakShare = peakHoursTotal(this.rule.timeSubsidy.peakHours) / hours
     const peakSubsidy = dailyBase * (this.rule.timeSubsidy.multiplier - 1) * Math.min(1, peakShare)
-    const rainExtra = safeNum(p.rainDaysMonth, 0, 31, 0) * dailyBase * (this.rule.rainSurcharge - 1)
-    const holidayExtra = safeNum(p.holidayDaysMonth, 0, 31, 0) * dailyBase * (this.rule.holidayMultiplier - 1)
+    const rainExtra = Math.min(days, safeNum(p.rainDaysMonth, 0, 31, 0)) * dailyBase * (this.rule.rainSurcharge - 1)
+    const holidayExtra = Math.min(days, safeNum(p.holidayDaysMonth, 0, 31, 0)) * dailyBase * (this.rule.holidayMultiplier - 1)
     const subsidyPay = peakSubsidy * days + rainExtra + holidayExtra
     let bonusPay = 0
     if (this.rule.monthlyBonus && orders * days >= this.rule.monthlyBonus.threshold)

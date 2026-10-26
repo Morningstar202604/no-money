@@ -241,6 +241,15 @@ describe('projectRetirement 退休测算', () => {
     }
   })
 
+  it('缴费指数高于 3.0 时按 3.0 计（法定 300% 封顶）', () => {
+    const r1 = projectRetirement(25, 60, yuanToCent(1200), 15, Rate.create(0.05), Rate.create(5), benefitBaseMonthly)
+    const r2 = projectRetirement(25, 60, yuanToCent(1200), 15, Rate.create(0.05), Rate.create(3), benefitBaseMonthly)
+    expect(r1.ok && r2.ok).toBe(true)
+    if (r1.ok && r2.ok) {
+      expect(Number(r1.value.basePension)).toBe(Number(r2.value.basePension))
+    }
+  })
+
   it('缴费指数低于 0.6 时按 0.6 计（广东规则）', () => {
     const r1 = projectRetirement(25, 60, yuanToCent(1200), 15, Rate.create(0.05), Rate.create(0.3), benefitBaseMonthly)
     const r2 = projectRetirement(25, 60, yuanToCent(1200), 15, Rate.create(0.05), Rate.create(0.6), benefitBaseMonthly)

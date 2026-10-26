@@ -109,8 +109,9 @@ export function projectRetirement(
   const personalAccount = safeCent(Math.round(balance))
 
   // 基础养老金：国发〔2005〕38号公式
-  // 缴费指数低于 0.6 时按 0.6 计（广东规则）
-  const idx = Math.max(0.6, Number.isFinite(Number(paymentIndex)) ? Number(paymentIndex) : 0.6)
+  // 缴费指数按法定口径夹取：低于 0.6 按 0.6 计（广东规则），高于 3.0 按 3.0 计
+  // （工伤保险条例第64条同类口径：本人工资高于社平300%的按300%）
+  const idx = Math.min(3, Math.max(0.6, Number.isFinite(Number(paymentIndex)) ? Number(paymentIndex) : 0.6))
   const basePensionNum = Number(benefitBaseMonthly) * (1 + idx) / 2 * effectiveYears * 0.01
   const basePension = safeCent(Math.round(basePensionNum))
 

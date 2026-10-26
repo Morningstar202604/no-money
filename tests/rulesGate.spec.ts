@@ -91,6 +91,31 @@ describe('规则文件溯源门禁', () => {
     }
   })
 
+  it('个税税率表必须从 0 起且档位连续（防止 findBracket 兜底把中段收入按顶格税率计）', () => {
+    for (const [f, rule] of Object.entries(rules)) {
+      const table = (rule as { tax?: { laborRemuneration?: { taxTable?: { min: number; max: number; rate: number }[] } } })
+        .tax?.laborRemuneration?.taxTable
+      expect(table?.length, `${f} 缺税率表`).toBeGreaterThanOrEqual(2)
+      if (!table) continue
+      expect(table[0].min, `${f} 税率表必须从 0 起`).toBe(0)
+      for (let i = 1; i < table.length; i++) {
+        expect(table[i].min, `${f} 税率表第 ${i} 档与上一档不连续`).toBe(table[i - 1].max)
+        expect(table[i].rate, `${f} 税率表第 ${i} 档费率不升序`).toBeGreaterThan(table[i - 1].rate)
+      }
+    }
+  })
+
+  it('养老/医保基数下限必须小于上限（resolveBase 对反写区间会静默按下限计费）', () => {
+    for (const [f, rule] of Object.entries(rules)) {
+      const pension = rule.benefit as { pension?: { baseMin: number; baseMax: number } } | undefined
+      expect(pension?.pension!.baseMax, `${f} 养老基数上限非法`).toBeGreaterThan(pension?.pension!.baseMin)
+      const medical = (rule.benefit as { medical?: { baseMin: number; baseMax: number } } | undefined)?.medical
+      if (medical && medical.baseMin !== undefined) {
+        expect(medical.baseMax, `${f} 医保基数上限非法`).toBeGreaterThan(medical.baseMin)
+      }
+    }
+  })
+
   it('个体户增值税与个税分列且各有来源；tax.soleRate 已废止', () => {
     for (const [f, rule] of Object.entries(rules)) {
       const sole = rule.soleProprietorship

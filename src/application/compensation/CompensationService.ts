@@ -190,7 +190,7 @@ export class CompensationService {
     const owed = monthly * (percent / 100) * months;
 
     const items: CompensationItem[] = [
-      this.claim('欠付报酬本金', owed, `\u00A5 \u00D7 ${percent}% \u00D7 ${months}个月`),
+      this.claim('欠付报酬本金', owed, `\u00A5${monthly} \u00D7 ${percent}% \u00D7 ${months}个月`),
       this.cond('加付赔偿金 50%–100%', owed * 0.5, '《劳动合同法》第85条以"劳动行政部门责令限期支付、逾期不付"为前置条件，未经责令程序不成立，故不计入合计'),
     ];
 
@@ -238,10 +238,10 @@ export class CompensationService {
     ];
 
     if (mealPerDay > 0) {
-      items.push(this.claim('住院伙食补助费', mealPerDay * leaveMonths * 30, '按统筹地区标准填写（每日金额需以当地规定为准，本工具不内置未经核实的数字）'));
+      items.push(this.claim('住院伙食补助费', mealPerDay * leaveMonths * 30, `按统筹地区标准填写（每日金额需以当地规定为准，本工具不内置未经核实的数字）。天数按停工留薪期 ${leaveMonths} 个月 × 30 天折算——若实际住院短于停工留薪期，请按实际住院天数自行核减`));
     }
     if (nursingPerDay > 0) {
-      items.push(this.claim('生活护理费', nursingPerDay * leaveMonths * 30, '生活不能自理需护理的，由用人单位负责或按当地护理费标准'));
+      items.push(this.claim('生活护理费', nursingPerDay * leaveMonths * 30, '生活不能自理需护理的，由用人单位负责或按当地护理费标准。天数按停工留薪期折算，若实际住院/护理期更短请自行核减'));
     }
 
     // 广东省工伤保险条例第34条（2019修正）一次性补助金月数，以本人工资为基数
@@ -250,9 +250,20 @@ export class CompensationService {
     const jobFund: Record<number, number> = { 10: 4, 9: 8, 8: 15, 7: 25, 6: 40, 5: 50 };
 
     if (level >= 5 && level <= 10) {
-      items.push(this.claim(`一次性伤残补助金（${level}级 \u00B7 ${subsidy[level]}个月本人工资）`, ownWage * subsidy[level], '《工伤保险条例》第35–37条月数表，由工伤保险基金支付'));
-      items.push(this.cond(`一次性工伤医疗补助金（广东 ${level}级 \u00B7 ${medFund[level]}个月）`, ownWage * medFund[level], '广东省工伤保险条例第34条：以劳动合同期满终止或本人提出解除为前提，由工伤保险基金支付'));
-      items.push(this.cond(`一次性伤残就业补助金（广东 ${level}级 \u00B7 ${jobFund[level]}个月）`, ownWage * jobFund[level], '广东省工伤保险条例第34条：同上以劳动关系解除/终止为前提，由用人单位支付'));
+      items.push(this.claim(`一次性伤残补助金（${level}级 · ${subsidy[level]}个月本人工资）`, ownWage * subsidy[level], '《工伤保险条例》第35–37条月数表，由工伤保险基金支付'));
+      items.push(this.cond(`一次性工伤医疗补助金（广东 ${level}级 · ${medFund[level]}个月）`, ownWage * medFund[level], '广东省工伤保险条例第34条：以劳动合同期满终止或本人提出解除为前提，由工伤保险基金支付'));
+      items.push(this.cond(`一次性伤残就业补助金（广东 ${level}级 · ${jobFund[level]}个月）`, ownWage * jobFund[level], '广东省工伤保险条例第34条：同上以劳动关系解除/终止为前提，由用人单位支付'));
+    } else if (level >= 1 && level <= 4) {
+      // 1–4 级：一次性补助金照发，但不享受一次性医疗/就业补助金（那是 5–10 级的退出结算），
+      // 改为法定按月伤残津贴直至退休——此前两个分支都不落，四级少算 21 个月补助金与全部津贴
+      const allowancePct = { 1: 0.9, 2: 0.85, 3: 0.8, 4: 0.75 }[level] ?? 0;
+      const allowancePctLabel = { 1: 90, 2: 85, 3: 80, 4: 75 }[level] ?? 0;
+      items.push(this.claim(`一次性伤残补助金（${level}级 · ${subsidy[level]}个月本人工资）`, ownWage * subsidy[level], '《工伤保险条例》第35–38条月数表，由工伤保险基金支付'));
+      items.push(this.cond(
+        `按月伤残津贴（${level}级 · 本人工资的${allowancePctLabel}%）`,
+        ownWage * allowancePct,
+        `《工伤保险条例》第35、36条：每月发放直至退休，按月计发、金额显示为一个月的津贴，不并入上方一次性合计；伤残津贴实际金额低于最低工资标准的由工伤保险基金补差，未参保期间由用人单位支付`,
+      ));
     } else if (level === 0) {
       items.push(this.info('尚未进行劳动能力鉴定', '伤残等级决定一次性补助金有无与月数，建议先申请劳动能力鉴定再主张'));
     }
@@ -264,7 +275,7 @@ export class CompensationService {
     }
 
     return this.pack(items, [
-      { law: '工伤保险条例', article: '33、35–37', summary: '停工留薪期原工资福利待遇不变；一次性伤残补助金按等级月数支付' },
+      { law: '工伤保险条例', article: '33、35–38', summary: '停工留薪期原工资福利待遇不变；一次性伤残补助金按等级月数支付；1–4级另按月发放伤残津贴' },
       { law: '工伤保险条例', article: '64', summary: '本人工资为前12个月平均月缴费工资，低于60%或高于300%的按60%/300%计' },
       { law: '广东省工伤保险条例', article: '34', summary: '一次性工伤医疗补助金五级10月至十级1月；一次性伤残就业补助金五级50月至十级4月' },
       { law: '工伤保险条例', article: '62', summary: '未参保期间发生工伤，由用人单位按条例项目和标准支付' },
@@ -348,6 +359,12 @@ export class CompensationService {
     if (weekdayHours > 0) items.push(this.claim('工作日延时加班费（1.5倍）', weekdayPay, `${weekdayHours}h/月 \u00D7 1.5 \u00D7 \u00A5${hourlyBase}/h \u00D7 ${months}个月`));
     if (weekendHours > 0) items.push(this.claim('休息日加班费（2倍）', weekendPay, `${weekendHours}h/月 \u00D7 2 \u00D7 \u00A5${hourlyBase}/h \u00D7 ${months}个月（不能安排补休时才支付2倍）`));
     if (holidayHours > 0) items.push(this.claim('法定节假日加班费（3倍）', holidayPay, `${holidayHours}h/月 \u00D7 3 \u00D7 \u00A5${hourlyBase}/h \u00D7 ${months}个月`));
+
+    // 最低小时工资是时薪基数的法定下限：基数低于它说明用工本身已违法，
+    // 此前该参数被静默丢弃，用户填 10 元/时也照常算出「可主张金额」
+    if (hourlyBase > 0 && hourlyBase < minHourlyWage) {
+      items.push(this.info('加班费基数低于最低小时工资', `你填写的时薪 ¥${hourlyBase} 低于本城非全日制最低小时工资 ¥${minHourlyWage}——该约定本身不合法，主张时应按不低于 ¥${minHourlyWage}/h 计算，上列金额因此偏低`));
+    }
 
     if (weekdayHours > 36) items.push(this.info('工时合法性提示', `${weekdayHours}h/月 已超《劳动法》第41条每月不超过36小时的上限`));
 

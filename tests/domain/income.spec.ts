@@ -273,6 +273,32 @@ describe('domain/income - IncomeEngineImpl', () => {
   })
 })
 
+describe('domain/income - 雨天/节假日补贴不得超出勤天数', () => {
+  it('月工作 5 天 + 雨天 30 天时，雨天补贴按 5 天计（此前按 30 天放大 6 倍）', () => {
+    const work = { ...baseWork, workDaysMonth: 5, rainDaysMonth: 30, holidayDaysMonth: 0 }
+    const income = calcIncome(guangzhouRule, work)
+    // 补贴上限 = 5 天 × 日基础 × (1.35 - 1)；日基础 = 基础件 + 距离费 ÷ 5 天
+    const basePay = 500 * 35 * 5
+    const distancePay = Math.round(120 * 2.5 * 35 * 5)
+    const dailyBase = (basePay + distancePay) / 5
+    const maxRainExtra = 5 * dailyBase * 0.35
+    // 峰时补贴随工时折算，与雨天夹取无关；总补贴减去峰时部分后不得超过雨天上限
+    const subsidy = Number(income.subsidyPay)
+    expect(subsidy).toBeLessThanOrEqual(Math.round(dailyBase * (guangzhouRule.timeSubsidy.multiplier - 1) * 5 + maxRainExtra) + 1)
+  })
+
+  it('节假日天数同样被出勤天数夹取', () => {
+    const work = { ...baseWork, workDaysMonth: 2, rainDaysMonth: 0, holidayDaysMonth: 20 }
+    const income = calcIncome(guangzhouRule, work)
+    const basePay = 500 * 35 * 2
+    const distancePay = Math.round(120 * 2.5 * 35 * 2)
+    const dailyBase = (basePay + distancePay) / 2
+    const maxHolidayExtra = 2 * dailyBase * (guangzhouRule.holidayMultiplier - 1)
+    const subsidy = Number(income.subsidyPay)
+    expect(subsidy).toBeLessThanOrEqual(Math.round(dailyBase * (guangzhouRule.timeSubsidy.multiplier - 1) * 2 + maxHolidayExtra) + 1)
+  })
+})
+
 describe('domain/income - 品牌类型工厂', () => {
   it('cent/kilometer/hour 返回数值', () => {
     expect(cent(100)).toBe(100)

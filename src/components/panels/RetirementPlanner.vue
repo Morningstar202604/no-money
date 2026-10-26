@@ -187,10 +187,17 @@ const contributionYears = computed(() => Math.max(1, store.personal.expectedReti
 
 const retireResult = computed(() => {
   if (!engine.value) return { totalPension: 0, personalAccount: 0, basePension: 0, personalPension: 0, months: 0 }
+  // 缴费指数必须与当前测算基数一致：不传时引擎按法定下限 0.6 兜底，
+  // 选了 100%/200% 档的用户首屏基础养老金被大幅低估，且与下方档次对比图互相打架
+  const socialAvg = socialAverageWage(
+    store.rule?.benefit.pension.baseMin ?? 0,
+    store.rule?.benefit.pension.baseMax,
+  )
   return engine.value.projectRetirement(
     store.personal.currentAge, store.personal.expectedRetireAge,
     accountMonthly.value, contributionYears.value,
-    store.rule?.retirement.assumedAnnualReturn ?? 0.05
+    store.rule?.retirement.assumedAnnualReturn ?? 0.05,
+    effectivePensionBase.value / socialAvg,
   )
 })
 

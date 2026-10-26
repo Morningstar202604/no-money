@@ -136,7 +136,7 @@ export class ScenarioEngine {
     }
     // 与 ScenarioService 同口径声明（parity 测试锁定文本一致）
     if (tax.effectiveRate > 0) {
-      insights.push('个税按年度汇算清缴口径测算：含 20% 费用减除与 5000 元/月基本减除；若按次预扣（20% 起）月到手会更低，以汇算为准')
+      insights.push('个税按年度汇算清缴口径测算：月收入超 4000 元按 20% 减除费用、未超按 800 元，另减 5000 元/月基本减除；若平台按次预扣（20% 起）月到手会更低，以汇算为准')
     } else if (netMonthly > 0) {
       insights.push('个税按年度汇算清缴口径测算：当前收入未超减除标准，年度税额为 0')
     }

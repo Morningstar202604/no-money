@@ -138,7 +138,8 @@ export async function tryCatchAsync<T, E = Error>(
   try {
     return ok(await fn());
   } catch (e) {
-    return err(e as Error);
+    // 与同步版 tryCatch 同口径：调用方传了 transformer 就必须生效
+    return err(errorTransformer ? errorTransformer(e) : (e as Error));
   }
 }
 

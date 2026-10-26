@@ -48,12 +48,14 @@ export function calcIncome(rule: IncomeRule, params: WorkParams): IncomeBreakdow
   const peakShare = Math.min(1, safeDiv(peakTotalHours, hours))
   const peakSubsidyDaily = dailyBase * (rule.timeSubsidy.multiplier - 1) * peakShare
   
-  // 雨天补贴：雨天天数 × 日基础 × (倍率 - 1)
-  const rainDays = Math.round(clamp(params.rainDaysMonth, 0, 31, 0))
+  // 雨天/节假日补贴只在「出勤且当天恰为雨天/节假日」时发生：
+  // 天数必须与出勤天数夹取，否则月工作 5 天 + 雨天 30 天会按 30 天计发，
+  // 补贴被放大到合理上限的 6 倍
+  const rainDays = Math.min(days, Math.round(clamp(params.rainDaysMonth, 0, 31, 0)))
   const rainExtra = rainDays * dailyBase * (rule.rainSurcharge - 1)
   
-  // 节假日补贴：节假日天数 × 日基础 × (倍率 - 1)
-  const holidayDays = Math.round(clamp(params.holidayDaysMonth, 0, 31, 0))
+  // 节假日补贴：节假日天数 × 日基础 × (倍率 - 1)，同样不超出勤天数
+  const holidayDays = Math.min(days, Math.round(clamp(params.holidayDaysMonth, 0, 31, 0)))
   const holidayExtra = holidayDays * dailyBase * (rule.holidayMultiplier - 1)
   
   // 补贴合计

@@ -141,8 +141,6 @@ export function calcSoleProprietorship(
 
   // 年应纳税所得额 = 年营业额 × 行业所得率 - 费用减除标准 × 12
   const incomeAmount = mulCentRate(turnover, incomeRate)
-  const totalDeduction = mulCentRate(deductionMonthly, Rate.create(12)) // 这里用 Cent 乘以数字
-  // 更精确：totalDeduction = deductionMonthly * 12
   const totalDeductionCent = safeCent(Number(deductionMonthly) * 12)
 
   const taxable = nonNegCent(subCent(incomeAmount, totalDeductionCent))
