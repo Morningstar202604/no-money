@@ -15,6 +15,12 @@ import type { CityRule } from '../../src/types'
 const rule = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
 const ruleSz = JSON.parse(readFileSync('public/rules/shenzhen.json', 'utf8')) as CityRule
 
+function mockFetchJson(payload: unknown, ctype = 'application/json', status = 200) {
+  const fn = vi.fn(async () => new Response(JSON.stringify(payload), { status, headers: { 'content-type': ctype } }))
+  ;(globalThis as { fetch?: unknown }).fetch = fn as unknown as typeof fetch
+  return fn
+}
+
 describe('主 store：scenarios 与 comparison 必须对同一场景给出一致数值', () => {
   beforeEach(() => setActivePinia(createPinia()))
 
@@ -66,12 +72,6 @@ describe('主 store：规则加载与切城的用户数据安全', () => {
     vi.restoreAllMocks()
     delete (globalThis as { fetch?: unknown }).fetch
   })
-
-  function mockFetchJson(payload: unknown, ctype = 'application/json', status = 200) {
-    const fn = vi.fn(async () => new Response(JSON.stringify(payload), { status, headers: { 'content-type': ctype } }))
-    ;(globalThis as { fetch?: unknown }).fetch = fn as unknown as typeof fetch
-    return fn
-  }
 
   it('同城重载（启动失败后重试）不得清空本城口径的自选基数', async () => {
     mockFetchJson(rule)
@@ -136,6 +136,57 @@ describe('主 store：规则加载与切城的用户数据安全', () => {
 
     expect(store.rule).toBeNull()
     expect(store.loadError ?? '').toContain('未找到')
+  })
+})
+
+describe('主 store：参数导出/导入（换设备迁移）', () => {
+  beforeEach(() => setActivePinia(createPinia()))
+  afterEach(() => {
+    vi.restoreAllMocks()
+    delete (globalThis as { fetch?: unknown }).fetch
+  })
+
+  it('导出快照导入回读一致（含自定义方案与自选基数）', async () => {
+    mockFetchJson(rule)
+    const store = useMainStore()
+    store.rule = rule
+    store.personal.pensionBase = 10000
+    store.addScenario('夜班方案', store.work, store.costs)
+
+    const snapshot = JSON.parse(store.exportParams())
+    // 换设备迁移语义：全新 pinia 实例从快照恢复
+    setActivePinia(createPinia())
+    const fresh = useMainStore()
+    fresh.work = { ...fresh.work, city: 'shenzhen', dailyHours: 9 }
+    fresh.customPlans = []
+
+    const err = fresh.importParams(snapshot)
+    expect(err).toBeNull()
+    expect(fresh.personal.pensionBase).toBe(10000)
+    expect(fresh.customPlans.map(p => p.name)).toContain('夜班方案')
+    expect(fresh.work.city).toBe('guangzhou')
+    expect(fresh.work.dailyHours).toBe(10)
+  })
+
+  it('导入非法快照返回错误且不改动当前状态', () => {
+    const store = useMainStore()
+    store.rule = rule
+    store.personal.currentAge = 30
+
+    expect(store.importParams([1, 2, 3])).toBeTruthy()
+    expect(store.importParams('garbage' as never)).toBeTruthy()
+    expect(store.importParams(null)).toBeTruthy()
+    expect(store.personal.currentAge, '导入失败不得改动现有参数').toBe(30)
+  })
+
+  it('导入矛盾年龄对时自动修正（与初始化恢复同口径）', () => {
+    const store = useMainStore()
+    const err = store.importParams({
+      work: { city: 'guangzhou' },
+      personal: { currentAge: 70, expectedRetireAge: 60, hasSocialInsurance: false, specialDeductionMonth: 0 },
+    })
+    expect(err).toBeNull()
+    expect(store.personal.expectedRetireAge).toBeGreaterThan(store.personal.currentAge)
   })
 })
 

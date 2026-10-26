@@ -245,6 +245,44 @@ export const useMainStore = defineStore('main', () => {
     })
   }
 
+  /** 导出参数快照（与持久化同构，换设备/清缓存迁移用；不含 AI Key 等敏感数据） */
+  function exportParams(): string {
+    return JSON.stringify({
+      work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
+    }, null, 2)
+  }
+
+  /**
+   * 导入参数快照：与初始化恢复共用同一套白名单校验（hydrateParams），
+   * 非法/缺失字段落回默认值而不是整包拒绝——与手改 localStorage 的容错口径一致。
+   * 返回错误文案；null 表示已应用（含跨城时触发 loadRule）。
+   */
+  function importParams(raw: unknown): string | null {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return '文件内容不是参数快照（应为 JSON 对象）'
+    const snap = raw as Record<string, unknown>
+    const nextWork = hydrateParams(snap.work, DEFAULT_WORK)
+    const nextCosts = hydrateParams(snap.costs, DEFAULT_COSTS)
+    const nextPersonal = hydrateParams(snap.personal, DEFAULT_PERSONAL)
+    if (nextPersonal.expectedRetireAge <= nextPersonal.currentAge) {
+      nextPersonal.expectedRetireAge = Math.min(nextPersonal.currentAge + 1, 90)
+    }
+    const plans = Array.isArray(snap.customPlans)
+      ? (snap.customPlans as unknown[]).filter((p): p is CustomPlan => {
+          const o = p as Record<string, unknown> | null
+          return !!o && typeof o.id === 'string' && typeof o.name === 'string'
+            && !!o.work && typeof o.work === 'object' && !!o.costs && typeof o.costs === 'object'
+        }).map(p => ({ id: p.id, name: p.name, work: hydrateParams(p.work, DEFAULT_WORK), costs: hydrateParams(p.costs, DEFAULT_COSTS) }))
+      : []
+    work.value = nextWork
+    costs.value = nextCosts
+    personal.value = nextPersonal
+    customPlans.value = plans
+    basesCity = nextWork.city
+    paramsRestored.value = false
+    void loadRule(nextWork.city)
+    return null
+  }
+
   function resetParams() {
     // 保留当前城市：DEFAULT_WORK.city 是 guangzhou，直接展开会把用户从深圳/东莞静默切回广州
     const keepCity = work.value.city
@@ -317,5 +355,5 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
-  return { rule, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario }
+  return { rule, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams }
 })

@@ -216,6 +216,12 @@
       </div>
       <div v-if="store.persistError" class="ps-persist-error">{{ store.persistError }}</div>
       <div v-if="store.paramsRestored" class="ps-restored">已恢复上次未完成的测算参数</div>
+      <div v-if="importError" class="ps-persist-error">{{ importError }}</div>
+      <div class="ps-io">
+        <n-button size="tiny" quaternary block @click="exportParams">导出参数</n-button>
+        <n-button size="tiny" quaternary block @click="importInput?.click()">导入参数</n-button>
+      </div>
+      <input ref="importInput" type="file" accept="application/json,.json" hidden @change="onImportFile">
       <n-button size="tiny" quaternary block @click="store.resetParams()">重置为默认参数</n-button>
     </div>
   </div>
@@ -233,6 +239,35 @@ import FoldCard from './FoldCard.vue'
 import ChinaMapPicker from './ChinaMapPicker.vue'
 
 const store = useMainStore()
+
+/** 参数导出/导入：快照与持久化同构，文件不含任何敏感数据 */
+const importInput = ref<HTMLInputElement>()
+const importError = ref<string | null>(null)
+
+function exportParams() {
+  const blob = new Blob([store.exportParams()], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `flexcalc-params-${store.work.city}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+async function onImportFile(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file) return
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(await file.text())
+  } catch {
+    importError.value = '所选文件不是合法 JSON'
+    return
+  }
+  importError.value = store.importParams(parsed)
+}
 const cityOptions = CITIES
 const showMap = ref(false)
 const cityCount = CITIES.length
@@ -394,6 +429,8 @@ const autoMedicalBase = computed(() => autoBase(medicalBaseMin.value, medicalBas
   line-height: 1;
   cursor: pointer;
 }
+.ps-io { display: flex; gap: 4px; }
+.ps-io .n-button { flex: 1; }
 .ps-persist-error {
   font-size: 10px;
   line-height: 1.6;
