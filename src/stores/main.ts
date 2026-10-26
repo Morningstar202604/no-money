@@ -69,6 +69,9 @@ export const useMainStore = defineStore('main', () => {
   }
   paramsRestored.value = !!saved
 
+  /** 自选缴费基数所属城市：恢复的基数与恢复的 work.city 同源；同城重载不得清掉 */
+  let basesCity: string = work.value.city
+
   /** 自定义方案是嵌套结构，数组不能走 hydrate 的键值白名单，需单独校验必要字段 */
   const customPlans = ref<CustomPlan[]>(
     Array.isArray(saved?.customPlans)
@@ -99,35 +102,62 @@ export const useMainStore = defineStore('main', () => {
     loadError.value = null
     // 切城时先作废旧规则：否则在新规则到达前，engine 仍按旧城口径计算，
     // 而 work.city / 标签已是新城，出现「深圳标签 + 广州数字」的窗口
-    if (rule.value && rule.value.city !== city) rule.value = null
+    const prevRuleCity = rule.value?.city ?? null
+    if (rule.value && prevRuleCity !== city) rule.value = null
     // 无超时的 fetch 在弱网或 SPA 回退挂起时会让 finally 不执行，loading 永久为 true，
     // 城市选择器被禁用后用户无法自救，只能靠手动刷新
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), 12000)
     try {
       const res = await fetch(`/rules/${city}.json`, { signal: controller.signal })
-      const ctype = res.headers.get('content-type') || ''
       if (!res.ok) throw new Error(`规则文件加载失败（HTTP ${res.status}）`)
-      // 静态托管的 SPA 回退会用 200 + HTML 应答缺失文件，仅判断 res.ok 拦不住
-      if (!ctype.includes('json')) throw new Error(`未找到 ${city} 的规则文件`)
-      const data = await res.json() as CityRule
+      // 不信任 content-type（CDN 对 .json 可能回 octet-stream），直接按文本读再解析：
+      // 静态托管的 SPA 回退会用 200 + HTML 应答缺失文件，JSON.parse 在此自然拦截
+      const text = await res.text()
+      let data: CityRule
+      try {
+        data = JSON.parse(text) as CityRule
+      } catch {
+        throw new Error(`未找到 ${city} 的规则文件（响应不是合法 JSON）`)
+      }
       // CDN 边缘节点返回错版本时，规则里的 cityName 会与用户选的城市静默不一致，
       // 而侧边栏显示的是 work.city —— 正是本项目反复要防的"深圳抄广州"类事故
       if (data.city !== city) throw new Error(`规则文件与请求城市不一致（期望 ${city}，实际 ${data.city}）`)
       if (seq !== loadSeq) return
       rule.value = data
-      // 医保档次与缴费基数是各城规则文件自己的条目，切换城市后旧值在新城中无意义
-      const tierId = personal.value.medicalTierId
-      if (tierId && !data.benefit.medicalTiers?.some(t => t.id === tierId)) {
-        personal.value.medicalTierId = undefined
-      }
-      // 自选缴费基数是按旧城上下限填的，跨城沿用会算出越界/无意义的金额。
-      // 清空是对的，但必须告知——否则用户以为自己的设置"自己丢了"
-      const hadBase = personal.value.pensionBase !== undefined || personal.value.medicalBase !== undefined
-      personal.value.pensionBase = undefined
-      personal.value.medicalBase = undefined
-      if (hadBase) {
-        cityNotice.value = `已切换到${data.cityName}：此前自选的缴费基数按上一城市口径填写，已重置为该城默认（按申报收入夹取）。如需固定基数请在左侧重新选择。`
+
+      // 以下清理只在「确实换了城市」时执行：启动失败后的同城重试（prevRuleCity===null
+      // 但 basesCity===city）按本城口径填写的基数与方案必须原样保留
+      const switchedCity = prevRuleCity !== null ? prevRuleCity !== city : basesCity !== city
+      const notices: string[] = []
+      if (switchedCity) {
+        // 医保档次与缴费基数是各城规则文件自己的条目，切换城市后旧值在新城中无意义
+        const tierId = personal.value.medicalTierId
+        if (tierId && !data.benefit.medicalTiers?.some(t => t.id === tierId)) {
+          personal.value.medicalTierId = undefined
+        }
+        // 自选缴费基数是按旧城上下限填的，跨城沿用会算出越界/无意义的金额。
+        // 清空是对的，但必须告知——否则用户以为自己的设置"自己丢了"
+        const hadBase = personal.value.pensionBase !== undefined || personal.value.medicalBase !== undefined
+        if (hadBase) {
+          notices.push('此前自选的缴费基数按上一城市口径填写，已重置为该城默认（按申报收入夹取）。如需固定基数请在左侧重新选择。')
+        }
+        personal.value.pensionBase = undefined
+        personal.value.medicalBase = undefined
+        basesCity = city
+        // 自定义方案与补偿金额都属于旧城口径（补偿含本城社保基数封顶/保底），
+        // 必须在切换「成功」后才清：加载失败就清，弱网一次超时即永久丢失用户搭建的方案
+        if (customPlans.value.length > 0) {
+          notices.push(`自定义方案属于上一城市，已清空（${customPlans.value.length} 个）。`)
+          customPlans.value = []
+        }
+        if (compensation.value !== null) {
+          notices.push('上一城市的补偿测算结果已作废，请在新城市下重新计算。')
+          compensation.value = null
+        }
+        if (notices.length > 0) {
+          cityNotice.value = `已切换到${data.cityName}：${notices.join('')}`
+        }
       }
     } catch (err) {
       if (seq !== loadSeq) return
@@ -142,9 +172,8 @@ export const useMainStore = defineStore('main', () => {
 
   function setCity(city: string) {
     work.value.city = city
-    customPlans.value = []
-    // 补偿金额含按本城社保基数做的封顶/保底，跨城沿用会得出错误的主张数额
-    compensation.value = null
+    // 方案/补偿/基数的清空延迟到 loadRule 成功路径（见 switchedCity 分支）：
+    // 在此先清的话，目标城市加载失败会把原城市数据永久丢掉
     return loadRule(city)
   }
 
@@ -170,22 +199,51 @@ export const useMainStore = defineStore('main', () => {
     { flush: 'sync' },
   )
 
+  /**
+   * 基数一旦被用户改动，就视为「按当前城市口径填写」：此后即使规则尚未加载成功
+   * （启动失败重试），loadRule 也能凭 basesCity 区分「本城重试」与「跨城切换」。
+   */
+  watch(
+    () => [personal.value.pensionBase, personal.value.medicalBase] as const,
+    ([pension, medical]) => {
+      if (pension !== undefined || medical !== undefined) basesCity = work.value.city
+    },
+    { flush: 'sync' },
+  )
+
   /** 参数是用户逐项调出来的，刷新即丢会让"方案对比"无法复现，故落本地存储 */
-  watch([work, costs, personal, customPlans], () => {    clearTimeout(persistTimer)
-    persistTimer = setTimeout(() => {
-      try {
-        localStorage.setItem(PARAMS_KEY, JSON.stringify({
-          work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
-        }))
-        persistError.value = null
-      } catch (err) {
-        // 隐私模式或配额耗尽：此前静默吞掉，用户以为参数已保存，刷新后全丢
-        persistError.value = err instanceof Error && err.name === 'QuotaExceededError'
-          ? '本地存储空间不足，参数无法自动保存（本次测算仍可正常使用）'
-          : '当前浏览器禁止本地存储（可能处于隐私模式），参数无法自动保存'
-      }
-    }, 300)
+  function writePersist() {
+    try {
+      localStorage.setItem(PARAMS_KEY, JSON.stringify({
+        work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
+      }))
+      persistError.value = null
+    } catch (err) {
+      // 隐私模式或配额耗尽：此前静默吞掉，用户以为参数已保存，刷新后全丢
+      persistError.value = err instanceof Error && err.name === 'QuotaExceededError'
+        ? '本地存储空间不足，参数无法自动保存（本次测算仍可正常使用）'
+        : '当前浏览器禁止本地存储（可能处于隐私模式），参数无法自动保存'
+    }
+  }
+
+  watch([work, costs, personal, customPlans], () => {
+    clearTimeout(persistTimer)
+    persistTimer = setTimeout(writePersist, 300)
   }, { deep: true })
+
+  // 300ms 防抖的最后一笔改动可能在落盘前就遇到刷新/关标签页，pagehide 时同步冲刷
+  function flushPersistOnLeave() {
+    if (persistTimer === undefined) return
+    clearTimeout(persistTimer)
+    persistTimer = undefined
+    writePersist()
+  }
+  if (typeof window !== 'undefined') {
+    window.addEventListener('pagehide', flushPersistOnLeave)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') flushPersistOnLeave()
+    })
+  }
 
   function resetParams() {
     // 保留当前城市：DEFAULT_WORK.city 是 guangzhou，直接展开会把用户从深圳/东莞静默切回广州

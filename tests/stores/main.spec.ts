@@ -6,13 +6,14 @@
  * （读 scenarios）数值打架。引擎单测全绿也发现不了——缺陷在 store 接线。
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { readFileSync } from 'node:fs'
 import { useMainStore } from '../../src/stores/main'
 import type { CityRule } from '../../src/types'
 
 const rule = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+const ruleSz = JSON.parse(readFileSync('public/rules/shenzhen.json', 'utf8')) as CityRule
 
 describe('主 store：scenarios 与 comparison 必须对同一场景给出一致数值', () => {
   beforeEach(() => setActivePinia(createPinia()))
@@ -56,6 +57,85 @@ describe('主 store：scenarios 与 comparison 必须对同一场景给出一致
     const comp = store.comparison!
     expect(comp.scenarios.some(s => s.id === 'with_insurance')).toBe(false)
     expect(store.scenarios.some(s => s.id === 'with_insurance')).toBe(false)
+  })
+})
+
+describe('主 store：规则加载与切城的用户数据安全', () => {
+  beforeEach(() => setActivePinia(createPinia()))
+  afterEach(() => {
+    vi.restoreAllMocks()
+    delete (globalThis as { fetch?: unknown }).fetch
+  })
+
+  function mockFetchJson(payload: unknown, ctype = 'application/json', status = 200) {
+    const fn = vi.fn(async () => new Response(JSON.stringify(payload), { status, headers: { 'content-type': ctype } }))
+    ;(globalThis as { fetch?: unknown }).fetch = fn as unknown as typeof fetch
+    return fn
+  }
+
+  it('同城重载（启动失败后重试）不得清空本城口径的自选基数', async () => {
+    mockFetchJson(rule)
+    const store = useMainStore()
+    store.rule = rule
+    store.personal.pensionBase = 10000
+    store.personal.medicalBase = 8000
+
+    await store.loadRule('guangzhou')
+
+    expect(store.loadError, '同城重载不应报错').toBeNull()
+    expect(store.personal.pensionBase, '基数按本城口径填写，重载后必须保留').toBe(10000)
+    expect(store.personal.medicalBase).toBe(8000)
+    expect(store.cityNotice, '没有切城就不该出现「已切换」提示').toBeNull()
+  })
+
+  it('切城加载失败时，原城市的自定义方案必须存活（先斩后奏清空即丢数据）', async () => {
+    const fn = mockFetchJson(rule)
+    fn.mockRejectedValueOnce(new Error('网络失败'))
+    const store = useMainStore()
+    store.rule = rule
+    store.addScenario('夜班方案', store.work, store.costs)
+
+    await store.setCity('shenzhen')
+
+    expect(store.loadError, '切城失败应给出错误').toBeTruthy()
+    expect(store.customPlans.length, '目标城市加载失败不得清空原有方案').toBe(1)
+  })
+
+  it('切城成功才清空自定义方案与补偿结果，并给出提示', async () => {
+    mockFetchJson(ruleSz)
+    const store = useMainStore()
+    store.rule = rule
+    store.addScenario('夜班方案', store.work, store.costs)
+    store.setCompensation({} as never)
+
+    await store.setCity('shenzhen')
+
+    expect(store.rule?.city).toBe('shenzhen')
+    expect(store.customPlans.length, '方案属于上一城市，切换成功后清空').toBe(0)
+    expect(store.compensation, '补偿金额含本城基数封顶，切换成功后作废').toBeNull()
+    expect(store.cityNotice ?? '', '清空行为必须告知用户').toContain('自定义方案')
+  })
+
+  it('content-type 为 octet-stream 的合法 JSON 规则文件也能加载', async () => {
+    mockFetchJson(rule, 'application/octet-stream')
+    const store = useMainStore()
+
+    await store.loadRule('guangzhou')
+
+    expect(store.rule, 'CDN 以 octet-stream 下发 .json 时不得误报文件不存在').not.toBeNull()
+    expect(store.loadError).toBeNull()
+  })
+
+  it('SPA 回退的 200 + HTML 仍被拒绝（防「深圳抄广州」的守卫保留）', async () => {
+    ;(globalThis as { fetch?: unknown }).fetch = vi.fn(async () =>
+      new Response('<!doctype html><html></html>', { status: 200, headers: { 'content-type': 'text/html' } })
+    ) as unknown as typeof fetch
+    const store = useMainStore()
+
+    await store.loadRule('guangzhou')
+
+    expect(store.rule).toBeNull()
+    expect(store.loadError ?? '').toContain('未找到')
   })
 })
 
