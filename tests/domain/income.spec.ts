@@ -5,24 +5,24 @@ import type { IncomeRule, WorkParams, CostParams } from '../../src/domain/income
 
 // 广州规则（参考 public/rules/guangzhou.json，金额单位：分）
 const guangzhouRule: IncomeRule = {
-  basePricePerOrder: 500,      // 5.00 元/单
-  distanceRate: 120,           // 1.20 元/公里
-  weightSurcharge: { threshold: 5, rate: 50 },
+  basePricePerOrder: cent(500),      // 5.00 元/单
+  distanceRate: cent(120),           // 1.20 元/公里
+  weightSurcharge: { threshold: 5, rate: cent(50) },
   timeSubsidy: { 
     peakHours: ['11:00-13:00', '17:00-19:00', '21:00-23:00'], 
     multiplier: 1.25 
   },
   holidayMultiplier: 1.6,
   rainSurcharge: 1.35,
-  monthlyBonus: { threshold: 800, amount: 50000 }, // 500 元
+  monthlyBonus: { threshold: 800, amount: cent(50000) }, // 500 元
 }
 
 // 基准工作参数（对应测试中的 work）
 const baseWork: WorkParams = {
   city: 'guangzhou',
-  dailyHours: 10,
+  dailyHours: hour(10),
   dailyOrders: 35,
-  avgDistance: 2.5,
+  avgDistance: kilometer(2.5),
   workDaysMonth: 26,
   rainDaysMonth: 3,
   holidayDaysMonth: 2,
@@ -30,15 +30,15 @@ const baseWork: WorkParams = {
 
 const baseCosts: CostParams = {
   vehicleType: 'electric',
-  fuelCostMonth: 0,
-  electricityCostMonth: 30000,
-  maintenanceMonth: 20000,
-  insuranceMonth: 10000,
-  phoneCostMonth: 10000,
-  foodCostMonth: 80000,
-  trafficFineMonth: 5000,
-  vehicleDepreciationMonth: 30000,
-  otherCostMonth: 10000,
+  fuelCostMonth: cent(0),
+  electricityCostMonth: cent(30000),
+  maintenanceMonth: cent(20000),
+  insuranceMonth: cent(10000),
+  phoneCostMonth: cent(10000),
+  foodCostMonth: cent(80000),
+  trafficFineMonth: cent(5000),
+  vehicleDepreciationMonth: cent(30000),
+  otherCostMonth: cent(10000),
 }
 
 describe('domain/income - 纯函数', () => {
@@ -130,7 +130,7 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('0 公里：距离费为 0，基础计件正常', () => {
-      const inc = calcIncome(guangzhouRule, { ...baseWork, avgDistance: 0 })
+      const inc = calcIncome(guangzhouRule, { ...baseWork, avgDistance: kilometer(0) })
       expect(inc.basePay).toBe(35 * 500 * 26)
       expect(inc.distancePay).toBe(0)
     })
@@ -162,7 +162,7 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('工时短于峰时总时长：占比封顶 100%', () => {
-      const inc = calcIncome(guangzhouRule, { ...baseWork, dailyHours: 4 })
+      const inc = calcIncome(guangzhouRule, { ...baseWork, dailyHours: hour(4) })
       const dailyBase = 35 * 500
       const fullPeakDaily = dailyBase * 0.25
       // 4h < 6h 峰时，占比 min(1, 6/4) = 1
@@ -171,8 +171,8 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('工时远超峰时总时长：占比随工时下降', () => {
-      const incShort = calcIncome(guangzhouRule, { ...baseWork, dailyHours: 8 })
-      const incLong = calcIncome(guangzhouRule, { ...baseWork, dailyHours: 14 })
+      const incShort = calcIncome(guangzhouRule, { ...baseWork, dailyHours: hour(8) })
+      const incLong = calcIncome(guangzhouRule, { ...baseWork, dailyHours: hour(14) })
       // 8h 占比 6/8=75%，14h 占比 6/14≈43%
       // 长工时的峰时补贴应更低
       expect(incLong.subsidyPay).toBeLessThan(incShort.subsidyPay)
@@ -185,7 +185,7 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('工时为 0：被夹取为最小值 1', () => {
-      const inc = calcIncome(guangzhouRule, { ...baseWork, dailyHours: 0 })
+      const inc = calcIncome(guangzhouRule, { ...baseWork, dailyHours: hour(0) })
       expect(Number.isFinite(inc.grossIncome)).toBe(true)
     })
 
@@ -208,17 +208,17 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('负值被夹取为 0', () => {
-      const costs = calcCosts({ ...baseCosts, vehicleType: 'mixed', fuelCostMonth: -1000 })
+      const costs = calcCosts({ ...baseCosts, vehicleType: 'mixed', fuelCostMonth: cent(-1000) })
       expect(costs.fuelCostMonth).toBe(0)
     })
 
     it('超大值被夹取为上限', () => {
-      const costs = calcCosts({ ...baseCosts, vehicleType: 'mixed', fuelCostMonth: 5000000 })
+      const costs = calcCosts({ ...baseCosts, vehicleType: 'mixed', fuelCostMonth: cent(5000000) })
       expect(costs.fuelCostMonth).toBe(2000000)
     })
 
     it('NaN 输入被夹取为 0', () => {
-      const costs = calcCosts({ ...baseCosts, vehicleType: 'mixed', fuelCostMonth: NaN })
+      const costs = calcCosts({ ...baseCosts, vehicleType: 'mixed', fuelCostMonth: cent(NaN) })
       expect(costs.fuelCostMonth).toBe(0)
     })
 

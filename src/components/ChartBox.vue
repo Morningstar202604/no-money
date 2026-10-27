@@ -1,9 +1,17 @@
 <template>
   <div class="chart-wrap">
     <div v-if="loading" class="chart-skeleton">
-      <div class="sk-bar" v-for="i in 5" :key="i" :style="{ width: (60 + Math.random()*35) + '%', animationDelay: i*0.1 + 's' }" />
+      <!-- 固定宽度序列：Math.random() 每次渲染都变，会造成骨架条抖动 -->
+      <div class="sk-bar" v-for="(w, i) in [80, 65, 90, 70, 85]" :key="i" :style="{ width: w + '%', animationDelay: i*0.1 + 's' }" />
     </div>
-    <div v-show="!loading" ref="el" class="chart-box" :style="{ height: h + 'px' }"></div>
+    <div
+      v-show="!loading"
+      ref="el"
+      class="chart-box"
+      :style="{ height: h + 'px' }"
+      role="img"
+      :aria-label="label || '数据图表'"
+    ></div>
   </div>
 </template>
 
@@ -16,6 +24,8 @@ const props = defineProps<{
   option: EChartsCoreOption
   height?: number
   loading?: boolean
+  /** 读屏与无图场景的替代描述（图表数据无法被读屏读出） */
+  label?: string
 }>()
 
 const el = ref<HTMLElement>()
@@ -37,7 +47,13 @@ async function render() {
     chart.value = init(el.value, undefined, { renderer: 'canvas' })
   }
   if (seq !== renderSeq || !chart.value) return
-  chart.value.setOption(props.option, true)
+  // 统一挂「保存为图片」：图表结论（收入波动、税负对比、养老金档位）常被截图转发，
+  // 浏览器自带截图分辨率不可控，用 ECharts 自带导出更清晰。调用方显式配置 toolbox 时不覆盖。
+  const opt = props.option as Record<string, unknown>
+  const withToolbox = opt && !('toolbox' in opt)
+    ? { ...opt, toolbox: { right: 8, top: 0, feature: { saveAsImage: { title: '保存图片', pixelRatio: 2, backgroundColor: 'transparent' } } } }
+    : props.option
+  chart.value.setOption(withToolbox as EChartsCoreOption, true)
 }
 
 // ResizeObserver 在折叠卡片展开（display:none → block）时也会触发：

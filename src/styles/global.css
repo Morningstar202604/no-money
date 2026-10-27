@@ -355,8 +355,50 @@ code, pre {
 }
 
 /* ---------- Print Styles ---------- */
+/* 打印/另存 PDF：隐藏应用外壳（导航、参数栏、AI 悬浮球、按钮组），
+   只保留正文；文书页复用同一套规则即可直接打印成 A4 */
 @media print {
   .no-print { display: none !important; }
-  body { background: white; }
+  body { background: white !important; color: #000 !important; }
+
+  .header,
+  .sidebar,
+  .sidebar-overlay,
+  .chat-fab,
+  .chat-panel,
+  .global-alert,
+  .action-buttons,
+  .ps-io,
+  .quick-nav,
+  .n-tabs-nav,
+  .n-card-header__extra { display: none !important; }
+
+  .layout-main,
+  .content,
+  .content-full,
+  .page-container { margin: 0 !important; padding: 0 !important; max-width: none !important; }
+
+  .n-card {
+    box-shadow: none !important;
+    border: 1px solid #999 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
   .shadow-lg, .shadow-xl { box-shadow: none !important; }
+
+  /* 打印时强制白底黑字：深色主题的变量会让整页打出来是黑的 */
+  :root, :root[data-theme='dark'] {
+    --color-bg-primary: #fff;
+    --color-bg-secondary: #fff;
+    --color-bg-tertiary: #f5f5f5;
+    --color-text-primary: #000;
+    --color-text-secondary: #333;
+    --color-text-tertiary: #555;
+    --color-border-primary: #999;
+  }
+
+  a[href]::after { content: ''; }
+
+  @page { size: A4; margin: 16mm 14mm; }
 }

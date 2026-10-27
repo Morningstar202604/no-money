@@ -88,6 +88,9 @@
                   <template #icon><span class="btn-icon">⬇</span></template>
                   下载文书
                 </n-button>
+                <!-- 打印/另存 PDF：文书最终要打印签字提交，浏览器打印是唯一不引入
+                     40KB+ 导出库的做法（html2canvas 对中文排版也不可靠） -->
+                <n-button size="small" @click="printDoc">打印 / 另存 PDF</n-button>
               </div>
             </div>
           </template>
@@ -475,6 +478,11 @@ async function copyDoc() {
     sel?.removeAllRanges()
     sel?.addRange(range)
   }
+}
+
+function printDoc() {
+  // 打印样式在 global.css 的 @media print 里：隐藏导航/侧栏/按钮，只留文书正文
+  window.print()
 }
 
 function downloadDoc() {
