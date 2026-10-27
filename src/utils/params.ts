@@ -5,13 +5,10 @@
  * 用户看到的是一个看起来笃定的评级。因此夹取必须发生在唯一的入口处。
  */
 
-/** 把 v 夹到 [min, max]；非有限值回落到 fallback */
-export function clamp(v: unknown, min: number, max: number, fallback: number): number {
-  if (typeof v !== 'number' || !Number.isFinite(v)) return fallback
-  if (v < min) return min
-  if (v > max) return max
-  return v
-}
+import { clampNumber } from '../domain/shared/number'
+
+// 本地别名：hydrateParams 内部大量使用，同时保持既有导入名不变
+const clamp = clampNumber
 
 /** 各参数组的合法区间。键名与 WorkParams / CostParams / PersonalParams 对齐。 */
 export const PARAM_BOUNDS = {

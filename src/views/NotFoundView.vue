@@ -24,5 +24,6 @@ const path = computed(() => route.fullPath)
 </script>
 
 <style scoped>
-.card { background: var(--color-bg-primary) !important; border: 1px solid var(--color-border-primary) !important; margin-top: 40px; }
+/* 其余样式沿用 global.css 的 .card，这里只补页脚间距 */
+.card { margin-top: 40px; }
 </style>

@@ -289,8 +289,6 @@ const reliefGuide = RELIEF_GUIDE
 </script>
 
 <style scoped>
-.card { background: var(--color-bg-primary) !important; border: 1px solid var(--color-border-primary) !important; }
-.desc { color: var(--color-text-secondary); font-size: 13px; margin-bottom: 0; }
 
 .policy-list { display: flex; flex-direction: column; gap: 8px; }
 .pi-title { font-size: 14px; color: var(--color-text-primary); font-weight: 600; }

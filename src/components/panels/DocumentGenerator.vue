@@ -468,8 +468,6 @@ function downloadDoc() {
 </script>
 
 <style scoped>
-.card { background: var(--color-bg-primary) !important; border: 1px solid var(--color-border-primary) !important; }
-.desc { color: var(--color-text-secondary); font-size: 13px; margin-bottom: 0; line-height: 1.6; }
 
 .doc-type-list { display: flex; flex-direction: column; gap: 6px; }
 .doc-type-item {

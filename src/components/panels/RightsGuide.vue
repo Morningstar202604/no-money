@@ -375,8 +375,6 @@ const evidenceList = [
 </script>
 
 <style scoped>
-.card { background: var(--color-bg-primary) !important; border: 1px solid var(--color-border-primary) !important; }
-.desc { color: var(--color-text-secondary); font-size: 13px; margin-bottom: 0; }
 
 .quick-nav {
   display: flex; gap: 0; margin-top: 12px;

@@ -2,6 +2,7 @@
 
 import type { IncomeRule, WorkParams, CostParams, IncomeBreakdown, CostBreakdown, Cent, Hour, Kilometer } from './rules'
 import { cent } from './rules'
+import { clampNumber as clamp } from '../shared/number'
 
 /** 安全除法：分母为 0 时返回 0 */
 export function safeDiv(numerator: number, denominator: number): number {
@@ -17,11 +18,7 @@ export function peakHoursTotal(peakHours: string[]): number {
   }, 0)
 }
 
-/** 夹取数值到区间 [min, max]，非数值返回 fallback */
-export function clamp(v: unknown, min: number, max: number, fallback: number): number {
-  if (typeof v !== 'number' || !Number.isFinite(v)) return fallback
-  return Math.min(Math.max(v, min), max)
-}
+
 
 /** 计算毛收入分项 */
 export function calcIncome(rule: IncomeRule, params: WorkParams): IncomeBreakdown {
