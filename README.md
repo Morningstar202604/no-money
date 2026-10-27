@@ -83,8 +83,8 @@ npm run tauri:build  # 桌面端安装包
 ```
 src/
 ├── domain/          纯业务逻辑，零框架依赖，可独立单测
-│   ├── shared/      Brand 类型、Money/Rate 值对象、Result 统一错误处理
-│   ├── income/      收入与成本引擎（端口 + 纯函数 + 实现）
+│   ├── shared/      Brand 类型、Cent/Rate 值对象、Result 错误处理、数值工具
+│   ├── income/      收入/成本/产能/车辆成本/波动模型（纯函数）
 │   ├── tax/         劳务报酬个税、个体户核定征收
 │   └── benefit/     社保缴费、退休测算
 ├── application/     用例编排：ScenarioService / CompensationService
@@ -99,9 +99,9 @@ src/
 └── views/           五个页面
 ```
 
-分层原则：domain 不依赖 Vue/框架/网络（网络不确定性不泄漏进计算逻辑，
-领域层规则端口保持同步）；application 只做编排不含公式；I/O 与副作用
-集中在 stores（规则 fetch、参数持久化、AI 请求在 useAIChat）。
+分层原则：domain 不依赖 Vue/框架/网络（零副作用纯函数，可独立单测）；
+application 只做编排不含公式；I/O 与副作用集中在 stores（规则 fetch、
+参数持久化）与 composables（AI 请求）。
 此前 infrastructure/ 下的五个适配器模块（localStorage / IndexedDB /
 HTTP 规则加载 / 密钥 / 日志）从未被任何运行时路径接线，属死代码，
 已整体移除——真实 I/O 路径只在 stores 与 composables，避免双轨漂移。
