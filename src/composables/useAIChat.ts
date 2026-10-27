@@ -136,7 +136,7 @@ export function useAIChat() {
     return `城市=${cur.work.city},工时=${cur.work.dailyHours}h,日单=${cur.work.dailyOrders},月工作日=${cur.work.workDaysMonth}天。月收入=¥${cur.income.grossIncome},成本=¥${cur.costBreakdown.total},月个税≈¥${Math.round(cur.tax.annualTax/12)},净收入=¥${cur.netMonthly},时薪=¥${cur.netHourly},权益评分=${cur.rightsScore}/100。${cur.keyInsights?.join('│') || ''}`
   }
 
-  function ruleReply(q: string, scenarios: ScenarioResult[]): string {
+  function ruleReply(q: string, scenarios: ScenarioResult[], minWage?: number): string {
     const cur = scenarios[0]
     if (!cur) return '请先在左侧调整参数完成测算，我再帮你分析。'
     const query = q.toLowerCase()
@@ -146,7 +146,7 @@ export function useAIChat() {
       return `税率仅 ${cur.tax.effectiveRate}%，已较低。保持合规申报即可。`
     }
     if (/社保|养老|退休/.test(query)) {
-      return `以灵活就业身份参保，养老月缴约¥${Math.round(cur.benefit.pensionMonthly)}、医保约¥${Math.round(cur.benefit.medicalMonthly)}，合计约¥${Math.round(benefitTotal(cur))}（均由个人全额承担）。达到法定退休年龄且累计缴满最低年限后按月领取，具体金额取决于退休当年社平工资、缴费指数与个人账户储存额，本版本尚未建模，请以社保经办核算为准。`
+      return `以灵活就业身份参保，养老月缴约¥${Math.round(cur.benefit.pensionMonthly)}、医保约¥${Math.round(cur.benefit.medicalMonthly)}，合计约¥${Math.round(benefitTotal(cur))}（均由个人全额承担）。达到法定退休年龄且累计缴满最低年限后按月领取；「税务与养老 → 养老规划」页可按你自选的缴费基数与记账利率假设测算养老金，具体以社保经办核算为准。`
     }
     if (/风险|安全|危险|权益|保障/.test(query)) {
       if (scoreTier(cur.rightsScore) === 'bad') return `权益评分${cur.rightsScore}/100，保障缺口明显。建议：①工时控制在10h内②优先参加养老+医保③以商业意外险补充职业伤害缺口。`
@@ -154,8 +154,11 @@ export function useAIChat() {
     }
     if (/建议|怎么办|好吗/.test(query)) {
       const monthly = cur.netMonthly
-      const level = monthly > 8000 ? '高' : monthly > 5000 ? '中等' : '偏低'
-      return `当前方案月净收入¥${monthly}属${level}水平。${cur.keyInsights?.slice(0,2).join('') || '建议保持当前节奏。'}`
+      // 收入档位锚定本城最低工资（与洞察文案同口径），不写死一线城市数字
+      const level = !minWage
+        ? '——'
+        : monthly > minWage * 3 ? '高' : monthly > minWage * 2 ? '中等' : monthly > minWage ? '偏低' : '低于最低工资'
+      return `当前方案月净收入¥${monthly}属${level}水平（本城最低工资 ¥${minWage ?? '—'}/月）。${cur.keyInsights?.slice(0,2).join('') || '建议保持当前节奏。'}`
     }
     // fallback: summary
     return `当前方案「${cur.name}」月净¥${cur.netMonthly}/年净¥${cur.netAnnual}。可以深入问：税务优化/社保规划/风险评估。`
@@ -318,7 +321,7 @@ export function useAIChat() {
     messages.value.forEach(m => { if (m.isStreaming) m.isStreaming = false })
   }
 
-  async function sendMessage(question: string, scenarios: ScenarioResult[]) {
+  async function sendMessage(question: string, scenarios: ScenarioResult[], minWageMonthly?: number) {
     if (isStreaming.value) return
     messages.value.push({ id: newId('u'), role: 'user', content: question, timestamp: Date.now() })
     const ctx = buildContext(scenarios)
@@ -331,7 +334,7 @@ export function useAIChat() {
       } catch (err: unknown) {
         if (err instanceof DOMException && err.name === 'AbortError') return
         const msg = String(err instanceof Error ? err.message : (err ?? '未知错误')).slice(0, 200)
-        messages.value.push({ id: newId('err'), role: 'assistant', content: `⚠️ AI连接失败：${msg}。已切换规则引擎：\n\n` + ruleReply(question, scenarios), timestamp: Date.now(), isError: true })
+        messages.value.push({ id: newId('err'), role: 'assistant', content: `⚠️ AI连接失败：${msg}。已切换规则引擎：\n\n` + ruleReply(question, scenarios, minWageMonthly), timestamp: Date.now(), isError: true })
         saveHistory()
         return
       }
@@ -344,7 +347,7 @@ export function useAIChat() {
     messages.value.push({
       id: newId('r'),
       role: 'assistant',
-      content: kb ?? ruleReply(question, scenarios),
+      content: kb ?? ruleReply(question, scenarios, minWageMonthly),
       timestamp: Date.now(),
       source: 'kb',
     })

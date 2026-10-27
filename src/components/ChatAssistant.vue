@@ -94,11 +94,13 @@
 import { ref, nextTick, watch, computed } from 'vue'
 import { NButton, NInput, NTag, NDivider, NModal, NSpace, NFormItem, NSelect, NSwitch, NAlert, NCheckbox, useMessage } from 'naive-ui'
 import { useAIChat } from '../composables/useAIChat'
+import { useMainStore } from '../stores/main'
 import { validateEndpoint, deriveModelsUrl } from '../utils/endpoint'
 import type { ScenarioResult } from '../types'
 
 const props = defineProps<{ scenarios: ScenarioResult[] }>()
 const message = useMessage()
+const store = useMainStore()
 
 const { config, messages, isStreaming, isOnline, showSettings, sendMessage, stopStreaming, clearHistory, updateConfig } = useAIChat()
 
@@ -145,7 +147,7 @@ async function sendChat() {
   const q = input.value.trim()
   if (!q || isStreaming.value) return
   input.value = ''
-  await sendMessage(q, props.scenarios)
+  await sendMessage(q, props.scenarios, store.rule?.minimumWage.monthly)
   scrollToBottom()
 }
 
