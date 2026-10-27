@@ -93,14 +93,5 @@ export function settlementDelta(annualWithheld: Cent, annualSettlementTax: Cent)
   return Cent.create(Number(subCent(annualWithheld, annualSettlementTax)))
 }
 
-/** 预扣占毛收入的比例（百分数），用于界面提示现金流压力 */
-export function withholdingRateOf(annualWithheld: Cent, annualGross: Cent): Rate {
-  const gross = Number(annualGross)
-  return gross > 0 ? safeRate(Number(annualWithheld) / gross) : safeRate(0)
-}
 
-/** 便于界面直接用的求和工具（与 tax calculator 的 addCent 语义一致） */
-export function sumWithheld(values: readonly Cent[]): Cent {
-  return values.reduce((acc, v) => addCent(acc, v), Cent.create(0))
-}
 

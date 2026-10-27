@@ -17,7 +17,6 @@ import {
   requiredClockHoursForOrders,
   achievableOrdersForHours,
   fatigueFactor,
-  effectiveOrders,
   DEFAULT_CAPACITY,
 } from '../../../src/domain/income/capacity'
 
@@ -44,10 +43,19 @@ describe('单均耗时：固定开销 + 骑行时间', () => {
 })
 
 describe('产能评估：工时与单量必须自洽', () => {
-  it('10 小时、2.5km：可用 510 分钟，约 31 单上限', () => {
+  it('10 小时、2.5km：可用 510 分钟，产能上限再乘疲劳折减', () => {
     const r = calcCapacity(10, 30, 2.5)
     expect(r.availableMinutes).toBe(600 - 90)
-    expect(r.maxOrdersPerDay).toBeCloseTo(510 / r.minutesPerOrder, 3)
+    // 产能 = 可用分钟 ÷ 单均耗时 × 疲劳系数（10 小时已超 8 小时阈值）
+    expect(r.maxOrdersPerDay).toBeCloseTo((510 / r.minutesPerOrder) * fatigueFactor(10), 3)
+    expect(r.maxOrdersPerDay).toBeLessThan(510 / r.minutesPerOrder)
+  })
+
+  it('工时越长，疲劳折减越强（10h 上限低于按分钟线性推算）', () => {
+    const a = calcCapacity(8, 30, 2.5)
+    const b = calcCapacity(12, 30, 2.5)
+    // 12h 的可用分钟是 8h 的 ~1.53 倍，但产能上限增幅更小
+    expect(b.maxOrdersPerDay / a.maxOrdersPerDay).toBeLessThan(630 / 390)
   })
 
   it('单量超出产能时标记 overloaded 并给出所需工时', () => {
@@ -118,31 +126,5 @@ describe('疲劳折减：边际报酬递减', () => {
   it('非法输入不产生 NaN', () => {
     expect(Number.isFinite(fatigueFactor(NaN))).toBe(true)
     expect(Number.isFinite(fatigueFactor(-5))).toBe(true)
-  })
-})
-
-describe('有效单量：受工时上限与疲劳双重约束', () => {
-  it('声称的单量低于产能时按声称值（再乘疲劳系数）', () => {
-    const e = effectiveOrders(20, 10, 2.5)
-    const cap = achievableOrdersForHours(10, 2.5)
-    expect(e).toBeCloseTo(Math.min(20, cap) * fatigueFactor(10), 6)
-  })
-
-  it('声称的单量超出产能时被压到产能上限（不能凭空达成）', () => {
-    const e = effectiveOrders(100, 8, 2.5)
-    const cap = achievableOrdersForHours(8, 2.5)
-    expect(e).toBeLessThanOrEqual(cap + 1e-9)
-  })
-
-  it('工时增加时有效单量增加，但不会线性翻倍（边际递减）', () => {
-    const a = effectiveOrders(1000, 8, 2.5)
-    const b = effectiveOrders(1000, 12, 2.5)
-    expect(b).toBeGreaterThan(a)
-    expect(b).toBeLessThan(a * (12 / 8))
-  })
-
-  it('零输入返回 0', () => {
-    expect(effectiveOrders(0, 10, 2.5)).toBe(0)
-    expect(effectiveOrders(30, 0, 2.5)).toBe(0)
   })
 })

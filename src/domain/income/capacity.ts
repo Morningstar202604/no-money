@@ -52,6 +52,14 @@ export interface CapacityResult {
  * 给定「日工时 + 单量 + 距离」评估产能是否可行。
  * 可完成单量 = 可用工时 ÷ 单均耗时，其中可用工时已扣除休息/等单时间。
  */
+export function fatigueFactor(dailyHours: number, thresholdHours = 8, k = 0.15): number {
+  const h = Number.isFinite(dailyHours) ? Math.max(0, dailyHours) : 0
+  const h0 = thresholdHours > 0 ? thresholdHours : 8
+  const kk = Number.isFinite(k) && k >= 0 ? k : 0.15
+  if (h <= h0) return 1
+  return 1 / (1 + kk * ((h - h0) / h0))
+}
+
 export function calcCapacity(
   dailyHours: number,
   dailyOrders: number,
@@ -68,7 +76,10 @@ export function calcCapacity(
   // 休息时间只在工时长到能容纳时才扣除，避免短工时出现负的可用时间
   const totalMinutes = hours * 60
   const availableMinutes = Math.max(0, totalMinutes - Math.min(breakMin, totalMinutes))
-  const maxOrdersPerDay = minutesPerOrder > 0 ? availableMinutes / minutesPerOrder : 0
+  // 疲劳折减：超过 8 小时后，单位时间产出下降，因此有效产能上限随之收缩。
+  // 不接入这一步会让文档声称的「边际递减」变成空话（模型必须与说明一致）。
+  const rawCapacity = minutesPerOrder > 0 ? availableMinutes / minutesPerOrder : 0
+  const maxOrdersPerDay = rawCapacity * fatigueFactor(hours)
   const requiredHours = (orders * minutesPerOrder + breakMin) / 60
 
   return {
@@ -138,27 +149,3 @@ export function achievableOrdersForHours(
  *
  * 参数 k 是可调系数，默认 0.15：工时超过 8 小时后，每超 1 小时产出效率约降 1.5%。
  */
-export function fatigueFactor(dailyHours: number, thresholdHours = 8, k = 0.15): number {
-  const h = Number.isFinite(dailyHours) ? Math.max(0, dailyHours) : 0
-  const h0 = thresholdHours > 0 ? thresholdHours : 8
-  const kk = Number.isFinite(k) && k >= 0 ? k : 0.15
-  if (h <= h0) return 1
-  return 1 / (1 + kk * ((h - h0) / h0))
-}
-
-/**
- * 产能约束后的有效单量：单量不会超过「工时决定的上限」，并叠加疲劳折减。
- * 这是把「自由输入的 dailyOrders」变成「受工时约束的输出」的关键函数。
- */
-export function effectiveOrders(
-  dailyOrders: number,
-  dailyHours: number,
-  avgDistanceKm: number,
-  model: CapacityModel = DEFAULT_CAPACITY,
-): number {
-  const requested = Number.isFinite(dailyOrders) ? Math.max(0, dailyOrders) : 0
-  const capacity = achievableOrdersForHours(dailyHours, avgDistanceKm, model)
-  const fatigue = fatigueFactor(dailyHours)
-  // 单量取「用户声称的单量」与「产能上限」的较小值，再乘疲劳系数
-  return Math.min(requested, capacity) * fatigue
-}
