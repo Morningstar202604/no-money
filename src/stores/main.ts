@@ -4,6 +4,12 @@ import type { CityRule, WorkParams, CostParams, PersonalParams, ScenarioResult, 
 import { ScenarioService } from '../application/scenario/ScenarioService'
 import type { ScenarioInput } from '../application/scenario/ScenarioService'
 import { hydrateParams } from '../utils/params'
+import {
+  achievableOrdersForHours,
+  requiredClockHoursForOrders,
+  DEFAULT_CAPACITY,
+  type CapacityModel,
+} from '../domain/income/capacity'
 import { CITY_OPTIONS } from '../data/cities'
 
 // 城市清单以 src/data/cities.ts 注册表为准（含地图坐标）；规则文件在 public/rules/<value>.json
@@ -17,6 +23,9 @@ interface CustomPlan {
 }
 
 const PARAMS_KEY = 'nomoney_params_v1'
+
+/** 产能模型参数属于用户可调假设（单均固定耗时/平均速度/休息时间） */
+const CAPACITY_KEY = 'nomoney_capacity_v1'
 
 const DEFAULT_WORK: WorkParams = {
   city: 'guangzhou', dailyHours: 10, dailyOrders: 35,
@@ -51,6 +60,23 @@ function loadParams() {
   } catch { return null }
 }
 
+/** 读取产能模型参数（非法字段回落默认值，避免 NaN 流入方案对比） */
+function loadCapacity(): CapacityModel {
+  const fallback = { ...DEFAULT_CAPACITY }
+  try {
+    const raw = localStorage.getItem(CAPACITY_KEY)
+    if (!raw) return fallback
+    const parsed = JSON.parse(raw) as Partial<CapacityModel>
+    const pick = (v: unknown, def: number, min: number, max: number) =>
+      typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(v, min), max) : def
+    return {
+      fixedMinutesPerOrder: pick(parsed.fixedMinutesPerOrder, fallback.fixedMinutesPerOrder, 1, 60),
+      avgSpeedKmh: pick(parsed.avgSpeedKmh, fallback.avgSpeedKmh, 5, 60),
+      breakMinutesPerDay: pick(parsed.breakMinutesPerDay, fallback.breakMinutesPerDay, 0, 480),
+    }
+  } catch { return fallback }
+}
+
 export const useMainStore = defineStore('main', () => {
   const rule = ref<CityRule | null>(null)
   const loading = ref(false)
@@ -76,6 +102,12 @@ export const useMainStore = defineStore('main', () => {
 
   /** 自选缴费基数所属城市：恢复的基数与恢复的 work.city 同源；同城重载不得清掉 */
   let basesCity: string = work.value.city
+
+  /**
+   * 产能模型参数（单均固定耗时/平均速度/休息时间）。
+   * 默认值是行业量级假设，用户可用自己的实际数据校准后重算方案对比。
+   */
+  const capacityModel = ref<CapacityModel>(loadCapacity())
 
   /** 自定义方案是嵌套结构，数组不能走 hydrate 的键值白名单，需单独校验必要字段 */
   const customPlans = ref<CustomPlan[]>(
@@ -226,6 +258,7 @@ export const useMainStore = defineStore('main', () => {
     try {
       localStorage.setItem(PARAMS_KEY, JSON.stringify({
         work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
+        capacityModel: capacityModel.value,
       }))
       persistError.value = null
     } catch (err) {
@@ -236,7 +269,7 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
-  watch([work, costs, personal, customPlans], () => {
+  watch([work, costs, personal, customPlans, capacityModel], () => {
     clearTimeout(persistTimer)
     persistTimer = setTimeout(writePersist, 300)
   }, { deep: true })
@@ -259,6 +292,7 @@ export const useMainStore = defineStore('main', () => {
   function exportParams(): string {
     return JSON.stringify({
       work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
+      capacityModel: capacityModel.value,
     }, null, 2)
   }
 
@@ -283,6 +317,16 @@ export const useMainStore = defineStore('main', () => {
             && !!o.work && typeof o.work === 'object' && !!o.costs && typeof o.costs === 'object'
         }).map(p => ({ id: p.id, name: p.name, work: hydrateParams(p.work, DEFAULT_WORK), costs: hydrateParams(p.costs, DEFAULT_COSTS) }))
       : []
+    if (snap.capacityModel && typeof snap.capacityModel === 'object') {
+      const cm = snap.capacityModel as Record<string, unknown>
+      const pick = (v: unknown, def: number, min: number, max: number) =>
+        typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(v, min), max) : def
+      capacityModel.value = {
+        fixedMinutesPerOrder: pick(cm.fixedMinutesPerOrder, DEFAULT_CAPACITY.fixedMinutesPerOrder, 1, 60),
+        avgSpeedKmh: pick(cm.avgSpeedKmh, DEFAULT_CAPACITY.avgSpeedKmh, 5, 60),
+        breakMinutesPerDay: pick(cm.breakMinutesPerDay, DEFAULT_CAPACITY.breakMinutesPerDay, 0, 480),
+      }
+    }
     work.value = nextWork
     costs.value = nextCosts
     personal.value = nextPersonal
@@ -307,10 +351,21 @@ export const useMainStore = defineStore('main', () => {
   // 场景输入的单一真相：scenarios 与 comparison 都基于它，避免 compare() 用 personal.value
   // 覆盖各场景自己的 personal，导致「缴齐社保」被按未参保重算（卡片与图表数值打架）
   const scenarioInputs = computed<ScenarioInput[]>(() => {
+    // 工时与单量受产能模型约束，不能当自由变量各改一个：
+    // 「多跑2小时」必须同时按产能换算单量；「多接5单」必须换算所需工时。
+    // 旧实现只改一边，导致「多跑2小时净收入不变」与「凭空缩短单均耗时」两种失真。
+    const cap = capacityModel.value
+    const hoursCap = Math.min(work.value.dailyHours + 2, 14)
+    const moreHoursOrders = Math.floor(achievableOrdersForHours(hoursCap, work.value.avgDistance, cap))
+    const targetOrders = work.value.dailyOrders + 5
+    const moreOrdersHours = Math.min(
+      Math.max(work.value.dailyHours, Math.ceil(requiredClockHoursForOrders(targetOrders, work.value.avgDistance, cap))),
+      16,
+    )
     const list: ScenarioInput[] = [
       { id: 'current', name: '当前方案', work: work.value, costs: costs.value, personal: personal.value },
-      { id: 'more_hours', name: '多跑2小时', work: { ...work.value, dailyHours: Math.min(work.value.dailyHours + 2, 14) }, costs: costs.value, personal: personal.value },
-      { id: 'more_orders', name: '多接5单', work: { ...work.value, dailyOrders: work.value.dailyOrders + 5 }, costs: costs.value, personal: personal.value },
+      { id: 'more_hours', name: '多跑2小时', work: { ...work.value, dailyHours: hoursCap, dailyOrders: moreHoursOrders }, costs: costs.value, personal: personal.value },
+      { id: 'more_orders', name: '多接5单', work: { ...work.value, dailyOrders: targetOrders, dailyHours: moreOrdersHours }, costs: costs.value, personal: personal.value },
     ]
     if (!personal.value.hasSocialInsurance) {
       list.push({ id: 'with_insurance', name: '缴齐社保', work: work.value, costs: costs.value, personal: { ...personal.value, hasSocialInsurance: true } })
@@ -365,5 +420,5 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
-  return { rule, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams }
+  return { rule, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams, capacityModel }
 })

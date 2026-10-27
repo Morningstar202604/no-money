@@ -73,6 +73,43 @@
       </div>
     </FoldCard>
 
+    <!-- 产能模型：工时与单量的物理约束，用户可用自己的实测数据校准 -->
+    <FoldCard
+      class="ps-fold"
+      dense
+      title="配送产能（工时与单量的换算）"
+      :summary="`单均 ${capacityMinutes.toFixed(1)} 分钟 · 产能 ${capacityMax.toFixed(0)} 单/日`"
+    >
+      <div class="ps-group">
+        <div class="ps-note" style="margin-bottom:6px">
+          「多跑2小时」「多接5单」不能各改一个数字——多跑时间必然多接单，多接单必然要多花时间。
+          这三个参数决定换算关系，用你自己的实际数据校准后，方案对比才可信。
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">单均固定耗时（分钟） <b>{{ store.capacityModel.fixedMinutesPerOrder }}</b></div>
+          <n-slider v-model:value="store.capacityModel.fixedMinutesPerOrder" :min="1" :max="30" :step="1" />
+          <div class="ps-note">接单、到店、等餐、上楼、交付的固定开销</div>
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">平均骑行速度 <b>{{ store.capacityModel.avgSpeedKmh }} km/h</b></div>
+          <n-slider v-model:value="store.capacityModel.avgSpeedKmh" :min="5" :max="40" :step="1" />
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">日休息与等单 <b>{{ store.capacityModel.breakMinutesPerDay }} 分钟</b></div>
+          <n-slider v-model:value="store.capacityModel.breakMinutesPerDay" :min="0" :max="300" :step="15" />
+          <div class="ps-note">吃饭、休息、无单可接的空档；不计入配送时间</div>
+        </div>
+
+        <div class="ps-note">
+          当前：单均 {{ capacityMinutes.toFixed(1) }} 分钟，产能上限 {{ capacityMax.toFixed(0) }} 单/日；
+          你的设定 {{ store.work.dailyOrders }} 单{{ capacityOverloaded ? '已超出产能（现实需更长工时或更快速度）' : '在产能范围内' }}。
+        </div>
+      </div>
+    </FoldCard>
+
     <!-- 计价覆盖：本城规则里的平台计价是占位值，用户按自己 APP 流水覆盖后才算真实测算 -->
     <FoldCard
       class="ps-fold"
@@ -313,6 +350,7 @@ import { ref } from 'vue'
 import { useMainStore, CITIES } from '../stores/main'
 import { calcCosts } from '../domain/income/calculator'
 import { adaptCosts } from '../application/adapters/ruleAdapters'
+import { calcCapacity } from '../domain/income/capacity'
 import SourceTag from './SourceTag.vue'
 import FoldCard from './FoldCard.vue'
 import ChinaMapPicker from './ChinaMapPicker.vue'
@@ -372,6 +410,17 @@ function setOverride(key: OverrideKey, v: number | null) {
 function clearOverrides() {
   store.personal.incomeOverrides = undefined
 }
+
+/** 产能摘要：用当前三个参数算出单均耗时与日产能，供卡片标题与提示使用 */
+const capacityEval = computed(() => calcCapacity(
+  store.work.dailyHours,
+  store.work.dailyOrders,
+  store.work.avgDistance,
+  store.capacityModel,
+))
+const capacityMinutes = computed(() => capacityEval.value.minutesPerOrder)
+const capacityMax = computed(() => capacityEval.value.maxOrdersPerDay)
+const capacityOverloaded = computed(() => capacityEval.value.overloaded)
 
 const cityOptions = CITIES
 const showMap = ref(false)
