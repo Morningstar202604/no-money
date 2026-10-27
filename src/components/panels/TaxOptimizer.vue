@@ -69,6 +69,41 @@
       </n-gi>
     </n-grid>
 
+    <!-- 预扣预缴 vs 年度汇算：当月现金流与次年退补 -->
+    <n-card title="平台按次预扣会先扣多少钱？（与年度汇算并列的第二口径）" class="card" style="margin-top: 12px">
+      <n-alert type="info" :show-icon="true" style="margin-bottom: 10px">
+        本页上方算的是<strong>年度汇算清缴</strong>口径（税率表一，3%-45%）。但平台打款时通常按次
+        <strong>预扣预缴</strong>（劳务报酬预扣率表二，20%/30%/40%），两者差额可能很大：
+        当月到手更少，次年汇算再退。依据：国家税务总局公告2018年第61号附件2。
+      </n-alert>
+
+      <div class="t-row">
+        <span>结算频率</span>
+        <n-select v-model:value="paymentsPerMonth" :options="PAYMENT_OPTIONS" size="small" style="width: 190px" />
+      </div>
+
+      <div class="tax-block" style="margin-top: 8px">
+        <div class="t-row"><span>月毛收入</span><b>¥{{ monthlyGross.toFixed(0) }}</b></div>
+        <div class="t-row"><span>每次结算金额</span><span>¥{{ (monthlyGross / paymentsPerMonth).toFixed(0) }}</span></div>
+        <div class="t-row danger"><span>当月预扣个税</span><b>¥{{ withholdingMonthlyCash.toFixed(0) }}</b></div>
+        <div class="t-row"><span>预扣后当月到手（未扣社保）</span><b>¥{{ monthlyNetIfWithheld.toFixed(0) }}</b></div>
+        <div class="t-row" style="margin-top:6px"><span>全年预扣合计</span><b>¥{{ withholdingAnnual.toFixed(0) }}</b></div>
+        <div class="t-row"><span>年度汇算应缴</span><b>¥{{ laborTax.toFixed(0) }}</b></div>
+        <div class="t-row total">
+          <span>汇算后{{ refundOnSettlement >= 0 ? '可退' : '需补' }}</span>
+          <b :class="refundOnSettlement >= 0 ? 'ok' : 'danger'">¥{{ Math.abs(refundOnSettlement).toFixed(0) }}</b>
+        </div>
+      </div>
+
+      <div class="t-row note">
+        <span>
+          按日/按周结算时单笔更小，4000 元以下的 800 元定额减除可反复适用，总预扣反而更低——
+          这正是「同样月入、结算方式不同、到手不同」的原因。
+          预扣不是最终税负，次年 3-6 月汇算清缴多退少补。
+        </span>
+      </div>
+    </n-card>
+
     <n-card title="不同收入下的税负对比" class="card" style="margin-top: 12px">
       <ChartBox :option="taxCompareOption" :height="360" />
     </n-card>
@@ -87,15 +122,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
-import { NCard, NGrid, NGi, NAlert, NSteps, NStep } from 'naive-ui'
+import { NCard, NGrid, NGi, NAlert, NSteps, NStep, NSelect, NTag } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
 import { TaxEngine, type TaxEngineConfig } from '../../engine/TaxEngine'
 import { round2 } from '../../utils/number'
 import { axisX, axisY, GRID, legend, chartColors } from '../../utils/chart'
 import ChartBox from '../ChartBox.vue'
 import SourceTag from '../SourceTag.vue'
+import { calcMonthlyWithholding, settlementDelta } from '../../domain/tax/withholding'
+import { yuanToCent } from '../../domain/shared/value-objects'
 
 const store = useMainStore()
 
@@ -118,6 +155,30 @@ const laborTax = computed(() => {
 const taxableLabor = computed(() => Math.max(0, labor.value * 0.8 - 60000 - store.personal.specialDeductionMonth * 12))
 const laborRate = computed(() => labor.value > 0 ? (laborTax.value / labor.value * 100).toFixed(1) : '0')
 const afterLabor = computed(() => labor.value - laborTax.value)
+
+/** 每月发放/结算次数：平台按月合并结算为 1，按周约 4，按日约 26 */
+const paymentsPerMonth = ref(1)
+const PAYMENT_OPTIONS = [
+  { label: '按月结算（1 次/月）', value: 1 },
+  { label: '按周结算（4 次/月）', value: 4 },
+  { label: '按日结算（26 次/月）', value: 26 },
+]
+
+/**
+ * 预扣预缴 vs 年度汇算：这是「当月能不能拿到钱」与「全年到底缴多少」的差额。
+ * 主口径仍是汇算清缴（laborTax），此处并列展示平台按次预扣会先扣多少、
+ * 次年能退多少——只给汇算口径会让用户严重低估现金流压力。
+ */
+const monthlyGross = computed(() => labor.value / 12)
+const withholding = computed(() =>
+  calcMonthlyWithholding(yuanToCent(monthlyGross.value), paymentsPerMonth.value))
+const withholdingAnnual = computed(() => Number(withholding.value.annualWithheld) / 100)
+const refundOnSettlement = computed(() => Number(settlementDelta(
+  withholding.value.annualWithheld,
+  yuanToCent(laborTax.value),
+)) / 100)
+const withholdingMonthlyCash = computed(() => Number(withholding.value.monthlyWithheld) / 100)
+const monthlyNetIfWithheld = computed(() => monthlyGross.value - withholdingMonthlyCash.value)
 
 const soleIncome = computed(() => labor.value)
 const monthlyTurnover = computed(() => soleIncome.value / 12)

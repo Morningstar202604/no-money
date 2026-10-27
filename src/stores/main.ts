@@ -39,6 +39,8 @@ const DEFAULT_PERSONAL: PersonalParams = {
   // 同上：可选键必须显式出现，否则导入/恢复时被白名单静默丢弃
   incomeOverrides: undefined,
   assumedAnnualReturn: undefined,
+  pensionAdjustRate: undefined,
+  discountRate: undefined,
 }
 
 function loadParams() {

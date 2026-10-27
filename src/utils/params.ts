@@ -43,6 +43,9 @@ export const PARAM_BOUNDS = {
     // 个人账户记账利率假设：允许负值到 10%（养老金账户实际为记账利率，
     // 3% 只是本项目的默认假设，不是市场产品收益率）
     assumedAnnualReturn: [-0.05, 0.1],
+    // 精算假设：养老金调整率与贴现率，均以 3% 为默认，可调范围 0-10%
+    pensionAdjustRate: [0, 0.1],
+    discountRate: [0, 0.1],
   },
 } as const
 

@@ -34,6 +34,22 @@
         想验证「利率低一点还够不够养老」时直接在这里调。
       </p>
 
+      <!-- 精算假设：把「划不划算」的结论建立在显式参数上 -->
+      <div class="return-row">
+        <span class="rr-label">养老金年调整率</span>
+        <n-input-number :value="Math.round(adjustRate * 1000) / 10" :min="0" :max="10" :step="0.5" size="small" style="width:110px"
+          @update:value="(v: number | null) => store.personal.pensionAdjustRate = v === null ? undefined : v / 100" />
+        <span class="rr-unit">%</span>
+        <span class="rr-label" style="margin-left:8px">贴现率（机会成本）</span>
+        <n-input-number :value="Math.round(discountRate * 1000) / 10" :min="0" :max="10" :step="0.5" size="small" style="width:110px"
+          @update:value="(v: number | null) => store.personal.discountRate = v === null ? undefined : v / 100" />
+        <span class="rr-unit">%</span>
+      </div>
+      <p class="rr-note">
+        调整率取近年全国养老金调幅量级（2%-4%）的 3% 默认值；贴现率是「钱留在自己手里」的机会成本。
+        两者都是假设，不是承诺——调高贴现率会推迟回本年龄，调低调整率会压低终身现值。
+      </p>
+
       <!-- 明确当期基数来源，避免"选了高档但首屏没变"的困惑 -->
       <p class="base-note">
         测算基数：<b>¥{{ effectivePensionBase.toLocaleString() }}/月</b>
@@ -59,11 +75,57 @@
         <span class="stat-foot">{{ retireResult.months }}个月 · 计发月数 {{ issuanceMonths }}</span>
       </div>
       <div class="stat">
+        <span class="stat-label">回本年龄 <SourceTag source-key="retirement" /></span>
+        <span class="stat-value">{{ breakEvenText }}</span>
+        <span class="stat-foot">按累计领取追平缴费 + 机会成本</span>
+      </div>
+      <div class="stat">
         <span class="stat-label">替代率</span>
         <span class="stat-value">{{ replaceRate }}%</span>
         <span class="stat-foot">养老金 / 月收入</span>
       </div>
     </div>
+
+    <n-card title="这笔社保投入划不划算？（精算视角）" class="card" style="margin-top: 12px">
+      <n-grid :x-gap="12" cols="1 m:3" responsive="screen">
+        <n-gi>
+          <div class="act-stat">
+            <span class="as-label">终身领取现值</span>
+            <span class="as-value">¥{{ actuarial.presentValue.toLocaleString() }}</span>
+            <span class="as-foot">按 {{ actuarial.assumptions.payoutYears }} 年领取、{{ (actuarial.assumptions.discountRate * 100).toFixed(1) }}% 贴现率折现到退休时点</span>
+          </div>
+        </n-gi>
+        <n-gi>
+          <div class="act-stat">
+            <span class="as-label">名义累计领取</span>
+            <span class="as-value">¥{{ actuarial.nominalTotal.toLocaleString() }}</span>
+            <span class="as-foot">不做折现的账面总额（含 {{ (actuarial.assumptions.adjustRate * 100).toFixed(1) }}% 年调整）</span>
+          </div>
+        </n-gi>
+        <n-gi>
+          <div class="act-stat">
+            <span class="as-label">投入产出倍数</span>
+            <span class="as-value" :class="actuarial.multiple >= 1 ? 'ok' : 'danger'">{{ actuarial.multiple.toFixed(2) }}×</span>
+            <span class="as-foot">现值 ÷ 缴费终值（{{ actuarial.contributionPresentValue.toLocaleString() }} 元）；≥1 表示按当前假设划算</span>
+          </div>
+        </n-gi>
+      </n-grid>
+      <n-alert :type="actuarial.multiple >= 1 ? 'success' : 'warning'" :show-icon="true" style="margin-top: 10px">
+        <template v-if="actuarial.multiple >= 1">
+          按当前假设，终身领取现值高于缴费终值 {{ actuarial.multiple.toFixed(2) }} 倍，
+          {{ actuarial.breakEvenAge ? `${actuarial.breakEvenAge} 岁回本` : '' }}——社保养老在这组假设下是划算的。
+        </template>
+        <template v-else>
+          按当前假设，终身领取现值低于缴费终值（{{ actuarial.multiple.toFixed(2) }} 倍），
+          {{ actuarial.breakEvenAge ? `${actuarial.breakEvenAge} 岁才回本` : '在预期领取年限内不回本' }}。
+          这不等于「不该缴」：社保还包含医保待遇、遗属待遇与长寿风险兜底，本模型只算现金流。
+        </template>
+      </n-alert>
+      <p class="rr-note">
+        模型边界：只计养老金的现金流，不含医保报销、丧葬抚恤、在职期间工伤保障等非现金权益；
+        领取年限按退休年龄估算，未考虑个人健康状况差异与政策变动。
+      </p>
+    </n-card>
 
     <!-- 分析图表：默认收起 -->
     <FoldCard
@@ -137,6 +199,7 @@ import { NCard, NGrid, NGi, NTable, NAlert, NInputNumber, NTag, NButton } from '
 import { useMainStore } from '../../stores/main'
 import { BenefitEngine } from '../../engine/BenefitEngine'
 import { issuanceMonthsForAge } from '../../utils/issuanceMonths'
+import { calcPensionActuarial, expectedPensionYears } from '../../domain/benefit/actuarial'
 import { buildPensionGrowthSeries, buildPensionTiers, socialAverageWage } from '../../utils/pensionSeries'
 import { axisX, axisY, GRID, legend, chartColors } from '../../utils/chart'
 import ChartBox from '../ChartBox.vue'
@@ -243,6 +306,25 @@ const replaceRate = computed(() => {
 
 const totalCost = computed(() => retireResult.value.months * monthlyContribution.value)
 const totalCostWan = computed(() => (totalCost.value / 10000).toFixed(1) + '万元')
+/**
+ * 精算指标：把「每月领多少」升级为「这笔投入划不划算」。
+ * 调整率/贴现率都是显式假设（默认各 3%），不是官方承诺；领取年限按退休年龄估算。
+ */
+const adjustRate = computed(() => store.personal.pensionAdjustRate ?? 0.03)
+const discountRate = computed(() => store.personal.discountRate ?? 0.03)
+const actuarial = computed(() => calcPensionActuarial({
+  monthlyPension: retireResult.value.totalPension,
+  retireAge: store.personal.expectedRetireAge,
+  monthlyContribution: monthlyContribution.value,
+  contributionYears: contributionYears.value,
+  adjustRate: adjustRate.value,
+  discountRate: discountRate.value,
+}))
+const breakEvenText = computed(() => {
+  const age = actuarial.value.breakEvenAge
+  return age === null ? '领取期内无法回本' : `${age} 岁`
+})
+
 const fifteenYearCost = computed(() => {
   const wan = (15 * 12 * monthlyContribution.value) / 10000
   return wan.toFixed(1) + '万元'
@@ -375,4 +457,10 @@ const compareYears = computed(() => {
 .rr-label { font-size: 12px; color: var(--color-text-secondary); }
 .rr-unit { font-size: 12px; color: var(--color-text-tertiary); }
 .rr-note { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.6; margin: 4px 0 0; }
+.act-stat { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; }
+.as-label { font-size: 12px; color: var(--color-text-secondary); }
+.as-value { font-size: 22px; font-weight: 600; color: var(--color-text-primary); }
+.as-value.ok { color: var(--color-text-success); }
+.as-value.danger { color: var(--color-text-danger, #d03050); }
+.as-foot { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; }
 </style>
