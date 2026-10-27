@@ -201,3 +201,88 @@ describe('ScenarioService 集成测试', () => {
     else expect(dg.recommendation).toBe('recommended');
   });
 });
+
+describe('用户实测计价覆盖（把「占位假设」变成「我的数据」）', () => {
+  const baseInput = {
+    id: 'ov',
+    name: '覆盖测试',
+    work: {
+      city: 'guangzhou', dailyHours: 10, dailyOrders: 35, avgDistance: 2.5,
+      workDaysMonth: 26, rainDaysMonth: 3, holidayDaysMonth: 2,
+    },
+    costs: {
+      vehicleType: 'electric' as const, fuelCostMonth: 0, electricityCostMonth: 300,
+      maintenanceMonth: 200, insuranceMonth: 100, phoneCostMonth: 100, foodCostMonth: 800,
+      trafficFineMonth: 50, vehicleDepreciationMonth: 300, otherCostMonth: 100,
+    },
+    personal: {
+      currentAge: 25, expectedRetireAge: 60, hasSocialInsurance: false, specialDeductionMonth: 0,
+    },
+  }
+
+  const rule = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+
+  it('未填覆盖时，计价字段被标为未核实（现状基线）', () => {
+    const svc = new ScenarioService(rule)
+    const r = svc.runScenario(baseInput)
+    expect(r.ok).toBe(true)
+    if (r.ok) {
+      expect(r.value.dataQuality.provisional).toBe(true)
+      expect(r.value.dataQuality.unverifiedFields).toContain('计价单价/补贴')
+    }
+  })
+
+  it('填写覆盖后：计价字段转为「用户实测」，不再计入假设测算', () => {
+    const svc = new ScenarioService(rule, { basePricePerOrder: 6, distanceRate: 1.5 })
+    const r = svc.runScenario(baseInput)
+    expect(r.ok).toBe(true)
+    if (r.ok) {
+      expect(r.value.dataQuality.unverifiedFields).not.toContain('计价单价/补贴')
+      expect(r.value.dataQuality.overriddenFields).toContain('计价单价/补贴')
+      // 覆盖计价后是否仍算假设测算，取决于其余依赖项（最低工资/基数/税率）的置信度：
+      // 广州最低工资与税表均为 official，因此整体应转为「基于实测数据」
+      expect(r.value.dataQuality.provisional, '广州其余依赖项均 official，覆盖计价后不再是假设测算').toBe(false)
+    }
+  })
+
+  it('覆盖单价真的进入收入：6 元/单的毛收入高于 5 元/单占位值', () => {
+    const base = new ScenarioService(rule)
+    const over = new ScenarioService(rule, { basePricePerOrder: 6 })
+    const a = base.runScenario(baseInput)
+    const b = over.runScenario(baseInput)
+    expect(a.ok && b.ok).toBe(true)
+    if (a.ok && b.ok) {
+      // 基础计件差额 35 单 × 26 天 × 1 元 = 910 元；此外日基础上涨会按倍率
+      // 连带抬高峰时与雨天补贴（补贴以日基础为基数），故总差额应大于 910
+      const diff = b.value.income.grossIncome - a.value.income.grossIncome
+      expect(diff).toBeGreaterThanOrEqual(910)
+      expect(b.value.income.basePay - a.value.income.basePay).toBeCloseTo(910, 0)
+      expect(b.value.income.basePay).toBeGreaterThan(a.value.income.basePay)
+    }
+  })
+
+  it('超重加价：填写单均重量且超过阈值时产生 weightPay，并被计入毛收入', () => {
+    const svc = new ScenarioService(rule)
+    const r = svc.runScenario({
+      ...baseInput,
+      personal: { ...baseInput.personal, incomeOverrides: { avgWeightKg: 8 } },
+    })
+    expect(r.ok).toBe(true)
+    if (r.ok) {
+      const threshold = rule.income.weightSurcharge.threshold
+      const rate = rule.income.weightSurcharge.rate
+      const expected = Math.round((8 - threshold) * rate * 35 * 26)
+      expect(r.value.income.weightPay).toBeCloseTo(expected, 0)
+      const sum = r.value.income.basePay + r.value.income.distancePay + r.value.income.weightPay
+        + r.value.income.subsidyPay + r.value.income.bonusPay
+      expect(sum, '收入分项之和必须等于毛收入（表内与图表一致）').toBeCloseTo(r.value.income.grossIncome, 0)
+    }
+  })
+
+  it('不填单均重量时不计超重（避免凭空多算）', () => {
+    const svc = new ScenarioService(rule)
+    const r = svc.runScenario(baseInput)
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(r.value.income.weightPay).toBe(0)
+  })
+})

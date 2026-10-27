@@ -73,6 +73,85 @@
       </div>
     </FoldCard>
 
+    <!-- 计价覆盖：本城规则里的平台计价是占位值，用户按自己 APP 流水覆盖后才算真实测算 -->
+    <FoldCard
+      class="ps-fold"
+      dense
+      :title="`我的计价${overrideCount > 0 ? `（已填 ${overrideCount} 项）` : ''}`"
+      :summary="overrideCount > 0 ? '按你的流水测算' : '默认为占位值'"
+    >
+      <div class="ps-group">
+        <div class="ps-note" style="margin-bottom:6px">
+          本城平台单价与倍率没有跨平台权威来源（规则文件里标为「未核实」）。填你在 APP 里看到的真实值，
+          测算才会变成你的数据；留空的项继续按占位值算，并在页顶标为「假设测算」。
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">每单基础配送费 <b>{{ overrideValue('basePricePerOrder', store.rule?.income.basePricePerOrder) }} 元</b></div>
+          <n-input-number
+            :value="store.personal.incomeOverrides?.basePricePerOrder"
+            :min="0" :max="50" :step="0.1" size="small" style="width:100%"
+            :placeholder="`占位值 ¥${store.rule?.income.basePricePerOrder ?? '—'}`"
+            @update:value="(v: number | null) => setOverride('basePricePerOrder', v)"
+          />
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">距离费（元/公里） <b>{{ overrideValue('distanceRate', store.rule?.income.distanceRate) }}</b></div>
+          <n-input-number
+            :value="store.personal.incomeOverrides?.distanceRate"
+            :min="0" :max="20" :step="0.1" size="small" style="width:100%"
+            :placeholder="`占位值 ¥${store.rule?.income.distanceRate ?? '—'}`"
+            @update:value="(v: number | null) => setOverride('distanceRate', v)"
+          />
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">峰时倍率 <b>{{ overrideValue('peakMultiplier', store.rule?.income.timeSubsidy.multiplier) }}×</b></div>
+          <n-input-number
+            :value="store.personal.incomeOverrides?.peakMultiplier"
+            :min="1" :max="3" :step="0.05" size="small" style="width:100%"
+            :placeholder="`占位值 ${store.rule?.income.timeSubsidy.multiplier ?? '—'}×`"
+            @update:value="(v: number | null) => setOverride('peakMultiplier', v)"
+          />
+          <div class="ps-note">APP 里「高峰时段每单加价」换算成的倍数（如基础 5 元、峰时 6.25 元 = 1.25×）</div>
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">雨天倍率 <b>{{ overrideValue('rainSurcharge', store.rule?.income.rainSurcharge) }}×</b></div>
+          <n-input-number
+            :value="store.personal.incomeOverrides?.rainSurcharge"
+            :min="1" :max="3" :step="0.05" size="small" style="width:100%"
+            :placeholder="`占位值 ${store.rule?.income.rainSurcharge ?? '—'}×`"
+            @update:value="(v: number | null) => setOverride('rainSurcharge', v)"
+          />
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">节假日倍率 <b>{{ overrideValue('holidayMultiplier', store.rule?.income.holidayMultiplier) }}×</b></div>
+          <n-input-number
+            :value="store.personal.incomeOverrides?.holidayMultiplier"
+            :min="1" :max="3" :step="0.05" size="small" style="width:100%"
+            :placeholder="`占位值 ${store.rule?.income.holidayMultiplier ?? '—'}×`"
+            @update:value="(v: number | null) => setOverride('holidayMultiplier', v)"
+          />
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">单均重量（公斤，选填） <b>{{ store.personal.incomeOverrides?.avgWeightKg ?? '—' }}</b></div>
+          <n-input-number
+            :value="store.personal.incomeOverrides?.avgWeightKg"
+            :min="0" :max="100" :step="0.5" size="small" style="width:100%"
+            placeholder="超过 5kg 的部分按超重加价计"
+            @update:value="(v: number | null) => setOverride('avgWeightKg', v)"
+          />
+          <div class="ps-note">对应规则里的超重件加价（阈值 {{ store.rule?.income.weightSurcharge.threshold }}kg、{{ store.rule?.income.weightSurcharge.rate }} 元/kg）；不填则不计这块收入</div>
+        </div>
+
+        <n-button v-if="overrideCount > 0" size="tiny" quaternary block @click="clearOverrides">清除我的计价，回到占位值</n-button>
+      </div>
+    </FoldCard>
+
     <!-- Costs -->
     <FoldCard
       class="ps-fold"
@@ -229,7 +308,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { NSlider, NRadioGroup, NRadioButton, NSwitch, NTag, NSelect, NButton, NModal } from 'naive-ui'
+import { NSlider, NRadioGroup, NRadioButton, NSwitch, NTag, NSelect, NButton, NModal, NInputNumber } from 'naive-ui'
 import { ref } from 'vue'
 import { useMainStore, CITIES } from '../stores/main'
 import { calcCosts } from '../domain/income/calculator'
@@ -268,6 +347,32 @@ async function onImportFile(e: Event) {
   }
   importError.value = store.importParams(parsed)
 }
+/** 计价覆盖（用户按自己 APP 流水填的实测值） */
+type OverrideKey = 'basePricePerOrder' | 'distanceRate' | 'peakMultiplier' | 'rainSurcharge' | 'holidayMultiplier' | 'avgWeightKg'
+
+const overrideCount = computed(() => {
+  const o = store.personal.incomeOverrides
+  if (!o) return 0
+  return Object.values(o).filter(v => typeof v === 'number' && Number.isFinite(v)).length
+})
+
+/** 展示值：有覆盖显示覆盖值，否则显示本城占位值 */
+function overrideValue(key: OverrideKey, fallback?: number): string {
+  const v = store.personal.incomeOverrides?.[key]
+  return typeof v === 'number' && Number.isFinite(v) ? String(v) : (fallback ?? '—').toString()
+}
+
+function setOverride(key: OverrideKey, v: number | null) {
+  const next = { ...(store.personal.incomeOverrides ?? {}) }
+  if (v === null || !Number.isFinite(v)) delete next[key]
+  else next[key] = v
+  store.personal.incomeOverrides = Object.keys(next).length > 0 ? next : undefined
+}
+
+function clearOverrides() {
+  store.personal.incomeOverrides = undefined
+}
+
 const cityOptions = CITIES
 const showMap = ref(false)
 const cityCount = CITIES.length

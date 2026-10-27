@@ -36,6 +36,8 @@ const DEFAULT_PERSONAL: PersonalParams = {
   medicalTierId: undefined,
   pensionBase: undefined,
   medicalBase: undefined,
+  // 同上：可选键必须显式出现，否则导入/恢复时被白名单静默丢弃
+  incomeOverrides: undefined,
 }
 
 function loadParams() {
@@ -89,7 +91,12 @@ export const useMainStore = defineStore('main', () => {
 
   // 编排走 application 层 ScenarioService（内部已切到 domain 引擎），
   // 与旧 ScenarioEngine 的数值等价性由 tests/parity/old-vs-domain.spec.ts 保证
-  const engine = computed(() => rule.value ? new ScenarioService(rule.value) : null)
+  // overrides 进入引擎构造：用户改了「自己的计价」必须重建引擎，
+  // 否则引擎仍持有构造时的旧计价，改了参数数字不动
+  const engine = computed(() => {
+    if (!rule.value) return null
+    return new ScenarioService(rule.value, personal.value.incomeOverrides)
+  })
 
   /** 取出 Result 的成功值；失败时返回 null，让 UI 走空态而不是抛错白屏 */
   function unwrap<T>(r: { ok: true; value: T } | { ok: false }): T | null {

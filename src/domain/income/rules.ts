@@ -28,7 +28,7 @@ export interface IncomeRule {
   basePricePerOrder: Cent
   /** 距离费率（分/千米） */
   distanceRate: Cent
-  /** 超重件加价阈值与费率（暂不启用） */
+  /** 超重件加价：单均超过 threshold 公斤的部分按 rate（分/公斤）加价 */
   weightSurcharge: { threshold: number; rate: Cent }
   /** 时段补贴：峰时时段与倍率 */
   timeSubsidy: { peakHours: string[]; multiplier: number }
@@ -55,6 +55,8 @@ export interface WorkParams {
   rainDaysMonth: number
   /** 月节假日天数 */
   holidayDaysMonth: number
+  /** 单均重量（公斤）；仅在填写时才参与超重件加价，留空表示不适用 */
+  avgWeightKg?: number
 }
 
 // ===== 成本参数 =====
@@ -86,6 +88,8 @@ export interface IncomeBreakdown {
   basePay: Cent
   /** 距离费（分） */
   distancePay: Cent
+  /** 超重件加价（分）；单均重量未知或未超阈值时为 0 */
+  weightPay: Cent
   /** 补贴合计（分） */
   subsidyPay: Cent
   /** 冲单奖（分） */

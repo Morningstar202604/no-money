@@ -190,6 +190,46 @@ describe('主 store：参数导出/导入（换设备迁移）', () => {
   })
 })
 
+describe('主 store：用户实测计价覆盖的接线', () => {
+  beforeEach(() => setActivePinia(createPinia()))
+
+  it('修改覆盖后引擎重建：毛收入立即变化（旧实现会把计价锁在构造时）', () => {
+    const store = useMainStore()
+    store.rule = rule
+    const before = store.scenarios[0].income.grossIncome
+
+    store.personal.incomeOverrides = { basePricePerOrder: 6 }
+
+    const after = store.scenarios[0].income.grossIncome
+    expect(after, '改了计价参数，测算必须立刻跟着变').toBeGreaterThan(before)
+    expect(store.scenarios[0].income.basePay, '基础计件按 6 元/单重算').toBeCloseTo(35 * 6 * 26, 0)
+  })
+
+  it('覆盖经导出/导入往返后仍然保留', () => {
+    const store = useMainStore()
+    store.rule = rule
+    store.personal.incomeOverrides = { basePricePerOrder: 6.5, avgWeightKg: 7 }
+
+    const snapshot = JSON.parse(store.exportParams())
+    setActivePinia(createPinia())
+    const fresh = useMainStore()
+    expect(fresh.importParams(snapshot)).toBeNull()
+    expect(fresh.personal.incomeOverrides?.basePricePerOrder).toBe(6.5)
+    expect(fresh.personal.incomeOverrides?.avgWeightKg).toBe(7)
+  })
+
+  it('清除覆盖后回到占位值口径', () => {
+    const store = useMainStore()
+    store.rule = rule
+    store.personal.incomeOverrides = { basePricePerOrder: 6 }
+    const withOverride = store.scenarios[0].income.basePay
+
+    store.personal.incomeOverrides = undefined
+
+    expect(store.scenarios[0].income.basePay).toBeLessThan(withOverride)
+  })
+})
+
 describe('主 store：跨字段约束不能让测算静默变空', () => {
   beforeEach(() => setActivePinia(createPinia()))
 

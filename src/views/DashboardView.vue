@@ -15,8 +15,12 @@
       <div><b>当前结论为假设测算，不能直接用于决策</b></div>
       <div style="margin-top:4px">
         以下参数尚未回溯官方来源：{{ unverifiedFields.join('、') }}。
-        「最优方案」「推荐」只是按这些占位假设算出的排序——请先把左侧参数换成你自己的真实流水再参考。
+        「最优方案」「推荐」只是按这些占位假设算出的排序——请先在左侧「我的计价」填入你 APP 里的真实单价与倍率再参考。
       </div>
+    </n-alert>
+    <!-- 用户已用自己的流水覆盖计价：如实说明这是「你的实测」，不是官方数据，也不再用占位值 -->
+    <n-alert v-else-if="overriddenFields.length > 0" type="success" :show-icon="true" style="margin-bottom: 12px">
+      计价参数已按你填写的实际值计算（{{ overriddenFields.join('、') }}）；这些是你自己的流水数据，非官方发布值。
     </n-alert>
 
     <!-- KPI Row -->
@@ -131,6 +135,7 @@ const dataReady = computed(() => !!store.rule && !!store.comparison?.best)
 /** 占位数据门禁：最优方案建立在未核实参数上时，措辞降级为「假设测算」 */
 const provisional = computed(() => store.comparison?.best?.dataQuality?.provisional === true)
 const unverifiedFields = computed(() => store.comparison?.best?.dataQuality?.unverifiedFields ?? [])
+const overriddenFields = computed(() => store.comparison?.best?.dataQuality?.overriddenFields ?? [])
 
 const bestNetMonthly = computed(() => store.comparison?.best?.netMonthly || 0)
 const bestNetAnnual = computed(() => store.comparison?.best?.netAnnual || 0)

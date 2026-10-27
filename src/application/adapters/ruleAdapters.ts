@@ -11,7 +11,7 @@
  * 两份实现不一致 = 对拍失败，这正是我们要的信号。
  */
 
-import type { CityRule, WorkParams, CostParams } from '../../types'
+import type { CityRule, WorkParams, CostParams, IncomeOverrides } from '../../types'
 import { Cent, Rate, yuanToCent, centToYuan } from '../../domain/shared/value-objects'
 
 import type { IncomeRule as DomainIncomeRule } from '../../domain/income/rules'
@@ -29,18 +29,29 @@ export const toCent = (yuan: number): Cent => yuanToCent(yuan)
 // 品牌类型在这里是编译期约束而非运行期校验，统一在边界收敛更实际。
 export const toYuan = (cent: number): number => centToYuan(cent as Cent)
 
-/** 收入规则：单价与费率单位为元/单、元/千米，转分 */
-export function adaptIncomeRule(r: CityRule['income']): DomainIncomeRule {
+/**
+ * 收入规则：单价与费率单位为元/单、元/千米，转分。
+ *
+ * overrides 是用户按自己 APP 流水填的实测计价：本城规则里的计价是占位值
+ * （平台商业规则无跨平台权威来源），只有覆盖后测算才建立在真实数据上。
+ * 覆盖只作用于计价侧；法定参数（社保基数/费率/税率）不接受用户覆盖。
+ */
+export function adaptIncomeRule(r: CityRule['income'], overrides?: IncomeOverrides): DomainIncomeRule {
+  const base = overrides?.basePricePerOrder !== undefined ? overrides.basePricePerOrder : r.basePricePerOrder
+  const dist = overrides?.distanceRate !== undefined ? overrides.distanceRate : r.distanceRate
+  const peak = overrides?.peakMultiplier !== undefined ? overrides.peakMultiplier : r.timeSubsidy.multiplier
+  const rain = overrides?.rainSurcharge !== undefined ? overrides.rainSurcharge : r.rainSurcharge
+  const holiday = overrides?.holidayMultiplier !== undefined ? overrides.holidayMultiplier : r.holidayMultiplier
   return {
-    basePricePerOrder: toCent(r.basePricePerOrder),
-    distanceRate: toCent(r.distanceRate),
+    basePricePerOrder: toCent(base),
+    distanceRate: toCent(dist),
     weightSurcharge: {
       threshold: r.weightSurcharge.threshold,
       rate: toCent(r.weightSurcharge.rate),
     },
-    timeSubsidy: r.timeSubsidy,
-    holidayMultiplier: r.holidayMultiplier,
-    rainSurcharge: r.rainSurcharge,
+    timeSubsidy: { peakHours: r.timeSubsidy.peakHours, multiplier: peak },
+    holidayMultiplier: holiday,
+    rainSurcharge: rain,
     monthlyBonus: r.monthlyBonus
       ? { threshold: r.monthlyBonus.threshold, amount: toCent(r.monthlyBonus.amount) }
       : undefined,
@@ -111,7 +122,7 @@ export function adaptRetirementRule(r: CityRule['retirement']): DomainRetirement
 }
 
 /** 工作参数：工时/单量/天数/距离均无量纲换算 */
-export function adaptWork(w: WorkParams): DomainWorkParams {
+export function adaptWork(w: WorkParams, avgWeightKg?: number): DomainWorkParams {
   return {
     city: w.city,
     dailyHours: w.dailyHours as DomainWorkParams['dailyHours'],
@@ -120,6 +131,7 @@ export function adaptWork(w: WorkParams): DomainWorkParams {
     workDaysMonth: w.workDaysMonth,
     rainDaysMonth: w.rainDaysMonth,
     holidayDaysMonth: w.holidayDaysMonth,
+    avgWeightKg: Number.isFinite(avgWeightKg) ? avgWeightKg : undefined,
   }
 }
 

@@ -63,13 +63,34 @@ export interface RetirementRule {
 export interface IncomeRule {
   basePricePerOrder: number
   distanceRate: number
-  /** P1 待接入：超重件加价（需补单均重量入参） */
+  /** 超重件加价：单均超 threshold 公斤部分按 rate 元/公斤加价；单均重量未知时不参与计算 */
   weightSurcharge: { threshold: number; rate: number }
-  /** P1 待接入：peakHours 用于折算峰时单量占比，当前仅 multiplier 生效 */
+  /** 峰时时段用于折算峰时单量占比（peakHours 合计时长 ÷ 日均工时，上限 100%） */
   timeSubsidy: { peakHours: string[]; multiplier: number }
   holidayMultiplier: number
   rainSurcharge: number
   monthlyBonus?: { threshold: number; amount: number }
+}
+
+/**
+ * 用户实测计价：本城规则里的平台计价是占位值（无跨平台权威来源），
+ * 用户按自己 APP 的流水覆盖后才构成「基于真实数据的测算」。
+ * 只允许覆盖计价侧参数——法定参数（社保基数、税率）不允许用户改，
+ * 否则工具会输出看似官方的错误结论。
+ */
+export interface IncomeOverrides {
+  /** 每单基础配送费（元/单） */
+  basePricePerOrder?: number
+  /** 距离费（元/公里） */
+  distanceRate?: number
+  /** 峰时倍率（如 1.25 表示峰时段 1.25 倍） */
+  peakMultiplier?: number
+  /** 雨天倍率 */
+  rainSurcharge?: number
+  /** 节假日倍率 */
+  holidayMultiplier?: number
+  /** 单均超重公斤数（用于超重加价；留空表示不适用） */
+  avgWeightKg?: number
 }
 
 export interface TaxRule {
@@ -123,6 +144,8 @@ export interface WorkParams {
   workDaysMonth: number
   rainDaysMonth: number
   holidayDaysMonth: number
+  /** 单均重量（公斤）；仅在用户填写时参与超重件加价 */
+  avgWeightKg?: number
 }
 
 export interface CostParams {
@@ -149,6 +172,11 @@ export interface PersonalParams {
   pensionBase?: number
   /** 用户自选的医保缴费基数；为空表示按申报收入夹取 */
   medicalBase?: number
+  /**
+   * 用户实测计价覆盖（按自己 APP 的流水）。为空表示仍用本城规则里的占位值，
+   * 此时测算会在数据质量门禁中被标为「假设测算」。
+   */
+  incomeOverrides?: IncomeOverrides
 }
 
 // ===== 计算结果模型 =====
@@ -156,6 +184,8 @@ export interface PersonalParams {
 export interface IncomeBreakdown {
   basePay: number
   distancePay: number
+  /** 超重件加价（元）；单均重量未知或未超阈值时为 0 */
+  weightPay: number
   subsidyPay: number
   bonusPay: number
   grossIncome: number
@@ -210,6 +240,8 @@ export interface DataQuality {
   unverifiedFields: string[]
   /** 已回溯官方的字段名（中文标签） */
   officialFields: string[]
+  /** 用户用自己的流水实测覆盖过的字段名（中文标签）；这些字段不再计入 provisional */
+  overriddenFields?: string[]
 }
 
 export interface ComparisonResult {

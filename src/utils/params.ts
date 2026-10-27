@@ -69,6 +69,16 @@ export function hydrateParams<T extends object>(saved: unknown, fallback: T): T 
       continue
     }
     if (typeof v === 'boolean' || typeof v === 'string') out[k] = v
+    // 嵌套对象（如 incomeOverrides）：逐字段按有限数字白名单重建。
+    // 此前只接受数字/布尔/字符串，嵌套对象在恢复与导入时被静默丢弃——
+    // 用户填了一整屏「我的计价」，刷新后全部消失
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      const clean: Record<string, number> = {}
+      for (const [nk, nv] of Object.entries(v as Record<string, unknown>)) {
+        if (typeof nv === 'number' && Number.isFinite(nv)) clean[nk] = nv
+      }
+      if (Object.keys(clean).length > 0) out[k] = clean
+    }
   }
 
   // 联合类型字段单独做枚举校验，字符串白名单挡不住 'gasoline' 这类脏值

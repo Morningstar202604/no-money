@@ -34,9 +34,18 @@ export function calcIncome(rule: IncomeRule, params: WorkParams): IncomeBreakdow
 
   // 基础计件：单量 × 单价 × 天数
   const basePay = Math.round(orders * rule.basePricePerOrder * days)
-  
+
   // 距离费：单量 × 距离 × 费率 × 天数
   const distancePay = Math.round(orders * dist * rule.distanceRate * days)
+
+  // 超重件加价：单均重量超过阈值时，超出部分按 元/公斤 计。
+  // 单均重量未知（未填写）时不参与计算——此前该字段标注「暂不启用」，
+  // 实际规则文件里的阈值与费率从未进入任何一条收入链。
+  const weightKg = clamp(params.avgWeightKg, 0, 100, 0)
+  const overweightKg = weightKg > rule.weightSurcharge.threshold
+    ? weightKg - rule.weightSurcharge.threshold
+    : 0
+  const weightPay = Math.round(orders * overweightKg * rule.weightSurcharge.rate * days)
   
   // 日基础收入（用于补贴计算）
   const dailyBase = safeDiv(basePay, days)
@@ -58,7 +67,7 @@ export function calcIncome(rule: IncomeRule, params: WorkParams): IncomeBreakdow
   const holidayDays = Math.min(days, Math.round(clamp(params.holidayDaysMonth, 0, 31, 0)))
   const holidayExtra = holidayDays * dailyBase * (rule.holidayMultiplier - 1)
   
-  // 补贴合计
+  // 补贴合计（超重加价单独计入 distancePay 之外的 weightPay）
   const subsidyPay = Math.round(peakSubsidyDaily * days + rainExtra + holidayExtra)
   
   // 冲单奖
@@ -68,11 +77,12 @@ export function calcIncome(rule: IncomeRule, params: WorkParams): IncomeBreakdow
   }
   
   // 毛收入
-  const grossIncome = basePay + distancePay + subsidyPay + bonusPay
+  const grossIncome = basePay + distancePay + weightPay + subsidyPay + bonusPay
 
   return {
     basePay: cent(basePay),
     distancePay: cent(distancePay),
+    weightPay: cent(weightPay),
     subsidyPay: cent(subsidyPay),
     bonusPay: cent(bonusPay),
     grossIncome: cent(grossIncome),

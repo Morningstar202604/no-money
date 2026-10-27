@@ -12,6 +12,7 @@
           <div v-if="s" class="detail-block">
             <div class="d-row"><span>基础配送费 ({{ s.work.dailyOrders }}单 × ¥{{ rule?.income.basePricePerOrder }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.basePay.toLocaleString() }}</b></div>
             <div class="d-row"><span>距离加价 ({{ s.work.dailyOrders }}单 × {{ s.work.avgDistance }}km × ¥{{ rule?.income.distanceRate }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.distancePay.toLocaleString() }}</b></div>
+            <div v-if="s.income.weightPay > 0" class="d-row"><span>超重件加价 ({{ s.work.dailyOrders }}单 × 超重 {{ ((store.personal.incomeOverrides?.avgWeightKg ?? 0) - (rule?.income.weightSurcharge.threshold ?? 0)).toFixed(1) }}kg × ¥{{ rule?.income.weightSurcharge.rate }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.weightPay.toLocaleString() }}</b></div>
             <div class="d-row"><span>时段补贴 (高峰 × {{ rule?.income.timeSubsidy.multiplier }})</span><b>¥{{ s.income.subsidyPay.toLocaleString() }}</b></div>
             <div v-if="s.income.bonusPay > 0" class="d-row"><span>冲单奖励</span><b>¥{{ s.income.bonusPay }}</b></div>
             <div class="d-row total"><span>月总收入 <SourceTag source-key="income" /></span><b>¥{{ s.income.grossIncome.toLocaleString() }}</b></div>

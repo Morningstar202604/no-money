@@ -19,6 +19,7 @@ import type {
   PersonalParams,
   ScenarioResult,
   ComparisonResult,
+  IncomeOverrides,
 } from '../../types'
 import { calcIncome as domainCalcIncome, calcCosts as domainCalcCosts } from '../../domain/income/calculator'
 import { calcLaborMonthly as domainCalcLabor } from '../../domain/tax/calculator'
@@ -68,13 +69,17 @@ export class ScenarioService {
   private readonly incomeRule: DomainIncomeRule
   private readonly laborRule: DomainLaborRule
   private readonly benefitRule: DomainBenefitRule
+  /** 用户实测计价覆盖：构造函数入参是唯一来源，计算与数据质量判定都读它 */
+  private readonly overrides?: IncomeOverrides
 
-  constructor(rule: CityRule) {
+  constructor(rule: CityRule, overrides?: IncomeOverrides) {
     if (!rule) throw AppError.ruleInvalid('unknown', 'CityRule is required')
     this.cityId = rule.city
     this.rawRule = rule
-    // 规则是常量，构造时适配一次，避免每次计算重复转换
-    this.incomeRule = adaptIncomeRule(rule.income)
+    // 规则是常量，构造时适配一次，避免每次计算重复转换。
+    // overrides 是用户按自己 APP 流水填的实测计价（见 IncomeOverrides 注释）
+    this.overrides = overrides
+    this.incomeRule = adaptIncomeRule(rule.income, overrides)
     this.laborRule = adaptLaborRule(rule.tax.laborRemuneration)
     this.benefitRule = adaptBenefitRule(rule.benefit)
   }
@@ -89,7 +94,10 @@ export class ScenarioService {
         const { id, name, work, costs, personal } = input
 
         // ===== 以下全部以「分」为单位 =====
-        const income = domainCalcIncome(this.incomeRule, adaptWork(work))
+        // avgWeightKg 属于「计价实测」的一部分：personal 内联与构造入参两处取其一，
+        // 优先 construct 入参（store 的单一来源），避免同一概念两份来源打架
+        const weightKg = this.overrides?.avgWeightKg ?? personal.incomeOverrides?.avgWeightKg
+        const income = domainCalcIncome(this.incomeRule, adaptWork(work, weightKg))
         const costBreakdown = domainCalcCosts(adaptCosts(costs))
 
         const monthlyGrossCent = income.grossIncome
@@ -199,6 +207,7 @@ export class ScenarioService {
           income: {
             basePay: toYuan(income.basePay),
             distancePay: toYuan(income.distancePay),
+            weightPay: toYuan(income.weightPay),
             subsidyPay: toYuan(income.subsidyPay),
             bonusPay: toYuan(income.bonusPay),
             grossIncome: toYuan(income.grossIncome),
@@ -246,7 +255,7 @@ export class ScenarioService {
           rightsFlags: flags,
           recommendation,
           keyInsights,
-          dataQuality: dataQualityOf(this.rawRule.sources, personal.hasSocialInsurance),
+          dataQuality: dataQualityOf(this.rawRule.sources, personal.hasSocialInsurance, this.overrides ?? personal.incomeOverrides),
         } satisfies ScenarioResult
       },
       e => AppError.engine('ScenarioService.runScenario', e instanceof Error ? e.message : String(e)),

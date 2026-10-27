@@ -13,7 +13,7 @@
  * 推算值不是直接发布值，用它与实测值混为一谈正是本模块要防的事。
  */
 
-import type { DataQuality, SourceRef } from '../types'
+import type { DataQuality, SourceRef, IncomeOverrides } from '../types'
 
 /** 本结果依赖的字段：规则文件 sources 的键 → 展示用中文名 */
 const DEPS: Array<[string, string]> = [
@@ -33,12 +33,17 @@ const ENROLLED_ONLY = new Set(['养老缴费基数', '养老费率', '医保缴�
 export function dataQualityOf(
   sources: Record<string, SourceRef> | undefined,
   hasSocialInsurance: boolean,
+  incomeOverrides?: IncomeOverrides,
 ): DataQuality {
   const official: string[] = []
   const unverified: string[] = []
+  const overridden: string[] = []
   for (const [key, label] of DEPS) {
+    // 用户用自己的 APP 流水覆盖了计价参数 → 该字段不再是「占位假设」，
+    // 而是实测值：既不算 official（不是官方发布），也不再计入 provisional
+    if (key === 'income' && hasIncomeOverride(incomeOverrides)) overridden.push(label)
     // 缺来源条目的键按未核实处理：宁可多提示，也不能默认可信
-    if (sources?.[key]?.confidence === 'official') official.push(label)
+    else if (sources?.[key]?.confidence === 'official') official.push(label)
     else unverified.push(label)
   }
   if (!hasSocialInsurance) {
@@ -46,7 +51,15 @@ export function dataQualityOf(
       provisional: unverified.some(f => !ENROLLED_ONLY.has(f)),
       unverifiedFields: unverified.filter(f => !ENROLLED_ONLY.has(f)),
       officialFields: official.filter(f => !ENROLLED_ONLY.has(f)),
+      overriddenFields: overridden.filter(f => !ENROLLED_ONLY.has(f)),
     }
   }
-  return { provisional: unverified.length > 0, unverifiedFields: unverified, officialFields: official }
+  return { provisional: unverified.length > 0, unverifiedFields: unverified, officialFields: official, overriddenFields: overridden }
+}
+
+/** 至少填写一项计价覆盖即视为「用户已用自己的流水实测」 */
+function hasIncomeOverride(o?: IncomeOverrides): boolean {
+  if (!o) return false
+  return [o.basePricePerOrder, o.distanceRate, o.peakMultiplier, o.rainSurcharge, o.holidayMultiplier]
+    .some(v => typeof v === 'number' && Number.isFinite(v) && v > 0)
 }

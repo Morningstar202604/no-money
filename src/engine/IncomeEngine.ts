@@ -19,6 +19,10 @@ export class IncomeEngine {
 
     const basePay = orders * this.rule.basePricePerOrder * days
     const distancePay = orders * dist * this.rule.distanceRate * days
+    const weightKg = safeNum(p.avgWeightKg, 0, 100, 0)
+    const overweightKg = weightKg > this.rule.weightSurcharge.threshold
+      ? weightKg - this.rule.weightSurcharge.threshold : 0
+    const weightPay = orders * overweightKg * this.rule.weightSurcharge.rate * days
     // 除数保护：工作 0 天时日基础应为 0，而不是 0/0 = NaN 污染整条收入链
     const dailyBase = days > 0 ? basePay / days : 0
     // 峰时补贴只作用于峰时段内的单量：占比 = 峰时总时长 ÷ 日均工时，上限 100%
@@ -32,9 +36,9 @@ export class IncomeEngine {
     if (this.rule.monthlyBonus && orders * days >= this.rule.monthlyBonus.threshold)
       bonusPay = this.rule.monthlyBonus.amount
     return {
-      basePay: round(basePay), distancePay: round(distancePay),
+      basePay: round(basePay), distancePay: round(distancePay), weightPay: round(weightPay),
       subsidyPay: round(subsidyPay), bonusPay: round(bonusPay),
-      grossIncome: round(basePay + distancePay + subsidyPay + bonusPay)
+      grossIncome: round(basePay + distancePay + weightPay + subsidyPay + bonusPay)
     }
   }
 
