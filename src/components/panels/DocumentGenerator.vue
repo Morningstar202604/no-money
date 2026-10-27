@@ -116,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, watch } from 'vue'
 import { NCard, NGrid, NGi, NInput, NSelect, NDatePicker, NButton, NDivider, NAlert, useMessage } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
 import { downloadTextFile, copyText } from '../../utils/download'
@@ -136,7 +136,7 @@ const claimItems = computed(() => comp.value?.items.filter(i => i.kind === 'clai
 const condItems = computed(() => comp.value?.items.filter(i => i.kind === 'conditional' && i.amount > 0) ?? [])
 
 /**
- * 文书城市跟随当前测算城市（全国 15 城 + 省内补充），不再写死 6 城。
+ * 文书城市跟随当前测算城市（全国 34 城 + 省内补充），不再写死 6 城。
  * 补偿金额是按测算城市的社保基数/最低工资封顶的，文书城市与测算城市不一致时
  * 必须显式提示重新测算，否则提交的金额与所写城市对不上。
  */
@@ -185,13 +185,20 @@ const userInfo = reactive({
   id: '',
   platform: '美团',
   // 默认取当前测算城市，避免"测算广州、文书深圳"的默认不一致
-  city: store.rule ? `${store.rule.cityName}市` : '广州市',
+  // 规则未就绪时留空，不默认「广州市」：首屏规则还在加载就点下载，
+  // 会生成一份抬头是广州、实际用户可能在北京的仲裁申请书
+  city: store.rule ? `${store.rule.cityName}市` : '',
   date: Date.now(),
 })
 
 const previewRef = ref<HTMLElement>()
 const formattedDate = computed(() => formatChineseDate(userInfo.date))
 const todayDate = computed(() => formatChineseDate(new Date()))
+
+// 规则异步到达后补上默认城市（首屏留空时）
+watch(() => store.rule?.cityName, (name) => {
+  if (name && !userInfo.city) userInfo.city = `${name}市`
+})
 
 // --- Arbitration Application ---
 const arbitrationDoc = computed(() => {

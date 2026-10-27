@@ -19,3 +19,6 @@ stats.html
 src-tauri/target/
 src-tauri/gen/
 .playwright-mcp/
+
+# 临时文件与调试产物
+.tmp*

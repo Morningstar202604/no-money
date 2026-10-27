@@ -82,7 +82,7 @@ import { computed, reactive, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
 import { NCard, NGrid, NGi, NTag, NSpace, NButton, NModal, NInput, NSlider, NAlert, useMessage } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
-import { achievableOrdersForHours } from '../../domain/income/capacity'
+import { calcCapacity } from '../../domain/income/capacity'
 import { axisX, axisY, GRID, chartColors } from '../../utils/chart'
 import { scoreTier } from '../../utils/score'
 import ChartBox from '../ChartBox.vue'
@@ -129,11 +129,13 @@ function openAdd() {
  */
 function confirmAdd() {
   const name = draft.name.trim() || `自定义方案${store.customPlans.length + 1}`
-  const cap = achievableOrdersForHours(draft.dailyHours, store.work.avgDistance, store.capacityModel)
+  // 与产能卡同口径（扣休息 + 疲劳折减），不能再用纯线性反算：
+  // 否则用户能造出「8 小时 80 单」这类产能卡自己都判定超载的方案
+  const cap = calcCapacity(draft.dailyHours, 0, store.work.avgDistance, store.capacityModel).maxOrdersPerDay
   const feasibleOrders = Math.min(draft.dailyOrders, Math.floor(cap))
   if (feasibleOrders < draft.dailyOrders) {
     message.warning(
-      `该工时下产能上限约 ${Math.floor(cap)} 单/天（按你的产能参数），已按 ${feasibleOrders} 单创建；想跑更多单请先提高工时。`,
+      `该工时下产能上限约 ${Math.floor(cap)} 单/天（按你的产能参数，已扣休息与疲劳折减），已按 ${feasibleOrders} 单创建；想跑更多单请先提高工时。`,
     )
   }
   store.addScenario(name, { ...store.work, dailyHours: draft.dailyHours, dailyOrders: feasibleOrders }, { ...store.costs })

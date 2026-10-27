@@ -5,8 +5,8 @@ import { ScenarioService } from '../application/scenario/ScenarioService'
 import type { ScenarioInput } from '../application/scenario/ScenarioService'
 import { hydrateParams } from '../utils/params'
 import {
-  achievableOrdersForHours,
-  requiredClockHoursForOrders,
+  calcCapacity,
+  hoursForOrders,
   DEFAULT_CAPACITY,
   type CapacityModel,
 } from '../domain/income/capacity'
@@ -433,18 +433,23 @@ export const useMainStore = defineStore('main', () => {
     // 工时与单量受产能模型约束，不能当自由变量各改一个：
     // 「多跑2小时」必须同时按产能换算单量；「多接5单」必须换算所需工时。
     // 旧实现只改一边，导致「多跑2小时净收入不变」与「凭空缩短单均耗时」两种失真。
+    // 单量与工时两侧都必须走 calcCapacity 同一口径（扣休息 + 疲劳折减），
+    // 否则会生成按本工具自己的产能卡都超载的方案，并因单量虚高当选「最优」。
     const cap = capacityModel.value
     const hoursCap = Math.min(work.value.dailyHours + 2, 14)
-    const moreHoursOrders = Math.floor(achievableOrdersForHours(hoursCap, work.value.avgDistance, cap))
+    const moreHoursOrders = Math.floor(calcCapacity(hoursCap, 0, work.value.avgDistance, cap).maxOrdersPerDay)
     const targetOrders = work.value.dailyOrders + 5
-    const moreOrdersHours = Math.min(
-      Math.max(work.value.dailyHours, Math.ceil(requiredClockHoursForOrders(targetOrders, work.value.avgDistance, cap))),
-      16,
-    )
+    // 目标单量若在 16 小时产能内都跑不完，就不能再造这个方案：工时封顶后单量同步截断，
+    // 提示用户现实约束（而不是给一个算得出但物理上不可达的「多接5单」）
+    const hoursNeeded = hoursForOrders(targetOrders, work.value.avgDistance, cap, 16)
+    const feasibleOrders = hoursNeeded >= 16
+      ? Math.floor(calcCapacity(16, 0, work.value.avgDistance, cap).maxOrdersPerDay)
+      : targetOrders
+    const moreOrdersHours = Math.min(Math.max(work.value.dailyHours, hoursNeeded), 16)
     const list: ScenarioInput[] = [
       { id: 'current', name: '当前方案', work: work.value, costs: costs.value, personal: personal.value },
       { id: 'more_hours', name: '多跑2小时', work: { ...work.value, dailyHours: hoursCap, dailyOrders: moreHoursOrders }, costs: costs.value, personal: personal.value },
-      { id: 'more_orders', name: '多接5单', work: { ...work.value, dailyOrders: targetOrders, dailyHours: moreOrdersHours }, costs: costs.value, personal: personal.value },
+      { id: 'more_orders', name: feasibleOrders > work.value.dailyOrders ? '多接5单' : '跑满16小时', work: { ...work.value, dailyOrders: feasibleOrders, dailyHours: moreOrdersHours }, costs: costs.value, personal: personal.value },
     ]
     if (!personal.value.hasSocialInsurance) {
       list.push({ id: 'with_insurance', name: '缴齐社保', work: work.value, costs: costs.value, personal: { ...personal.value, hasSocialInsurance: true } })

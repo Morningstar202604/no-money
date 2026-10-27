@@ -115,7 +115,7 @@
   },
   "minimumWage": {
     "monthly": 2300,
-    "nonFullTimeHourly": 18.9
+    "nonFullTimeHourly": 21.9
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -213,8 +213,10 @@
       "url": "https://www.sz.gov.cn/cn/xxgk/zfxxgj/zwdt/content/post_12936470.html",
       "effectiveFrom": "2026-09-01",
       "retrievedAt": "2026-10-12",
-      "confidence": "derived",
-      "note": "东莞执行二类标准2300元/月；非全日制小时最低工资18.9元未能回溯到原文表格数值，标记待核实"
+      "confidence": "official",
+      "note": "东莞执行二类标准2300元/月；对应非全日制小时最低工资标准为21.9元/小时（与珠海、佛山、中山同档）。原文见广东省人民政府《关于调整我省最低工资标准的通知》（2026-09-01 起施行）",
+      "docNo": "广东省人民政府关于调整我省最低工资标准的通知（2026年）",
+      "issuedBy": "广东省人民政府"
     },
     "income": {
       "title": "平台接单计价规则",

@@ -126,8 +126,11 @@ export function requiredClockHoursForOrders(
 }
 
 /**
- * 由「愿意投入的工时」反推可完成单量。
- * 用于「多跑 N 小时」场景：工时增加对应单量增加，而非单量不变。
+ * 由「愿意投入的工时」反推可完成单量（纯线性反算，与 requiredHoursForOrders 互为逆函数）。
+ *
+ * 注意：本函数**不含**休息时间与疲劳折减，只用于「单量↔纯配送工时」的换算。
+ * 要回答「这个工时 realistically 能跑多少单」，必须用 calcCapacity().maxOrdersPerDay
+ * ——两者混用会生成按本工具自己的产能卡都判定超载的方案（多跑2小时曾因此虚高并当选最优）。
  */
 export function achievableOrdersForHours(
   dailyHours: number,
@@ -138,6 +141,27 @@ export function achievableOrdersForHours(
   const minutesPerOrder = effectiveMinutesPerOrder(avgDistanceKm, model)
   if (minutesPerOrder <= 0) return 0
   return (hours * 60) / minutesPerOrder
+}
+
+/**
+ * 完成指定单量所需的最短在岗工时（含休息与疲劳折减）。
+ * 用 maxOrdersPerDay 逐步逼近，保证返回的工时在产能模型下确实能跑完这么多单。
+ */
+export function hoursForOrders(
+  orderCount: number,
+  avgDistanceKm: number,
+  model: CapacityModel = DEFAULT_CAPACITY,
+  maxHours = 20,
+): number {
+  const target = Number.isFinite(orderCount) ? Math.max(0, orderCount) : 0
+  if (target <= 0) return 0
+  const step = 0.1
+  let h = 0
+  while (h < maxHours) {
+    if (calcCapacity(h, 0, avgDistanceKm, model).maxOrdersPerDay >= target) return Math.round(h * 10) / 10
+    h = Math.round((h + step) * 10) / 10
+  }
+  return maxHours
 }
 
 /**

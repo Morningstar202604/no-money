@@ -1,6 +1,7 @@
 import type { CompensationItem, CompensationLegalRef, CompensationResult } from '../../types';
 import { ok, err, Result, tryCatch } from '../../domain/shared/result';
 import { AppError, AppErrorCode } from '../errors';
+import { provinceOf } from '../../data/provinces';
 
 /** 补偿计算输入参数 */
 export interface CompensationInput {
@@ -64,8 +65,12 @@ export interface CompensationForm {
  * 参考 RightsCompensation.vue 逻辑，提取为可复用的应用层服务
  * 返回 Result<CompensationResult, AppError>
  */
-/** 已内置地方性工伤口径的省份（目前只有广东） */
-const GUANGDONG_CITIES = new Set(['guangzhou', 'shenzhen', 'dongguan'])
+/**
+ * 是否适用《广东省工伤保险条例》口径。
+ * 按省份判定而不是城市白名单：佛山/珠海/中山没有内置规则文件，但同属广东，
+ * 用三个城市的 Set 会把它们判成外省，工伤补助金月数直接不展示。
+ */
+const isGuangdong = (city?: string) => provinceOf(city) === '广东'
 
 export class CompensationService {
   /** 计算补偿 */
@@ -257,13 +262,13 @@ export class CompensationService {
      * 此前对 15 城一律套用广东月数，北京/上海/成都等用户会被算出错误金额——
      * 非广东城市改为只给「按当地省级标准核定」的提示，不编造数字。
      */
-    const isGuangdong = GUANGDONG_CITIES.has(city ?? '');
+    const inGuangdong = isGuangdong(city);
     const medFund: Record<number, number> = { 10: 1, 9: 2, 8: 4, 7: 6, 6: 8, 5: 10 };
     const jobFund: Record<number, number> = { 10: 4, 9: 8, 8: 15, 7: 25, 6: 40, 5: 50 };
 
     if (level >= 5 && level <= 10) {
       items.push(this.claim(`一次性伤残补助金（${level}级 · ${subsidy[level]}个月本人工资）`, ownWage * subsidy[level], '《工伤保险条例》第35–37条月数表（全国统一），由工伤保险基金支付'));
-      if (isGuangdong) {
+      if (inGuangdong) {
         items.push(this.cond(`一次性工伤医疗补助金（广东 ${level}级 · ${medFund[level]}个月）`, ownWage * medFund[level], '广东省工伤保险条例第34条：以劳动合同期满终止或本人提出解除为前提，由工伤保险基金支付'));
         items.push(this.cond(`一次性伤残就业补助金（广东 ${level}级 · ${jobFund[level]}个月）`, ownWage * jobFund[level], '广东省工伤保险条例第34条：同上以劳动关系解除/终止为前提，由用人单位支付'));
       } else {
@@ -293,12 +298,23 @@ export class CompensationService {
       items.push(this.info('职业伤害保障与工伤保险的区别', '平台按单缴费的职业伤害保障试点待遇项目少于工伤保险（通常无一次性伤残补助金/就业补助金），两者不可混同计算'));
     }
 
-    return this.pack(items, [
+    const refs: CompensationLegalRef[] = [
       { law: '工伤保险条例', article: '33、35–38', summary: '停工留薪期原工资福利待遇不变；一次性伤残补助金按等级月数支付；1–4级另按月发放伤残津贴' },
       { law: '工伤保险条例', article: '64', summary: '本人工资为前12个月平均月缴费工资，低于60%或高于300%的按60%/300%计' },
-      { law: '广东省工伤保险条例', article: '34', summary: '一次性工伤医疗补助金五级10月至十级1月；一次性伤残就业补助金五级50月至十级4月' },
       { law: '工伤保险条例', article: '62', summary: '未参保期间发生工伤，由用人单位按条例项目和标准支付' },
-    ], '职业伤害/工伤');
+    ];
+    // 地方性法规只在适用省份引用：给北京用户打印「《广东省工伤保险条例》第34条」
+    // 会直接把错误法条写进仲裁申请书
+    if (inGuangdong) {
+      refs.push({ law: '广东省工伤保险条例', article: '34', summary: '一次性工伤医疗补助金五级10月至十级1月；一次性伤残就业补助金五级50月至十级4月' });
+    } else {
+      refs.push({
+        law: '你所在省的工伤保险实施办法',
+        article: '一次性工伤医疗补助金 / 伤残就业补助金条款（文号待核）',
+        summary: '这两项的月数由省级人民政府规定，各省差异很大；本工具未收录该省月数，请以本省实施办法为准，或拨 12333 核实',
+      });
+    }
+    return this.pack(items, refs, '职业伤害/工伤');
   }
 
   /** 计算违法解约场景 */

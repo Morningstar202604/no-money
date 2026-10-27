@@ -293,7 +293,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, inject, watch, type Ref } from 'vue'
+import { ref, reactive, computed, inject, watch, nextTick, type Ref } from 'vue'
 import { NCard, NAlert, NInputNumber, NSelect, NSlider, NSwitch, NButton, NTable, NGrid, NGi, NDivider, NSteps, NStep, NTooltip, NTag, useMessage } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
 import SourceTag from '../SourceTag.vue'
@@ -351,18 +351,28 @@ const conditionalSummary = computed(() => {
  *  此前本组件内联副本与提取件并行且已开始漂移（1–4 级伤残待遇两处同时缺失） */
 const compensationService = new CompensationService()
 
-/** 养老基数上下限即全省全口径社平的60%/300%，表单区展示该区间、服务用它封顶保底 */
-const pensionFloor = computed(() => store.rule?.benefit.pension.baseMin ?? 0)
-const pensionCeil = computed(() => store.rule?.benefit.pension.baseMax ?? Infinity)
+/** 养老基数上下限即全省全口径社平的60%/300%，表单区展示该区间、服务用它封顶保底。
+ *  用户填入「本省法定参数」后以用户值为准（与主测算页同源） */
+const pensionFloor = computed(() => effectiveFloor.value)
+const pensionCeil = computed(() => effectiveCeil.value)
+
+/** 生效的养老基数上下限：用户填的本省法定参数优先，否则用规则文件值 */
+const effectiveFloor = computed(() =>
+  store.personal.statutoryOverrides?.baseMin ?? store.rule?.benefit.pension.baseMin ?? 0)
+const effectiveCeil = computed(() =>
+  store.personal.statutoryOverrides?.baseMax ?? store.rule?.benefit.pension.baseMax ?? Infinity)
 
 function toServiceInput() {
   const rule = store.rule
   if (!rule) return null
+  // 必须与主测算同源：用户在「本省法定参数」里填了真实基数后，
+  // 补偿侧若仍用占位 4500/22500 封顶保底，2N 与工伤补助金会与测算页口径打架，
+  // 并经由文书生成器写进仲裁请求金额
   return {
     scene: currentScene.value as 'wage' | 'injury' | 'dismiss' | 'algorithm' | 'overwork',
     form,
     rule: {
-      benefit: { pension: { baseMin: rule.benefit.pension.baseMin, baseMax: rule.benefit.pension.baseMax } },
+      benefit: { pension: { baseMin: effectiveFloor.value, baseMax: effectiveCeil.value } },
       minimumWage: { nonFullTimeHourly: rule.minimumWage.nonFullTimeHourly },
       // 省级工伤口径判断用：非广东城市不给广东的医疗/就业补助金月数
       city: rule.city,
@@ -402,19 +412,27 @@ function calc() {
 // 否则组件挂载早于规则就绪时首屏永远停在空态
 watch(() => store.rule, (r) => { if (r) calc() })
 
-// 用户改动任一输入项即视为已确认，之后的结果才可进入文书
+// 用户改动任一输入项即视为已确认，之后的结果才可进入文书。
+// 程序性重置（resetForm）造成的变更不算用户确认：deep watch 在 Object.assign
+// 之后的下一个 tick 才触发，会把重置后的示例值重新标成已确认、再写回 store。
+// 用 resetting 守卫跨过这一段时序（nextTick 后再解除）。
+let resetting = false
 watch(form, () => {
+  if (resetting) return
   userTouched.value = true
   calc()
-}, { deep: true })
+}, { deep: true, flush: 'sync' })
 
-function resetForm() {
+async function resetForm() {
   const defaults = JSON.parse(JSON.stringify(DEFAULT_FORM))[currentScene.value as keyof typeof DEFAULT_FORM]
+  resetting = true
   Object.assign(form[currentScene.value as keyof typeof form], defaults)
-  // 重置回示例值后同样不能算作"用户已确认"（watch 会把它标为 true，此处必须覆盖）
+  // 重置回示例值后同样不能算作"用户已确认"
   userTouched.value = false
-  message.success('已重置当前场景参数')
   calc()
+  message.success('已重置当前场景参数')
+  await nextTick()
+  resetting = false
 }
 
 // 首屏渲染（不写入 store）
