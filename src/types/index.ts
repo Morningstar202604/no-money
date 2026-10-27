@@ -199,6 +199,25 @@ export interface PersonalParams {
    * 用于「缴社保 vs 自己存」的对照测算；这是假设，不是收益承诺。
    */
   selfInvestReturn?: number
+  /**
+   * 接单空驶率（0-1，默认 0.25）：接单与返程的空跑里程占配送里程的比例。
+   * 影响月行驶里程与每公里成本测算。
+   */
+  deadheadRatio?: number
+  /**
+   * 车辆单位经济学档案（可选覆盖）。缺省时使用电动车/燃油车的行业量级默认值。
+   * 用自己账本里的能耗、保养、购车价校准后，边际成本才反映真实情况。
+   */
+  vehicleProfile?: {
+    energyPer100km?: number
+    energyPrice?: number
+    maintenanceIntervalKm?: number
+    maintenanceCostPerService?: number
+    wearPerKm?: number
+    purchasePrice?: number
+    lifetimeKm?: number
+    residualRate?: number
+  }
 }
 
 // ===== 计算结果模型 =====

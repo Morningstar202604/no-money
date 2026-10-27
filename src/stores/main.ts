@@ -51,6 +51,8 @@ const DEFAULT_PERSONAL: PersonalParams = {
   pensionAdjustRate: undefined,
   discountRate: undefined,
   selfInvestReturn: undefined,
+  deadheadRatio: undefined,
+  vehicleProfile: undefined,
 }
 
 function loadParams() {

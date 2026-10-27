@@ -46,6 +46,24 @@
           <!-- 单位经济学：把成本拆成「固定 + 每公里」，才能回答「多跑一单多赚多少」 -->
           <div v-if="unitEconomics" class="detail-block">
             <div class="ue-title">按里程的成本模型（车辆单位经济学）</div>
+            <!-- 这些参数必须可校准：README 承诺「可用自己的账本校准」，
+                 但此前全是硬编码默认值，用户无法输入 -->
+            <div class="ue-controls">
+              <span class="ue-ctl-label">空驶率</span>
+              <n-slider :value="Math.round(deadheadRatio * 100)" :min="0" :max="60" :step="5" style="flex:1;max-width:180px"
+                @update:value="(v: number) => store.personal.deadheadRatio = v / 100" />
+              <span class="ue-ctl-value">{{ (deadheadRatio * 100).toFixed(0) }}%</span>
+              <span class="ue-ctl-label">百公里能耗</span>
+              <n-input-number
+                :value="store.personal.vehicleProfile?.energyPer100km ?? vehicleProfile.energyPer100km"
+                :min="0" :max="50" :step="0.1" size="small" style="width:90px"
+                @update:value="(v: number | null) => setVehicleProfile('energyPer100km', v)" />
+              <span class="ue-ctl-label">{{ store.costs.vehicleType === 'fuel' ? '元/L' : '元/kWh' }}</span>
+              <n-input-number
+                :value="store.personal.vehicleProfile?.energyPrice ?? vehicleProfile.energyPrice"
+                :min="0" :max="20" :step="0.1" size="small" style="width:90px"
+                @update:value="(v: number | null) => setVehicleProfile('energyPrice', v)" />
+            </div>
             <div class="d-row"><span>月行驶里程（含 {{ (deadheadRatio * 100).toFixed(0) }}% 空驶）</span><b>{{ unitEconomics.monthlyKm.toLocaleString() }} km</b></div>
             <div class="d-row"><span>每公里变动成本</span><b>¥{{ unitEconomics.variablePerKm.toFixed(3) }}/km</b></div>
             <div class="d-row note"><span>能耗 ¥{{ unitEconomics.energyPerKm.toFixed(3) }} + 保养 ¥{{ unitEconomics.maintenancePerKm.toFixed(3) }} + 易损 ¥{{ unitEconomics.wearPerKm.toFixed(3) }} + 折旧 ¥{{ unitEconomics.depreciationPerKm.toFixed(3) }}</span><span></span></div>
@@ -133,7 +151,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
-import { NCard, NGrid, NGi, NInputNumber, NDivider, NAlert } from 'naive-ui'
+import { NCard, NGrid, NGi, NInputNumber, NDivider, NAlert, NSlider } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
 import {
   calcMonthlyCostByKm,
@@ -194,22 +212,34 @@ const overweightKg = computed(() => {
  * 用于展示「多跑一单的边际成本」，与上方月度固定额成本并列不冲突
  * （固定额仍用于净收入计算，两者口径不同，界面分开标注）。
  */
-const deadheadRatio = 0.25
+const deadheadRatio = computed(() => store.personal.deadheadRatio ?? 0.25)
+/** 车辆档案：车型默认值 + 用户按自己账本填的覆盖（能耗/保养/购车价等） */
 const vehicleProfile = computed(() => {
-  const isFuel = store.costs.vehicleType === 'fuel'
-  return isFuel ? DEFAULT_FUEL_PROFILE : DEFAULT_ELECTRIC_PROFILE
+  const base = store.costs.vehicleType === 'fuel' ? DEFAULT_FUEL_PROFILE : DEFAULT_ELECTRIC_PROFILE
+  const o = store.personal.vehicleProfile
+  if (!o) return base
+  return {
+    energyPer100km: o.energyPer100km ?? base.energyPer100km,
+    energyPrice: o.energyPrice ?? base.energyPrice,
+    maintenanceIntervalKm: o.maintenanceIntervalKm ?? base.maintenanceIntervalKm,
+    maintenanceCostPerService: o.maintenanceCostPerService ?? base.maintenanceCostPerService,
+    wearPerKm: o.wearPerKm ?? base.wearPerKm,
+    purchasePrice: o.purchasePrice ?? base.purchasePrice,
+    lifetimeKm: o.lifetimeKm ?? base.lifetimeKm,
+    residualRate: o.residualRate ?? base.residualRate,
+  }
 })
 const unitEconomics = computed(() => {
   const v = s.value
   if (!v) return null
-  const km = estimateMonthlyKm(v.work.dailyOrders, v.work.avgDistance, v.work.workDaysMonth, deadheadRatio)
+  const km = estimateMonthlyKm(v.work.dailyOrders, v.work.avgDistance, v.work.workDaysMonth, deadheadRatio.value)
   return calcMonthlyCostByKm(store.costs, km, vehicleProfile.value)
 })
 const marginalCostPerOrder = computed(() => {
   const v = s.value
   if (!v) return 0
   const perKm = variableCostPerKm(vehicleProfile.value).variablePerKm
-  const kmPerOrder = v.work.avgDistance * (1 + deadheadRatio)
+  const kmPerOrder = v.work.avgDistance * (1 + deadheadRatio.value)
   return kmPerOrder * perKm
 })
 const marginalRevenuePerOrder = computed(() => {
@@ -218,6 +248,14 @@ const marginalRevenuePerOrder = computed(() => {
   return v.income.grossIncome / (v.work.dailyOrders * v.work.workDaysMonth)
 })
 const marginalProfitPerOrder = computed(() => marginalRevenuePerOrder.value - marginalCostPerOrder.value)
+
+/** 设置车辆档案字段：空值即恢复默认，不写入 undefined 键 */
+function setVehicleProfile(key: 'energyPer100km' | 'energyPrice' | 'purchasePrice' | 'lifetimeKm' | 'wearPerKm' | 'residualRate' | 'maintenanceIntervalKm' | 'maintenanceCostPerService', v: number | null) {
+  const next = { ...(store.personal.vehicleProfile ?? {}) }
+  if (v === null || !Number.isFinite(v)) delete next[key]
+  else next[key] = v
+  store.personal.vehicleProfile = Object.keys(next).length > 0 ? next : undefined
+}
 
 /** 广告口径校验：用现有引擎做二分求解，单量与工时按同强度等比例放大 */
 const AD_MAX_HOURS = 16

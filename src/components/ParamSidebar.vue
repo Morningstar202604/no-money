@@ -39,8 +39,9 @@
       :summary="`${store.work.dailyHours}h/天 · ${store.work.dailyOrders}单 · ${store.work.workDaysMonth}天`"
     >
       <div class="ps-group">
-        <!-- 滑块区间与 domain/service 的合法区间一致：兼职/新手场景（2h、5单、15天）
-             原先被控件下限挡在门外，用户只能用默认值或不可复现地手改存储 -->
+        <!-- 滑块区间覆盖常见场景（兼职/新手 2h、5单、15天），但不等于 domain 的
+             全部合法区间（domain 允许 24h/200单/50km）：UI 是常见值域，存储与导入
+             仍接受更宽范围，避免恢复老数据时被夹窄 -->
         <div class="ps-item">
           <div class="ps-label">日均工时 <b>{{ store.work.dailyHours }}h</b></div>
           <n-slider v-model:value="store.work.dailyHours" :min="1" :max="14" :step="1" :tooltip-formatter="(v: number) => v + ' 小时'" />
@@ -208,47 +209,48 @@
 
         <div v-if="store.costs.vehicleType !== 'electric'" class="ps-item">
           <div class="ps-label">月油费 <b>¥{{ store.costs.fuelCostMonth }}</b></div>
-          <n-slider v-model:value="store.costs.fuelCostMonth" :min="0" :max="3000" :step="100" />
+          <n-slider v-model:value="store.costs.fuelCostMonth" :min="0" :max="8000" :step="100" />
         </div>
 
         <div v-if="store.costs.vehicleType !== 'fuel'" class="ps-item">
           <div class="ps-label">月充电费 <b>¥{{ store.costs.electricityCostMonth }}</b></div>
-          <n-slider v-model:value="store.costs.electricityCostMonth" :min="0" :max="1200" :step="50" />
+          <n-slider v-model:value="store.costs.electricityCostMonth" :min="0" :max="3000" :step="50" />
         </div>
 
         <div class="ps-item">
-          <div class="ps-label">维护费 <b>¥{{ store.costs.maintenanceMonth }}</b></div>
-          <n-slider v-model:value="store.costs.maintenanceMonth" :min="0" :max="1000" :step="50" />
+          <div class="ps-label">维护费/租车费 <b>¥{{ store.costs.maintenanceMonth }}</b></div>
+          <n-slider v-model:value="store.costs.maintenanceMonth" :min="0" :max="6000" :step="50" />
+          <div class="ps-note">租车跑单的话把月租金也记在这里（上限已放宽到 ¥6000）</div>
         </div>
 
         <div class="ps-item">
           <div class="ps-label">餐饮费 <b>¥{{ store.costs.foodCostMonth }}</b></div>
-          <n-slider v-model:value="store.costs.foodCostMonth" :min="200" :max="2000" :step="100" />
+          <n-slider v-model:value="store.costs.foodCostMonth" :min="0" :max="5000" :step="100" />
         </div>
 
         <div class="ps-item">
           <div class="ps-label">商业保险 <b>¥{{ store.costs.insuranceMonth }}</b></div>
-          <n-slider v-model:value="store.costs.insuranceMonth" :min="0" :max="800" :step="50" />
+          <n-slider v-model:value="store.costs.insuranceMonth" :min="0" :max="3000" :step="50" />
         </div>
 
         <div class="ps-item">
           <div class="ps-label">通讯费 <b>¥{{ store.costs.phoneCostMonth }}</b></div>
-          <n-slider v-model:value="store.costs.phoneCostMonth" :min="0" :max="500" :step="25" />
+          <n-slider v-model:value="store.costs.phoneCostMonth" :min="0" :max="1000" :step="25" />
         </div>
 
         <div class="ps-item">
           <div class="ps-label">交通罚款 <b>¥{{ store.costs.trafficFineMonth }}</b></div>
-          <n-slider v-model:value="store.costs.trafficFineMonth" :min="0" :max="500" :step="25" />
+          <n-slider v-model:value="store.costs.trafficFineMonth" :min="0" :max="2000" :step="25" />
         </div>
 
         <div class="ps-item">
           <div class="ps-label">车辆折旧 <b>¥{{ store.costs.vehicleDepreciationMonth }}</b></div>
-          <n-slider v-model:value="store.costs.vehicleDepreciationMonth" :min="0" :max="1000" :step="50" />
+          <n-slider v-model:value="store.costs.vehicleDepreciationMonth" :min="0" :max="5000" :step="50" />
         </div>
 
         <div class="ps-item">
           <div class="ps-label">其他 <b>¥{{ store.costs.otherCostMonth }}</b></div>
-          <n-slider v-model:value="store.costs.otherCostMonth" :min="0" :max="1000" :step="50" />
+          <n-slider v-model:value="store.costs.otherCostMonth" :min="0" :max="5000" :step="50" />
         </div>
       </div>
     </FoldCard>
@@ -263,12 +265,12 @@
       <div class="ps-group">
         <div class="ps-item">
           <div class="ps-label">当前年龄 <b>{{ store.personal.currentAge }}岁</b></div>
-          <n-slider v-model:value="store.personal.currentAge" :min="16" :max="65" :step="1" :tooltip-formatter="(v: number) => v + ' 岁'" />
+          <n-slider v-model:value="store.personal.currentAge" :min="16" :max="80" :step="1" :tooltip-formatter="(v: number) => v + ' 岁'" />
         </div>
 
         <div class="ps-item">
           <div class="ps-label">预计退休年龄 <b>{{ store.personal.expectedRetireAge }}岁</b></div>
-          <n-slider v-model:value="store.personal.expectedRetireAge" :min="store.personal.currentAge + 1" :max="70" :step="1" :tooltip-formatter="(v: number) => v + ' 岁'" />
+          <n-slider v-model:value="store.personal.expectedRetireAge" :min="store.personal.currentAge + 1" :max="90" :step="1" :tooltip-formatter="(v: number) => v + ' 岁'" />
         </div>
 
         <div class="ps-item ps-switch-row">

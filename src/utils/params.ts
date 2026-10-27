@@ -48,6 +48,8 @@ export const PARAM_BOUNDS = {
     discountRate: [0, 0.1],
     // 自助投资收益率假设：允许 -10%（亏损）到 15%
     selfInvestReturn: [-0.1, 0.15],
+    // 空驶率：0-100%
+    deadheadRatio: [0, 1],
   },
 } as const
 
