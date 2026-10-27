@@ -109,3 +109,19 @@ describe('欠薪场景', () => {
     expect(r.scene).toBe('欠薪/克扣报酬')
   })
 })
+
+describe('示例值不得进入文书（诚信护栏）', () => {
+  it('服务本身只负责计算，不写任何存储；示例/确认的区分由调用方控制', () => {
+    // 契约：CompensationService.calculate 是纯函数式调用，不触碰 localStorage/store。
+    // RightsCompensation 在 userTouched=false 时调用 store.setCompensation(null)，
+    // 因此文书页 comp 为 null、claimItems 为空——示例金额不会进入仲裁请求。
+    const before = globalThis.localStorage?.getItem?.('nomoney_params_v1') ?? null
+    unwrap(service.calculate({
+      scene: 'dismiss',
+      form: { dismiss: { years: 2, monthly: 8000, type: 'wrongful', pregnancyMonths: 0 } },
+      rule: serviceRule,
+    }))
+    const after = globalThis.localStorage?.getItem?.('nomoney_params_v1') ?? null
+    expect(after).toBe(before)
+  })
+})
