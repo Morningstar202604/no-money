@@ -202,11 +202,6 @@ code, pre {
 .desc {
   color: var(--color-text-secondary);
   font-size: 13px;
-  margin-bottom: 0;
-}
-.desc {
-  color: var(--color-text-secondary);
-  font-size: 13px;
   line-height: 1.6;
   margin-bottom: 0;
 }

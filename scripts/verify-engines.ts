@@ -1,4 +1,22 @@
+/**
+ * 引擎自检脚本（`npm run verify`）。
+ *
+ * 必须真正失败：此前所有检查只 console.log，失败也返回 exit 0，
+ * 属于「假绿灯」——CI 或人看到绿色就以为闭合了。现在任何一项不通过
+ * 都会打印明细并以非零码退出。
+ */
+
 import { readFileSync } from 'fs'
+
+const failures: string[] = []
+function check(ok: boolean, label: string, detail: string): void {
+  if (ok) {
+    console.log(`  ✓ ${label}`)
+  } else {
+    console.error(`  ✗ ${label} — ${detail}`)
+    failures.push(label)
+  }
+}
 import { ScenarioEngine } from '../src/engine/ScenarioEngine'
 import type { CityRule, WorkParams, CostParams, PersonalParams } from '../src/types'
 
@@ -23,7 +41,8 @@ const insured = eng.runScenario('insured', '已参保', work, costs, { ...person
 const sum = uninsured.income.basePay + uninsured.income.distancePay + uninsured.income.subsidyPay + uninsured.income.bonusPay
 
 console.log('=== 一致性 ===')
-console.log('分项之和', sum, '月收入', uninsured.income.grossIncome, '相等=', sum === uninsured.income.grossIncome)
+check(sum === uninsured.income.grossIncome, '收入分项之和 === 毛收入',
+  `分项之和 ${sum} vs 毛收入 ${uninsured.income.grossIncome}`)
 
 // 收支饼图闭合校验：饼图各分片之和必须等于成本合计。
 // 仅打印 phoneCost/otherCost 这类原始输入无法证明「图表是否漏项」——必须按饼图
@@ -39,11 +58,8 @@ const pieSlices = {
   其他: costs.otherCostMonth,
 }
 const pieSum = Object.values(pieSlices).reduce((a, b) => a + b, 0)
-console.log('成本饼图分片合计', pieSum, '成本合计', uninsured.costBreakdown.total, '闭合=', pieSum === uninsured.costBreakdown.total)
-if (pieSum !== uninsured.costBreakdown.total) {
-  const missing = uninsured.costBreakdown.total - pieSum
-  console.log('成本饼图缺项', missing, '元 —— 饼图与成本合计不闭合，必须补片')
-}
+check(pieSum === uninsured.costBreakdown.total, '成本饼图分片合计 === 成本合计',
+  `分片合计 ${pieSum} vs 成本合计 ${uninsured.costBreakdown.total}（缺项 ${(uninsured.costBreakdown.total - pieSum).toFixed(2)} 元）`)
 
 console.log('\n=== 未参保 ===')
 console.log('月收入', uninsured.income.grossIncome, '月成本', uninsured.costBreakdown.total, '月个税', (uninsured.tax.annualTax / 12).toFixed(2))

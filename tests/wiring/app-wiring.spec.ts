@@ -103,7 +103,9 @@ describe('AI 助手接线', () => {
     expect(layout).not.toMatch(/ChatAssistantTrigger/)
   })
 
-  it('不存在任何 emit 却无监听者的触发器', () => {
+  it('子组件 emit 的事件必须至少被一处父组件监听', () => {
+    // 原实现匹配 `*Trigger` 组件名——全仓没有任何此类组件，triggers 恒为空，
+    // 该测试永远通过（空转）。改为检查真实组件的 defineEmits 是否有人监听。
     const dirFiles: string[] = []
     const walk = (p: string) => {
       for (const e of readdirSync(p, { withFileTypes: true })) {
@@ -114,10 +116,27 @@ describe('AI 助手接线', () => {
     }
     walk('src/components')
     walk('src/layouts')
-    const triggers = [...dirFiles.map(read).join('\n').matchAll(/<(\w*Trigger)\b([^>]*)>/g)]
-    for (const t of triggers) {
-      expect(t[2], `${t[1]} 发出事件但没有 @监听`).toMatch(/@\w+=/)
+    const allSources = dirFiles.map(f => ({ file: f, src: read(f) }))
+
+    const unlistened: string[] = []
+    for (const { file, src } of allSources) {
+      const emitMatch = src.match(/defineEmits<\{([^}]+)\}>/)
+      if (!emitMatch) continue
+      const events = [...emitMatch[1].matchAll(/(\w+)\s*:\s*\[/g)].map(m => m[1])
+      const componentName = file.split('/').pop()?.replace('.vue', '') ?? ''
+      if (!componentName || events.length === 0) continue
+
+      const usedSomewhere = allSources.some(other => {
+        if (other.file === file) return false
+        if (!new RegExp('<' + componentName + '\\b').test(other.src)) return false
+        return events.some(ev => {
+          const kebab = ev.replace(/([A-Z])/g, '-$1').toLowerCase()
+          return new RegExp('@' + ev + '\\b').test(other.src) || new RegExp('@' + kebab + '\\b').test(other.src)
+        })
+      })
+      if (!usedSomewhere) unlistened.push(`${file}: emits ${events.join(',')} 但无父组件监听`)
     }
+    expect(unlistened, unlistened.join('\n')).toEqual([])
   })
 })
 
