@@ -92,14 +92,19 @@
           <div class="act-stat">
             <span class="as-label">终身领取现值</span>
             <span class="as-value">¥{{ actuarial.presentValue.toLocaleString() }}</span>
-            <span class="as-foot">按 {{ actuarial.assumptions.payoutYears }} 年领取、{{ (actuarial.assumptions.discountRate * 100).toFixed(1) }}% 贴现率折现到退休时点</span>
+            <span class="as-foot">
+              按 {{ actuarial.assumptions.payoutYears }} 年领取、{{ (actuarial.assumptions.discountRate * 100).toFixed(1) }}% 贴现率折现到退休时点；
+              它小于「月养老金×12×年数」，差额就是贴现（钱的购买力随时间下降）
+            </span>
           </div>
         </n-gi>
         <n-gi>
           <div class="act-stat">
             <span class="as-label">名义累计领取</span>
             <span class="as-value">¥{{ actuarial.nominalTotal.toLocaleString() }}</span>
-            <span class="as-foot">不做折现的账面总额（含 {{ (actuarial.assumptions.adjustRate * 100).toFixed(1) }}% 年调整）</span>
+            <span class="as-foot">
+              不做折现的账面总额（含 {{ (actuarial.assumptions.adjustRate * 100).toFixed(1) }}% 年调整，每年涨一点）
+            </span>
           </div>
         </n-gi>
         <n-gi>

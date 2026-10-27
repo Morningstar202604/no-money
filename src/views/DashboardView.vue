@@ -92,9 +92,10 @@
     <!-- 收入波动与风险：单点数字会让人误以为是稳定现金流 -->
     <n-card v-if="volatility" title="这个收入有多稳？—— 收入波动与应急储备" class="card" style="margin-top: 12px">
       <n-alert type="info" :show-icon="true" style="margin-bottom: 10px">
-        上面的 ¥{{ Math.round(volatility.mean).toLocaleString() }} 是<strong>平均值</strong>。灵活就业的真实特征是波动，
-        所以更该看「最差的月份能有多少」。下方按 {{ (volatilityCv * 100).toFixed(0) }}% 的月度波动率模拟
-        {{ volatility.sampleSize }} 个月（固定种子，可复现）。
+        上面的 ¥{{ bestNetMonthly.toLocaleString() }} 是<strong>点估计</strong>。灵活就业的真实特征是波动，
+        所以更该看「最差的月份能有多少」。下方按 {{ (volatilityCv * 100).toFixed(0) }}% 的月度波动率
+        模拟 {{ volatility.sampleSize }} 个月（固定种子，可复现），模拟均值
+        ¥{{ Math.round(volatility.mean).toLocaleString() }} 与点估计的微小差异来自抽样误差。
       </n-alert>
 
       <div class="vol-controls">

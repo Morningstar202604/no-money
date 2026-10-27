@@ -55,8 +55,38 @@ const DEFAULT_PERSONAL: PersonalParams = {
   vehicleProfile: undefined,
 }
 
+/** 品牌重命名前的旧存储键：老用户数据在这里，必须迁移而不是静默丢弃 */
+const LEGACY_KEYS: Record<string, string> = {
+  flexcalc_params_v1: PARAMS_KEY,
+  flexcalc_capacity_v1: CAPACITY_KEY,
+  flexcalc_onboarding_v1: 'nomoney_onboarding_v1',
+  flexcalc_ai_cfg: 'nomoney_ai_cfg',
+  flexcalc_ai_key: 'nomoney_ai_key',
+  flexcalc_chat_hist: 'nomoney_chat_hist',
+}
+
+/**
+ * 一次性迁移旧品牌存储键。
+ * 背景：品牌从「灵算 Pro」改为「没钱 No Money」时键名从 flexcalc_* 换成
+ * nomoney_*，但没写迁移——老用户刷新后参数、AI 配置、对话历史全部"消失"
+ * （数据其实还在 localStorage 里，只是没人读）。
+ * 迁移策略：仅当新键不存在时复制，成功后删除旧键；失败不阻断启动。
+ */
+function migrateLegacyKeys(): void {
+  try {
+    for (const [oldKey, newKey] of Object.entries(LEGACY_KEYS)) {
+      const legacy = localStorage.getItem(oldKey)
+      if (legacy === null) continue
+      if (localStorage.getItem(newKey) === null) localStorage.setItem(newKey, legacy)
+      // 旧键只在确认新键有值后删除，避免半途失败丢数据
+      if (localStorage.getItem(newKey) !== null) localStorage.removeItem(oldKey)
+    }
+  } catch { /* 隐私模式下 localStorage 不可用，静默跳过迁移 */ }
+}
+
 function loadParams() {
   try {
+    migrateLegacyKeys()
     const raw = localStorage.getItem(PARAMS_KEY)
     if (!raw) return null
     return JSON.parse(raw) as Record<string, unknown>
@@ -193,6 +223,16 @@ export const useMainStore = defineStore('main', () => {
         const hadBase = personal.value.pensionBase !== undefined || personal.value.medicalBase !== undefined
         if (hadBase) {
           notices.push('此前自选的缴费基数按上一城市口径填写，已重置为该城默认（按申报收入夹取）。如需固定基数请在左侧重新选择。')
+        }
+        // 计价覆盖同理：用户填的是「某城某平台的单价」，跨城沿用等于把广州单价
+        // 套到深圳——正是本项目反复防范的「深圳抄广州」类事故。
+        // 必须清空并提示，否则用户会拿错误的单价看新城市的结论。
+        if (personal.value.incomeOverrides !== undefined) {
+          const hadOverride = Object.keys(personal.value.incomeOverrides).length > 0
+          personal.value.incomeOverrides = undefined
+          if (hadOverride) {
+            notices.push('你在「我的计价」里填的单价属于上一城市，已清空；请按新城市的 APP 流水重新填写。')
+          }
         }
         personal.value.pensionBase = undefined
         personal.value.medicalBase = undefined

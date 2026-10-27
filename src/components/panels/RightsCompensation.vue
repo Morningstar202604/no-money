@@ -228,7 +228,7 @@
               <strong>¥{{ result.total.toLocaleString() }}</strong>
             </div>
             <div v-if="result.conditionalTotal > 0" class="result-conditional">
-              <span>条件项合计（需行政责令 / 劳动关系认定 / 解除终止等前置成立）</span>
+              <span>条件项合计（需行政责令 / 劳动关系认定 / 解除终止等前置成立，<strong>不并入上方合计</strong>）</span>
               <strong>¥{{ result.conditionalTotal.toLocaleString() }}</strong>
             </div>
             <n-table :bordered="false" :single-line="true" size="small" :style="{ marginBottom: '12px' }">

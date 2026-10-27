@@ -116,6 +116,19 @@ describe('主 store：规则加载与切城的用户数据安全', () => {
     expect(store.cityNotice ?? '', '清空行为必须告知用户').toContain('自定义方案')
   })
 
+  it('切城必须清空「我的计价」：广州的单价不能套到深圳（防跨城串值）', async () => {
+    mockFetchJson(ruleSz)
+    const store = useMainStore()
+    store.rule = rule
+    store.personal.incomeOverrides = { basePricePerOrder: 6, distanceRate: 1.5 }
+
+    await store.setCity('shenzhen')
+
+    expect(store.rule?.city).toBe('shenzhen')
+    expect(store.personal.incomeOverrides, '跨城沿用单价会得出错误的收入结论').toBeUndefined()
+    expect(store.cityNotice ?? '', '清空必须告知用户').toContain('我的计价')
+  })
+
   it('content-type 为 octet-stream 的合法 JSON 规则文件也能加载', async () => {
     mockFetchJson(rule, 'application/octet-stream')
     const store = useMainStore()
@@ -310,5 +323,74 @@ describe('主 store：个人账户记账利率假设可调（此前写死在规�
     })
     expect(err).toBeNull()
     expect(store.personal.assumedAnnualReturn, '500% 明显是误填，必须夹到上限').toBeLessThanOrEqual(0.1)
+  })
+})
+
+describe('品牌重命名后的旧数据迁移（不能让老用户数据静默消失）', () => {
+  beforeEach(() => setActivePinia(createPinia()))
+
+  it('旧键 flexcalc_params_v1 的数据会被迁移到 nomoney_params_v1', async () => {
+    const storeMap = new Map<string, string>()
+    const original = globalThis.localStorage
+    ;(globalThis as unknown as { localStorage: Storage }).localStorage = {
+      getItem: (k: string) => storeMap.get(k) ?? null,
+      setItem: (k: string, v: string) => { storeMap.set(k, v) },
+      removeItem: (k: string) => { storeMap.delete(k) },
+      clear: () => { storeMap.clear() },
+      key: () => null,
+      get length() { return storeMap.size },
+    } as unknown as Storage
+
+    storeMap.set('flexcalc_params_v1', JSON.stringify({
+      work: { city: 'shenzhen', dailyHours: 8, dailyOrders: 25, avgDistance: 2, workDaysMonth: 22, rainDaysMonth: 2, holidayDaysMonth: 1 },
+      personal: { currentAge: 30, expectedRetireAge: 60, hasSocialInsurance: true, specialDeductionMonth: 1000 },
+    }))
+    storeMap.set('flexcalc_chat_hist', '[]')
+
+    try {
+      vi.resetModules()
+      const { useMainStore: freshStore } = await import('../../src/stores/main')
+      setActivePinia(createPinia())
+      const store = freshStore()
+
+      expect(store.work.city, '旧城参数必须迁移过来，而不是回落到默认广州').toBe('shenzhen')
+      expect(store.work.dailyHours).toBe(8)
+      expect(store.personal.currentAge).toBe(30)
+      expect(store.personal.hasSocialInsurance).toBe(true)
+      // 旧键应被清理，新键应存在
+      expect(storeMap.has('flexcalc_params_v1'), '迁移成功后旧键应删除').toBe(false)
+      expect(storeMap.has('nomoney_params_v1')).toBe(true)
+      expect(storeMap.has('flexcalc_chat_hist')).toBe(false)
+    } finally {
+      ;(globalThis as unknown as { localStorage: Storage }).localStorage = original
+      vi.resetModules()
+    }
+  })
+
+  it('新键已存在时不覆盖（迁移不吞掉当前数据）', async () => {
+    const storeMap = new Map<string, string>()
+    const original = globalThis.localStorage
+    ;(globalThis as unknown as { localStorage: Storage }).localStorage = {
+      getItem: (k: string) => storeMap.get(k) ?? null,
+      setItem: (k: string, v: string) => { storeMap.set(k, v) },
+      removeItem: (k: string) => { storeMap.delete(k) },
+      clear: () => { storeMap.clear() },
+      key: () => null,
+      get length() { return storeMap.size },
+    } as unknown as Storage
+
+    storeMap.set('nomoney_params_v1', JSON.stringify({ work: { city: 'beijing' } }))
+    storeMap.set('flexcalc_params_v1', JSON.stringify({ work: { city: 'shanghai' } }))
+
+    try {
+      vi.resetModules()
+      const { useMainStore: freshStore } = await import('../../src/stores/main')
+      setActivePinia(createPinia())
+      const store = freshStore()
+      expect(store.work.city, '新键优先级更高，不能被旧数据覆盖').toBe('beijing')
+    } finally {
+      ;(globalThis as unknown as { localStorage: Storage }).localStorage = original
+      vi.resetModules()
+    }
   })
 })
