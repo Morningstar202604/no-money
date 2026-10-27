@@ -149,8 +149,24 @@ const cityOptions = computed(() => {
   return list
 })
 const cityMismatch = computed(() => !!store.rule && userInfo.city !== `${store.rule.cityName}市`)
+/**
+ * 法条引用格式化：只有国家法律才冠「中华人民共和国」。
+ * 地方性法规（如《广东省工伤保险条例》）、部门规章、司法解释不能加前缀——
+ * 此前统一拼接会生成《中华人民共和国广东省工伤保险条例》这种不存在的东西，
+ * 文书提交时会成为硬伤。
+ */
+const NATIONAL_LAWS = new Set([
+  '劳动合同法', '社会保险法', '劳动法', '劳动争议调解仲裁法',
+  '个人信息保护法', '工伤保险条例', '民事诉讼法', '民法典',
+])
+function formatLaw(law: string): string {
+  if (law.startsWith('中华人民共和国')) return `《${law}》`
+  if (NATIONAL_LAWS.has(law)) return `《中华人民共和国${law}》`
+  // 地方性法规、部门规章、规范性文件：保留原名称，不加国家前缀
+  return `《${law}》`
+}
 const legalBasisLine = computed(() =>
-  (comp.value?.legalRefs ?? []).map(r => `《中华人民共和国${r.law}》${r.article}`).join('、') || '________')
+  (comp.value?.legalRefs ?? []).map(r => `${formatLaw(r.law)}${r.article}`).join('、') || '________')
 
 const docTypes = [
   { id: 'arbitration', name: '劳动仲裁申请书', icon: '⚖', desc: '请求仲裁委裁决被申请人支付补偿/赔偿' },

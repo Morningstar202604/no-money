@@ -45,7 +45,7 @@ export class ScenarioEngine {
     const hours = work.dailyHours * work.workDaysMonth
     const netHourly = hours > 0 && Number.isFinite(hours) ? round(netMonthly / hours) : 0
 
-    const { score: rightsScore, flags: rightsFlags } = this.calcRightsScore(work, costBrk.total, personal, benefit)
+    const { score: rightsScore, flags: rightsFlags } = this.calcRightsScore(work, costBrk.total, income.grossIncome, personal, benefit)
     // 保障缺失时封顶为 viable：否则净收入一高就出现"推荐你不参保"的反向激励。
     // 评级在「缴社保前」的收入能力上计算（社保是保障储备而非亏损，不能因参保降级），
     // 底线用本城最低工资（月）当锚，与 ScenarioService 同口径（parity 测试锁定）。
@@ -74,7 +74,7 @@ export class ScenarioEngine {
     return { scenarios, best, ranking, summary }
   }
 
-  private calcRightsScore(work: WorkParams, costTotal: number, personal: PersonalParams, benefit: ReturnType<BenefitEngine['calcMonthly']>): { score: number; flags: string[] } {
+  private calcRightsScore(work: WorkParams, costTotal: number, grossIncome: number, personal: PersonalParams, benefit: ReturnType<BenefitEngine['calcMonthly']>): { score: number; flags: string[] } {
     let score = 100
     const flags: string[] = []
 
@@ -104,9 +104,10 @@ export class ScenarioEngine {
       flags.push('月工作22天+：接近法定上限，注意休息权')
     }
 
-    if (costTotal > 3000) {
+    // 成本占比口径（与 ScenarioService 一致），不写死 3000 元绝对值
+    if (grossIncome > 0 && costTotal / grossIncome > 0.35) {
       score -= 5
-      flags.push('运营成本高：高固定支出压缩净收入，抗风险能力低')
+      flags.push(`运营成本偏高：占毛收入的 ${((costTotal / grossIncome) * 100).toFixed(0)}%，高固定支出压缩净收入`)
     }
 
     score -= 5

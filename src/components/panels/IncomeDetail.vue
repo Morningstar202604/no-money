@@ -1,19 +1,23 @@
 <template>
   <div>
-    <n-alert v-if="incomeUnverified" type="warning" :show-icon="true" style="margin-bottom: 12px">
+    <n-alert v-if="incomeOverridden" type="success" :show-icon="true" style="margin-bottom: 12px">
+      <div><strong>计价参数已按你填写的实际值计算</strong>：下方拆解里的单价与倍率均为你在「我的计价」中填写的数值，
+      不是本城占位值，也不是官方发布数据。</div>
+    </n-alert>
+    <n-alert v-else-if="incomeUnverified" type="warning" :show-icon="true" style="margin-bottom: 12px">
       <div><strong>{{ rule?.cityName }}的计价参数未核实</strong>：平台单价与计价系数属平台商业规则，无跨平台权威数据源，
-      当前各城市共用同一套占位值，<strong>不代表本城真实单价</strong>。</div>
-      <div style="margin-top:4px">请用你 APP 内的实际计价与流水核对后再看下面的数字——否则整条收入链都是假设。</div>
+      当前多数城市共用同一套占位值，<strong>不代表本城真实单价</strong>。</div>
+      <div style="margin-top:4px">请在左侧「我的计价」填入你 APP 内的实际单价与倍率，否则整条收入链都是假设。</div>
     </n-alert>
 
     <n-grid :x-gap="12" :cols="2">
       <n-gi>
         <n-card title="收入结构拆解" class="card">
           <div v-if="s" class="detail-block">
-            <div class="d-row"><span>基础配送费 ({{ s.work.dailyOrders }}单 × ¥{{ rule?.income.basePricePerOrder }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.basePay.toLocaleString() }}</b></div>
-            <div class="d-row"><span>距离加价 ({{ s.work.dailyOrders }}单 × {{ s.work.avgDistance }}km × ¥{{ rule?.income.distanceRate }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.distancePay.toLocaleString() }}</b></div>
-            <div v-if="s.income.weightPay > 0" class="d-row"><span>超重件加价 ({{ s.work.dailyOrders }}单 × 超重 {{ ((store.personal.incomeOverrides?.avgWeightKg ?? 0) - (rule?.income.weightSurcharge.threshold ?? 0)).toFixed(1) }}kg × ¥{{ rule?.income.weightSurcharge.rate }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.weightPay.toLocaleString() }}</b></div>
-            <div class="d-row"><span>时段补贴 (高峰 × {{ rule?.income.timeSubsidy.multiplier }})</span><b>¥{{ s.income.subsidyPay.toLocaleString() }}</b></div>
+            <div class="d-row"><span>基础配送费 ({{ s.work.dailyOrders }}单 × ¥{{ effectivePrice.basePricePerOrder }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.basePay.toLocaleString() }}</b></div>
+            <div class="d-row"><span>距离加价 ({{ s.work.dailyOrders }}单 × {{ s.work.avgDistance }}km × ¥{{ effectivePrice.distanceRate }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.distancePay.toLocaleString() }}</b></div>
+            <div v-if="s.income.weightPay > 0" class="d-row"><span>超重件加价 ({{ s.work.dailyOrders }}单 × 超重 {{ overweightKg.toFixed(1) }}kg × ¥{{ rule?.income.weightSurcharge.rate }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.weightPay.toLocaleString() }}</b></div>
+            <div class="d-row"><span>时段补贴 (高峰 × {{ effectivePrice.peakMultiplier }})</span><b>¥{{ s.income.subsidyPay.toLocaleString() }}</b></div>
             <div v-if="s.income.bonusPay > 0" class="d-row"><span>冲单奖励</span><b>¥{{ s.income.bonusPay }}</b></div>
             <div class="d-row total"><span>月总收入 <SourceTag source-key="income" /></span><b>¥{{ s.income.grossIncome.toLocaleString() }}</b></div>
             <div class="d-row"><span>日均收入</span><b>¥{{ safeDiv(s.income.grossIncome, s.work.workDaysMonth, 0) }}</b></div>
@@ -24,14 +28,16 @@
       <n-gi>
         <n-card title="成本结构拆解" class="card">
           <div v-if="s" class="detail-block">
-            <div class="d-row"><span>油费/电费</span><b>¥{{ (s.costs.fuelCostMonth + s.costs.electricityCostMonth).toLocaleString() }}</b></div>
-            <div class="d-row"><span>车辆维护</span><b>¥{{ s.costs.maintenanceMonth.toLocaleString() }}</b></div>
-            <div class="d-row"><span>保险</span><b>¥{{ s.costs.insuranceMonth.toLocaleString() }}</b></div>
-            <div class="d-row"><span>通讯</span><b>¥{{ s.costs.phoneCostMonth.toLocaleString() }}</b></div>
-            <div class="d-row"><span>餐饮</span><b>¥{{ s.costs.foodCostMonth.toLocaleString() }}</b></div>
-            <div class="d-row"><span>交通罚款</span><b>¥{{ s.costs.trafficFineMonth.toLocaleString() }}</b></div>
-            <div class="d-row"><span>车辆折旧</span><b>¥{{ s.costs.vehicleDepreciationMonth.toLocaleString() }}</b></div>
-            <div class="d-row"><span>其他</span><b>¥{{ s.costs.otherCostMonth.toLocaleString() }}</b></div>
+            <!-- 必须读 costBreakdown（已按车型过滤），不能读 s.costs（原始输入）：
+                 电动车用户看不到的油费此前仍被加进这一行，与月总成本对不上 -->
+            <div class="d-row"><span>油费/电费</span><b>¥{{ (s.costBreakdown.fuelCostMonth + s.costBreakdown.electricityCostMonth).toLocaleString() }}</b></div>
+            <div class="d-row"><span>车辆维护</span><b>¥{{ s.costBreakdown.maintenanceMonth.toLocaleString() }}</b></div>
+            <div class="d-row"><span>保险</span><b>¥{{ s.costBreakdown.insuranceMonth.toLocaleString() }}</b></div>
+            <div class="d-row"><span>通讯</span><b>¥{{ s.costBreakdown.phoneCostMonth.toLocaleString() }}</b></div>
+            <div class="d-row"><span>餐饮</span><b>¥{{ s.costBreakdown.foodCostMonth.toLocaleString() }}</b></div>
+            <div class="d-row"><span>交通罚款</span><b>¥{{ s.costBreakdown.trafficFineMonth.toLocaleString() }}</b></div>
+            <div class="d-row"><span>车辆折旧</span><b>¥{{ s.costBreakdown.vehicleDepreciationMonth.toLocaleString() }}</b></div>
+            <div class="d-row"><span>其他</span><b>¥{{ s.costBreakdown.otherCostMonth.toLocaleString() }}</b></div>
             <div class="d-row total"><span>月总成本</span><b class="danger">¥{{ s.costBreakdown.total.toLocaleString() }}</b></div>
             <div class="d-row"><span>每单成本</span><b>¥{{ safeDiv(s.costBreakdown.total, s.work.dailyOrders * s.work.workDaysMonth, 2) }}/单</b></div>
           </div>
@@ -153,6 +159,36 @@ const incomeFacts = realityFactsBy(['ad-upper-bound', 'rookie-gap', 'penalty-rea
 /** 本城计价参数是否已核实：unverified 时在页顶显著提示，避免用户把占位单价当真实收入 */
 const incomeUnverified = computed(() => rule.value?.sources?.income?.confidence === 'unverified')
 
+/** 用户是否已用自己的流水覆盖计价（覆盖后页顶应改为绿色确认，而非继续说"用占位值"） */
+const incomeOverridden = computed(() => {
+  const o = store.personal.incomeOverrides
+  if (!o) return false
+  return [o.basePricePerOrder, o.distanceRate, o.peakMultiplier, o.rainSurcharge, o.holidayMultiplier]
+    .some(v => typeof v === 'number' && Number.isFinite(v) && v > 0)
+})
+
+/**
+ * 拆解标题里展示的「实际生效单价」：有覆盖用覆盖值，否则用规则占位值。
+ * 此前标题直接读 rule.income，覆盖后金额按覆盖值算、算式却显示占位值，
+ * 同一行里出现两个单价。
+ */
+const effectivePrice = computed(() => {
+  const o = store.personal.incomeOverrides
+  const r = rule.value?.income
+  return {
+    basePricePerOrder: o?.basePricePerOrder ?? r?.basePricePerOrder ?? 0,
+    distanceRate: o?.distanceRate ?? r?.distanceRate ?? 0,
+    peakMultiplier: o?.peakMultiplier ?? r?.timeSubsidy.multiplier ?? 0,
+  }
+})
+
+/** 超重公斤数：单均重量 − 阈值，负值按 0 */
+const overweightKg = computed(() => {
+  const weight = store.personal.incomeOverrides?.avgWeightKg ?? 0
+  const threshold = rule.value?.income.weightSurcharge.threshold ?? 0
+  return Math.max(0, weight - threshold)
+})
+
 /**
  * 车辆单位经济学：按里程的成本模型。默认参数是行业量级假设，
  * 用于展示「多跑一单的边际成本」，与上方月度固定额成本并列不冲突
@@ -194,7 +230,9 @@ const adMax = computed(() => ({
 
 const adSolve = computed(() => {
   if (!rule.value) return null
-  const svc = new ScenarioService(rule.value)
+  // 必须带用户的实测计价：否则填了「我的计价」后，广告反算仍按占位单价，
+  // 与页面其他数字口径不一致
+  const svc = new ScenarioService(rule.value, store.personal.incomeOverrides)
   return solveAdClaim({
     targetNetMonthly: adClaim.value,
     currentOrdersPerDay: store.work.dailyOrders,

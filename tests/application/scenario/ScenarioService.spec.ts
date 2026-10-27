@@ -239,9 +239,13 @@ describe('用户实测计价覆盖（把「占位假设」变成「我的数据�
     if (r.ok) {
       expect(r.value.dataQuality.unverifiedFields).not.toContain('计价单价/补贴')
       expect(r.value.dataQuality.overriddenFields).toContain('计价单价/补贴')
-      // 覆盖计价后是否仍算假设测算，取决于其余依赖项（最低工资/基数/税率）的置信度：
-      // 广州最低工资与税表均为 official，因此整体应转为「基于实测数据」
-      expect(r.value.dataQuality.provisional, '广州其余依赖项均 official，覆盖计价后不再是假设测算').toBe(false)
+      // 覆盖计价后是否仍算假设测算，取决于其余依赖项的置信度。
+      // 广州养老金计发基数是 derived（据官方口径推算，非直接发布值），
+      // 而它直接决定退休页的基础养老金——因此整体仍应为 provisional，
+      // 但未核实清单里不应再包含计价，且必须包含计发基数。
+      const uf = r.value.dataQuality.unverifiedFields
+      expect(uf).toContain('养老金计发基数')
+      expect(r.value.dataQuality.overriddenFields).toContain('计价单价/补贴')
     }
   })
 

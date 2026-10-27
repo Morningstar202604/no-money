@@ -169,9 +169,13 @@ export class ScenarioService {
           score -= 3
           flags.push('月工作22天+：接近法定上限，注意休息权')
         }
-        if (costBreakdown.total / 100 > 3000) {
+        // 成本高低必须相对本城收入水平判断：3000 元在长沙与在深圳含义不同
+        // （同文件下文明确不写死只匹配广州购买力的数字，此处同样不能写死）
+        const costYuan = costBreakdown.total / 100
+        const incomeForCost = monthlyGrossCent / 100
+        if (incomeForCost > 0 && costYuan / incomeForCost > 0.35) {
           score -= 5
-          flags.push('运营成本高：高固定支出压缩净收入，抗风险能力低')
+          flags.push(`运营成本偏高：占毛收入的 ${((costYuan / incomeForCost) * 100).toFixed(0)}%，高固定支出压缩净收入`)
         }
         score -= 5
         flags.push('单一收入来源：平台政策变动即影响全部收入，无兜底')

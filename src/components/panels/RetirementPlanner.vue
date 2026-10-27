@@ -54,7 +54,7 @@
       <p class="base-note">
         测算基数：<b>¥{{ effectivePensionBase.toLocaleString() }}/月</b>
         <template v-if="usingChosenBase">（你在左侧自选的缴费基数，档位 {{ basePctLabel }}）</template>
-        <template v-else>（本城法定下限，可在左侧「税务与社保」中上调档位）</template>
+        <template v-else>（按你的申报收入夹取到本城上下限内，可在左侧「税务与社保」自选）</template>
       </p>
     </n-card>
 
@@ -292,8 +292,8 @@ function setReturn(pct: number | null) {
 const socialFacts = realityFactsBy(['refund-only-personal', 'delay-retirement', 'medical-lapse', 'employment-injury-gap'])
 
 /**
- * 首屏测算用的养老缴费基数：用户自选优先，未选时按下限（与 ParamSidebar 的
- * autoPensionBase 同口径）。
+ * 首屏测算用的养老缴费基数：用户自选优先，未选时按申报收入夹取
+ * （与 ParamSidebar 的 autoBase 完全同口径）。
  * 旧实现恒取 baseMin：用户在左侧选了 100%/200% 档，本页仍按下限出养老金，
  * 首屏数字与用户实际选择脱钩。
  */
@@ -304,7 +304,10 @@ const effectivePensionBase = computed(() => {
   if (typeof chosen === 'number' && Number.isFinite(chosen) && chosen > 0) {
     return Math.min(Math.max(chosen, min), max)
   }
-  return min
+  // 未自选时按「申报收入夹取」——必须与 ParamSidebar 的 autoBase 同口径，
+  // 否则侧栏写「留空=按申报收入」，本页却恒按下限，两处数字对不上
+  const declared = store.scenarios[0]?.income.grossIncome ?? 0
+  return Math.round(Math.min(Math.max(declared, min), max))
 })
 
 /** 是否已按用户自选基数测算（用于文案区分「按下限」与「按你选的档」） */

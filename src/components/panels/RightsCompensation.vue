@@ -78,13 +78,20 @@
           <div v-if="currentScene === 'injury'" class="form-section">
             <div class="form-item">
               <label>伤残等级</label>
+              <!-- 1-10 级必须全部可选：服务层对 1-4 级有「一次性补助金 + 按月伤残津贴」
+                   的完整分支，此前下拉把「六级及以上」压成 6，1-4 级逻辑在生产路径永远走不到 -->
               <n-select v-model:value="form.injury.level" :options="[
                 { label: '未构成伤残（医疗费 + 误工费）', value: 0 },
-                { label: '十级伤残（最轻）', value: 10 },
-                { label: '九级', value: 9 },
-                { label: '八级', value: 8 },
+                { label: '一级伤残（最重）', value: 1 },
+                { label: '二级', value: 2 },
+                { label: '三级', value: 3 },
+                { label: '四级', value: 4 },
+                { label: '五级', value: 5 },
+                { label: '六级', value: 6 },
                 { label: '七级', value: 7 },
-                { label: '六级及以上', value: 6 },
+                { label: '八级', value: 8 },
+                { label: '九级', value: 9 },
+                { label: '十级伤残（最轻）', value: 10 },
               ]" @update:value="calc()" />
             </div>
             <div class="form-item">
