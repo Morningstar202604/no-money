@@ -19,6 +19,7 @@
  */
 
 import { calcPensionActuarial, expectedPensionYears } from './actuarial'
+import { round2, clampNumber } from '../shared/number'
 
 export interface SelfFundedInput {
   /** 每月可投入金额（元）——与社保月缴额同一口径 */
@@ -63,10 +64,10 @@ export interface SelfFundedResult {
 export function calcSelfFunded(input: SelfFundedInput): SelfFundedResult {
   const monthly = Math.max(0, finiteOr(input.monthlyAmount, 0))
   const years = Math.max(0, finiteOr(input.years, 0))
-  const annualReturn = clamp(input.annualReturn, -0.2, 0.3, 0.03)
-  const discountRate = clamp(input.discountRate, 0, 0.2, 0.03)
+  const annualReturn = clampNumber(input.annualReturn, -0.2, 0.3, 0.03)
+  const discountRate = clampNumber(input.discountRate, 0, 0.2, 0.03)
   const payoutYears = Math.max(1, finiteOr(input.payoutYears, expectedPensionYears(60)))
-  const payoutReturn = clamp(input.payoutReturn, -0.2, 0.2, 0.02)
+  const payoutReturn = clampNumber(input.payoutReturn, -0.2, 0.2, 0.02)
 
   // 退休时余额：月缴按年化收益复利
   const annualContribution = monthly * 12
@@ -174,12 +175,4 @@ function finiteOr(v: unknown, fallback: number): number {
   return Number.isFinite(n) ? n : fallback
 }
 
-function clamp(v: unknown, min: number, max: number, fallback: number): number {
-  const n = Number(v)
-  if (!Number.isFinite(n)) return fallback
-  return Math.max(min, Math.min(max, n))
-}
 
-function round2(v: number): number {
-  return Math.round(v * 100) / 100
-}

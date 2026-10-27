@@ -1,20 +1,14 @@
 /**
- * Domain Shared Kernel - 导出入口
- * 纯 TypeScript，零框架依赖
+ * Domain Shared Kernel — 导出入口。
+ *
+ * 纯 TypeScript，零框架依赖；本目录内的模块可被 domain 层任意引用。
+ * 注：money.ts / rate.ts / date.ts / guards.ts 因生产零调用已移除，
+ * 金额用分（Cent）、比率（Rate）统一由 value-objects.ts 承载。
+ *
  * @packageDocumentation
  */
 
-// Brand 类型工具
-export * from './brand';
-
-// Money 值对象
-
-// Rate 值对象
-// money 与 rate 各自提供 safeAdd/safeSub，re-export 时显式点名以免歧义
-
-// Date 值对象
-
-// Result 统一错误处理
-export * from './result';
-
-// Guards 类型收窄
+export * from './brand'
+export * from './number'
+export * from './result'
+export * from './value-objects'

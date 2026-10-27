@@ -409,6 +409,7 @@ import { useMainStore, CITIES } from '../stores/main'
 import { calcCosts } from '../domain/income/calculator'
 import { adaptCosts } from '../application/adapters/ruleAdapters'
 import { calcCapacity } from '../domain/income/capacity'
+import { downloadTextFile } from '../utils/download'
 import SourceTag from './SourceTag.vue'
 import FoldCard from './FoldCard.vue'
 import ChinaMapPicker from './ChinaMapPicker.vue'
@@ -420,13 +421,12 @@ const importInput = ref<HTMLInputElement>()
 const importError = ref<string | null>(null)
 
 function exportParams() {
-  const blob = new Blob([store.exportParams()], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `no-money-params-${store.work.city}.json`
-  a.click()
-  URL.revokeObjectURL(url)
+  const ok = downloadTextFile({
+    filename: `no-money-params-${store.work.city}.json`,
+    content: store.exportParams(),
+    mimeType: 'application/json',
+  })
+  if (!ok) importError.value = '当前浏览器不支持文件下载'
 }
 
 async function onImportFile(e: Event) {

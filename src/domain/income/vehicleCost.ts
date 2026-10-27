@@ -16,6 +16,7 @@
  */
 
 import type { CostParams } from '../../types'
+import { round2, round4 } from '../shared/number'
 
 /** 费用单位：元（本模块对外用元，内部不做分换算；调用方负责边界） */
 export interface VehicleProfile {
@@ -133,9 +134,4 @@ export function estimateMonthlyKm(dailyOrders: number, avgDistanceKm: number, wo
   return round2(orders * dist * days * (1 + ratio))
 }
 
-function round2(v: number): number {
-  return Math.round(v * 100) / 100
-}
-function round4(v: number): number {
-  return Math.round(v * 10000) / 10000
-}
+

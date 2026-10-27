@@ -15,6 +15,8 @@
  * 随机模拟使用固定种子的伪随机数，保证可复现（不是真随机，也不该是）。
  */
 
+import { round2, round4, clampNumber } from '../shared/number'
+
 export interface IncomeVolatilityModel {
   /** 月度收入变异系数（标准差/均值），默认 0.20 */
   cv?: number
@@ -62,8 +64,8 @@ export function simulateIncomeDistribution(
   monthlyCost = 0,
 ): IncomeDistribution {
   const mean = Number.isFinite(meanIncome) ? Math.max(0, meanIncome) : 0
-  const cv = clamp(model.cv, 0, 3, 0.2)
-  const months = Math.max(1, Math.round(clamp(model.months, 12, 6000, 600)))
+  const cv = clampNumber(model.cv, 0, 3, 0.2)
+  const months = Math.max(1, Math.round(clampNumber(model.months, 12, 6000, 600)))
   const seed = Number.isFinite(model.seed) ? (model.seed as number) : 20260101
 
   const cost = Number.isFinite(monthlyCost) ? Math.max(0, monthlyCost) : 0
@@ -176,15 +178,4 @@ function quantile(sorted: number[], q: number): number {
   return sorted[base]
 }
 
-function clamp(v: unknown, min: number, max: number, fallback: number): number {
-  const n = Number(v)
-  if (!Number.isFinite(n)) return fallback
-  return Math.max(min, Math.min(max, n))
-}
 
-function round2(v: number): number {
-  return Math.round(v * 100) / 100
-}
-function round4(v: number): number {
-  return Math.round(v * 10000) / 10000
-}

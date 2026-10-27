@@ -27,6 +27,7 @@
  */
 
 import type { Cent } from '../shared/value-objects'
+import { round2, clampNumber } from '../shared/number'
 
 /** 养老金调整率默认假设（非官方承诺） */
 export const DEFAULT_PENSION_ADJUST_RATE = 0.03
@@ -158,11 +159,5 @@ function finiteOr(v: unknown, fallback: number): number {
 }
 
 function clampRate(v: unknown, fallback: number): number {
-  const n = Number(v)
-  if (!Number.isFinite(n)) return fallback
-  return Math.max(0, Math.min(0.2, n))
-}
-
-function round2(v: number): number {
-  return Math.round(v * 100) / 100
+  return clampNumber(v, 0, 0.2, fallback)
 }

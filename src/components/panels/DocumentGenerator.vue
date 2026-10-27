@@ -119,6 +119,8 @@
 import { ref, reactive, computed } from 'vue'
 import { NCard, NGrid, NGi, NInput, NSelect, NDatePicker, NButton, NDivider, NAlert, useMessage } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
+import { downloadTextFile, copyText } from '../../utils/download'
+import { formatChineseDate, formatDateForFilename } from '../../utils/dateFormat'
 import { CITY_OPTIONS } from '../../data/cities'
 
 const message = useMessage()
@@ -188,15 +190,8 @@ const userInfo = reactive({
 })
 
 const previewRef = ref<HTMLElement>()
-const formattedDate = computed(() => {
-  const d = new Date(userInfo.date)
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`
-})
-
-const todayDate = computed(() => {
-  const d = new Date()
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`
-})
+const formattedDate = computed(() => formatChineseDate(userInfo.date))
+const todayDate = computed(() => formatChineseDate(new Date()))
 
 // --- Arbitration Application ---
 const arbitrationDoc = computed(() => {
@@ -456,29 +451,19 @@ const generatedDoc = computed(() => {
   }
 })
 
-function copyDoc() {
-  navigator.clipboard.writeText(generatedDoc.value).then(() => {
-    message.success('已复制到剪贴板')
-  }).catch(() => {
-    message.error('复制失败，请手动选择文本复制')
-  })
+async function copyDoc() {
+  const ok = await copyText(generatedDoc.value)
+  if (ok) message.success('已复制到剪贴板')
+  else message.error('复制失败，请手动选择文本复制')
 }
 
 function downloadDoc() {
-  const blob = Blob ? new Blob([generatedDoc.value], { type: 'text/plain;charset=utf-8' }) : null
-  if (!blob) {
-    message.error('当前浏览器不支持下载')
-    return
-  }
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `${activeDocType.value.name}_${todayDate.value.replace(/[年月日]/g, '_').replace(/__/, '')}.txt`
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
-  message.success('文书已下载')
+  const ok = downloadTextFile({
+    filename: `${activeDocType.value.name}_${formatDateForFilename(new Date())}.txt`,
+    content: generatedDoc.value,
+  })
+  if (ok) message.success('文书已下载')
+  else message.error('当前浏览器不支持下载')
 }
 </script>
 
