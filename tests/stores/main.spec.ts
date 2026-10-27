@@ -288,3 +288,27 @@ describe('主 store：跨字段约束不能让测算静默变空', () => {
     }
   })
 })
+
+describe('主 store：个人账户记账利率假设可调（此前写死在规则文件）', () => {
+  beforeEach(() => setActivePinia(createPinia()))
+
+  it('设定利率后经导出/导入往返保留', () => {
+    const store = useMainStore()
+    store.personal.assumedAnnualReturn = 0.015
+    const snapshot = JSON.parse(store.exportParams())
+    setActivePinia(createPinia())
+    const fresh = useMainStore()
+    expect(fresh.importParams(snapshot)).toBeNull()
+    expect(fresh.personal.assumedAnnualReturn).toBe(0.015)
+  })
+
+  it('越界利率被夹取到 [-0.05, 0.1]', async () => {
+    const store = useMainStore()
+    const err = store.importParams({
+      work: { city: 'guangzhou' },
+      personal: { currentAge: 30, expectedRetireAge: 60, hasSocialInsurance: false, specialDeductionMonth: 0, assumedAnnualReturn: 5 },
+    })
+    expect(err).toBeNull()
+    expect(store.personal.assumedAnnualReturn, '500% 明显是误填，必须夹到上限').toBeLessThanOrEqual(0.1)
+  })
+})

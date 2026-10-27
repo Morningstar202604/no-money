@@ -117,7 +117,7 @@ describe('退休页的数字必须反映用户选择', () => {
 
   it('档次与年限对比都要传该基数对应的缴费指数', () => {
     expect(src).toMatch(/socialAverageWage/)
-    expect(src, '年限对比表必须传 paymentIndex').toMatch(/annualReturn, paymentIndex\)/)
+    expect(src, '年限对比表必须传 paymentIndex').toMatch(/annualReturnVal, paymentIndex\)/)
   })
 })
 

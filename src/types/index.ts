@@ -177,6 +177,12 @@ export interface PersonalParams {
    * 此时测算会在数据质量门禁中被标为「假设测算」。
    */
   incomeOverrides?: IncomeOverrides
+  /**
+   * 个人账户记账利率假设（年化，如 0.03 表示 3%）。
+   * 规则文件里的 assumedAnnualReturn 只是一个默认假设，不是官方发布值；
+   * 用户自己设定后才算「按你的假设测算」。为空表示用规则默认值。
+   */
+  assumedAnnualReturn?: number
 }
 
 // ===== 计算结果模型 =====

@@ -117,11 +117,19 @@ export class ScenarioEngine {
 
   private generateInsights(work: WorkParams, costs: CostParams, tax: { effectiveRate: number; annualTax: number }, netMonthly: number, benefit: ReturnType<BenefitEngine['calcMonthly']>, personal: PersonalParams): string[] {
     const insights: string[] = []
-    const dailyNet = netMonthly / work.workDaysMonth
-    if (netMonthly > 8000) insights.push(`日均净收入 ¥${dailyNet.toFixed(0)}，属于灵活就业高收入群体`)
+    const dailyNet = netMonthly / (work.workDaysMonth || 1)
+    // 阈值锚定本城最低工资（与 ScenarioService 同口径），不写死一线城市购买力数字
+    const minWage = this.rule.minimumWage.monthly
+    if (minWage > 0 && netMonthly > minWage * 3) {
+      insights.push(`日均净收入 ¥${dailyNet.toFixed(0)}，约为本城最低工资（¥${minWage}/月）的 ${(netMonthly / minWage).toFixed(1)} 倍，属收入较高区间`)
+    } else if (minWage > 0 && netMonthly > 0 && netMonthly < minWage) {
+      insights.push(`日均净收入 ¥${dailyNet.toFixed(0)}，低于本城最低工资 ¥${minWage}/月——全职投入下不如去做最低工资的全职工作，值得重新核算成本与单量`)
+    }
     if (work.dailyHours > 10) insights.push('日工时超10小时，存在健康风险和效率递减，建议控制在8-10小时')
     if (tax.effectiveRate > 5) insights.push(`个税负担较重（${tax.effectiveRate}%），可咨询税务师核实是否符合其他计税方式`)
-    if (costs.fuelCostMonth > 2000) insights.push('燃油成本高，若改用电动车可每月节省约800-1200元')
+    if (costs.fuelCostMonth > 0 && netMonthly > 0 && costs.fuelCostMonth / Math.max(1, netMonthly) > 0.15) {
+      insights.push(`燃油成本占月净收入 ${((costs.fuelCostMonth / netMonthly) * 100).toFixed(0)}%，若改用电动车可显著降低这块支出`)
+    }
     if (benefit.totalMonthly > 0) {
       insights.push(`已参保：每月自缴养老+医保 ¥${benefit.totalMonthly.toLocaleString()}，净收入相应下降`)
     } else {

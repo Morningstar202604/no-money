@@ -16,6 +16,24 @@
         也不含你过去任何已缴年限或历史账户余额。缴满最低年限（2030 年起逐步提高到 20 年）
         才能按月领取。
       </n-alert>
+      <!-- 记账利率是可调假设，不是官方数据：让用户能按自己的判断改，并明确当前口径 -->
+      <div class="return-row">
+        <span class="rr-label">个人账户记账利率假设</span>
+        <n-input-number
+          :value="assumedReturnPct"
+          :min="-5" :max="10" :step="0.5" size="small" style="width:130px"
+          @update:value="setReturn"
+        />
+        <span class="rr-unit">% / 年</span>
+        <n-tag v-if="usingCustomReturn" size="tiny" type="success" :bordered="false">按你的假设</n-tag>
+        <n-tag v-else size="tiny" :bordered="false">本项目默认假设</n-tag>
+        <n-button v-if="usingCustomReturn" size="tiny" quaternary @click="setReturn(null)">恢复默认</n-button>
+      </div>
+      <p class="rr-note">
+        这不是官方发布值，也没有任何人能保证未来记账利率。改动它会同时影响本页所有曲线与档位对比——
+        想验证「利率低一点还够不够养老」时直接在这里调。
+      </p>
+
       <!-- 明确当期基数来源，避免"选了高档但首屏没变"的困惑 -->
       <p class="base-note">
         测算基数：<b>¥{{ effectivePensionBase.toLocaleString() }}/月</b>
@@ -115,7 +133,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
-import { NCard, NGrid, NGi, NTable, NAlert } from 'naive-ui'
+import { NCard, NGrid, NGi, NTable, NAlert, NInputNumber, NTag, NButton } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
 import { BenefitEngine } from '../../engine/BenefitEngine'
 import { issuanceMonthsForAge } from '../../utils/issuanceMonths'
@@ -129,7 +147,22 @@ import { realityFactsBy } from '../../utils/reality'
 
 const store = useMainStore()
 const engine = computed(() => store.rule ? new BenefitEngine(store.rule.benefit, store.rule.retirement) : null)
-const assumedReturnPct = computed(() => Math.round((store.rule?.retirement.assumedAnnualReturn ?? 0.05) * 1000) / 10)
+/**
+ * 个人账户记账利率：用户设定优先，否则用本城规则里的默认假设。
+ * 此前本文件各处兜底值不一致（0.05 / 0.03 混用），同一页面不同图表
+ * 会按不同收益率算——统一到这一个解析函数。
+ */
+const DEFAULT_RETURN = 0.03
+const annualReturn = computed(() =>
+  typeof store.personal.assumedAnnualReturn === 'number' && Number.isFinite(store.personal.assumedAnnualReturn)
+    ? store.personal.assumedAnnualReturn
+    : (store.rule?.retirement.assumedAnnualReturn ?? DEFAULT_RETURN),
+)
+const assumedReturnPct = computed(() => Math.round(annualReturn.value * 1000) / 10)
+const usingCustomReturn = computed(() => typeof store.personal.assumedAnnualReturn === 'number')
+function setReturn(pct: number | null) {
+  store.personal.assumedAnnualReturn = (pct === null || !Number.isFinite(pct)) ? undefined : pct / 100
+}
 
 const socialFacts = realityFactsBy(['refund-only-personal', 'delay-retirement', 'medical-lapse', 'employment-injury-gap'])
 
@@ -196,7 +229,7 @@ const retireResult = computed(() => {
   return engine.value.projectRetirement(
     store.personal.currentAge, store.personal.expectedRetireAge,
     accountMonthly.value, contributionYears.value,
-    store.rule?.retirement.assumedAnnualReturn ?? 0.05,
+    annualReturn.value,
     effectivePensionBase.value / socialAvg,
   )
 })
@@ -226,7 +259,7 @@ const tierOption = computed<EChartsCoreOption>(() => {
   // 旧的线性插值系数与档位标签脱钩，200% 档基数反而低于 150% 档，
   // 图上出现"缴得越多、养老金越少"的反向结论
   const tiers = buildPensionTiers(baseMin, baseMax)
-  const annualReturn = store.rule?.retirement.assumedAnnualReturn ?? 0.05
+  const annualReturnVal = annualReturn.value
   const accountRate = store.rule?.retirement.personalAccountRate ?? 0.08
   const contribData = tiers.map(t => Math.round(t.base * rate))
   // 各档基础养老金必须按该档自身的缴费指数算（指数 = 基数 ÷ 社平）。
@@ -236,7 +269,7 @@ const tierOption = computed<EChartsCoreOption>(() => {
   const pensionData = tiers.map(t => engine.value!.projectRetirement(
     store.personal.currentAge, store.personal.expectedRetireAge,
     Math.round(t.base * accountRate), store.personal.expectedRetireAge - store.personal.currentAge,
-    annualReturn, t.base / socialAvg,
+    annualReturnVal, t.base / socialAvg,
   ).totalPension)
   return {
     tooltip: { trigger: 'axis' },
@@ -255,7 +288,7 @@ const growthOption = computed<EChartsCoreOption>(() => {
   void store.isDark
   if (!engine.value) return {}
   const P = chartColors()
-  const annualReturn = store.rule?.retirement.assumedAnnualReturn ?? 0.03
+  const annualReturnVal = annualReturn.value
   // 取数逻辑抽到 utils/pensionSeries（纯函数），保证本图每个点与退休引擎同口径；
   // 内联复利循环曾与引擎漂移约 9000 倍，且组件内无法被单测发现
   const points = buildPensionGrowthSeries({
@@ -263,7 +296,7 @@ const growthOption = computed<EChartsCoreOption>(() => {
     currentAge: store.personal.currentAge,
     retireAge: store.personal.expectedRetireAge,
     accountMonthly: accountMonthly.value,
-    annualReturn,
+    annualReturn: annualReturnVal,
   })
   const labels = points.map(p => p.label)
   const data = points.map(p => p.balance)
@@ -283,7 +316,7 @@ const growthOption = computed<EChartsCoreOption>(() => {
 
 const compareYears = computed(() => {
   if (!engine.value) return []
-  const annualReturn = store.rule?.retirement.assumedAnnualReturn ?? 0.05
+  const annualReturnVal = annualReturn.value
   const rate = store.rule?.benefit.pension.rate || 0.2
   // 与首屏同一基数口径：用户自选优先，未选按下限
   const base = effectivePensionBase.value
@@ -305,7 +338,7 @@ const compareYears = computed(() => {
     // 缴满 N 年后停缴，养老金仍在法定退休年龄领取：
     // 缴费年限只影响基础养老金与账户累积，不改变领取时点（缴 15 年不等于 40 岁退休）。
     // 成本按全额 20% 缴费计；账户滚存只用其中 8% 的个账部分。
-    const r = engine.value!.projectRetirement(store.personal.currentAge, retireAge, accountMo, years, annualReturn, paymentIndex)
+    const r = engine.value!.projectRetirement(store.personal.currentAge, retireAge, accountMo, years, annualReturnVal, paymentIndex)
     const paid = years * 12 * monthly
     const label = years === full ? `缴至退休（${retireAge}岁）` : `缴${years}年`
     return {
@@ -338,4 +371,8 @@ const compareYears = computed(() => {
   margin: 0 0 8px;
   line-height: 1.6;
 }
+.return-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.rr-label { font-size: 12px; color: var(--color-text-secondary); }
+.rr-unit { font-size: 12px; color: var(--color-text-tertiary); }
+.rr-note { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.6; margin: 4px 0 0; }
 </style>

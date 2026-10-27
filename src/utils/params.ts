@@ -40,6 +40,9 @@ export const PARAM_BOUNDS = {
     currentAge: [16, 80],
     expectedRetireAge: [16, 90],
     specialDeductionMonth: [0, 5000],
+    // 个人账户记账利率假设：允许负值到 10%（养老金账户实际为记账利率，
+    // 3% 只是本项目的默认假设，不是市场产品收益率）
+    assumedAnnualReturn: [-0.05, 0.1],
   },
 } as const
 
