@@ -1,6 +1,6 @@
 # 没钱 No Money — 灵活就业者收入精算与权益决策平台
 
-[![tests](https://img.shields.io/badge/vitest-984%20passed-brightgreen.svg)](#测试覆盖什么)
+[![tests](https://img.shields.io/badge/vitest-874%20passed-brightgreen.svg)](#测试覆盖什么)
 [![audit](https://img.shields.io/badge/npm%20audit-0%20vulnerabilities-brightgreen.svg)](#测试覆盖什么)
 [![cities](https://img.shields.io/badge/cities-15-4a7c8c.svg)](#范围与设计主张)
 [![telemetry](https://img.shields.io/badge/telemetry-none-4a7c8c.svg)](#数据在哪里来自哪里)
@@ -58,7 +58,7 @@
 npm ci
 npm run dev          # http://localhost:3000（Web）
 npm run tauri:dev    # 桌面端（需 Rust 工具链）
-npm test             # vitest，984 例（含规则溯源门禁）
+npm test             # vitest，874 例（含规则溯源门禁）
 npm run verify       # 引擎自检：净收入恒等式闭合
 npm run build        # vue-tsc --noEmit && vite build
 npm run tauri:build  # 桌面端安装包
@@ -77,6 +77,8 @@ src/
 │                    全部返回 Result<T, AppError>，不向外抛异常
 ├── engine/          旧引擎，**仅作为对拍基准保留**（ScenarioEngine / IncomeEngine
 │                    已无生产调用方；TaxEngine / BenefitEngine 仍被税务与退休面板使用）
+│                    —— 新增模型（产能/车辆成本/波动/预扣/精算/自助）全在 domain/，
+│                    由组件直接调用纯函数，不经 engine 层
 ├── stores/          Pinia 状态与参数持久化（编排已切到 application/ScenarioService；
 │                    规则加载与 localStorage 持久化在此层完成 I/O）
 ├── components/      UI 组件与面板
@@ -302,4 +304,4 @@ g = 养老金年调整率（默认 3%，近年全国调幅量级 2%–4%）、d 
 - 东莞三档医保费率必须分离，且外地城收到东莞档次 id 时回落默认档（跨城不串值）
 - 规则文件溯源约束：official 必须有文号或链接、`verified` 不得与实际置信度冲突、平台计价必须标 `unverified`
 
-验证入口收敛为两条命令：`npm test`（984 例，含规则文件溯源门禁 `tests/rulesGate.spec.ts`）与 `npm run verify`（引擎自检：净收入恒等式闭合）；`npm run build` 跑类型检查与构建。
+验证入口收敛为两条命令：`npm test`（874 例，含规则文件溯源门禁 `tests/rulesGate.spec.ts`）与 `npm run verify`（引擎自检：净收入恒等式闭合）；`npm run build` 跑类型检查与构建。

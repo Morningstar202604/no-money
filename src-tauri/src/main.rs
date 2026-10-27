@@ -5,16 +5,11 @@ use tauri::{
 };
 
 fn main() {
+    // 本应用是纯前端 + 本地静态资源：规则文件随 dist 打包、参数存浏览器
+    // localStorage、AI 请求走 webview 原生 fetch。因此不需要任何 Tauri 插件
+    // （尤其不需要 shell / fs —— 它们会扩大攻击面）。
+    // 若将来接入桌面能力（原生通知、文件导出、自动更新），在此按需加回。
     tauri::Builder::default()
-        .plugin(tauri_plugin_store::Builder::new().build())
-        .plugin(tauri_plugin_clipboard_manager::init())
-        .plugin(tauri_plugin_dialog::init())
-        .plugin(tauri_plugin_fs::init())
-        .plugin(tauri_plugin_shell::init())
-        .plugin(tauri_plugin_http::init())
-        .plugin(tauri_plugin_notification::init())
-        .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             // 创建托盘菜单
             let show_item = MenuItem::with_id(app, "show", "显示主窗口", true, None::<&str>)?;
@@ -80,11 +75,9 @@ fn main() {
                 api.prevent_close();
             }
         })
-        .invoke_handler(tauri::generate_handler![
-            get_app_version,
-            get_rules_data,
-            save_rules_data,
-        ])
+        // 前端通过 fetch('/rules/<city>.json') 读取随应用打包的规则文件，
+        // 无需经由 Rust 命令。此处只保留版本号命令（关于页/诊断用）。
+        .invoke_handler(tauri::generate_handler![get_app_version])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
@@ -92,38 +85,4 @@ fn main() {
 #[tauri::command]
 fn get_app_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
-}
-
-/// city → 规则文件路径。fail-closed：city 只允许纯小写 ASCII 字母，
-/// 使 `../`、`\`、空串、编码绕过不可表达；归一化后仍复核前缀作纵深防御。
-fn rules_path(city: &str) -> Result<std::path::PathBuf, String> {
-    if city.is_empty() || !city.chars().all(|c| c.is_ascii_lowercase()) {
-        return Err(format!("非法城市标识: {}", city));
-    }
-    let path = std::path::PathBuf::from("../public/rules").join(format!("{}.json", city));
-    let normalized: std::path::PathBuf = path.components().collect();
-    if !normalized.starts_with("../public/rules") {
-        return Err("路径越界".to_string());
-    }
-    Ok(normalized)
-}
-
-#[tauri::command]
-async fn get_rules_data(city: String) -> Result<serde_json::Value, String> {
-    let path = rules_path(&city)?;
-    let content = std::fs::read_to_string(&path)
-        .map_err(|e| format!("读取规则文件失败: {}", e))?;
-    let json: serde_json::Value = serde_json::from_str(&content)
-        .map_err(|e| format!("解析 JSON 失败: {}", e))?;
-    Ok(json)
-}
-
-#[tauri::command]
-async fn save_rules_data(city: String, data: serde_json::Value) -> Result<(), String> {
-    let path = rules_path(&city)?;
-    let content = serde_json::to_string_pretty(&data)
-        .map_err(|e| format!("序列化 JSON 失败: {}", e))?;
-    std::fs::write(&path, content)
-        .map_err(|e| format!("写入规则文件失败: {}", e))?;
-    Ok(())
 }
