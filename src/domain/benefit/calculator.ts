@@ -1,7 +1,7 @@
-﻿import { Cent, Rate, addCent, mulCentRate, nonNegCent, safeCent, safeRate, divCent, maxCent, minCent } from '../shared/value-objects'
+﻿import { Cent, Rate, addCent, mulCentRate, nonNegCent, safeCent, maxCent, minCent } from '../shared/value-objects'
 import type { BenefitRule, BenefitBreakdown, BenefitItem, RetirementProjection, BenefitError, ContributionBase, MedicalTier } from './rules'
 import { issuanceMonthsForAge } from './rules'
-import { Result, ok, err } from '../shared/result'
+import { Result, ok } from '../shared/result'
 
 /** 解析缴费基数：用户自选优先；未选或非法时回落到申报收入夹取，再夹到法定上下限 */
 export function resolveBase(

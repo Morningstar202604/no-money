@@ -100,7 +100,9 @@ export function createBrandUtils<T, B extends string | symbol>(
   const create = assertBrand as (value: T) => Brand<T, B>;
   const is = validator
     ? ((value: unknown): value is Brand<T, B> => validator(value))
-    : ((value: unknown): value is Brand<T, B> => true);
+    // 无 validator 时一切值都视为合法；参数必须保留原名 value（类型谓词要求），
+    // 未使用由 noUnusedParameters 豁免注释承担
+    : ((value: unknown): value is Brand<T, B> => { void value; return true; });
   return {
     create,
     is,

@@ -137,9 +137,16 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
   },
   Button: {
     // 不能设 textColor：naive-ui 用它作为 default/quaternary 按钮的文字色，
-    // 覆盖成 text-inverse 会让默认按钮在白底/深底上都不可读（1:1 对比度），
-    // 各类按钮的文字色由 naive-ui 按 type 自行推导
+    // 覆盖成 text-inverse 会让默认按钮在白底/深底上都不可读（1:1 对比度）。
     fontWeight: 500,
+    // 但 primary 按钮必须显式指定文字色：naive-ui 默认白字，而深色主题的
+    // primary-500 是亮青 #2dd4bf —— 白字压亮青对比度约 1.9:1，远低于
+    // WCAG AA 的 4.5:1，按钮文字几乎看不清。--color-text-inverse 在
+    // 深色主题是近黑 #0b1120、浅色主题是白，两个主题都达标。
+    textColorPrimary: 'var(--color-text-inverse)',
+    textColorHoverPrimary: 'var(--color-text-inverse)',
+    textColorPressedPrimary: 'var(--color-text-inverse)',
+    textColorFocusPrimary: 'var(--color-text-inverse)',
   },
   Modal: {
     color: 'var(--color-bg-primary)',

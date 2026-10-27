@@ -1,6 +1,6 @@
 /** 纯计算函数：无副作用、可独立测试 */
 
-import type { IncomeRule, WorkParams, CostParams, IncomeBreakdown, CostBreakdown, Cent, Hour, Kilometer } from './rules'
+import type { IncomeRule, WorkParams, CostParams, IncomeBreakdown, CostBreakdown } from './rules'
 import { cent } from './rules'
 import { clampNumber as clamp, safeDivide } from '../shared/number'
 

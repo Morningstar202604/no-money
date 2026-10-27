@@ -25,7 +25,7 @@ import { calcIncome as domainCalcIncome, calcCosts as domainCalcCosts } from '..
 import { calcLaborMonthly as domainCalcLabor } from '../../domain/tax/calculator'
 import { calcMonthly as domainCalcBenefit } from '../../domain/benefit/calculator'
 import { findMedicalTierRate } from '../../domain/benefit/calculator'
-import { ok, err, tryCatch } from '../../domain/shared/result'
+import { err, tryCatch } from '../../domain/shared/result'
 import type { Result } from '../../domain/shared/result'
 import { AppError } from '../errors'
 import {
@@ -149,7 +149,6 @@ export class ScenarioService {
           ? netMonthlyCent / workedHours
           : 0
         // ===== 分 → 元，产出对外契约 =====
-        const monthlyTaxYuan = toYuan(monthlyTaxCent)
         const netMonthly = toYuan(netMonthlyCent)
         const netAnnual = toYuan(netAnnualCent)
         // 时薪是比值而非金额，分单位换算后仍需保留 2 位小数，与旧引擎的 round2 口径一致

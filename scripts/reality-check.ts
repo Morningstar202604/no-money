@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { ScenarioService } from '../src/application/scenario/ScenarioService'
+import type { ScenarioInput } from '../src/application/scenario/ScenarioService'
 import { BenefitEngine } from '../src/engine/BenefitEngine'
 import { projectRetirement as domRetire } from '../src/domain/benefit/calculator'
 import { Cent, Rate } from '../src/domain/shared/value-objects'
@@ -11,13 +12,19 @@ const base = {
   work: { city: 'guangzhou', dailyHours: 10, dailyOrders: 35, avgDistance: 2.5, workDaysMonth: 26, rainDaysMonth: 3, holidayDaysMonth: 2 },
   costs: { vehicleType: 'electric', fuelCostMonth: 0, electricityCostMonth: 300, maintenanceMonth: 200, insuranceMonth: 100, phoneCostMonth: 100, foodCostMonth: 800, trafficFineMonth: 50, vehicleDepreciationMonth: 300, otherCostMonth: 100 },
   personal: { currentAge: 25, expectedRetireAge: 60, hasSocialInsurance: false, specialDeductionMonth: 0, medicalTierId: undefined, pensionBase: undefined, medicalBase: undefined },
-}
+} satisfies Pick<ScenarioInput, 'work' | 'costs' | 'personal'>
 
-function clone(o) { return JSON.parse(JSON.stringify(o)) }
+function clone<T>(o: T): T { return JSON.parse(JSON.stringify(o)) as T }
 
-function run(name, patch) {
+type Patch = { work?: Record<string, unknown>; costs?: Record<string, unknown>; personal?: Record<string, unknown> }
+
+function run(name: string, patch?: Patch) {
   const p = clone(base)
-  if (patch) for (const [k, v] of Object.entries(patch)) Object.assign(p[k], v)
+  if (patch) {
+    if (patch.work) Object.assign(p.work, patch.work)
+    if (patch.costs) Object.assign(p.costs, patch.costs)
+    if (patch.personal) Object.assign(p.personal, patch.personal)
+  }
   const r = svc.runScenario({ id: name, name, ...p })
   if (!r.ok) { console.log(name + ': ERROR ' + r.error); return }
   const s = r.value

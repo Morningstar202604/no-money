@@ -190,7 +190,7 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('NaN 输入被夹取为合法值', () => {
-      const inc = calcIncome(guangzhouRule, { ...baseWork, dailyOrders: NaN, avgDistance: NaN })
+      const inc = calcIncome(guangzhouRule, { ...baseWork, dailyOrders: NaN, avgDistance: kilometer(NaN) })
       expect(Number.isFinite(inc.grossIncome)).toBe(true)
     })
 
@@ -223,7 +223,7 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('电动车的油费不计入成本（UI 隐藏输入框后，隐藏值不得继续扣净收入）', () => {
-      const costs = calcCosts({ ...baseCosts, vehicleType: 'electric', fuelCostMonth: 20000, electricityCostMonth: 30000 })
+      const costs = calcCosts({ ...baseCosts, vehicleType: 'electric', fuelCostMonth: cent(20000), electricityCostMonth: cent(30000) })
       expect(costs.fuelCostMonth, '电动模式下油费必须归零').toBe(0)
       expect(costs.electricityCostMonth).toBe(30000)
       // 合计 = 电费 30000 + 维护 20000 + 保险 10000 + 通讯 10000 + 餐饮 80000 + 罚款 5000 + 折旧 30000 + 其他 10000
@@ -231,11 +231,11 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('燃油车的电费不计入成本，混合动力两项都计', () => {
-      const fuel = calcCosts({ ...baseCosts, vehicleType: 'fuel', fuelCostMonth: 20000, electricityCostMonth: 30000 })
+      const fuel = calcCosts({ ...baseCosts, vehicleType: 'fuel', fuelCostMonth: cent(20000), electricityCostMonth: cent(30000) })
       expect(fuel.electricityCostMonth).toBe(0)
       expect(fuel.fuelCostMonth).toBe(20000)
 
-      const mixed = calcCosts({ ...baseCosts, vehicleType: 'mixed', fuelCostMonth: 20000, electricityCostMonth: 30000 })
+      const mixed = calcCosts({ ...baseCosts, vehicleType: 'mixed', fuelCostMonth: cent(20000), electricityCostMonth: cent(30000) })
       expect(mixed.fuelCostMonth).toBe(20000)
       expect(mixed.electricityCostMonth).toBe(30000)
       // 混合模式两项都进合计：195000 + 油费 20000
@@ -243,10 +243,10 @@ describe('domain/income - 纯函数', () => {
     })
 
     it('车型切换不丢数据：切回原车型时原值恢复计入', () => {
-      const asElectric = calcCosts({ ...baseCosts, vehicleType: 'electric', fuelCostMonth: 20000 })
+      const asElectric = calcCosts({ ...baseCosts, vehicleType: 'electric', fuelCostMonth: cent(20000) })
       expect(asElectric.fuelCostMonth).toBe(0)
       // 输入参数本身未被改写，切回燃油模式原值即恢复（零化只发生在计算结果里）
-      const asFuel = calcCosts({ ...baseCosts, vehicleType: 'fuel', fuelCostMonth: 20000 })
+      const asFuel = calcCosts({ ...baseCosts, vehicleType: 'fuel', fuelCostMonth: cent(20000) })
       expect(asFuel.fuelCostMonth).toBe(20000)
     })
   })

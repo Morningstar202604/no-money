@@ -19,7 +19,6 @@ import type { WorkParams as DomainWorkParams, CostParams as DomainCostParams } f
 import type { LaborRemunerationRule as DomainLaborRule } from '../../domain/tax/rules'
 import type {
   BenefitRule as DomainBenefitRule,
-  RetirementRule as DomainRetirementRule,
 } from '../../domain/benefit/rules'
 
 // ===== 元 → 分 =====

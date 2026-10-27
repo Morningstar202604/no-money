@@ -26,7 +26,6 @@
  *     的预期余命近似（60 岁约 23 年、65 岁约 18 年），此处用简单近似函数。
  */
 
-import type { Cent } from '../shared/value-objects'
 import { round2, clampNumber } from '../shared/number'
 
 /** 养老金调整率默认假设（非官方承诺） */

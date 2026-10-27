@@ -32,7 +32,8 @@ import { ensureECharts } from '../utils/echarts'
 import { chartColors } from '../utils/chart'
 import type { EChartsType } from 'echarts/core'
 
-const props = withDefaults(defineProps<{ current?: string; mapHeight?: number }>(), {
+// 不赋值给变量：props 在 <script setup> 模板里可直接用，赋值反而触发 noUnusedLocals
+withDefaults(defineProps<{ current?: string; mapHeight?: number }>(), {
   current: '',
   mapHeight: 430,
 })

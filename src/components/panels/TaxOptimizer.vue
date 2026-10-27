@@ -126,7 +126,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
-import { NCard, NGrid, NGi, NAlert, NSteps, NStep, NSelect, NTag } from 'naive-ui'
+import { NCard, NGrid, NGi, NAlert, NSteps, NStep, NSelect } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
 import { TaxEngine, type TaxEngineConfig } from '../../engine/TaxEngine'
 import { round2 } from '../../utils/number'

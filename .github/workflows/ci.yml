@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: 类型检查
+        run: npx vue-tsc --noEmit
+      - name: 单元与对拍测试（含规则溯源门禁）
+        run: npm test
+      - name: 引擎自检（净收入恒等式 / 饼图闭合）
+        run: npm run verify
+      - name: 构建
+        run: npm run build
+      - name: 依赖漏洞
+        run: npm audit --audit-level=high

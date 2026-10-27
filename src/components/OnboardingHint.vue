@@ -59,7 +59,6 @@
 import { computed, ref } from 'vue'
 import { NModal, NButton, NAlert } from 'naive-ui'
 import { useMainStore } from '../stores/main'
-import { CITIES } from '../stores/main'
 
 const STORAGE_KEY = 'nomoney_onboarding_v1'
 const store = useMainStore()

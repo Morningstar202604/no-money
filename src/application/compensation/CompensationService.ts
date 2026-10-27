@@ -1,6 +1,6 @@
 import type { CompensationItem, CompensationLegalRef, CompensationResult } from '../../types';
-import { ok, err, Result, tryCatch } from '../../domain/shared/result';
-import { AppError, AppErrorCode } from '../errors';
+import { err, Result, tryCatch } from '../../domain/shared/result';
+import { AppError } from '../errors';
 import { provinceOf } from '../../data/provinces';
 
 /** 补偿计算输入参数 */
@@ -87,13 +87,13 @@ export class CompensationService {
 
       switch (scene) {
         case 'wage':
-          result = this.calcWage(form.wage!, floor, ceil);
+          result = this.calcWage(form.wage!);
           break;
         case 'injury':
           result = this.calcInjury(form.injury!, floor, ceil, rule.city);
           break;
         case 'dismiss':
-          result = this.calcDismiss(form.dismiss!, floor, ceil);
+          result = this.calcDismiss(form.dismiss!, ceil);
           break;
         case 'algorithm':
           result = this.calcAlgo(form.algo!);
@@ -195,7 +195,7 @@ export class CompensationService {
   }
 
   /** 计算欠薪/克扣报酬场景 */
-  private calcWage(form: NonNullable<CompensationForm['wage']>, floor: number, ceil: number): CompensationResult {
+  private calcWage(form: NonNullable<CompensationForm['wage']>): CompensationResult {
     const { months, monthly, percent, tenureMonths, hasContract, forcedQuit } = form;
     const owed = monthly * (percent / 100) * months;
 
@@ -318,7 +318,7 @@ export class CompensationService {
   }
 
   /** 计算违法解约场景 */
-  private calcDismiss(form: NonNullable<CompensationForm['dismiss']>, floor: number, ceil: number): CompensationResult {
+  private calcDismiss(form: NonNullable<CompensationForm['dismiss']>, ceil: number): CompensationResult {
     const { years, monthly, type, pregnancyMonths } = form;
     const capped = Math.min(monthly, ceil);
     const yearsCapped = monthly > ceil ? Math.min(years, 12) : years;

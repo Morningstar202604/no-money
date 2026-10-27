@@ -108,7 +108,7 @@ describe('规则文件溯源门禁', () => {
   it('养老/医保基数下限必须小于上限（resolveBase 对反写区间会静默按下限计费）', () => {
     for (const [f, rule] of Object.entries(rules)) {
       const pension = rule.benefit as { pension?: { baseMin: number; baseMax: number } } | undefined
-      expect(pension?.pension!.baseMax, `${f} 养老基数上限非法`).toBeGreaterThan(pension?.pension!.baseMin)
+      expect(pension?.pension?.baseMax ?? 0, `${f} 养老基数上限非法`).toBeGreaterThan(pension?.pension?.baseMin ?? 0)
       const medical = (rule.benefit as { medical?: { baseMin: number; baseMax: number } } | undefined)?.medical
       if (medical && medical.baseMin !== undefined) {
         expect(medical.baseMax, `${f} 医保基数上限非法`).toBeGreaterThan(medical.baseMin)
@@ -121,9 +121,11 @@ describe('规则文件溯源门禁', () => {
       const sole = rule.soleProprietorship
       expect(sole, `${f} 缺 soleProprietorship 配置`).toBeTruthy()
       if (sole) {
-        expect(sole.vatRate > 0 && sole.vatRate < 0.1, `${f} 增值税税率越界: ${sole.vatRate}`).toBe(true)
+        const vatRate = sole.vatRate ?? 0
+        const itrRate = sole.itrIncomeRate ?? 0
+        expect(vatRate > 0 && vatRate < 0.1, `${f} 增值税税率越界: ${sole.vatRate}`).toBe(true)
         expect(sole.vatThresholdMonthly, `${f} 增值税起征点非法`).toBeGreaterThan(0)
-        expect(sole.itrIncomeRate > 0 && sole.itrIncomeRate < 1, `${f} 个税所得率越界: ${sole.itrIncomeRate}`).toBe(true)
+        expect(itrRate > 0 && itrRate < 1, `${f} 个税所得率越界: ${sole.itrIncomeRate}`).toBe(true)
       }
       expect(rule.sources?.soleVat?.docNo, `${f} 个体户增值税缺官方文号`).toBeTruthy()
       expect(rule.sources?.soleItr, `${f} 个体户个税缺来源`).toBeTruthy()

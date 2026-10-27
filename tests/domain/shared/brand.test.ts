@@ -13,13 +13,13 @@ describe('Brand 类型工具', () => {
   type Age = Brand<number, 'Age'>;
 
   it('应创建品牌值', () => {
-    const userId = assertBrand<UserId>('user-123');
+    const userId = assertBrand<string, 'UserId'>('user-123');
     expect(userId).toBe('user-123');
   });
 
   it('不同品牌类型不应互换', () => {
-    const userId = assertBrand<UserId>('123');
-    const postId = assertBrand<PostId>('123');
+    const userId = assertBrand<string, 'UserId'>('123');
+    const postId = assertBrand<string, 'PostId'>('123');
     // 编译时会报错：类型  UserId 不能赋值给类型 PostId
     // @ts-expect-error
     const _fail: PostId = userId;
@@ -30,7 +30,7 @@ describe('Brand 类型工具', () => {
 
   it('assertBrand 应返回原值', () => {
     const value = 'test';
-    const branded = assertBrand<UserId>(value);
+    const branded = assertBrand<string, 'UserId'>(value);
     expect(branded).toBe(value);
   });
 

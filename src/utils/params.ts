@@ -79,7 +79,7 @@ export function hydrateParams<T extends object>(saved: unknown, fallback: T): T 
   // fallback 中值为 undefined 的可选键也算已知键（写入时同样存在），否则会静默丢字段
   for (const [k, v] of Object.entries(saved as Record<string, unknown>)) {
     if (!(k in known)) continue
-    const bounds = lookupBounds(fallback, k)
+    const bounds = lookupBounds(k)
     if (bounds) {
       const fallbackVal = typeof known[k] === 'number' ? (known[k] as number) : bounds[0]
       out[k] = clamp(v, bounds[0], bounds[1], fallbackVal)
@@ -117,7 +117,7 @@ export function hydrateParams<T extends object>(saved: unknown, fallback: T): T 
   return out as T
 }
 
-function lookupBounds(fallback: object, key: string): readonly [number, number] | null {
+function lookupBounds(key: string): readonly [number, number] | null {
   for (const group of Object.values(PARAM_BOUNDS)) {
     const b = (group as Record<string, readonly [number, number]>)[key]
     if (b) return b

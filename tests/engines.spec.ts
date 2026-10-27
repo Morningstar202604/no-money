@@ -49,26 +49,26 @@ describe('TaxEngine 累计预扣法', () => {
   const expectedAnnual = Math.round(taxableMonthly * 12 * 0.03 * 100) / 100
 
   it('全年税额等于手算值', () => {
-    const t = new TaxEngine(rule.tax).calcLabor(new Array(12).fill(gross), 0)
+    const t = new TaxEngine({ laborRemuneration: rule.tax.laborRemuneration, soleProprietorship: rule.soleProprietorship }).calcLabor(new Array(12).fill(gross), 0)
     expect(t.annualTax).toBeCloseTo(expectedAnnual, 2)
     expect(t.annualTax).toBeGreaterThan(0)
   })
 
   it('未超起征点时不应出现负税', () => {
-    const t = new TaxEngine(rule.tax).calcLabor(new Array(12).fill(3000), 0)
+    const t = new TaxEngine({ laborRemuneration: rule.tax.laborRemuneration, soleProprietorship: rule.soleProprietorship }).calcLabor(new Array(12).fill(3000), 0)
     expect(t.annualTax).toBe(0)
     t.monthlyTax.forEach(v => expect(v).toBeGreaterThanOrEqual(0))
   })
 
   it('专项附加扣除只减不增，扣除越多税额越低', () => {
-    const t0 = new TaxEngine(rule.tax).calcLabor(new Array(12).fill(gross), 0)
-    const t2 = new TaxEngine(rule.tax).calcLabor(new Array(12).fill(gross), 2000)
+    const t0 = new TaxEngine({ laborRemuneration: rule.tax.laborRemuneration, soleProprietorship: rule.soleProprietorship }).calcLabor(new Array(12).fill(gross), 0)
+    const t2 = new TaxEngine({ laborRemuneration: rule.tax.laborRemuneration, soleProprietorship: rule.soleProprietorship }).calcLabor(new Array(12).fill(gross), 2000)
     expect(t2.annualTax).toBeLessThan(t0.annualTax)
   })
 
   it('高档税率正确进档（月收入提高到跨档）', () => {
     const high = 30000
-    const t = new TaxEngine(rule.tax).calcLabor(new Array(12).fill(high), 0)
+    const t = new TaxEngine({ laborRemuneration: rule.tax.laborRemuneration, soleProprietorship: rule.soleProprietorship }).calcLabor(new Array(12).fill(high), 0)
     // 累计应税 = 30000*0.8*12 - 5000*12 = 228000-60000 = 168000 → 20%档
     expect(t.annualTax).toBeGreaterThan(0)
     expect(t.effectiveRate).toBeGreaterThan(5)
@@ -304,20 +304,20 @@ describe('R2 劳务报酬费用减除的 4000 元分支', () => {
   const gz = loadRuleFile('guangzhou.json')
 
   it('月收入 3000（低于 4000）时按 800 元减除，而非 20%', () => {
-    const t = new TaxEngine(gz.tax).calcLabor(new Array(12).fill(3000), 0)
+    const t = new TaxEngine({ laborRemuneration: gz.tax.laborRemuneration, soleProprietorship: gz.soleProprietorship }).calcLabor(new Array(12).fill(3000), 0)
     // 收入额 = 3000 - 800 = 2200；应纳税所得额 = 2200 - 5000 < 0 → 税额 0
     expect(t.annualTax).toBe(0)
   })
 
   it('月收入 8000（高于 4000）时按 20% 减除', () => {
-    const t = new TaxEngine(gz.tax).calcLabor(new Array(12).fill(8000), 0)
+    const t = new TaxEngine({ laborRemuneration: gz.tax.laborRemuneration, soleProprietorship: gz.soleProprietorship }).calcLabor(new Array(12).fill(8000), 0)
     // 收入额 = 8000*0.8 = 6400；应纳税所得额 = 6400*12 - 5000*12 = 16800 → 3% 档
     expect(t.annualTax).toBeCloseTo(Math.round(16800 * 0.03 * 100) / 100, 2)
   })
 
   it('若错用 20% 减除，低收入场景会虚高计税所得——两分支必须不同', () => {
-    const low = new TaxEngine(gz.tax).calcLabor(new Array(12).fill(3900), 0)
-    const high = new TaxEngine(gz.tax).calcLabor(new Array(12).fill(4100), 0)
+    const low = new TaxEngine({ laborRemuneration: gz.tax.laborRemuneration, soleProprietorship: gz.soleProprietorship }).calcLabor(new Array(12).fill(3900), 0)
+    const high = new TaxEngine({ laborRemuneration: gz.tax.laborRemuneration, soleProprietorship: gz.soleProprietorship }).calcLabor(new Array(12).fill(4100), 0)
     // 3900 用 800 元分支后仍低于起征点；4100 用 20% 分支后同样低于起征点
     expect(low.annualTax).toBe(0)
     expect(high.annualTax).toBe(0)

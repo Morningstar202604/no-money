@@ -426,6 +426,9 @@ export const useMainStore = defineStore('main', () => {
     // 用户以为全清了、实际产能与波动率还是上次调过的值
     capacityModel.value = { ...DEFAULT_CAPACITY }
     volatilityCv.value = 0.2
+    // 补偿结果属于「上一套参数」的产物：重置后若不清空，文书生成器会把
+    // 旧金额当成本次测算结果写进仲裁请求——这是会被提交给仲裁委的金额，必须清
+    compensation.value = null
     paramsRestored.value = false
     return loadRule(keepCity)
   }

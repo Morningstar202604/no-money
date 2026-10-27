@@ -1,4 +1,4 @@
-import { Cent, Rate, yuanToCent, centToYuan, addCent, subCent, mulCentRate, divCent, maxCent, nonNegCent, safeCent, safeRate } from '../shared/value-objects'
+import { Cent, Rate, addCent, subCent, mulCentRate, divCent, nonNegCent, safeCent, safeRate } from '../shared/value-objects'
 import type { TaxBracket, LaborRemunerationRule, SoleProprietorshipRule, TaxBreakdown, TaxError } from './rules'
 import { Result, ok, err } from '../shared/result'
 

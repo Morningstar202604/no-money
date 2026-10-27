@@ -14,7 +14,13 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
     "tauri:icon": "tauri icon src-tauri/icons/1024x1024.png",
-    "kb:export": "tsx scripts/export-kb.ts"
+    "kb:export": "tsx scripts/export-kb.ts",
+    "typecheck": "vue-tsc --noEmit",
+    "typecheck:test": "vue-tsc -p tsconfig.test.json --noEmit",
+    "verify:reality": "tsx scripts/reality-check.ts",
+    "kb:check": "tsx scripts/export-kb.ts --check",
+    "lint": "vue-tsc --noEmit",
+    "check": "npm run lint && npm test && npm run verify"
   },
   "dependencies": {
     "echarts": "^6.1.0",
@@ -34,5 +40,8 @@
     "vitest": "^4.1.12",
     "vue-tsc": "^2.1.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "engines": {
+    "node": ">=22 <25"
+  }
 }

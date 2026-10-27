@@ -19,7 +19,7 @@
  * （放进去只会产生 15 份可能被改错的副本）。
  */
 
-import { Cent, Rate, addCent, nonNegCent, safeRate, subCent } from '../shared/value-objects'
+import { Cent, nonNegCent, subCent } from '../shared/value-objects'
 
 /** 预扣率表二（61 号公告附件 2）—— 单位：元 / 百分数 */
 export const WITHHOLDING_TABLE = [

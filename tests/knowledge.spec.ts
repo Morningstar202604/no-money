@@ -171,8 +171,9 @@ describe('导出文件同步（public/knowledge/kb.json）', () => {
     const payload = JSON.parse(raw) as ReturnType<typeof buildKbPayload>
     expect(payload.schemaVersion).toBe(1)
     const fresh = buildKbPayload(rules, payload.generatedAt)
-    expect(payload.entries.length, 'kb.json 与数据源不同步，请运行 npm run kb:export').toBe(fresh.entries.length)
+    // 必须逐字节比对内容，不能只比长度/ID：只改某条 summary 而忘记导出时，
+    // 长度与 ID 都不变，测试会假通过
+    expect(payload.entries, 'kb.json 与数据源不同步，请运行 npm run kb:export').toEqual(fresh.entries)
     expect(payload.counts).toEqual(fresh.counts)
-    expect(payload.entries.map(e => e.id).sort()).toEqual(fresh.entries.map(e => e.id).sort())
   })
 })

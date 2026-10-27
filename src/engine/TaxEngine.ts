@@ -1,4 +1,4 @@
-import type { CityRule, TaxRule, TaxBreakdown, SoleProprietorshipRule } from '../types'
+import type { CityRule, TaxRule, TaxBreakdown } from '../types'
 import { round2 as round } from '../utils/number'
 
 /** TaxEngine 所需的最小配置：劳务报酬税表 + 个体户核定征收配置 */

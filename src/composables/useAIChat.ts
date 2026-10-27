@@ -238,9 +238,11 @@ export function useAIChat() {
       })
 
       if (!resp.ok) {
-        // 服务端错误体可能回显请求内容，不把原文渲染进气泡，只做本地化分类
+        // 服务端错误体可能回显请求内容，不把原文渲染进气泡，只做本地化分类；
+        // 但必须留在 console 供排查（此前注释声称「留在 console」却没有真的打印）
         const detail = await resp.text().catch(() => '')
-        throw new Error(classifyApiError(resp.status, detail))
+        console.error(`[ai] HTTP ${resp.status}`, detail.slice(0, 500))
+        throw new Error(classifyApiError(resp.status))
       }
 
       reader = resp.body?.getReader()
@@ -323,8 +325,8 @@ export function useAIChat() {
     return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
   }
 
-  /** 把 HTTP 状态映射为可读文案；原始错误体仅留在 console，不进 UI 与本地存储 */
-  function classifyApiError(status: number, detail: string) {
+  /** 把 HTTP 状态映射为可读文案；原始错误体由调用方打印到 console，不进 UI 与本地存储 */
+  function classifyApiError(status: number) {
     if (status === 401 || status === 403) return 'API Key 无效或已过期（HTTP ' + status + '）'
     if (status === 404) return '接口地址不存在（HTTP 404），请检查 Endpoint 填写'
     if (status === 429) return '请求过于频繁或额度已用尽（HTTP 429）'

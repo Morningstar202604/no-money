@@ -184,7 +184,7 @@
             <div class="form-item">
               <label>小时工资基数 (元/h)</label>
               <n-input-number v-model:value="form.overwork.hourlyBase" :min="0" :step="5" style="width:100%" @update:value="calc()" />
-              <p class="form-note">不得低于非全日制小时最低工资 ¥{{ store.rule?.minimumWage.nonFullTimeHourly ?? '—' }}/h <SourceTag source-key="minimumWage" /></p>
+              <p class="form-note">不得低于非全日制小时最低工资 ¥{{ effectiveMinHourly || '—' }}/h <SourceTag source-key="minimumWage" /></p>
             </div>
             <div class="form-item">
               <label>工作日延时小时/月</label>
@@ -353,6 +353,13 @@ const compensationService = new CompensationService()
 
 /** 养老基数上下限即全省全口径社平的60%/300%，表单区展示该区间、服务用它封顶保底。
  *  用户填入「本省法定参数」后以用户值为准（与主测算页同源） */
+/** 生效的非全日制最低小时工资：用户填的本省值优先（省级标准差异大） */
+const effectiveMinHourly = computed(() =>
+  store.personal.statutoryOverrides?.minWageHourly
+  ?? store.rule?.minimumWage.nonFullTimeHourly
+  ?? 0,
+)
+
 const pensionFloor = computed(() => effectiveFloor.value)
 const pensionCeil = computed(() => effectiveCeil.value)
 
@@ -373,7 +380,7 @@ function toServiceInput() {
     form,
     rule: {
       benefit: { pension: { baseMin: effectiveFloor.value, baseMax: effectiveCeil.value } },
-      minimumWage: { nonFullTimeHourly: rule.minimumWage.nonFullTimeHourly },
+      minimumWage: { nonFullTimeHourly: effectiveMinHourly.value },
       // 省级工伤口径判断用：非广东城市不给广东的医疗/就业补助金月数
       city: rule.city,
     },
