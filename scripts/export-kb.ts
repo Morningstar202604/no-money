@@ -11,8 +11,10 @@ import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname } from 'node:path'
 import type { CityRule } from '../src/types'
 import { buildKbPayload } from '../src/utils/knowledge'
+import { CITY_REGISTRY } from '../src/data/cities'
 
-const CITIES = ['guangzhou', 'shenzhen', 'dongguan'] as const
+// 从注册表读取全部城市，避免新增城市时漏导出（此前硬编码 3 城）
+const CITIES = CITY_REGISTRY.map(c => c.value)
 const OUT = 'public/knowledge/kb.json'
 
 const rules = CITIES.map(c => JSON.parse(readFileSync(`public/rules/${c}.json`, 'utf8')) as CityRule)

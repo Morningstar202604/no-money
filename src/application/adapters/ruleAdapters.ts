@@ -75,14 +75,31 @@ export function adaptLaborRule(r: CityRule['tax']['laborRemuneration']): DomainL
 }
 
 
-/** 社保规则：缴费基数上下限以元为单位 */
-export function adaptBenefitRule(r: CityRule['benefit']): DomainBenefitRule {
+/**
+ * 社保规则：缴费基数上下限以元为单位。
+ *
+ * overrides 是用户填入的「本省官方公布值」：省级社保基数每年由各省单独公布，
+ * 本产品无法逐一回溯全国 31 个省级区划的文件，因此允许用户覆盖基数上下限。
+ * 只覆盖基数，费率保持规则值（费率多为全国统一或省级长期稳定）。
+ */
+export function adaptBenefitRule(
+  r: CityRule['benefit'],
+  overrides?: { baseMin?: number; baseMax?: number },
+): DomainBenefitRule {
+  const min = overrides?.baseMin !== undefined && Number.isFinite(overrides.baseMin) ? overrides.baseMin : r.pension.baseMin
+  const max = overrides?.baseMax !== undefined && Number.isFinite(overrides.baseMax) ? overrides.baseMax : r.pension.baseMax
+  // 合法性兜底：下限非正或上限不大于下限时回落规则值，避免出现空区间
+  const valid = min > 0 && max > min
   return {
     pension: {
-      baseMin: toCent(r.pension.baseMin),
-      baseMax: toCent(r.pension.baseMax),
+      baseMin: toCent(valid ? min : r.pension.baseMin),
+      baseMax: toCent(valid ? max : r.pension.baseMax),
       rate: Rate.create(r.pension.rate),
     },
+    // 医保基数独立于养老基数：两者上下限在多数城市并不相同
+    // （如广州养老 5521–27603、医保 6234–31170）。用户填的「缴费基数」
+    // 是按养老口径公布的值，不能拿来覆盖医保上下限——那会把医保
+    // 上限错误地缩小（实测广州 6234–31170 被改成 5521–27603）。
     medical: {
       baseMin: toCent(r.medical.baseMin),
       baseMax: toCent(r.medical.baseMax),

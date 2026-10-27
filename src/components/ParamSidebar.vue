@@ -25,10 +25,66 @@
       <ChinaMapPicker :current="store.work.city" @select="onMapPick" />
       <template #footer>
         <div class="map-foot">
-          已收录 {{ cityCount }} 座城市；未收录城市可在参数栏用所在地口径近似，或向我们反馈补充。
+          已收录 {{ cityCount }} 座城市（覆盖全部 31 个省级行政区）；标「待核实」的省市请用下方
+          「本省法定参数」填入当地人社厅公布的真实值。
         </div>
       </template>
     </n-modal>
+
+    <!-- 本省法定参数校准：全国 31 省级区划的社保基数由各省单独公布，
+         未核实的省份必须允许用户填入本省官方值，否则只能用占位量级。 -->
+    <FoldCard
+      v-if="ruleUnverified"
+      class="ps-fold"
+      dense
+      :title="`本省法定参数（${store.rule?.cityName ?? ''}尚未核实）`"
+      :summary="statutoryCount > 0 ? `已填 ${statutoryCount} 项` : '当前为全国量级占位值'"
+      default-open
+    >
+      <div class="ps-group">
+        <n-alert type="warning" :show-icon="true" style="margin-bottom: 8px">
+          <div><b>本省社保基数与最低工资未回溯官方原文</b></div>
+          <div style="margin-top:4px;font-size:12px">
+            当前用的是全国量级参考值（基数 {{ store.rule?.benefit.pension.baseMin }}–{{ store.rule?.benefit.pension.baseMax }}、
+            最低工资 {{ store.rule?.minimumWage.monthly }} 元）。请查你所在省人社厅公布的当年值填入，
+            填入后测算与评级才会锚定本省口径。
+          </div>
+        </n-alert>
+
+        <div class="ps-item">
+          <div class="ps-label">缴费基数下限（元） <b>{{ effectiveBaseMin }}</b></div>
+          <n-input-number
+            :value="store.personal.statutoryOverrides?.baseMin"
+            :min="0" :max="100000" :step="100" size="small" style="width:100%"
+            :placeholder="`占位值 ${store.rule?.benefit.pension.baseMin ?? '—'}`"
+            @update:value="(v: number | null) => setStatutory('baseMin', v)"
+          />
+        </div>
+        <div class="ps-item">
+          <div class="ps-label">缴费基数上限（元） <b>{{ effectiveBaseMax }}</b></div>
+          <n-input-number
+            :value="store.personal.statutoryOverrides?.baseMax"
+            :min="0" :max="300000" :step="100" size="small" style="width:100%"
+            :placeholder="`占位值 ${store.rule?.benefit.pension.baseMax ?? '—'}`"
+            @update:value="(v: number | null) => setStatutory('baseMax', v)"
+          />
+          <div class="ps-note">上限应约为下限的 5 倍（法定 60%–300% 区间）；填错会被自动忽略</div>
+        </div>
+        <div class="ps-item">
+          <div class="ps-label">月最低工资（元） <b>{{ effectiveMinWage }}</b></div>
+          <n-input-number
+            :value="store.personal.statutoryOverrides?.minWageMonthly"
+            :min="0" :max="20000" :step="10" size="small" style="width:100%"
+            :placeholder="`占位值 ${store.rule?.minimumWage.monthly ?? '—'}`"
+            @update:value="(v: number | null) => setStatutory('minWageMonthly', v)"
+          />
+          <div class="ps-note">用于权益评分评级锚点与「低于最低工资」提示</div>
+        </div>
+        <n-button v-if="statutoryCount > 0" size="tiny" quaternary block @click="clearStatutory">
+          清除本省参数，回到占位值
+        </n-button>
+      </div>
+    </FoldCard>
 
     <!-- Work params -->
     <FoldCard
@@ -423,6 +479,34 @@ const capacityEval = computed(() => calcCapacity(
 const capacityMinutes = computed(() => capacityEval.value.minutesPerOrder)
 const capacityMax = computed(() => capacityEval.value.maxOrdersPerDay)
 const capacityOverloaded = computed(() => capacityEval.value.overloaded)
+
+/** 当前城市规则是否未核实（决定是否显示「本省法定参数」校准卡） */
+const ruleUnverified = computed(() =>
+  store.rule?.sources?.pension?.confidence === 'unverified'
+  || store.rule?.sources?.minimumWage?.confidence === 'unverified',
+)
+
+const statutoryCount = computed(() => {
+  const o = store.personal.statutoryOverrides
+  if (!o) return 0
+  return Object.values(o).filter(v => typeof v === 'number' && Number.isFinite(v)).length
+})
+
+/** 生效值：用户覆盖优先，否则规则值 */
+const effectiveBaseMin = computed(() => store.personal.statutoryOverrides?.baseMin ?? store.rule?.benefit.pension.baseMin ?? '—')
+const effectiveBaseMax = computed(() => store.personal.statutoryOverrides?.baseMax ?? store.rule?.benefit.pension.baseMax ?? '—')
+const effectiveMinWage = computed(() => store.personal.statutoryOverrides?.minWageMonthly ?? store.rule?.minimumWage.monthly ?? '—')
+
+type StatutoryKey = 'baseMin' | 'baseMax' | 'minWageMonthly' | 'minWageHourly'
+function setStatutory(key: StatutoryKey, v: number | null) {
+  const next = { ...(store.personal.statutoryOverrides ?? {}) }
+  if (v === null || !Number.isFinite(v)) delete next[key]
+  else next[key] = v
+  store.personal.statutoryOverrides = Object.keys(next).length > 0 ? next : undefined
+}
+function clearStatutory() {
+  store.personal.statutoryOverrides = undefined
+}
 
 const cityOptions = CITIES
 const showMap = ref(false)

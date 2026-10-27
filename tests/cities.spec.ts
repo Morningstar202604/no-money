@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { CITY_REGISTRY, provinceCoverage } from '../src/data/cities'
 import type { CityRule } from '../src/types'
 
@@ -137,5 +137,56 @@ describe('城市注册表与规则文件同步', () => {
     const coverage = provinceCoverage()
     const total = [...coverage.values()].reduce((n, list) => n + list.length, 0)
     expect(total).toBe(CITY_REGISTRY.length)
+  })
+})
+
+describe('全国覆盖：31 个省级行政区全部可选', () => {
+  const MAINLAND_PROVINCES = [
+    '河北', '山西', '内蒙古', '辽宁', '吉林', '黑龙江', '江苏', '浙江', '安徽',
+    '福建', '江西', '山东', '河南', '湖北', '湖南', '广东', '广西', '海南',
+    '四川', '贵州', '云南', '西藏', '陕西', '甘肃', '青海', '宁夏', '新疆',
+    '北京', '天津', '上海', '重庆',
+  ]
+
+  it('每个省级行政区至少有一座城市可选（31/31）', () => {
+    const covered = new Set(CITY_REGISTRY.map(c => c.province))
+    const missing = MAINLAND_PROVINCES.filter(p => !covered.has(p))
+    expect(missing, `以下省级行政区没有可选城市：${missing.join('、')}`).toEqual([])
+    expect(MAINLAND_PROVINCES.length).toBe(31)
+  })
+
+  it('每座城市都有对应规则文件且 city 字段自洽', () => {
+    for (const c of CITY_REGISTRY) {
+      const path = `public/rules/${c.value}.json`
+      expect(existsSync(path), `缺少规则文件 ${path}`).toBe(true)
+      const rule = JSON.parse(readFileSync(path, 'utf8'))
+      expect(rule.city, `${c.value}.json 的 city 字段不匹配`).toBe(c.value)
+      expect(rule.cityName, `${c.value}.json 的 cityName 应为 ${c.label}`).toBe(c.label)
+    }
+  })
+
+  it('未核实的城市必须在来源 note 中写明「不可对外引用」或「待核实」', () => {
+    for (const c of CITY_REGISTRY) {
+      const rule = JSON.parse(readFileSync(`public/rules/${c.value}.json`, 'utf8'))
+      const unverifiedKeys = Object.entries(rule.sources ?? {})
+        .filter(([, s]) => (s as { confidence?: string }).confidence === 'unverified')
+        .map(([k]) => k)
+      if (unverifiedKeys.length === 0) continue
+      for (const key of unverifiedKeys) {
+        const note = (rule.sources[key] as { note?: string }).note ?? ''
+        // 要求 note 里明确表达「这数别直接信」：覆盖常见措辞即可，
+        // 包括「请到…核对原文后再使用」这类间接但明确的提示
+        const disclosed = /待核实|不可对外引用|占位|未回溯|不能作为决策依据|核对原文|以.{0,12}为准|请.{0,16}核对/.test(note)
+        expect(disclosed, `${c.value}.json 的 ${key} 标为 unverified 但 note 未说明不可引用`).toBe(true)
+      }
+    }
+  })
+
+  it('基数上下限之比符合法定 60%–300%（比率 = 5）', () => {
+    for (const c of CITY_REGISTRY) {
+      const rule = JSON.parse(readFileSync(`public/rules/${c.value}.json`, 'utf8'))
+      const { baseMin, baseMax } = rule.benefit.pension
+      expect(baseMax / baseMin, `${c.value} 养老基数上下限之比应为 5`).toBeCloseTo(5, 1)
+    }
   })
 })

@@ -1,0 +1,215 @@
+{
+  "city": "jinan",
+  "cityName": "济南",
+  "year": 2026,
+  "lastCheckedAt": "2026-10-27",
+  "verified": false,
+  "occupation": "delivery",
+  "occupationName": "外卖骑手",
+  "income": {
+    "basePricePerOrder": 5.0,
+    "distanceRate": 1.2,
+    "weightSurcharge": {
+      "threshold": 5,
+      "rate": 0.5
+    },
+    "timeSubsidy": {
+      "peakHours": [
+        "11:00-13:00",
+        "17:00-19:00",
+        "21:00-23:00"
+      ],
+      "multiplier": 1.25
+    },
+    "holidayMultiplier": 1.6,
+    "rainSurcharge": 1.35,
+    "monthlyBonus": {
+      "threshold": 800,
+      "amount": 500
+    }
+  },
+  "tax": {
+    "method": "annual_consolidated",
+    "laborRemuneration": {
+      "expenseDeductionRate": 0.2,
+      "expenseDeductionFixed": 800,
+      "expenseDeductionThreshold": 4000,
+      "basicDeductionMonthly": 5000,
+      "taxTable": [
+        {
+          "min": 0,
+          "max": 36000,
+          "rate": 0.03,
+          "deduction": 0
+        },
+        {
+          "min": 36000,
+          "max": 144000,
+          "rate": 0.1,
+          "deduction": 2520
+        },
+        {
+          "min": 144000,
+          "max": 300000,
+          "rate": 0.2,
+          "deduction": 16920
+        },
+        {
+          "min": 300000,
+          "max": 420000,
+          "rate": 0.25,
+          "deduction": 31920
+        },
+        {
+          "min": 420000,
+          "max": 660000,
+          "rate": 0.3,
+          "deduction": 52920
+        },
+        {
+          "min": 660000,
+          "max": 960000,
+          "rate": 0.35,
+          "deduction": 85920
+        },
+        {
+          "min": 960000,
+          "max": 999999999,
+          "rate": 0.45,
+          "deduction": 181920
+        }
+      ]
+    }
+  },
+  "benefit": {
+    "pension": {
+      "baseMin": 4500,
+      "baseMax": 22500,
+      "rate": 0.2
+    },
+    "medical": {
+      "baseMin": 4500,
+      "baseMax": 22500,
+      "rate": 0.08
+    }
+  },
+  "minimumWage": {
+    "monthly": 2000,
+    "nonFullTimeHourly": 20
+  },
+  "retirement": {
+    "personalAccountRate": 0.08,
+    "paymentIndex": 0.6,
+    "assumedAnnualReturn": 0.03,
+    "benefitBaseMonthly": 8000
+  },
+  "soleProprietorship": {
+    "vatRate": 0.01,
+    "vatThresholdMonthly": 100000,
+    "itrIncomeRate": 0.1,
+    "itrDeductionMonthly": 5000,
+    "bizTaxTable": [
+      {
+        "min": 0,
+        "max": 30000,
+        "rate": 0.05,
+        "deduction": 0
+      },
+      {
+        "min": 30000,
+        "max": 90000,
+        "rate": 0.1,
+        "deduction": 1500
+      },
+      {
+        "min": 90000,
+        "max": 300000,
+        "rate": 0.2,
+        "deduction": 10500
+      },
+      {
+        "min": 300000,
+        "max": 500000,
+        "rate": 0.3,
+        "deduction": 40500
+      },
+      {
+        "min": 500000,
+        "max": 999999999,
+        "rate": 0.35,
+        "deduction": 65500
+      }
+    ]
+  },
+  "sources": {
+    "pension": {
+      "title": "济南社保缴费工资基数上下限（待核实）",
+      "issuedBy": "山东省人力资源和社会保障厅（待核）",
+      "url": "",
+      "retrievedAt": "2026-10-27",
+      "confidence": "unverified",
+      "note": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+    },
+    "pensionRate": {
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "url": "",
+      "retrievedAt": "2026-10-27",
+      "confidence": "derived",
+      "note": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。"
+    },
+    "medical": {
+      "title": "济南职工医保缴费基数（待核实）",
+      "url": "",
+      "retrievedAt": "2026-10-27",
+      "confidence": "unverified",
+      "note": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+    },
+    "tax": {
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "url": "https://fgk.chinatax.gov.cn/",
+      "effectiveFrom": "2019-01-01",
+      "retrievedAt": "2026-10-14",
+      "confidence": "official",
+      "note": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。"
+    },
+    "minimumWage": {
+      "title": "济南最低工资标准（待核实）",
+      "url": "",
+      "retrievedAt": "2026-10-27",
+      "confidence": "unverified",
+      "note": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+    },
+    "retirement": {
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "docNo": "国发〔2005〕38号",
+      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
+      "retrievedAt": "2026-10-27",
+      "confidence": "unverified",
+      "note": "公式全国统一，但计发基数由各省公布；济南的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+    },
+    "income": {
+      "title": "平台接单计价规则",
+      "issuedBy": "无公开权威来源",
+      "retrievedAt": "2026-10-27",
+      "confidence": "unverified",
+      "note": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。"
+    },
+    "soleVat": {
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html",
+      "effectiveFrom": "2026-01-01 至 2027-12-31",
+      "retrievedAt": "2026-10-14",
+      "confidence": "official",
+      "note": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。"
+    },
+    "soleItr": {
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "url": "",
+      "retrievedAt": "2026-10-27",
+      "confidence": "unverified",
+      "note": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。"
+    }
+  }
+}

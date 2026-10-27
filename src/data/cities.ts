@@ -40,6 +40,29 @@ export const CITY_REGISTRY: CityDef[] = [
   { value: 'chengdu', label: '成都', province: '四川', lng: 104.07, lat: 30.57 },
   { value: 'chongqing', label: '重庆', province: '重庆', lng: 106.55, lat: 29.56 },
   { value: 'xian', label: '西安', province: '陕西', lng: 108.95, lat: 34.27 },
+
+  // ===== 以下省市为「全国覆盖」新增：规则文件已提供，但省级社保/最低工资
+  // 数据尚未回溯到官方原文（confidence = unverified），界面上会明确标注。
+  // 用户可用「我的计价」与社保基数自定义填入本省官方公布值。 =====
+  { value: 'shijiazhuang', label: '石家庄', province: '河北', lng: 114.51, lat: 38.04 },
+  { value: 'taiyuan', label: '太原', province: '山西', lng: 112.55, lat: 37.87 },
+  { value: 'huhehaote', label: '呼和浩特', province: '内蒙古', lng: 111.75, lat: 40.84 },
+  { value: 'shenyang', label: '沈阳', province: '辽宁', lng: 123.43, lat: 41.81 },
+  { value: 'changchun', label: '长春', province: '吉林', lng: 125.32, lat: 43.82 },
+  { value: 'haerbin', label: '哈尔滨', province: '黑龙江', lng: 126.63, lat: 45.75 },
+  { value: 'hefei', label: '合肥', province: '安徽', lng: 117.28, lat: 31.86 },
+  { value: 'fuzhou', label: '福州', province: '福建', lng: 119.30, lat: 26.08 },
+  { value: 'nanchang', label: '南昌', province: '江西', lng: 115.89, lat: 28.68 },
+  { value: 'jinan', label: '济南', province: '山东', lng: 117.00, lat: 36.65 },
+  { value: 'nanning', label: '南宁', province: '广西', lng: 108.37, lat: 22.82 },
+  { value: 'haikou', label: '海口', province: '海南', lng: 110.20, lat: 20.04 },
+  { value: 'guiyang', label: '贵阳', province: '贵州', lng: 106.63, lat: 26.65 },
+  { value: 'kunming', label: '昆明', province: '云南', lng: 102.83, lat: 24.88 },
+  { value: 'lasa', label: '拉萨', province: '西藏', lng: 91.11, lat: 29.65 },
+  { value: 'lanzhou', label: '兰州', province: '甘肃', lng: 103.83, lat: 36.06 },
+  { value: 'xining', label: '西宁', province: '青海', lng: 101.78, lat: 36.62 },
+  { value: 'yinchuan', label: '银川', province: '宁夏', lng: 106.23, lat: 38.49 },
+  { value: 'wulumuqi', label: '乌鲁木齐', province: '新疆', lng: 87.62, lat: 43.83 },
 ]
 
 /** 下拉选择器选项 */

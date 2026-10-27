@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "app": "没钱 No Money",
-  "generatedAt": "2026-10-15T09:47:50.190Z",
+  "generatedAt": "2026-10-27T10:29:05.798Z",
   "counts": {
     "policy": 13,
     "guide": 23,
     "reality": 23,
-    "source": 30
+    "source": 309
   },
   "entries": [
     {
@@ -2336,6 +2336,6436 @@
       "tags": [
         "溯源",
         "东莞"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-beijing-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "北京市人力资源和社会保障局 北京市医疗保障局 国家税务总局北京市税务局关于2025年度各项社会保险缴费工资基数上下限的通告（政策解读）",
+      "summary": "首都之窗政策解读原文：「从2025年7月起……月缴费基数上限为35811元，下限为7162元」；以个人身份存档参保者缴费基数可在上下限之间选择，「选择下限的月缴职工基本养老保险费1432.4元」（=7162×20%），「上述个人参加职工基本医疗保险的月缴职工基本医疗保险费584.92元」。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "北京市人力资源和社会保障局、北京市医疗保障局、国家税务总局北京市税务局",
+        "生效：2025-07 起",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "北京市人社局等三部门通告（2025-09-18 发布）",
+      "confidence": "official",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.beijing.gov.cn/zhengce/zcjd/202509/t20250918_4205122.html"
+        }
+      ]
+    },
+    {
+      "id": "src-beijing-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "各省市灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；本文件按 20% 计，具体比例以参保地经办口径为准，未逐市回溯单行文件。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-beijing-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "北京职工基本医疗保险（灵活就业人员）缴费基数",
+      "summary": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-beijing-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-beijing-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "北京最低工资标准",
+      "summary": "北京月最低工资 2540 元/小时 26.4 元为占位值，本次未回溯到北京市最低工资调整通知原文，不可对外引用；请以北京市人社局公布为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.beijing.gov.cn/zhengce/zcjd/202509/t20250918_4205122.html"
+        }
+      ]
+    },
+    {
+      "id": "src-beijing-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（基础养老金 + 个人账户养老金）",
+      "summary": "计发基数为本市最新年度口径；计发月数按国发〔2005〕38号附表随退休年龄查表（60岁=139）。2025年起最低缴费年限将从 15 年逐步提高至 20 年（2030 起）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "derived",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-beijing-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-beijing-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-beijing-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业分别核定，不存在全国统一税率；本文件取 10% 作为占位值，未回溯到本市现行有效表，对外引用前必须补原文。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "beijing",
+      "tags": [
+        "溯源",
+        "北京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-tianjin-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于《市人社局市医保局市税务局关于公布2025年度全市职工平均工资及2026年度工资福利待遇标准等有关问题的通知》的政策问答",
+      "summary": "原文：「2026年社会保险缴费基数最低标准为5180元，最高标准为25902元。应用范围包括职工基本养老、职工基本医疗、失业、工伤和职工生育保险」；「无雇工个体工商户和灵活就业人员可在个人窗口自愿参加职工基本医疗保险，缴费基数为5180元」。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "天津市人力资源和社会保障局",
+        "生效：2026 年度",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "official",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://hrss.tj.gov.cn/zhengwugongkai/zhengcezhinan/zcjdnew/202608/t20260821_7356728.html"
+        }
+      ]
+    },
+    {
+      "id": "src-tianjin-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "各省市灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；本文件按 20% 计，具体比例以参保地经办口径为准，未逐市回溯单行文件。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-tianjin-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "天津职工基本医疗保险（灵活就业人员）缴费基数",
+      "summary": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-tianjin-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-tianjin-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "天津最低工资标准",
+      "summary": "天津最低工资 2320 元/月、24.4 元/小时为占位值：已核到天津市人社局《关于调整天津市最低工资标准的通知》的政策问答页，但该页正文未列具体数额（数字见政策原文附件），本次未回溯到原文，不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://hrss.tj.gov.cn/zhengwugongkai/zhengcezhinan/zcjdnew/202509/t20250908_7127631.html"
+        }
+      ]
+    },
+    {
+      "id": "src-tianjin-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（基础养老金 + 个人账户养老金）",
+      "summary": "天津市人社局政策问答原文：「2025年基本养老金计发基数为9417元。这一数据用于2025年新退休人员（含个体工商户、灵活就业人员等参加企业职工基本养老保险人员）计发基本养老金」。计发月数按国发〔2005〕38号附表查表。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "official",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://hrss.tj.gov.cn/zhengwugongkai/zhengcezhinan/zcjdnew/202511/t20251117_7179567.html"
+        }
+      ]
+    },
+    {
+      "id": "src-tianjin-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-tianjin-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-tianjin-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业分别核定，不存在全国统一税率；本文件取 10% 作为占位值，未回溯到本市现行有效表，对外引用前必须补原文。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "tianjin",
+      "tags": [
+        "溯源",
+        "天津"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shanghai-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "本市调整2025年度社保缴费基数上下限（上海市人力资源和社会保障局 公示公告）",
+      "summary": "上海市人社局公示公告栏目存在《本市调整2025年度社保缴费基数上下限》条目，正文数值经搜索引擎摘要显示为「上限 37302 元、下限 7460 元（2025 年度）」，本次未打开该公示正文逐字核对，故标 unverified。请到上述公示公告栏目核对原文后再使用。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "上海市人力资源和社会保障局",
+        "生效：2025 年度",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rsj.sh.gov.cn/tgsgg_17341/index.html"
+        }
+      ]
+    },
+    {
+      "id": "src-shanghai-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shanghai-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "上海职工基本医疗保险（灵活就业人员）",
+      "summary": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shanghai-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-shanghai-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "上海最低工资标准",
+      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shanghai-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法",
+      "summary": "计发基数为占位值，未回溯本市最新年度公布文件；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-shanghai-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shanghai-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-shanghai-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "shanghai",
+      "tags": [
+        "溯源",
+        "上海"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hangzhou-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "浙江省人力资源和社会保障厅等五部门关于公布2026年社会保险有关基数的通知",
+      "summary": "原文：「2025年度浙江省非私营和私营单位就业人员加权平均工资为102446元」「从2026年1月1日起，我省社会保险个人缴费基数下限按上一年度非私营和私营单位就业人员加权平均工资的60%执行」。据此：月平均工资 102446÷12=8537.2 元，下限=8537.2×60%≈5122 元，上限=8537.2×300%≈25612 元（上下限为本项目按文件规则派生的换算值，文件未直接列出；如需精确值请查该通知附件 PDF）。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "浙江省人力资源和社会保障厅、浙江省财政厅、浙江省统计局、浙江省医疗保障局、国家税务总局浙江省税务局",
+        "生效：2026-01-01 起",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "official",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rlsbt.zj.gov.cn/col/col1229506773/art/2026/art_2b4555c11a034b9e874038cbff2f84fb.html"
+        }
+      ]
+    },
+    {
+      "id": "src-hangzhou-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hangzhou-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "杭州职工基本医疗保险（灵活就业人员）",
+      "summary": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hangzhou-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-hangzhou-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "杭州最低工资标准",
+      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hangzhou-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "浙江省2026年社会保险有关基数（加权平均工资，养老金计发用）",
+      "summary": "文件公布 2025 年度加权平均工资 102446 元/年（≈8537 元/月），并要求各地以其为依据计算 2026 年度社保待遇与缴费基数上下限。本项目以 8537 元/月作为计发基数口径（派生值，非文件直接列示）。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "浙江省人力资源和社会保障厅",
+        "生效：2026-01-01 起",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rlsbt.zj.gov.cn/col/col1229506773/art/2026/art_2b4555c11a034b9e874038cbff2f84fb.html"
+        }
+      ]
+    },
+    {
+      "id": "src-hangzhou-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hangzhou-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-hangzhou-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "hangzhou",
+      "tags": [
+        "溯源",
+        "杭州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanjing-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "江苏省人力资源社会保障厅、省财政厅、省医疗保障局、省税务局关于发布2026年度社会保险有关基数的通知（省人社厅要闻）",
+      "summary": "原文：「2026年1月1日至12月31日，全省职工基本养老保险缴费工资基数上限标准按25127元执行，下限标准按5025元执行。职工基本医疗保险、失业保险、工伤保险、生育保险缴费工资基数上下限按照上述标准执行」；「灵活就业人员可根据个人实际情况，在公布的缴费工资基数上下限之间自主选择适当的缴费档次」。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "江苏省人力资源和社会保障厅等四部门",
+        "生效：2026-01-01 至 2026-12-31",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "official",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://jshrss.jiangsu.gov.cn/art/2026/10/8/art_78497_11838875.html"
+        }
+      ]
+    },
+    {
+      "id": "src-nanjing-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanjing-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "南京职工基本医疗保险（灵活就业人员）",
+      "summary": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanjing-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-nanjing-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "南京最低工资标准",
+      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanjing-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法",
+      "summary": "计发基数为占位值，未回溯本市最新年度公布文件；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-nanjing-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanjing-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-nanjing-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "nanjing",
+      "tags": [
+        "溯源",
+        "南京"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-suzhou-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "江苏省人力资源社会保障厅、省财政厅、省医疗保障局、省税务局关于发布2026年度社会保险有关基数的通知（省人社厅要闻）",
+      "summary": "原文：「2026年1月1日至12月31日，全省职工基本养老保险缴费工资基数上限标准按25127元执行，下限标准按5025元执行。职工基本医疗保险、失业保险、工伤保险、生育保险缴费工资基数上下限按照上述标准执行」；「灵活就业人员可根据个人实际情况，在公布的缴费工资基数上下限之间自主选择适当的缴费档次」。核对于 2026-10-14。（苏州执行江苏省统一口径）",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "江苏省人力资源和社会保障厅等四部门",
+        "生效：2026-01-01 至 2026-12-31",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "official",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://jshrss.jiangsu.gov.cn/art/2026/10/8/art_78497_11838875.html"
+        }
+      ]
+    },
+    {
+      "id": "src-suzhou-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-suzhou-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "苏州职工基本医疗保险（灵活就业人员）",
+      "summary": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-suzhou-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-suzhou-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "苏州最低工资标准",
+      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-suzhou-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法",
+      "summary": "计发基数为占位值，未回溯本市最新年度公布文件；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-suzhou-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-suzhou-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-suzhou-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "suzhou",
+      "tags": [
+        "溯源",
+        "苏州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wuhan-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于我省2025年度社会保险缴费基数标准的通知",
+      "summary": "第1档（武汉市和省直）：上限 22488 元/月、下限 4498 元/月。湖北按地区分档，武汉适用第1档；此为截至核取日最新已公布口径，2026 年度标准尚未见官方发布。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "湖北省人力资源和社会保障厅、省医疗保障局、国家税务总局湖北省税务局",
+        "生效：2025-09-19",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "鄂人社发〔2025〕28号",
+      "confidence": "official",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.hubei.gov.cn/zfxxgk/zc/qtzdgkwj/202509/t20250919_5775307.shtml"
+        }
+      ]
+    },
+    {
+      "id": "src-wuhan-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wuhan-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于我省2025年度社会保险缴费基数标准的通知（含职工医保）",
+      "summary": "通知明确职工基本养老保险、职工基本医疗保险（生育保险）、失业保险、工伤保险统一标准；费率因参保形式而异，本项目 8% 为占位口径。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "湖北省人力资源和社会保障厅等三部门",
+        "生效：2025-09-19",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "鄂人社发〔2025〕28号",
+      "confidence": "official",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.hubei.gov.cn/zfxxgk/zc/qtzdgkwj/202509/t20250919_5775307.shtml"
+        }
+      ]
+    },
+    {
+      "id": "src-wuhan-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-wuhan-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "湖北省人民政府办公厅关于调整全省最低工资标准的通知",
+      "summary": "第一档 2400 元/月（武汉市区），第二档 2130、第三档 1970。本项目取第一档。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "湖北省人民政府办公厅",
+        "生效：2025-12-01",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "鄂政办发〔2025〕44号",
+      "confidence": "official",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.hubei.gov.cn/zfwj/ezbf/202512/t20251226_5842830.shtml"
+        }
+      ]
+    },
+    {
+      "id": "src-wuhan-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法",
+      "summary": "养老金计发基数仍为占位值：湖北省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-wuhan-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wuhan-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-wuhan-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "wuhan",
+      "tags": [
+        "溯源",
+        "武汉"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changsha-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "湖南省人力资源和社会保障厅 国家税务总局湖南省税务局关于公布2026年社会保险缴费基准值的通知",
+      "summary": "原文：「2026年1月1日至12月31日，全省三项社会保险的缴费基准值调整为6843元/月」「全省三项社会保险的缴费基数上限调整为20529元/月，下限调整为4106元/月」。三项社会保险=职工基本养老、工伤、失业。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "湖南省人力资源和社会保障厅、国家税务总局湖南省税务局",
+        "生效：2026-01-01 至 2026-12-31",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "official",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.hunan.gov.cn/rst/xxgk/zcfg/zxzc/202608/t20260822_34049202.html"
+        }
+      ]
+    },
+    {
+      "id": "src-changsha-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changsha-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "长沙职工基本医疗保险（灵活就业人员）",
+      "summary": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changsha-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-changsha-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "长沙最低工资标准",
+      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changsha-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "湖南省2026年社会保险缴费基准值（养老金计发用）",
+      "summary": "原文：「2026年1月1日至12月31日，全省三项社会保险的缴费基准值调整为6843元/月。计算职工基本养老金计发办法中的2026年度缴费工资指数时相应进行调整」。核对于 2026-10-14。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "湖南省人力资源和社会保障厅",
+        "生效：2026-01-01 至 2026-12-31",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "official",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.hunan.gov.cn/rst/xxgk/zcfg/zxzc/202608/t20260822_34049202.html"
+        }
+      ]
+    },
+    {
+      "id": "src-changsha-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changsha-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-changsha-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "changsha",
+      "tags": [
+        "溯源",
+        "长沙"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-zhengzhou-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于公布2026年度社会保险缴费基数上下限标准的通知",
+      "summary": "2026年度缴费基数基准 6520 元/月（60% 为 3912、300% 为 19560），自 2026-07-01 执行。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "河南省人力资源和社会保障厅",
+        "生效：2026-07-01",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "豫人社办〔2026〕62号",
+      "confidence": "official",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://hrss.henan.gov.cn/2026/10-10/3435886.html"
+        }
+      ]
+    },
+    {
+      "id": "src-zhengzhou-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-zhengzhou-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于公布2026年度社会保险缴费基数上下限标准的通知（含基本医疗保险）",
+      "summary": "通知明确含基本养老保险、基本医疗保险、工伤保险、失业保险、生育保险，全省五险统一口径；费率因参保形式而异，本项目 8% 为占位口径。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "河南省人力资源和社会保障厅",
+        "生效：2026-07-01",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "豫人社办〔2026〕62号",
+      "confidence": "official",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://hrss.henan.gov.cn/2026/10-10/3435886.html"
+        }
+      ]
+    },
+    {
+      "id": "src-zhengzhou-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-zhengzhou-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "河南省人民政府关于调整河南省最低工资标准的通知",
+      "summary": "一类行政区域 2350 元/月（郑州市区；小时 23 元），二类 2150、三类 2000。本项目取一类区。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "河南省人民政府",
+        "生效：2025-12-01",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "豫政〔2025〕25号",
+      "confidence": "official",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.henan.gov.cn/2025/11-26/3267718.html"
+        }
+      ]
+    },
+    {
+      "id": "src-zhengzhou-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法",
+      "summary": "养老金计发基数仍为占位值：河南省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-zhengzhou-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-zhengzhou-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-zhengzhou-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "zhengzhou",
+      "tags": [
+        "溯源",
+        "郑州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-chengdu-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于公布2026年度全省社会保险缴费基数上下限具体标准等参数的通知",
+      "summary": "2026年度全省（含成都）企业职工基本养老保险缴费基数上限 23493 元/月、下限 4699 元/月；同文明确 7831 元/月用于部分医保/工伤待遇计发。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "四川省人力资源和社会保障厅",
+        "生效：2026-09-07",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "川人社办发〔2026〕50号",
+      "confidence": "official",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.sc.gov.cn/rst/gsgg/2026/9/7/8b8edb37d4cd43ed995a0055f46b7705.shtml"
+        }
+      ]
+    },
+    {
+      "id": "src-chengdu-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-chengdu-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于2026年度职工医疗保险缴费有关问题的通知",
+      "summary": "医保缴费基数与养老同口径（上限 23493 / 下限 4699 元/月）；灵活就业统账结合 6265 元/月、单建统筹 7831 元/月。费率因参保形式而异，本项目 8% 为统账结合口径占位，具体以经办机构核定为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "成都市医疗保障局、成都市财政局、国家税务总局成都市税务局",
+        "生效：2026-10-01",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "成医保办〔2026〕14号",
+      "confidence": "official",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://cdyb.chengdu.gov.cn/gkml/qtwj/1550450279336378368.shtml"
+        }
+      ]
+    },
+    {
+      "id": "src-chengdu-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-chengdu-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "四川省人民政府关于调整全省最低工资标准的通知",
+      "summary": "成都市区适用第一档 2330 元/月（天府新区、东部新区、高新区及五城区等）；第二档 2200 元/月。本项目取第一档。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "四川省人民政府",
+        "生效：2025-01-01",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "川府规〔2024〕4号",
+      "confidence": "official",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.sc.gov.cn/10462/zfwjts/2025/1/2/60841bcf38d844fb80ad1ea0b2d74e24.shtml"
+        }
+      ]
+    },
+    {
+      "id": "src-chengdu-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法",
+      "summary": "养老金计发基数仍为占位值：四川省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-chengdu-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-chengdu-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-chengdu-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "chengdu",
+      "tags": [
+        "溯源",
+        "成都"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-chongqing-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于做好2026年度社会保险缴费基数上下限核定有关工作的通知",
+      "summary": "2026年度缴费基数上限 22765 元/月、下限 4553 元/月，含以个人身份参保（灵活就业）人员。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "重庆市人力资源和社会保障局等四部门",
+        "生效：2026-09-17",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "渝人社规〔2026〕18号",
+      "confidence": "official",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rlsbj.cq.gov.cn/zwgk_182/zfxxgkml/zcwj_145360/jfxzgfxwj/202609/t20260917_16091209.html"
+        }
+      ]
+    },
+    {
+      "id": "src-chongqing-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-chongqing-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "2026年度社会保险缴费基数上下限核定（含职工医保）",
+      "summary": "职工基本医疗保险（含生育保险）与养老同档同标准核定；费率因参保形式而异，本项目 8% 为占位口径，以经办机构核定为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "重庆市人力资源和社会保障局等四部门",
+        "生效：2026-09-17",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "渝人社规〔2026〕18号",
+      "confidence": "official",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rlsbj.cq.gov.cn/zwgk_182/zfxxgkml/zcwj_145360/jfxzgfxwj/202609/t20260917_16091209.html"
+        }
+      ]
+    },
+    {
+      "id": "src-chongqing-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-chongqing-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "最低工资标准调整后的具体标准（政策咨询问答库）",
+      "summary": "第一档 2330 元/月适用于万州区、渝中区、江北区、沙坪坝区等 29 个区；第二档 2200 元/月。本项目取第一档。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "重庆市人力资源和社会保障局",
+        "生效：2025-01-01",
+        "核对于 2026-10-15"
+      ],
+      "confidence": "official",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rlsbj.cq.gov.cn/zczxwdk/ywfl/ldgx_1/202501/t20250102_14041562.html"
+        }
+      ]
+    },
+    {
+      "id": "src-chongqing-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法",
+      "summary": "养老金计发基数仍为占位值：重庆市人社局（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-chongqing-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-chongqing-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-chongqing-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "chongqing",
+      "tags": [
+        "溯源",
+        "重庆"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xian-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于明确2026年度职工基本养老保险失业保险工伤保险缴费基数相关参数的通知",
+      "summary": "2026年度缴费基数上限 23685 元/月、下限 4737 元/月（2025年度全口径月均工资 7895 元）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "陕西省人力资源和社会保障厅",
+        "生效：2026-08-31",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "陕人社函〔2026〕326号",
+      "confidence": "official",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.shaanxi.gov.cn/sy/tzgg/202608/t20260831_3672572.html"
+        }
+      ]
+    },
+    {
+      "id": "src-xian-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "derived",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xian-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "西安市2025年度职工医保缴费基数公布",
+      "summary": "医保基数与养老不同口径、且单独公布：2025年度上限 24948 元/月、下限 4990 元/月。2026 年度官方尚未检索到，故此处仍为 2025 年度口径。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "西安市医疗保障局",
+        "生效：2025-09-25",
+        "核对于 2026-10-15"
+      ],
+      "confidence": "official",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://ybj.xa.gov.cn/szyw/tzgg/1970694363029188610.html"
+        }
+      ]
+    },
+    {
+      "id": "src-xian-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "个人所得税法实施条例 + 税率表一（综合所得）",
+      "summary": "个税全国统一立法，按年度汇算清缴口径测算。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-xian-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于调整最低工资标准的通知",
+      "summary": "一类区 2376 元/月（含西安市新城区、碑林区、莲湖区、雁塔区、长安区等），二类 2250、三类 2140。本项目取一类区。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "陕西省人力资源和社会保障厅",
+        "生效：2026-01-01",
+        "核对于 2026-10-15"
+      ],
+      "docNo": "陕人社发〔2026〕4号",
+      "confidence": "official",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.shaanxi.gov.cn/sy/tzgg/202601/t20260107_3603035.html"
+        }
+      ]
+    },
+    {
+      "id": "src-xian-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法",
+      "summary": "养老金计发基数仍为占位值：陕西省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-xian-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，各平台仅对本平台骑手公示，无跨平台权威数据源。本文件继承的计价参数是**占位假设**（各城市同值），不代表本城真实单价，必须替换为本人 APP 内的实际计价与流水，否则收入链全部失真。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xian-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "增值税优惠政策衔接公告",
+      "summary": "小规模纳税人 3% 减按 1%；月销售额 10 万元以下免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-xian-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得核定征收（行业所得率法）",
+      "summary": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-14"
+      ],
+      "confidence": "unverified",
+      "city": "xian",
+      "tags": [
+        "溯源",
+        "西安"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shijiazhuang-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "石家庄社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：石家庄的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到河北省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "河北省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shijiazhuang-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shijiazhuang-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "石家庄职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：石家庄的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到河北省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shijiazhuang-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-shijiazhuang-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "石家庄最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：石家庄的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到河北省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shijiazhuang-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；石家庄的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-shijiazhuang-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shijiazhuang-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-shijiazhuang-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shijiazhuang",
+      "tags": [
+        "溯源",
+        "石家庄"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-taiyuan-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "太原社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：太原的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "山西省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-taiyuan-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-taiyuan-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "太原职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：太原的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-taiyuan-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-taiyuan-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "太原最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：太原的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-taiyuan-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；太原的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-taiyuan-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-taiyuan-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-taiyuan-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "taiyuan",
+      "tags": [
+        "溯源",
+        "太原"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-huhehaote-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "呼和浩特社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：呼和浩特的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到内蒙古省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "内蒙古省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-huhehaote-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-huhehaote-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "呼和浩特职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：呼和浩特的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到内蒙古省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-huhehaote-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-huhehaote-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "呼和浩特最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：呼和浩特的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到内蒙古省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-huhehaote-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；呼和浩特的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-huhehaote-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-huhehaote-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-huhehaote-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "huhehaote",
+      "tags": [
+        "溯源",
+        "呼和浩特"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shenyang-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "沈阳社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：沈阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到辽宁省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "辽宁省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shenyang-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shenyang-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "沈阳职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：沈阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到辽宁省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shenyang-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-shenyang-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "沈阳最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：沈阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到辽宁省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shenyang-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；沈阳的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-shenyang-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-shenyang-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-shenyang-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "shenyang",
+      "tags": [
+        "溯源",
+        "沈阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changchun-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "长春社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：长春的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到吉林省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "吉林省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changchun-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changchun-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "长春职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：长春的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到吉林省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changchun-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-changchun-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "长春最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：长春的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到吉林省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changchun-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；长春的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-changchun-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-changchun-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-changchun-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "changchun",
+      "tags": [
+        "溯源",
+        "长春"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haerbin-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "哈尔滨社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：哈尔滨的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到黑龙江省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "黑龙江省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haerbin-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haerbin-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "哈尔滨职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：哈尔滨的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到黑龙江省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haerbin-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-haerbin-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "哈尔滨最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：哈尔滨的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到黑龙江省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haerbin-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；哈尔滨的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-haerbin-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haerbin-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-haerbin-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haerbin",
+      "tags": [
+        "溯源",
+        "哈尔滨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hefei-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "合肥社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：合肥的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到安徽省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "安徽省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hefei-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hefei-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "合肥职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：合肥的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到安徽省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hefei-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-hefei-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "合肥最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：合肥的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到安徽省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hefei-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；合肥的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-hefei-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-hefei-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-hefei-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "hefei",
+      "tags": [
+        "溯源",
+        "合肥"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-fuzhou-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "福州社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：福州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到福建省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "福建省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-fuzhou-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-fuzhou-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "福州职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：福州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到福建省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-fuzhou-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-fuzhou-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "福州最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：福州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到福建省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-fuzhou-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；福州的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-fuzhou-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-fuzhou-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-fuzhou-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "fuzhou",
+      "tags": [
+        "溯源",
+        "福州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanchang-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "南昌社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：南昌的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到江西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "江西省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanchang-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanchang-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "南昌职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：南昌的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到江西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanchang-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-nanchang-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "南昌最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：南昌的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到江西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanchang-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；南昌的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-nanchang-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanchang-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-nanchang-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanchang",
+      "tags": [
+        "溯源",
+        "南昌"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-jinan-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "济南社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "山东省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-jinan-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-jinan-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "济南职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-jinan-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-jinan-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "济南最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-jinan-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；济南的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-jinan-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-jinan-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-jinan-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "jinan",
+      "tags": [
+        "溯源",
+        "济南"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanning-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "南宁社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：南宁的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到广西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "广西省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanning-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanning-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "南宁职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：南宁的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到广西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanning-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-nanning-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "南宁最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：南宁的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到广西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanning-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；南宁的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-nanning-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-nanning-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-nanning-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "nanning",
+      "tags": [
+        "溯源",
+        "南宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haikou-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "海口社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：海口的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到海南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "海南省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haikou-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haikou-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "海口职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：海口的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到海南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haikou-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-haikou-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "海口最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：海口的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到海南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haikou-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；海口的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-haikou-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-haikou-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-haikou-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "haikou",
+      "tags": [
+        "溯源",
+        "海口"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-guiyang-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "贵阳社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：贵阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到贵州省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "贵州省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-guiyang-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-guiyang-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "贵阳职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：贵阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到贵州省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-guiyang-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-guiyang-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "贵阳最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：贵阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到贵州省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-guiyang-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；贵阳的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-guiyang-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-guiyang-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-guiyang-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "guiyang",
+      "tags": [
+        "溯源",
+        "贵阳"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-kunming-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "昆明社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：昆明的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到云南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "云南省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-kunming-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-kunming-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "昆明职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：昆明的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到云南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-kunming-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-kunming-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "昆明最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：昆明的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到云南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-kunming-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；昆明的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-kunming-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-kunming-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-kunming-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "kunming",
+      "tags": [
+        "溯源",
+        "昆明"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lasa-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "拉萨社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：拉萨的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到西藏省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "西藏省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lasa-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lasa-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "拉萨职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：拉萨的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到西藏省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lasa-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-lasa-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "拉萨最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：拉萨的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到西藏省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lasa-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；拉萨的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-lasa-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lasa-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-lasa-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lasa",
+      "tags": [
+        "溯源",
+        "拉萨"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lanzhou-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "兰州社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：兰州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到甘肃省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "甘肃省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lanzhou-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lanzhou-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "兰州职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：兰州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到甘肃省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lanzhou-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-lanzhou-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "兰州最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：兰州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到甘肃省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lanzhou-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；兰州的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-lanzhou-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-lanzhou-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-lanzhou-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "lanzhou",
+      "tags": [
+        "溯源",
+        "兰州"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xining-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "西宁社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：西宁的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到青海省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "青海省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xining-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xining-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "西宁职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：西宁的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到青海省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xining-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-xining-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "西宁最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：西宁的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到青海省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xining-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；西宁的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-xining-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-xining-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-xining-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "xining",
+      "tags": [
+        "溯源",
+        "西宁"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-yinchuan-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "银川社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：银川的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到宁夏省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "宁夏省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-yinchuan-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-yinchuan-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "银川职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：银川的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到宁夏省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-yinchuan-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-yinchuan-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "银川最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：银川的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到宁夏省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-yinchuan-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；银川的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-yinchuan-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-yinchuan-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-yinchuan-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "yinchuan",
+      "tags": [
+        "溯源",
+        "银川"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wulumuqi-pension",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "乌鲁木齐社保缴费工资基数上下限（待核实）",
+      "summary": "**本省数据尚未核实**：乌鲁木齐的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到新疆省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "新疆省人力资源和社会保障厅（待核）",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wulumuqi-pensionRate",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "灵活就业人员养老保险缴费比例 20%",
+      "summary": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "derived",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wulumuqi-medical",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "乌鲁木齐职工医保缴费基数（待核实）",
+      "summary": "**本省数据尚未核实**：乌鲁木齐的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到新疆省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wulumuqi-tax",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
+      "summary": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2019-01-01",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "国务院令第707号；国家税务总局公告2018年第61号",
+      "confidence": "official",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/"
+        }
+      ]
+    },
+    {
+      "id": "src-wulumuqi-minimumWage",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "乌鲁木齐最低工资标准（待核实）",
+      "summary": "**本省数据尚未核实**：乌鲁木齐的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到新疆省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wulumuqi-retirement",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
+      "summary": "公式全国统一，但计发基数由各省公布；乌鲁木齐的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "docNo": "国发〔2005〕38号",
+      "confidence": "unverified",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+        }
+      ]
+    },
+    {
+      "id": "src-wulumuqi-income",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "平台接单计价规则",
+      "summary": "平台单价与计价系数属商业规则，无跨平台权威数据源。当前为占位假设，请用「我的计价」填入你 APP 内的实际值。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "无公开权威来源",
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
+      ],
+      "links": []
+    },
+    {
+      "id": "src-wulumuqi-soleVat",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "关于增值税法施行后增值税优惠政策衔接事项的公告",
+      "summary": "小规模纳税人 3% 征收率减按 1%；月销售额 10 万元以下起征点免征（全国统一）。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "生效：2026-01-01 至 2027-12-31",
+        "核对于 2026-10-14"
+      ],
+      "docNo": "财政部 税务总局公告2026年第10号",
+      "confidence": "official",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
+      ],
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://fgk.chinatax.gov.cn/zcfgk/c102416/c5247434/content.html"
+        }
+      ]
+    },
+    {
+      "id": "src-wulumuqi-soleItr",
+      "type": "source",
+      "category": "本城规则溯源",
+      "title": "经营所得个人所得税核定征收（行业所得率法）",
+      "summary": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。",
+      "keyPoints": [],
+      "numbers": [],
+      "steps": [],
+      "notes": [
+        "核对于 2026-10-27"
+      ],
+      "confidence": "unverified",
+      "city": "wulumuqi",
+      "tags": [
+        "溯源",
+        "乌鲁木齐"
       ],
       "links": []
     }

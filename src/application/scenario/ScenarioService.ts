@@ -70,16 +70,24 @@ export class ScenarioService {
   private readonly benefitRule: DomainBenefitRule
   /** 用户实测计价覆盖：构造函数入参是唯一来源，计算与数据质量判定都读它 */
   private readonly overrides?: IncomeOverrides
+  /** 用户填入的本省社保参数覆盖（基数上下限 + 最低工资） */
+  private readonly statutory?: { baseMin?: number; baseMax?: number; minWageMonthly?: number }
 
-  constructor(rule: CityRule, overrides?: IncomeOverrides) {
+  constructor(
+    rule: CityRule,
+    overrides?: IncomeOverrides,
+    /** 用户填入的本省社保基数上下限（规则值为 unverified 占位值时使用） */
+    statutory?: { baseMin?: number; baseMax?: number; minWageMonthly?: number },
+  ) {
     if (!rule) throw AppError.ruleInvalid('unknown', 'CityRule is required')
     this.rawRule = rule
     // 规则是常量，构造时适配一次，避免每次计算重复转换。
     // overrides 是用户按自己 APP 流水填的实测计价（见 IncomeOverrides 注释）
     this.overrides = overrides
+    this.statutory = statutory
     this.incomeRule = adaptIncomeRule(rule.income, overrides)
     this.laborRule = adaptLaborRule(rule.tax.laborRemuneration)
-    this.benefitRule = adaptBenefitRule(rule.benefit)
+    this.benefitRule = adaptBenefitRule(rule.benefit, statutory)
   }
 
   /** 运行单个场景 */
@@ -185,7 +193,9 @@ export class ScenarioService {
         // 底线用本城最低工资（月）当锚，不写死 7000/4500 这类只匹配广州购买力的数字：
         // 低于最低工资 = risky（不如去做最低工资的全职）；超过 2 倍才够 recommended。
         const incomeCapacity = netMonthly + toYuan(benefitResult.value.totalMonthly)
-        const minWageFloor = this.rawRule.minimumWage.monthly
+        // 最低工资也允许用户覆盖：19 个新省的规则值是占位量级，
+        // 用占位值做评级锚点会把"低于本地最低工资"误判成"可行"
+        const minWageFloor = this.effectiveMinWage()
         const incomeTier = incomeCapacity > minWageFloor * 2 ? 'recommended' : incomeCapacity > minWageFloor ? 'viable' : 'risky'
         const recommendation =
           !personal.hasSocialInsurance && incomeTier === 'recommended' ? 'viable' : incomeTier
@@ -329,6 +339,12 @@ export class ScenarioService {
     return null
   }
 
+  /** 生效的最低工资：用户覆盖优先（省级值），否则用规则文件值 */
+  private effectiveMinWage(): number {
+    const o = this.statutory?.minWageMonthly
+    return typeof o === 'number' && Number.isFinite(o) && o > 0 ? o : this.rawRule.minimumWage.monthly
+  }
+
   private generateInsights(
     work: WorkParams,
     costs: CostParams,
@@ -341,7 +357,7 @@ export class ScenarioService {
     const dailyNet = netMonthly / safeDivisor(work.workDaysMonth)
     // 阈值一律锚定本城最低工资，不写死 8000/2000 这类只匹配一线城市购买力的数字：
     // 同样的 ¥6000 在长沙算高收入、在广州只是刚过线
-    const minWage = this.rawRule.minimumWage.monthly
+    const minWage = this.effectiveMinWage()
 
     if (minWage > 0 && netMonthly > minWage * 3) {
       insights.push(`日均净收入 ¥${dailyNet.toFixed(0)}，约为本城最低工资（¥${minWage}/月）的 ${(netMonthly / minWage).toFixed(1)} 倍，属收入较高区间`)

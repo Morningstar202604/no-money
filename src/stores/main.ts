@@ -53,6 +53,7 @@ const DEFAULT_PERSONAL: PersonalParams = {
   selfInvestReturn: undefined,
   deadheadRatio: undefined,
   vehicleProfile: undefined,
+  statutoryOverrides: undefined,
 }
 
 /** 品牌重命名前的旧存储键：老用户数据在这里，必须迁移而不是静默丢弃 */
@@ -170,7 +171,7 @@ export const useMainStore = defineStore('main', () => {
   // 否则引擎仍持有构造时的旧计价，改了参数数字不动
   const engine = computed(() => {
     if (!rule.value) return null
-    return new ScenarioService(rule.value, personal.value.incomeOverrides)
+    return new ScenarioService(rule.value, personal.value.incomeOverrides, personal.value.statutoryOverrides)
   })
 
   /** 取出 Result 的成功值；失败时返回 null，让 UI 走空态而不是抛错白屏 */
