@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import { calcIncome, calcCosts, peakHoursTotal, safeDiv } from '../../src/domain/income/calculator'
-import { IncomeEngineImpl } from '../../src/domain/income/engine'
 import { cent, kilometer, hour } from '../../src/domain/income/rules'
 import type { IncomeRule, WorkParams, CostParams } from '../../src/domain/income/rules'
 
@@ -250,26 +249,6 @@ describe('domain/income - 纯函数', () => {
       const asFuel = calcCosts({ ...baseCosts, vehicleType: 'fuel', fuelCostMonth: 20000 })
       expect(asFuel.fuelCostMonth).toBe(20000)
     })
-  })
-})
-
-describe('domain/income - IncomeEngineImpl', () => {
-  const engine = new IncomeEngineImpl(guangzhouRule)
-
-  it('calcIncome 代理到纯函数', () => {
-    const inc = engine.calcIncome(baseWork)
-    expect(inc.grossIncome).toBeGreaterThan(0)
-  })
-
-  it('calcCosts 代理到纯函数', () => {
-    const costs = engine.calcCosts(baseCosts)
-    expect(costs.total).toBeGreaterThan(0)
-  })
-
-  it('实例可复用', () => {
-    const inc1 = engine.calcIncome(baseWork)
-    const inc2 = engine.calcIncome({ ...baseWork, dailyOrders: 40 })
-    expect(inc2.grossIncome).toBeGreaterThan(inc1.grossIncome)
   })
 })
 

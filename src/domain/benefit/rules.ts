@@ -55,10 +55,6 @@ export interface RetirementRule {
 export { ISSUANCE_MONTHS, DEFAULT_ISSUANCE_MONTHS, issuanceMonthsForAge } from '../../utils/issuanceMonths'
 
 /** 社保引擎配置：组合社保规则与退休规则 */
-export interface BenefitEngineConfig {
-  benefit: BenefitRule
-  retirement: RetirementRule
-}
 
 /** 用户自选的缴费基数（分）；缺省时按申报收入夹取到上下限 */
 export interface ContributionBase {

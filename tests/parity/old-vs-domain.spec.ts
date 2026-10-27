@@ -19,7 +19,7 @@ import { TaxEngine as OldTaxEngine } from '../../src/engine/TaxEngine'
 import { BenefitEngine as OldBenefitEngine } from '../../src/engine/BenefitEngine'
 
 // 新实现（单位：分）
-import { IncomeEngineImpl } from '../../src/domain/income/engine'
+import { calcIncome as domCalcIncome } from '../../src/domain/income/calculator'
 import { calcCosts as domainCalcCosts } from '../../src/domain/income/calculator'
 import type { IncomeRule as DomainIncomeRule, WorkParams as DomainWorkParams, CostParams as DomainCostParams } from '../../src/domain/income/rules'
 import { calcLaborMonthly as domainCalcLabor } from '../../src/domain/tax/calculator'
@@ -171,12 +171,12 @@ describe('对拍：收入引擎 旧(元) vs 新(分)', () => {
   for (const city of CITIES) {
     const rule = rules[city]
     const old = new OldIncomeEngine(rule.income)
-    const dom = new IncomeEngineImpl(toDomainIncomeRule(rule.income))
+    const domRule = toDomainIncomeRule(rule.income)
 
     for (const { label, work } of WORK_CASES) {
       it(`${city} / ${label}`, () => {
         const o = old.calcIncome({ ...work, city })
-        const d = dom.calcIncome(toDomainWork({ ...work, city }))
+        const d = domCalcIncome(domRule, toDomainWork({ ...work, city }))
 
         expect(Y(o.basePay)).toBe(Number(d.basePay))
         expect(Y(o.distancePay)).toBe(Number(d.distancePay))
@@ -341,12 +341,9 @@ describe('对拍：个体验证值不变（新旧应完全一致）', () => {
 
   it('毛收入 8856.25 与 9311.25 的历史结论在新实现下复现', () => {
     // 这两个数字来自峰时折算修复时的审计记录，若对拍失败说明口径已被改动
-    const short = new IncomeEngineImpl(toDomainIncomeRule(rule.income)).calcIncome(
-      toDomainWork({ ...BASE_WORK, dailyHours: 8 }),
-    )
-    const long = new IncomeEngineImpl(toDomainIncomeRule(rule.income)).calcIncome(
-      toDomainWork({ ...BASE_WORK, dailyHours: 10 }),
-    )
+    const parityRule = toDomainIncomeRule(rule.income)
+    const short = domCalcIncome(parityRule, toDomainWork({ ...BASE_WORK, dailyHours: 8 }))
+    const long = domCalcIncome(parityRule, toDomainWork({ ...BASE_WORK, dailyHours: 10 }))
     // 工时↑ → 峰时占比↓ → 补贴↓，这是折算的核心不变式
     expect(Number(long.subsidyPay)).toBeLessThan(Number(short.subsidyPay))
     expect(Number(oldIncome.calcIncome({ ...BASE_WORK, dailyHours: 10 }).subsidyPay) * 100).toBe(
@@ -355,8 +352,7 @@ describe('对拍：个体验证值不变（新旧应完全一致）', () => {
   })
 
   it('默认参数下净收入恒等式在新实现下闭合', () => {
-    const domIncome = new IncomeEngineImpl(toDomainIncomeRule(rule.income))
-    const income = domIncome.calcIncome(toDomainWork(BASE_WORK))
+    const income = domCalcIncome(toDomainIncomeRule(rule.income), toDomainWork(BASE_WORK))
     const costs = domainCalcCosts(toDomainCosts(BASE_COSTS))
     const gross = Number(income.grossIncome) / 100
     const total = Number(costs.total) / 100

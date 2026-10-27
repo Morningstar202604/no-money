@@ -19,18 +19,6 @@ export function centToYuan(cent: Cent): number {
   return Number(cent) / 100
 }
 
-/** 从小数税率转基点税率 */
-export function decimalToRate(decimal: number): Rate {
-  if (!Number.isFinite(decimal)) return Rate.create(0)
-  if (decimal < 0 || decimal > 1) throw new Error(`Rate must be in [0, 1], got ${decimal}`)
-  return Rate.create(decimal)
-}
-
-/** 从基点税率转小数（仅用于显示） */
-export function rateToDecimal(rate: Rate): number {
-  return Number(rate)
-}
-
 /** Cent 加法 */
 export function addCent(a: Cent, b: Cent): Cent {
   return Cent.create(Number(a) + Number(b))

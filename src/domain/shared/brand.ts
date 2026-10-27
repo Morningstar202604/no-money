@@ -16,7 +16,6 @@ export type Brand<T, Brand extends string | symbol> = T & { readonly __brand: Br
  * @typeParam T - 底层类型
  * @typeParam B - 品牌标识符
  */
-export type BrandFactory<T, B extends string | symbol> = (value: T) => Brand<T, B>;
 
 /**
  * 从品牌类型中提取底层类型
