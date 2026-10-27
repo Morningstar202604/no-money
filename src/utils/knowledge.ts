@@ -170,7 +170,7 @@ export function buildKbPayload(allCityRules: CityRule[], generatedAt: string): K
   ]
   const counts: Record<KbEntryType, number> = { policy: 0, guide: 0, reality: 0, source: 0 }
   for (const e of entries) counts[e.type]++
-  return { schemaVersion: 1, app: '灵算 Pro', generatedAt, counts, entries }
+  return { schemaVersion: 1, app: '没钱 No Money', generatedAt, counts, entries }
 }
 
 /* ============================== 本地检索 ============================== */

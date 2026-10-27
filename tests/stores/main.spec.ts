@@ -227,7 +227,7 @@ describe('主 store：跨字段约束不能让测算静默变空', () => {
       key: () => null,
       get length() { return storeMap.size },
     } as unknown as Storage
-    storeMap.set('flexcalc_params_v1', JSON.stringify({
+    storeMap.set('nomoney_params_v1', JSON.stringify({
       personal: { currentAge: 70, expectedRetireAge: 60, hasSocialInsurance: false, specialDeductionMonth: 0 },
     }))
 

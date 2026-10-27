@@ -249,7 +249,7 @@ function exportParams() {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `flexcalc-params-${store.work.city}.json`
+  a.download = `no-money-params-${store.work.city}.json`
   a.click()
   URL.revokeObjectURL(url)
 }

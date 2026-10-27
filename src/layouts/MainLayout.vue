@@ -4,15 +4,14 @@
     <header class="header" :class="{ 'header-scrolled': scrolled }">
       <div class="header-container">
         <!-- Brand -->
-        <a class="header-brand" href="/dashboard" @click.prevent="goDashboard" aria-label="灵算 Pro 首页">
+        <a class="header-brand" href="/dashboard" @click.prevent="goDashboard" aria-label="没钱 No Money 首页">
           <div class="brand-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/>
             </svg>
           </div>
           <div class="brand-text">
-            <span class="brand-name">灵算</span>
-            <span class="brand-ver">Pro</span>
+            <span class="brand-name">没钱</span>
           </div>
         </a>
 
@@ -318,18 +317,6 @@ onUnmounted(() => {
   letter-spacing: -0.02em;
 }
 
-.brand-ver {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-primary-600);
-  background: var(--color-primary-50);
-  border: 1px solid var(--color-primary-200);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-2);
-  line-height: 16px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 
 /* Navigation */
 .header-nav {

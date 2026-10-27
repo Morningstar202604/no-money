@@ -29,10 +29,10 @@ export interface ApiConfig {
   rememberKey: boolean
 }
 
-const STORAGE_KEY = 'flexcalc_ai_cfg'
+const STORAGE_KEY = 'nomoney_ai_cfg'
 /** 用户显式选择"记住 Key"后才写这里；否则 Key 只在内存中，关标签页即失效 */
-const KEY_STORE_KEY = 'flexcalc_ai_key'
-const HISTORY_KEY = 'flexcalc_chat_hist'
+const KEY_STORE_KEY = 'nomoney_ai_key'
+const HISTORY_KEY = 'nomoney_chat_hist'
 
 /** 单条消息与历史总长上限，防止异常响应撑爆 localStorage 配额 */
 const MAX_MSG_CHARS = 4000
@@ -97,7 +97,7 @@ function loadHistory(): ChatMessage[] {
       }
     }
   } catch { /* ignore */ }
-  return [{ id: 'welcome', role: 'assistant', content: '你好！我是灵算 AI 助手。我已读取你当前的数据，可以帮你分析收入结构、税务优化、社保规划、风险评估等。直接输入问题即可，也可以点击下方快捷问题。', timestamp: Date.now() }]
+  return [{ id: 'welcome', role: 'assistant', content: '你好！我是没钱 AI 助手。我已读取你当前的数据，可以帮你分析收入结构、税务优化、社保规划、风险评估等。直接输入问题即可，也可以点击下方快捷问题。', timestamp: Date.now() }]
 }
 
 export function useAIChat() {
@@ -191,7 +191,7 @@ export function useAIChat() {
     // 降低模型编造文号/政策的概率；检索在本地完成，不额外联网。
     const kbCtx = kbContextForPrompt(question, 3)
 
-    const sysPrompt = `你是"灵算Pro"的决策助手，面向灵活就业者（外卖骑手、网约车司机等）。根据用户当前测算数据给出具体可操作建议。硬性要求：不超过205字；只依据下列数据与用户问题作答；不得编造法律法规名称、文号、税率或政策文件；涉及法律或税务结论时必须提示以官方机构或专业人士意见为准。以下是用户数据：\n${context}${kbCtx ? `\n\n${kbCtx}` : ''}`
+    const sysPrompt = `你是"没钱 No Money"的决策助手，面向灵活就业者（外卖骑手、网约车司机等）。根据用户当前测算数据给出具体可操作建议。硬性要求：不超过205字；只依据下列数据与用户问题作答；不得编造法律法规名称、文号、税率或政策文件；涉及法律或税务结论时必须提示以官方机构或专业人士意见为准。以下是用户数据：\n${context}${kbCtx ? `\n\n${kbCtx}` : ''}`
 
     // 错误气泡（isError）不进上下文：上一轮的"AI连接失败…"被模型当事实复述会污染回答
     const recentMsgs = messages.value.filter(m => !m.isStreaming && !m.isError).slice(-6).map(m => ({ role: m.role, content: m.content }))

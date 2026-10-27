@@ -49,7 +49,7 @@ fn main() {
 
             // 设置窗口标题
             if let Some(window) = app.get_webview_window("main") {
-                window.set_title("灵算 Pro").ok();
+                window.set_title("没钱 No Money").ok();
             }
 
             Ok(())

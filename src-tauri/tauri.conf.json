@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "灵算 Pro",
+  "productName": "没钱 No Money",
   "version": "2.0.0",
-  "identifier": "com.lingsuan.pro",
+  "identifier": "com.nomoney.app",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:3000",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "灵算 Pro",
+        "title": "没钱 No Money",
         "width": 1200,
         "height": 800,
         "minWidth": 900,

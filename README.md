@@ -1,4 +1,4 @@
-# 灵算 Pro — 灵活就业者收入精算与权益决策平台
+# 没钱 No Money — 灵活就业者收入精算与权益决策平台
 
 [![tests](https://img.shields.io/badge/vitest-879%20passed-brightgreen.svg)](#测试覆盖什么)
 [![audit](https://img.shields.io/badge/npm%20audit-0%20vulnerabilities-brightgreen.svg)](#测试覆盖什么)

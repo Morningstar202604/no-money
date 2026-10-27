@@ -16,7 +16,7 @@ interface CustomPlan {
   costs: CostParams
 }
 
-const PARAMS_KEY = 'flexcalc_params_v1'
+const PARAMS_KEY = 'nomoney_params_v1'
 
 const DEFAULT_WORK: WorkParams = {
   city: 'guangzhou', dailyHours: 10, dailyOrders: 35,

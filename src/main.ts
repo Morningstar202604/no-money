@@ -25,7 +25,7 @@ function showFatalError(message: string) {
   card.style.cssText = 'max-width:420px;text-align:center;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:32px'
   const title = document.createElement('div')
   title.style.cssText = 'font-size:15px;font-weight:600;color:#0f172a;margin-bottom:8px'
-  title.textContent = '灵算 Pro'
+  title.textContent = '没钱 No Money'
   const detail = document.createElement('div')
   detail.style.cssText = 'font-size:13px;color:#64748b;line-height:1.6;margin-bottom:16px'
   detail.textContent = message
