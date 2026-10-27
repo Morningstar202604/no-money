@@ -35,6 +35,25 @@
             <div class="d-row total"><span>月总成本</span><b class="danger">¥{{ s.costBreakdown.total.toLocaleString() }}</b></div>
             <div class="d-row"><span>每单成本</span><b>¥{{ safeDiv(s.costBreakdown.total, s.work.dailyOrders * s.work.workDaysMonth, 2) }}/单</b></div>
           </div>
+
+          <n-divider style="margin: 10px 0" />
+          <!-- 单位经济学：把成本拆成「固定 + 每公里」，才能回答「多跑一单多赚多少」 -->
+          <div v-if="unitEconomics" class="detail-block">
+            <div class="ue-title">按里程的成本模型（车辆单位经济学）</div>
+            <div class="d-row"><span>月行驶里程（含 {{ (deadheadRatio * 100).toFixed(0) }}% 空驶）</span><b>{{ unitEconomics.monthlyKm.toLocaleString() }} km</b></div>
+            <div class="d-row"><span>每公里变动成本</span><b>¥{{ unitEconomics.variablePerKm.toFixed(3) }}/km</b></div>
+            <div class="d-row note"><span>能耗 ¥{{ unitEconomics.energyPerKm.toFixed(3) }} + 保养 ¥{{ unitEconomics.maintenancePerKm.toFixed(3) }} + 易损 ¥{{ unitEconomics.wearPerKm.toFixed(3) }} + 折旧 ¥{{ unitEconomics.depreciationPerKm.toFixed(3) }}</span><span></span></div>
+            <div class="d-row"><span>月度变动成本</span><b>¥{{ unitEconomics.monthlyVariable.toLocaleString() }}</b></div>
+            <div class="d-row total"><span>固定 + 变动合计</span><b>¥{{ unitEconomics.monthlyTotal.toLocaleString() }}</b></div>
+            <div class="d-row"><span>每单边际成本（多跑一单多花）</span><b>¥{{ marginalCostPerOrder.toFixed(2) }}</b></div>
+            <div class="d-row note">
+              <span>
+                多跑一单的收入约 ¥{{ marginalRevenuePerOrder.toFixed(2) }}，边际成本 ¥{{ marginalCostPerOrder.toFixed(2) }}，
+                {{ marginalProfitPerOrder >= 0 ? '边际仍是正收益' : '边际已为负——多跑反而更亏' }}。
+                成本项按「固定 + 每公里」建模，所以多跑单不会像固定成本模型那样「成本不变」。
+              </span>
+            </div>
+          </div>
         </n-card>
       </n-gi>
     </n-grid>
@@ -110,6 +129,13 @@ import { computed, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
 import { NCard, NGrid, NGi, NInputNumber, NDivider, NAlert } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
+import {
+  calcMonthlyCostByKm,
+  estimateMonthlyKm,
+  variableCostPerKm,
+  DEFAULT_ELECTRIC_PROFILE,
+  DEFAULT_FUEL_PROFILE,
+} from '../../domain/income/vehicleCost'
 import { axisX, axisY, GRID, chartColors } from '../../utils/chart'
 import { solveAdClaim, realityFactsBy } from '../../utils/reality'
 import { ScenarioService } from '../../application/scenario/ScenarioService'
@@ -126,6 +152,36 @@ const incomeFacts = realityFactsBy(['ad-upper-bound', 'rookie-gap', 'penalty-rea
 
 /** 本城计价参数是否已核实：unverified 时在页顶显著提示，避免用户把占位单价当真实收入 */
 const incomeUnverified = computed(() => rule.value?.sources?.income?.confidence === 'unverified')
+
+/**
+ * 车辆单位经济学：按里程的成本模型。默认参数是行业量级假设，
+ * 用于展示「多跑一单的边际成本」，与上方月度固定额成本并列不冲突
+ * （固定额仍用于净收入计算，两者口径不同，界面分开标注）。
+ */
+const deadheadRatio = 0.25
+const vehicleProfile = computed(() => {
+  const isFuel = store.costs.vehicleType === 'fuel'
+  return isFuel ? DEFAULT_FUEL_PROFILE : DEFAULT_ELECTRIC_PROFILE
+})
+const unitEconomics = computed(() => {
+  const v = s.value
+  if (!v) return null
+  const km = estimateMonthlyKm(v.work.dailyOrders, v.work.avgDistance, v.work.workDaysMonth, deadheadRatio)
+  return calcMonthlyCostByKm(store.costs, km, vehicleProfile.value)
+})
+const marginalCostPerOrder = computed(() => {
+  const v = s.value
+  if (!v) return 0
+  const perKm = variableCostPerKm(vehicleProfile.value).variablePerKm
+  const kmPerOrder = v.work.avgDistance * (1 + deadheadRatio)
+  return kmPerOrder * perKm
+})
+const marginalRevenuePerOrder = computed(() => {
+  const v = s.value
+  if (!v || v.work.dailyOrders <= 0) return 0
+  return v.income.grossIncome / (v.work.dailyOrders * v.work.workDaysMonth)
+})
+const marginalProfitPerOrder = computed(() => marginalRevenuePerOrder.value - marginalCostPerOrder.value)
 
 /** 广告口径校验：用现有引擎做二分求解，单量与工时按同强度等比例放大 */
 const AD_MAX_HOURS = 16
