@@ -224,6 +224,16 @@ export interface PersonalParams {
     minWageHourly?: number
   }
   /**
+   * 个人养老金年缴费额（元/年，上限 12000）：缴费可在综合所得中据实扣除，
+   * 领取时按 3% 单独计税。为空表示未参加、不参与测算。
+   */
+  personalPensionAnnual?: number
+  /**
+   * 税优健康险年缴费额（元/年，上限 2400）：保费可在税前扣除。
+   * 为空表示未购买、不参与测算。
+   */
+  taxHealthInsuranceAnnual?: number
+  /**
    * 车辆单位经济学档案（可选覆盖）。缺省时使用电动车/燃油车的行业量级默认值。
    * 用自己账本里的能耗、保养、购车价校准后，边际成本才反映真实情况。
    */

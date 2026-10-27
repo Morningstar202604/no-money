@@ -107,9 +107,16 @@ export class ScenarioService {
         const costBreakdown = domainCalcCosts(adaptCosts(costs))
 
         const monthlyGrossCent = income.grossIncome
+        // 税前扣除合并为一个月度金额：专项附加扣除 + 个人养老金（12000/年）+ 税优健康险（2400/年）。
+        // 后两项按年缴、按月平均计入综合所得扣除——这是「买这两项能省多少税」的唯一正确口径，
+        // 此前页面只写「未计入测算」，用户无法验证值不值得买。
+        const extraAnnualDeduction =
+          (Number.isFinite(personal.personalPensionAnnual) ? Math.max(0, personal.personalPensionAnnual as number) : 0) +
+          (Number.isFinite(personal.taxHealthInsuranceAnnual) ? Math.max(0, personal.taxHealthInsuranceAnnual as number) : 0)
+        const monthlyDeductionYuan = personal.specialDeductionMonth + extraAnnualDeduction / 12
         const taxResult = domainCalcLabor(
           new Array(12).fill(monthlyGrossCent),
-          toCent(personal.specialDeductionMonth),
+          toCent(monthlyDeductionYuan),
           this.laborRule,
         )
         if (!taxResult.ok) throw new Error(`个税计算失败: ${taxResult.error.code}`)

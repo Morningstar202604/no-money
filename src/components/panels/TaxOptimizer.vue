@@ -6,7 +6,8 @@
         注册个体工商户后会新增<strong>增值税</strong>与<strong>经营所得个税</strong>两个税种——原实现把增值税的 1% 优惠税率误当作个税税率，会严重低估个体户税负。
       </n-alert>
       <p class="tax-guide-link">
-        税优速查：个人养老金 <b>12,000 元/年</b>、税优健康险 <b>2,400 元/年</b>、七项专项附加扣除均可税前扣除，均未计入本页测算——
+        税优速查：个人养老金 <b>12,000 元/年</b>、税优健康险 <b>2,400 元/年</b>、七项专项附加扣除均可税前扣除。
+        前两项在左侧「税务与社保」填入实际年缴额后会参与本页与全站测算（个人养老金领取时按 3% 单独计税，本页仅算缴费期节税）——
         <RouterLink :to="{ path: '/policy', query: { tab: 'manual' } }">去「民生手册 · 保险与税优」看办理方式与原文 ↗</RouterLink>
       </p>
     </n-card>
@@ -19,6 +20,7 @@
             <div class="t-row"><span>费用减除 (20%)</span><span>-{{ (labor * 0.2).toFixed(0) }}</span></div>
             <div class="t-row"><span>基本减除</span><span>-60,000</span></div>
             <div class="t-row"><span>专项附加扣除</span><span>-{{ (store.personal.specialDeductionMonth * 12).toLocaleString() }}</span></div>
+            <div v-if="extraAnnual > 0" class="t-row"><span>个人养老金 + 税优健康险</span><span>-{{ extraAnnual.toLocaleString() }}</span></div>
             <div class="t-row"><span>应纳税所得额</span><b>¥{{ taxableLabor.toLocaleString() }}</b></div>
             <div class="t-row danger"><span>年度个人所得税 <SourceTag source-key="tax" /></span><b>¥{{ laborTax.toLocaleString() }}</b></div>
             <div class="t-row danger"><span>实际税率</span><b>{{ laborRate }}%</b></div>
@@ -112,7 +114,7 @@
       <!-- 纵向排列：横向 5 步在窄屏会把整页撑出横向滚动条（其余页面的步骤条均为纵向） -->
       <n-steps :current="5" size="small" vertical>
         <n-step title="准备材料" description="身份证、经营场所证明（或电商网址）、手机号码" />
-        <n-step title="线上申请" description="广东政务服务网 → 开办企业一网通" />
+        <n-step title="线上申请" description="本省政务服务网 → 企业开办一网通办（如广东政务服务网、浙江政务服务网、上海一网通办）" />
         <n-step title="银行开户" description="选择银行预约个体户结算账户" />
         <n-step title="税务登记" description="电子税务局签三方协议，核定税种与实际经营行业" />
         <n-step title="定期申报" description="通过电子税务局按季度申报增值税与经营所得个税" />
@@ -141,6 +143,15 @@ const taxEngine = computed(() => store.rule ? new TaxEngine({
   laborRemuneration: store.rule.tax.laborRemuneration,
   soleProprietorship: store.rule.soleProprietorship
 } as TaxEngineConfig) : null)
+
+/**
+ * 月度税前扣除 = 专项附加扣除 + 个人养老金（年缴/12）+ 税优健康险（年缴/12）。
+ * 与 ScenarioService 同一口径：页面自己算税时若只扣专项附加，
+ * 用户填了税优额度后本页税额会与总览/收支明细打架。
+ */
+const extraAnnual = computed(() =>
+  (store.personal.personalPensionAnnual ?? 0) + (store.personal.taxHealthInsuranceAnnual ?? 0))
+const monthlyDeduction = computed(() => store.personal.specialDeductionMonth + extraAnnual.value / 12)
 /** 个体户税负参数：增值税与个税是两个税种，取自规则文件而非页面硬编码 */
 const soleRule = computed(() => store.rule?.soleProprietorship)
 
@@ -150,9 +161,9 @@ const labor = computed(() => {
 })
 const laborTax = computed(() => {
   if (!taxEngine.value) return 0
-  return taxEngine.value.calcLaborAnnual(labor.value, store.personal.specialDeductionMonth).annualTax
+  return taxEngine.value.calcLaborAnnual(labor.value, monthlyDeduction.value).annualTax
 })
-const taxableLabor = computed(() => Math.max(0, labor.value * 0.8 - 60000 - store.personal.specialDeductionMonth * 12))
+const taxableLabor = computed(() => Math.max(0, labor.value * 0.8 - 60000 - monthlyDeduction.value * 12))
 const laborRate = computed(() => labor.value > 0 ? (laborTax.value / labor.value * 100).toFixed(1) : '0')
 const afterLabor = computed(() => labor.value - laborTax.value)
 
@@ -218,7 +229,7 @@ const taxCompareOption = computed<EChartsCoreOption>(() => {
   const incomes = [36000, 50000, 80000, 100000, 120000, 150000, 200000, 300000]
   if (!taxEngine.value) return {}
   const P = chartColors()
-  const laborTaxes = incomes.map(inc => Math.round(taxEngine.value!.calcLaborAnnual(inc, store.personal.specialDeductionMonth).annualTax))
+  const laborTaxes = incomes.map(inc => Math.round(taxEngine.value!.calcLaborAnnual(inc, monthlyDeduction.value).annualTax))
   // 个体户口径：增值税 + 核定个税，两者相加才与左侧的"劳务报酬个税"可比。
   // 核定所得率未核到本城有效税率表时，只画增值税，避免用占位数得出"省税"结论。
   const vatOnly = incomes.map(inc => (inc / 12 >= (soleRule.value?.vatThresholdMonthly ?? Infinity) ? Math.round(round2(inc * (soleRule.value?.vatRate ?? 0))) : 0))

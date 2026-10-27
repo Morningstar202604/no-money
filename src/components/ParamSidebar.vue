@@ -376,8 +376,32 @@
 
         <div class="ps-item">
           <div class="ps-label">专项附加扣除/月 <b>¥{{ store.personal.specialDeductionMonth }}</b></div>
-          <n-slider v-model:value="store.personal.specialDeductionMonth" :min="0" :max="5000" :step="500" />
-          <div class="ps-note">子女教育 / 房贷 / 租金 / 赡养老人。税额按年度汇算清缴口径，含 5000 元/月基本减除；若你另有主业已享受该减除，实际税负会更高</div>
+          <!-- 上限 10,000：七项专项附加扣除可叠加（子女教育 2,000×2 + 赡养老人 3,000 + 房贷 1,000 已达 8,000），
+               此前卡 5,000 会让多孩+赡养家庭无法如实填写 -->
+          <n-slider v-model:value="store.personal.specialDeductionMonth" :min="0" :max="10000" :step="500" />
+          <div class="ps-note">子女教育 / 房贷 / 租金 / 赡养老人等七项可叠加。税额按年度汇算清缴口径，含 5000 元/月基本减除；若你另有主业已享受该减除，实际税负会更高</div>
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">个人养老金年缴 <b>¥{{ store.personal.personalPensionAnnual ?? 0 }}</b></div>
+          <n-input-number
+            :value="store.personal.personalPensionAnnual"
+            :min="0" :max="12000" :step="1000" size="small" style="width:100%"
+            placeholder="0 = 未参加（法定上限 12,000 元/年）"
+            @update:value="(v: number | null) => store.personal.personalPensionAnnual = v ?? undefined"
+          />
+          <div class="ps-note">缴费据实税前扣除，领取时按 3% 单独计税；账户内投资收益暂不征税。详情见「政策百科 → 民生手册 → 保险与税优」</div>
+        </div>
+
+        <div class="ps-item">
+          <div class="ps-label">税优健康险年缴 <b>¥{{ store.personal.taxHealthInsuranceAnnual ?? 0 }}</b></div>
+          <n-input-number
+            :value="store.personal.taxHealthInsuranceAnnual"
+            :min="0" :max="2400" :step="200" size="small" style="width:100%"
+            placeholder="0 = 未购买（法定上限 2,400 元/年）"
+            @update:value="(v: number | null) => store.personal.taxHealthInsuranceAnnual = v ?? undefined"
+          />
+          <div class="ps-note">符合规定的商业健康险保费可在税前扣除，限额 2,400 元/年</div>
         </div>
       </div>
     </FoldCard>

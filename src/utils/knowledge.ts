@@ -347,8 +347,8 @@ export function searchKnowledge(
 }
 
 /** 给 AI 提示词的紧凑上下文：只保留最相关字段，控制注入体积 */
-export function kbContextForPrompt(question: string, limit = 3): string {
-  const hits = searchKnowledge(question, { limit })
+export function kbContextForPrompt(question: string, limit = 3, entries?: KbEntry[]): string {
+  const hits = searchKnowledge(question, { limit, entries })
   if (!hits.length) return ''
   const blocks = hits.map(h => {
     const e = h.entry

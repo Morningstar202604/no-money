@@ -2,7 +2,9 @@ import { ref, onScopeDispose } from 'vue'
 import type { ScenarioResult } from '../types'
 import { scoreTier, scoreLevel } from '../utils/score'
 import { validateEndpoint } from '../utils/endpoint'
-import { searchKnowledge, kbContextForPrompt, KB_TYPE_LABELS } from '../utils/knowledge'
+import { searchKnowledge, kbContextForPrompt, KB_TYPE_LABELS, citySourceEntries, buildStaticKbEntries } from '../utils/knowledge'
+import type { CityRule } from '../types'
+import { provinceOf } from '../data/provinces'
 
 export interface ChatMessage {
   id: string
@@ -130,10 +132,17 @@ export function useAIChat() {
    * 变量名不叫 best：这里并不是 comparison.best —— 首页「最优方案」可能来自「多跑2小时」
    * 等其他场景，若把当前方案当最优汇报，AI 的结论会与首页数字互相矛盾。
    */
-  function buildContext(scenarios: ScenarioResult[]): string {
+  function buildContext(scenarios: ScenarioResult[], rule?: CityRule | null): string {
     const cur = scenarios[0]
     if (!cur) return '用户暂未测算'
-    return `城市=${cur.work.city},工时=${cur.work.dailyHours}h,日单=${cur.work.dailyOrders},月工作日=${cur.work.workDaysMonth}天。月收入=¥${cur.income.grossIncome},成本=¥${cur.costBreakdown.total},月个税≈¥${Math.round(cur.tax.annualTax/12)},净收入=¥${cur.netMonthly},时薪=¥${cur.netHourly},权益评分=${cur.rightsScore}/100。${cur.keyInsights?.join('│') || ''}`
+    // 只给 city slug（guangzhou）模型并不知道对应哪个省，回答地方政策时容易张冠李戴；
+    // 同时带上本城关键参数的置信度，模型才知道哪些数字不能当官方口径引用
+    const province = provinceOf(cur.work.city) ?? '未知省份'
+    const cityLabel = rule?.cityName ? `${rule.cityName}（${province}）` : `${cur.work.city}（${province}）`
+    const conf = rule
+      ? `本城数据置信度：养老基数=${rule.sources.pension?.confidence ?? '—'},医保=${rule.sources.medical?.confidence ?? '—'},最低工资=${rule.sources.minimumWage?.confidence ?? '—'},计价=${rule.sources.income?.confidence ?? '—'}`
+      : ''
+    return `城市=${cityLabel},工时=${cur.work.dailyHours}h,日单=${cur.work.dailyOrders},月工作日=${cur.work.workDaysMonth}天。月收入=¥${cur.income.grossIncome},成本=¥${cur.costBreakdown.total},月个税≈¥${Math.round(cur.tax.annualTax/12)},净收入=¥${cur.netMonthly},时薪=¥${cur.netHourly},权益评分=${cur.rightsScore}/100。${conf}。${cur.keyInsights?.join('│') || ''}`
   }
 
   function ruleReply(q: string, scenarios: ScenarioResult[], minWage?: number): string {
@@ -172,9 +181,14 @@ export function useAIChat() {
    * 离线知识库应答：先检索本地知识库（政策/手册/现实核查，均带官方链接），
    * 命中即按条目原文作答；未命中返回 null，由规则引擎兜底。
    */
-  function kbReply(question: string): string | null {
-    const hits = searchKnowledge(question, { limit: 3 })
-    if (!hits.length) return null
+  function kbReply(question: string, rule?: CityRule | null): string | null {
+    // 检索范围必须带上本城溯源：只检索静态条目时，任何城市问「最低工资」都会
+    // 命中广东的政策条目，回答里出现与用户所在省无关的数字
+    const entries = [...buildStaticKbEntries(), ...citySourceEntries(rule ?? null)]
+    const hits = searchKnowledge(question, { entries, limit: 3 })
+    // 相关性门槛：最高分过低（只命中 1 个二元组）时宁可走规则引擎，
+    // 也不要把「怎么省税」答成「怎么参保」这类不相关条目
+    if (!hits.length || hits[0].score < 6) return null
     const blocks = hits.map(h => {
       const e = h.entry
       const nums = e.numbers.slice(0, 3).map(n => `${n.label} ${n.value}`).join('；')
@@ -185,14 +199,15 @@ export function useAIChat() {
     return `本地知识库检索到 ${hits.length} 条相关内容（离线，附官方链接）：\n\n${blocks.join('\n\n')}\n\n提示：以上为知识库条目原文摘录；要结合你自己的数据做决策分析，请在「API 设置」启用 AI 大模型。`
   }
 
-  async function sendOnline(question: string, context: string) {
+  async function sendOnline(question: string, context: string, rule?: CityRule | null) {
     // Authorization 头会发往用户自填的地址，校验失败必须直接拒，不发请求
     const check = validateEndpoint(config.value.endpoint)
     if (!check.ok) throw new Error(check.error ?? 'Endpoint 不合法')
 
     // RAG 雏形：发送前先做本地知识库检索，把命中条目作为上下文注入，
     // 降低模型编造文号/政策的概率；检索在本地完成，不额外联网。
-    const kbCtx = kbContextForPrompt(question, 3)
+    // 必须把本城溯源条目一起送进检索（传入 rule），否则任何城市都会检索到广东政策
+    const kbCtx = kbContextForPrompt(question, 3, rule ? [...buildStaticKbEntries(), ...citySourceEntries(rule)] : undefined)
 
     const sysPrompt = `你是"没钱 No Money"的决策助手，面向灵活就业者（外卖骑手、网约车司机等）。根据用户当前测算数据给出具体可操作建议。硬性要求：不超过205字；只依据下列数据与用户问题作答；不得编造法律法规名称、文号、税率或政策文件；涉及法律或税务结论时必须提示以官方机构或专业人士意见为准。以下是用户数据：\n${context}${kbCtx ? `\n\n${kbCtx}` : ''}`
 
@@ -207,6 +222,10 @@ export function useAIChat() {
     // 在 try 外声明：finally 需要按 id 精确定位本次流式消息（清错消息会留下永久转圈的气泡）
     let aiId: string | undefined
     try {
+      // 60 秒整体超时：端点不响应时 isStreaming 会永远为 true，
+      // 输入框与发送键一直 disabled，用户只能刷新页面
+      const timeout = AbortSignal.timeout(60000)
+      const signal = typeof AbortSignal.any === 'function' ? AbortSignal.any([abort.signal, timeout]) : abort.signal
       const resp = await fetch(config.value.endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${config.value.apiKey}` },
@@ -215,7 +234,7 @@ export function useAIChat() {
           messages: [{ role: 'system', content: sysPrompt }, ...recentMsgs, { role: 'user', content: question }],
           stream: true, temperature: 0.7, max_tokens: 500
         }),
-        signal: abort.signal,
+        signal,
       })
 
       if (!resp.ok) {
@@ -321,15 +340,15 @@ export function useAIChat() {
     messages.value.forEach(m => { if (m.isStreaming) m.isStreaming = false })
   }
 
-  async function sendMessage(question: string, scenarios: ScenarioResult[], minWageMonthly?: number) {
+  async function sendMessage(question: string, scenarios: ScenarioResult[], minWageMonthly?: number, rule?: CityRule | null) {
     if (isStreaming.value) return
     messages.value.push({ id: newId('u'), role: 'user', content: question, timestamp: Date.now() })
-    const ctx = buildContext(scenarios)
+    const ctx = buildContext(scenarios, rule)
     const useAI = config.value.enabled && !!config.value.apiKey && isOnline.value
 
     if (useAI) {
       try {
-        await sendOnline(question, ctx)
+        await sendOnline(question, ctx, rule)
         return
       } catch (err: unknown) {
         if (err instanceof DOMException && err.name === 'AbortError') return
@@ -343,13 +362,16 @@ export function useAIChat() {
     isStreaming.value = true
     await new Promise(r => setTimeout(r, 300 + Math.random() * 300))
     isStreaming.value = false
-    const kb = kbReply(question)
+    // 意图明确的四类问题（税务/社保/风险/建议）先走规则引擎：这些回答直接基于用户
+    // 当前测算数据，比知识库条目更贴合；知识库用于规则引擎覆盖不到的政策/办事问题
+    const intent = /税|省|优化|社保|养老|退休|风险|安全|危险|权益|保障|建议|怎么办|好吗/.test(question)
+    const kb = intent ? null : kbReply(question, rule)
     messages.value.push({
       id: newId('r'),
       role: 'assistant',
       content: kb ?? ruleReply(question, scenarios, minWageMonthly),
       timestamp: Date.now(),
-      source: 'kb',
+      source: kb ? 'kb' : 'ai',
     })
     saveHistory()
   }

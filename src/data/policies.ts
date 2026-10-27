@@ -20,6 +20,20 @@ export interface Policy {
 
 export interface ReliefGuideItem { title: string; steps: string[] }
 
+/**
+ * 各省「应查什么」清单：本产品只逐条核验了广东省的地方文件，
+ * 其余 30 个省级行政区不编造条目，而是明确告诉用户该去哪个官网查哪三类文件。
+ * 这比放一堆未核实的文号有用——用户拿到的是可执行的检索路径。
+ */
+export const PROVINCE_POLICY_CHECKLIST: Array<{ key: string; title: string; why: string }> = [
+  { key: 'pension', title: '灵活就业人员参加企业职工基本养老保险的办法/通知', why: '决定缴费比例（通常 20%）与基数上下限' },
+  { key: 'medical', title: '职工基本医疗保险筹资标准 / 缴费基数上下限通知', why: '决定医保费率与本城基数区间' },
+  { key: 'minimumWage', title: '省政府关于调整最低工资标准的通知', why: '决定评级锚点与「低于最低工资」提示' },
+  { key: 'retirement', title: '本省养老金计发基数公告', why: '决定基础养老金测算结果' },
+  { key: 'injury', title: '本省工伤保险实施办法（一次性医疗/就业补助金月数）', why: '决定 5–10 级工伤两项补助金金额' },
+  { key: 'soleItr', title: '本省个体工商户核定征收行业所得率表', why: '决定个体户个税是否可估算' },
+]
+
 /** 国家级 / 广东省政策条目（原文链接逐条核验过） */
 export const POLICIES: { national: Policy[]; guangdong: Policy[] } = {
   national: [
@@ -46,9 +60,38 @@ export const POLICIES: { national: Policy[]; guangdong: Policy[] } = {
     },
     {
       id: 4, title: '新就业形态劳动者休息和劳动报酬权益保障指引 / 劳动规则公示指引 / 权益维护服务指南', status: '已施行',
-      docNo: '人社部办公厅 2023', url: '',
-      summary: '要求平台公开算法规则、合理确定计件单价与抽成比例，并订立书面协议。',
-      caveat: '原文页面待补链接；"书面协议订立指引"这一单独文件名不准确，实际为上述"两指引一指南"。',
+      docNo: '人社部办公厅 2023',
+      url: 'https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/gfxwj/202312/t20231218_511603.html',
+      summary: '要求平台公开算法规则、合理确定计件单价与抽成比例，并订立书面协议；明确休息时间与报酬支付规则。',
+      caveat: '人社部官网原文页（2023-12 发布）；"书面协议订立指引"这一单独文件名不准确，实际为上述"两指引一指南"。',
+    },
+    {
+      id: 5, title: '工伤保险条例（2010 修订）', status: '已施行',
+      docNo: '国务院令第586号', effectiveFrom: '2011-01-01',
+      url: 'https://www.gov.cn/zhengce/zhengceku/2010-12/24/content_7254.htm',
+      summary: '全国统一的工伤认定、劳动能力鉴定与待遇标准：一次性伤残补助金月数（第35–37条）、本人工资口径（第64条）、未参保责任（第62条）。',
+      caveat: '一次性工伤医疗补助金与伤残就业补助金的月数由省级人民政府规定，各省不同；本产品只内置广东口径，其他省份不给数字。',
+    },
+    {
+      id: 6, title: '职工带薪年休假条例', status: '已施行',
+      docNo: '国务院令第514号', effectiveFrom: '2008-01-01',
+      url: 'https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_6636.htm',
+      summary: '累计工作满 1 年不满 10 年 5 天、满 10 年不满 20 年 10 天、满 20 年 15 天；未休年假按日工资 300% 支付（含正常工资）。',
+      caveat: '以劳动关系成立为前提；多数骑手被认定为「不完全符合确立劳动关系情形」时该项不适用。',
+    },
+    {
+      id: 7, title: '劳动保障监察条例', status: '已施行',
+      docNo: '国务院令第423号', effectiveFrom: '2004-12-01',
+      url: 'https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7383.htm',
+      summary: '劳动保障行政部门对用人单位支付工资、缴纳社保等情况实施监察；劳动者可投诉举报，监察机构应在 60 个工作日内完成调查。',
+      caveat: '监察对象是「用人单位」；若无法认定劳动关系，拖欠报酬可能需走民事途径而非劳动监察。',
+    },
+    {
+      id: 8, title: '个人所得税专项附加扣除暂行办法', status: '已施行',
+      docNo: '国发〔2018〕41号', effectiveFrom: '2019-01-01',
+      url: 'https://www.gov.cn/zhengce/zhengceku/2018-12/22/content_5351181.htm',
+      summary: '子女教育、继续教育、大病医疗、住房贷款利息、住房租金、赡养老人、婴幼儿照护七项专项附加扣除的标准与条件。',
+      caveat: '2023 年起子女教育、赡养老人、婴幼儿照护标准已上调（国发〔2023〕13号），本条目链接为暂行办法原文，具体额度以最新通知为准。',
     },
   ],
   guangdong: [

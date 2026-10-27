@@ -54,6 +54,9 @@ const DEFAULT_PERSONAL: PersonalParams = {
   deadheadRatio: undefined,
   vehicleProfile: undefined,
   statutoryOverrides: undefined,
+  // 税优额度（年缴）：不填即未参加，不参与扣除
+  personalPensionAnnual: undefined,
+  taxHealthInsuranceAnnual: undefined,
 }
 
 /** 品牌重命名前的旧存储键：老用户数据在这里，必须迁移而不是静默丢弃 */

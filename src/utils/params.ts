@@ -47,7 +47,7 @@ export const PARAM_BOUNDS = {
   personal: {
     currentAge: [16, 80],
     expectedRetireAge: [16, 90],
-    specialDeductionMonth: [0, 5000],
+    specialDeductionMonth: [0, 10000],
     // 个人账户记账利率假设：允许负值到 10%（养老金账户实际为记账利率，
     // 3% 只是本项目的默认假设，不是市场产品收益率）
     assumedAnnualReturn: [-0.05, 0.1],
@@ -58,6 +58,9 @@ export const PARAM_BOUNDS = {
     selfInvestReturn: [-0.1, 0.15],
     // 空驶率：0-100%
     deadheadRatio: [0, 1],
+    // 税优额度（元/年）：个人养老金法定上限 12000、税优健康险 2400
+    personalPensionAnnual: [0, 12000],
+    taxHealthInsuranceAnnual: [0, 2400],
   },
 } as const
 

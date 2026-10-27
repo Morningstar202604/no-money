@@ -51,6 +51,37 @@
         </div>
       </n-tab-pane>
 
+      <n-tab-pane name="province" :tab="`${currentProvince || '本省'}政策核查清单`">
+        <n-card class="card" style="margin-top: 0" :title="`${currentProvince || '你所在省'}：该查哪几份文件`">
+          <p class="desc" style="margin-bottom:10px">
+            本产品逐条核验并收录了<b>广东省</b>的地方文件；其余省份不编造文号与数值，而是列出
+            <b>决定测算结果的六类文件</b>与检索路径。拿到原文后，填进左侧「本省法定参数」即可让测算锚定本省口径。
+          </p>
+          <div class="policy-list">
+            <FoldCard v-for="item in provinceChecklist" :key="item.key">
+              <template #header>
+                <span class="src-key">{{ item.title }}</span>
+              </template>
+              <p class="src-note">{{ item.why }}</p>
+            </FoldCard>
+          </div>
+          <n-alert type="info" :show-icon="true" style="margin-top: 10px">
+            <div><b>检索路径（任选其一）</b></div>
+            <div style="margin-top:4px">
+              ① <b>{{ channel?.hrssName ?? '本省人社厅' }}</b>官网「政策文件/规范性文件」栏目；
+              ② 本省政务服务网（{{ channel?.portalName ?? '省级政务服务平台' }}）搜索文件名；
+              ③ 拨 <b>12333</b> 直接问「本省今年灵活就业养老/医保缴费基数上下限是多少」。
+            </div>
+            <div v-if="channel?.hrssUrl || channel?.portalUrl" style="margin-top:6px">
+              官网入口：
+              <a v-if="channel?.hrssUrl" :href="channel.hrssUrl" target="_blank" rel="noopener noreferrer" class="pi-link">{{ channel.hrssName }}</a>
+              <span v-if="channel?.hrssUrl && channel?.portalUrl"> · </span>
+              <a v-if="channel?.portalUrl" :href="channel.portalUrl" target="_blank" rel="noopener noreferrer" class="pi-link">{{ channel.portalName }}</a>
+            </div>
+          </n-alert>
+        </n-card>
+      </n-tab-pane>
+
       <n-tab-pane name="sources" tab="本城数据溯源">
         <n-card class="card" style="margin-top: 0" title="当前城市参数逐条溯源">
           <p class="desc" style="margin-bottom:10px">
@@ -197,7 +228,8 @@ import KbResultCard from '../components/KbResultCard.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { REALITY_FACTS, REALITY_CATEGORY_ORDER, REALITY_CATEGORY_LABELS } from '../utils/reality'
 import { GUIDE_ITEMS, GUIDE_GROUP_ORDER, GUIDE_GROUP_LABELS } from '../utils/livingGuide'
-import { POLICIES, RELIEF_GUIDE, type PolicyStatus } from '../data/policies'
+import { POLICIES, RELIEF_GUIDE, PROVINCE_POLICY_CHECKLIST, type PolicyStatus } from '../data/policies'
+import { channelOf } from '../data/provinceChannels'
 import {
   buildStaticKbEntries,
   citySourceEntries,
@@ -217,6 +249,8 @@ const currentProvince = computed(() => {
   const city = store.work.city
   return CITY_REGISTRY.find(c => c.value === city)?.province ?? ''
 })
+const channel = computed(() => channelOf(currentProvince.value))
+const provinceChecklist = computed(() => PROVINCE_POLICY_CHECKLIST)
 const provinceTabLabel = computed(() => {
   // 规则文件未加载时退回中性标题，避免用 work.city 猜出错误的省份
   if (!currentProvince.value) return '地方政策（广东）'
@@ -232,7 +266,7 @@ const provinceTabLabel = computed(() => {
  * 只读一次 query 的话，同一路由内换页签不会更新 URL，
  * 用户复制地址或按返回键都会回到错误页签，深链分享也无法复现。
  */
-const TAB_NAMES = ['national', 'guangdong', 'sources', 'reality', 'manual', 'kb', 'relief']
+const TAB_NAMES = ['national', 'guangdong', 'province', 'sources', 'reality', 'manual', 'kb', 'relief']
 const route = useRoute()
 const router = useRouter()
 const tab = computed({

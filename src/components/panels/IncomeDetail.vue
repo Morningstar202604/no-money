@@ -322,7 +322,9 @@ const waterfallOption = computed<EChartsCoreOption>(() => {
 
 const costPieOption = computed<EChartsCoreOption>(() => {
   void store.isDark
-  const c = s.value?.costs
+  // 必须读 costBreakdown（已按车型过滤），不能读 s.costs 的原始输入：
+  // 电动车用户看不到的油费此前仍被画进饼图，分片和与「月总成本」对不上
+  const c = s.value?.costBreakdown
   if (!c) return {}
   const P = chartColors()
   const palette = [P.primary, P.warn, P.danger, P.safe, P.gray, P.light]

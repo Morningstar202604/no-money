@@ -2,8 +2,13 @@
  * ECharts 懒加载与模块注册（ChartBox 与地图组件共用）。
  *
  * 首次调用时才动态 import，注册一次后复用；地图相关（MapChart/GeoComponent）
- * 也在这里注册——charts/components 的 barrel 本来就是整包动态载入，
- * 多注册类型不额外增加 chunk 体积。
+ * 也在这里注册。
+ *
+ * 已知取舍：`echarts/charts` / `echarts/components` 是 barrel，会把全部图表
+ * 类型打进 chunk（实测 884 KB / gzip 294 KB），删掉未注册项也不会减小。
+ * 想真正减重需改成 `echarts/lib/chart/bar` 这类精确路径，但 ECharts 6 的
+ * lib 目录没有类型声明（TS7016），需手写 declare module——用类型安全换体积
+ * 不划算。该 chunk 是懒加载块，首屏不加载，故保持现状。
  */
 
 let initFn: typeof import('echarts/core').init | null = null

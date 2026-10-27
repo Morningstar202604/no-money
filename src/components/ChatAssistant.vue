@@ -16,6 +16,7 @@
         <div class="chat-head">
           <span class="ch-title">AI 助手</span>
           <n-tag v-if="isOnline && config.enabled && config.apiKey" size="small" type="success" :bordered="false">在线</n-tag>
+          <n-tag v-else-if="config.enabled && !config.apiKey" size="small" type="warning" :bordered="false">已启用 · 未填 Key</n-tag>
           <n-tag v-else size="small" :bordered="false">离线模式</n-tag>
         </div>
 
@@ -147,7 +148,7 @@ async function sendChat() {
   const q = input.value.trim()
   if (!q || isStreaming.value) return
   input.value = ''
-  await sendMessage(q, props.scenarios, store.rule?.minimumWage.monthly)
+  await sendMessage(q, props.scenarios, store.rule?.minimumWage.monthly, store.rule)
   scrollToBottom()
 }
 

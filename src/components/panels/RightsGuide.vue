@@ -50,7 +50,7 @@
               <h4>取证技巧</h4>
               <ul class="tips">
                 <li>截图需包含<strong>完整时间+平台标识</strong>,有效取证应含水电平和通知栏</li>
-                <li>重要录屏/录像：通过<strong>可信时间戳</strong>（www.ts.cn）或<strong>公证云</strong>等工具认证，效力更高</li>
+                <li>重要录屏/录像：通过<strong>可信时间戳</strong>（www.tsa.cn，联合信任时间戳服务中心）或<strong>公证云</strong>等工具认证，效力更高</li>
                 <li>银行流水去银行柜台打印并<strong>盖业务章</strong>，效力大于自行截图</li>
                 <li>与平台客服沟通尽量选择<strong>在线工单/邮件</strong>（有书面记录），避免纯电话沟通</li>
                 <li>所有电子证据至少保留<strong>两份副本</strong>（云端+本地），防止丢失</li>
@@ -147,9 +147,9 @@
                 <div class="agency-card">
                   <h4>总工会 / 新业态工会</h4>
                   <div class="agency-detail">
-                    <p><b>入会方式：</b>微信小程序搜索"粤工惠"→新就业形态劳动者入会</p>
+                    <p><b>入会方式：</b>{{ unionEntry }}</p>
                     <p><b>服务内容：</b>免费法律咨询 + 调解 + 法律援助 + 帮扶慰问</p>
-                    <p><b>地方特色：</b>广州市总工会"骑手之家"提供休息+维权一站式服务</p>
+                    <p><b>地方特色：</b>{{ unionLocal }}</p>
                   </div>
                 </div>
               </n-gi>
@@ -182,7 +182,7 @@
               <div class="template-box">
                 <div class="template-title">劳动仲裁申请书</div>
                 <div class="template-content">
-                  <strong>申请人：</strong>张三，男，汉，19__年__月__日生，住：广州市__区__路__号，电话：138________，身份证号：_________<br>
+                  <strong>申请人：</strong>张三，男，汉，19__年__月__日生，住：{{ store.rule?.cityName ?? '____市' }}__区__路__号，电话：138________，身份证号：_________<br>
                   <strong>被申请人：</strong>__科技有限公司，住所：__市__区__路__号<br>
                  法定代表人：__，职务：__<br><br>
                   <strong>仲裁请求：</strong><br>
@@ -326,19 +326,24 @@
           </div>
         </n-card>
 
-        <n-card title="各地法律援助中心" class="card" style="margin-top: 12px">
+        <n-card title="法律援助与维权热线" class="card" style="margin-top: 12px">
+          <n-alert type="info" :show-icon="true" style="margin-bottom: 10px">
+            本页按你当前测算城市（{{ store.rule?.cityName ?? '未选择' }}）所属省份显示资源。
+            全国统一热线在任何省份都可直接拨打：
+            <b>12348</b> 法律援助 · <b>12333</b> 人社投诉 · <b>12351</b> 工会维权 · <b>12368</b> 法院热线。
+          </n-alert>
           <div class="contact-list">
             <div class="contact-item">
-              <div class="ci-name">广州市法律援助处</div>
-              <div class="ci-desc">越秀区小北路243号 · 020-83562631</div>
+              <div class="ci-name">{{ localAidName }}</div>
+              <div class="ci-desc">拨打 12348 转本地法律援助中心；经济困难可申请免费律师代理</div>
             </div>
             <div class="contact-item">
-              <div class="ci-name">深圳市法律援助处</div>
-              <div class="ci-desc">福田区景田路76号 · 0755-83053885</div>
+              <div class="ci-name">{{ province }}总工会 / 职工服务中心</div>
+              <div class="ci-desc">拨打 12351 转本地工会；新就业形态劳动者入会与法律援助均在此办理</div>
             </div>
             <div class="contact-item">
-              <div class="ci-name">广东省总工会法援</div>
-              <div class="ci-desc">越秀区东风东路745号 · 020-83856666</div>
+              <div class="ci-name">{{ store.rule?.cityName ?? '本地' }}劳动人事争议仲裁委员会</div>
+              <div class="ci-desc">地址与电话请通过当地人社局官网或 12333 查询（仲裁免费，无需律师也可申请）</div>
             </div>
           </div>
         </n-card>
@@ -348,10 +353,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { NCard, NAlert, NGrid, NGi, NDivider, NTable } from 'naive-ui'
+import { useMainStore } from '../../stores/main'
+import { provinceOf } from '../../data/provinces'
+import { PROVINCIAL_LEGAL_AID, channelOf } from '../../data/provinceChannels'
 
+const store = useMainStore()
 const activeStep = ref('evidence')
+
+/** 当前测算城市所属省份：非广东用户不应看到粤工惠/广州法援等本地资源 */
+const province = computed(() => provinceOf(store.rule?.city ?? store.work.city) ?? '你所在省')
+const localAidName = computed(() => PROVINCIAL_LEGAL_AID[province.value] ?? `${province.value}法律援助中心（12348 转）`)
+const unionEntry = computed(() => {
+  const ch = channelOf(province.value)
+  if (province.value === '广东') return '微信小程序搜索「粤工惠」→ 新就业形态劳动者入会'
+  return ch
+    ? `通过「${ch.portalName}」或当地总工会公众号入会；也可拨 12351 由工会指引`
+    : '拨 12351 由当地总工会指引入会（新就业形态劳动者可加入所在区域行业工会）'
+})
+const unionLocal = computed(() => province.value === '广东'
+  ? '广州市总工会「骑手之家」提供休息 + 维权一站式服务'
+  : `各地工会服务站点差异较大，具体以${province.value}总工会公布为准；12351 可查询最近的户外劳动者服务站点`)
 
 /** 证据清单勾选状态（组件内本地状态，不持久化） */
 const evidenceChecks = ref<Record<string, boolean>>({})
