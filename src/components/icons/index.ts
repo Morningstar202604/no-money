@@ -1,7 +1,6 @@
 // Icon components barrel export
 export { default as DashboardIcon } from './DashboardIcon.vue'
 export { default as GitCompareIcon } from './GitCompareIcon.vue'
-export { default as ReceiptIcon } from './ReceiptIcon.vue'
 export { default as CalculatorIcon } from './CalculatorIcon.vue'
 export { default as ShieldCheckIcon } from './ShieldCheckIcon.vue'
 export { default as BookOpenIcon } from './BookOpenIcon.vue'

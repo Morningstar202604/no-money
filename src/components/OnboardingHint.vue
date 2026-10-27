@@ -93,9 +93,6 @@ function close() {
   try { localStorage.setItem(STORAGE_KEY, '1') } catch { /* 隐私模式下不持久化，只影响下次是否再弹 */ }
 }
 
-/** 城市数量用于说明「默认口径可切换」 */
-const cityCount = CITIES.length
-void cityCount
 </script>
 
 <style scoped>

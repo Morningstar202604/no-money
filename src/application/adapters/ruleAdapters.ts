@@ -74,21 +74,6 @@ export function adaptLaborRule(r: CityRule['tax']['laborRemuneration']): DomainL
   }
 }
 
-/** 个体工商户核定征收规则 */
-export function adaptSoleRule(r: CityRule['soleProprietorship']) {
-  return {
-    vatRate: Rate.create(r.vatRate),
-    vatThresholdMonthly: toCent(r.vatThresholdMonthly),
-    itrIncomeRate: Rate.create(r.itrIncomeRate),
-    itrDeductionMonthly: toCent(r.itrDeductionMonthly),
-    bizTaxTable: r.bizTaxTable.map(b => ({
-      min: toCent(b.min),
-      max: toCent(b.max),
-      rate: Rate.create(b.rate),
-      deduction: toCent(b.deduction),
-    })),
-  }
-}
 
 /** 社保规则：缴费基数上下限以元为单位 */
 export function adaptBenefitRule(r: CityRule['benefit']): DomainBenefitRule {
@@ -112,14 +97,6 @@ export function adaptBenefitRule(r: CityRule['benefit']): DomainBenefitRule {
   }
 }
 
-/** 退休测算规则：计发基数以元为单位 */
-export function adaptRetirementRule(r: CityRule['retirement']): DomainRetirementRule {
-  return {
-    benefitBaseMonthly: toCent(r.benefitBaseMonthly),
-    paymentIndex: Rate.create(r.paymentIndex),
-    assumedAnnualReturn: Rate.create(r.assumedAnnualReturn),
-  }
-}
 
 /** 工作参数：工时/单量/天数/距离均无量纲换算 */
 export function adaptWork(w: WorkParams, avgWeightKg?: number): DomainWorkParams {

@@ -364,6 +364,8 @@ function toServiceInput() {
     rule: {
       benefit: { pension: { baseMin: rule.benefit.pension.baseMin, baseMax: rule.benefit.pension.baseMax } },
       minimumWage: { nonFullTimeHourly: rule.minimumWage.nonFullTimeHourly },
+      // 省级工伤口径判断用：非广东城市不给广东的医疗/就业补助金月数
+      city: rule.city,
     },
   }
 }

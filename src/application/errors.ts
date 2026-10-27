@@ -88,8 +88,3 @@ export class AppError extends Error {
     );
   }
 }
-
-/** 类型守卫：检查是否为 AppError */
-export function isAppError(error: unknown): error is AppError {
-  return error instanceof AppError;
-}

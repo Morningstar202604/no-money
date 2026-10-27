@@ -111,8 +111,3 @@ function lookupBounds(fallback: object, key: string): readonly [number, number] 
   }
   return null
 }
-
-/** 对运行中的参数做同样的夹取，滑块改动与恢复走同一条路径 */
-export function clampParams<T extends object>(params: T, fallback: T): T {
-  return hydrateParams(params, fallback)
-}

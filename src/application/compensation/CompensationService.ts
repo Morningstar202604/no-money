@@ -14,6 +14,8 @@ export interface CompensationInput {
       pension: { baseMin: number; baseMax: number };
     };
     minimumWage: { nonFullTimeHourly: number };
+    /** 城市 id：用于判断地方性工伤保险口径（一次性医疗/就业补助金月数由省级规定） */
+    city?: string;
   };
 }
 
@@ -62,6 +64,9 @@ export interface CompensationForm {
  * 参考 RightsCompensation.vue 逻辑，提取为可复用的应用层服务
  * 返回 Result<CompensationResult, AppError>
  */
+/** 已内置地方性工伤口径的省份（目前只有广东） */
+const GUANGDONG_CITIES = new Set(['guangzhou', 'shenzhen', 'dongguan'])
+
 export class CompensationService {
   /** 计算补偿 */
   calculate(input: CompensationInput): Result<CompensationResult, AppError> {
@@ -80,7 +85,7 @@ export class CompensationService {
           result = this.calcWage(form.wage!, floor, ceil);
           break;
         case 'injury':
-          result = this.calcInjury(form.injury!, floor, ceil);
+          result = this.calcInjury(form.injury!, floor, ceil, rule.city);
           break;
         case 'dismiss':
           result = this.calcDismiss(form.dismiss!, floor, ceil);
@@ -226,7 +231,7 @@ export class CompensationService {
   }
 
   /** 计算职业伤害/工伤场景 */
-  private calcInjury(form: NonNullable<CompensationForm['injury']>, floor: number, ceil: number): CompensationResult {
+  private calcInjury(form: NonNullable<CompensationForm['injury']>, floor: number, ceil: number, city?: string): CompensationResult {
     const { level, medical, leaveMonths, income, hasInsurance, mealPerDay, nursingPerDay } = form;
 
     // 工伤保险条例第64条：本人工资低于统筹地区职工平均工资60%的按60%，高于300%的按300%
@@ -244,15 +249,29 @@ export class CompensationService {
       items.push(this.claim('生活护理费', nursingPerDay * leaveMonths * 30, '生活不能自理需护理的，由用人单位负责或按当地护理费标准。天数按停工留薪期折算，若实际住院/护理期更短请自行核减'));
     }
 
-    // 广东省工伤保险条例第34条（2019修正）一次性补助金月数，以本人工资为基数
+    // 一次性伤残补助金月数：全国统一（工伤保险条例第35–37条），可跨省使用
     const subsidy: Record<number, number> = { 10: 7, 9: 9, 8: 11, 7: 13, 6: 16, 5: 18, 4: 21, 3: 23, 2: 25, 1: 27 };
+    /**
+     * 一次性工伤医疗补助金 / 就业补助金月数：**由省级人民政府规定**，各省不同。
+     * 下表仅是广东省口径（广东省工伤保险条例第34条，2019修正）。
+     * 此前对 15 城一律套用广东月数，北京/上海/成都等用户会被算出错误金额——
+     * 非广东城市改为只给「按当地省级标准核定」的提示，不编造数字。
+     */
+    const isGuangdong = GUANGDONG_CITIES.has(city ?? '');
     const medFund: Record<number, number> = { 10: 1, 9: 2, 8: 4, 7: 6, 6: 8, 5: 10 };
     const jobFund: Record<number, number> = { 10: 4, 9: 8, 8: 15, 7: 25, 6: 40, 5: 50 };
 
     if (level >= 5 && level <= 10) {
-      items.push(this.claim(`一次性伤残补助金（${level}级 · ${subsidy[level]}个月本人工资）`, ownWage * subsidy[level], '《工伤保险条例》第35–37条月数表，由工伤保险基金支付'));
-      items.push(this.cond(`一次性工伤医疗补助金（广东 ${level}级 · ${medFund[level]}个月）`, ownWage * medFund[level], '广东省工伤保险条例第34条：以劳动合同期满终止或本人提出解除为前提，由工伤保险基金支付'));
-      items.push(this.cond(`一次性伤残就业补助金（广东 ${level}级 · ${jobFund[level]}个月）`, ownWage * jobFund[level], '广东省工伤保险条例第34条：同上以劳动关系解除/终止为前提，由用人单位支付'));
+      items.push(this.claim(`一次性伤残补助金（${level}级 · ${subsidy[level]}个月本人工资）`, ownWage * subsidy[level], '《工伤保险条例》第35–37条月数表（全国统一），由工伤保险基金支付'));
+      if (isGuangdong) {
+        items.push(this.cond(`一次性工伤医疗补助金（广东 ${level}级 · ${medFund[level]}个月）`, ownWage * medFund[level], '广东省工伤保险条例第34条：以劳动合同期满终止或本人提出解除为前提，由工伤保险基金支付'));
+        items.push(this.cond(`一次性伤残就业补助金（广东 ${level}级 · ${jobFund[level]}个月）`, ownWage * jobFund[level], '广东省工伤保险条例第34条：同上以劳动关系解除/终止为前提，由用人单位支付'));
+      } else {
+        items.push(this.info(
+          '一次性工伤医疗/就业补助金：需按你所在省标准核定',
+          '这两项的月数由省级人民政府规定，各省差异很大（广东五级为医疗10个月、就业50个月，其他省份从数个月到数十个月不等）。本工具只内置了广东口径，为避免给你一个错误金额，此处不估算——请查你所在省的《工伤保险条例》实施办法或咨询 12333。',
+        ));
+      }
     } else if (level >= 1 && level <= 4) {
       // 1–4 级：一次性补助金照发，但不享受一次性医疗/就业补助金（那是 5–10 级的退出结算），
       // 改为法定按月伤残津贴直至退休——此前两个分支都不落，四级少算 21 个月补助金与全部津贴
@@ -337,6 +356,12 @@ export class CompensationService {
       this.cond('收入差额/扣分损失', loss * duration, `月均 \u00A5${loss} \u00D7 ${duration} 个月。需先证明损失与算法规则之间的因果关系`),
       this.info('律师费与公证费', '广东劳动争议仲裁与诉讼一般不支持由败诉方承担律师费，故不计入可主张金额；小额诉讼可自行完成'),
       this.info('可并行主张的渠道', '①向平台申诉并要求书面说明算法依据；②向人社部门、市场监管部门投诉算法规则未公示；③个人主张自动化决策解释权（个保法第24条）'),
+      // 劳动关系直接影响救济路径与成本：有劳动关系可走劳动仲裁（不收费、举证责任较轻），
+      // 无则只能民事诉讼（自行举证、可能承担诉讼费）。此前该开关被解构后完全未使用，
+      // 用户切换了也没有任何反馈——属于「假控件」。
+      hasLaborRelation
+        ? this.info('救济路径：劳动仲裁（你已确认劳动关系）', '可向劳动人事争议仲裁委员会申请仲裁，不收费。平台算法规则属用人单位规章制度，未经民主程序制定或未向你公示的，对你不产生约束力。')
+        : this.info('救济路径：民事诉讼（未确认劳动关系）', '若无劳动关系，只能以合同/侵权为由提起民事诉讼，需自行证明平台规则不公与损失因果，举证难度与成本都更高。建议同时向人社、市场监管部门投诉算法未公示。'),
     ];
 
     return this.pack(items, [

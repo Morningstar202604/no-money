@@ -18,6 +18,7 @@ const service = new CompensationService()
 const serviceRule = {
   benefit: { pension: { baseMin: rule.benefit.pension.baseMin, baseMax: rule.benefit.pension.baseMax } },
   minimumWage: { nonFullTimeHourly: rule.minimumWage.nonFullTimeHourly },
+  city: 'guangzhou',
 }
 
 function unwrap<T>(r: { ok: true; value: T } | { ok: false }): T {
@@ -62,6 +63,22 @@ describe('工伤场景：伤残等级决定待遇项目', () => {
     expect(r.items.some(i => i.name.includes('工伤医疗补助金'))).toBe(true)
     expect(r.items.some(i => i.name.includes('就业补助金'))).toBe(true)
     expect(r.items.some(i => i.name.includes('按月伤残津贴'))).toBe(false)
+  })
+
+  it('非广东城市：不套用广东的医疗/就业补助金月数，改为提示按本省标准核定', () => {
+    const r = unwrap(service.calculate({
+      scene: 'injury',
+      form: { injury: { ...baseForm, level: 10 } },
+      rule: { ...serviceRule, city: 'beijing' },
+    }))
+    // 全国统一的一次性伤残补助金照发
+    expect(r.items.some(i => i.name.includes('一次性伤残补助金'))).toBe(true)
+    // 省级口径的两项不给数字（避免跨省错算）
+    expect(r.items.some(i => i.name.includes('工伤医疗补助金') && i.amount > 0)).toBe(false)
+    expect(r.items.some(i => i.name.includes('就业补助金') && i.amount > 0)).toBe(false)
+    const note = r.items.find(i => i.name.includes('需按你所在省标准核定'))
+    expect(note, '非广东必须给出可执行的替代指引').toBeTruthy()
+    expect(note!.kind).toBe('info')
   })
 
   it('0 级（未鉴定）：只有提示，无补助金', () => {

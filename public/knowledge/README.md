@@ -1,4 +1,4 @@
-# 灵算 Pro 知识库（Agent / RAG 摄取说明）
+# 没钱 No Money 知识库（Agent / RAG 摄取说明）
 
 `kb.json` 由 `npm run kb:export` 生成（源码：`src/utils/knowledge.ts`）。
 内容为「政策原文索引 + 办事手册 + 现实核查 + 本城参数溯源」的统一结构化条目，

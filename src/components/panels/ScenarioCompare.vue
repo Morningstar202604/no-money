@@ -7,7 +7,7 @@
         </n-space>
       </template>
       <p class="desc">
-        基于当前参数一键生成变体方案，也可添加自定义方案（工时、单量可独立调整），横向对比月净收入与权益保障。
+        基于当前参数一键生成变体方案，也可添加自定义方案（单量受工时产能约束（超出会自动截断）），横向对比月净收入与权益保障。
       </p>
       <n-alert v-if="provisional" type="warning" :show-icon="true" style="margin-top: 8px">
         当前参数含未回溯官方的占位值（{{ unverifiedFields.join('、') }}），
@@ -80,14 +80,16 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
-import { NCard, NGrid, NGi, NTag, NSpace, NButton, NModal, NInput, NSlider, NAlert } from 'naive-ui'
+import { NCard, NGrid, NGi, NTag, NSpace, NButton, NModal, NInput, NSlider, NAlert, useMessage } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
+import { achievableOrdersForHours } from '../../domain/income/capacity'
 import { axisX, axisY, GRID, chartColors } from '../../utils/chart'
 import { scoreTier } from '../../utils/score'
 import ChartBox from '../ChartBox.vue'
 import FoldCard from '../FoldCard.vue'
 
 const store = useMainStore()
+const message = useMessage()
 
 /** 占位数据门禁：最优方案建立在未核实参数上时，标签与措辞降级为「假设」 */
 const provisional = computed(() => store.comparison?.best?.dataQuality?.provisional === true)
@@ -119,9 +121,22 @@ function openAdd() {
   showAdd.value = true
 }
 
+/**
+ * 自定义方案不能让用户造出「物理不可达」的组合：
+ * 单量必须落在当前工时决定的产能上限内，超出部分按上限截断并如实告知。
+ * 此前工时与单量各用一支滑块独立取值，绕过了产能模型，
+ * 用户能造出「8 小时跑 80 单」并让它当选「最优方案」。
+ */
 function confirmAdd() {
   const name = draft.name.trim() || `自定义方案${store.customPlans.length + 1}`
-  store.addScenario(name, { ...store.work, dailyHours: draft.dailyHours, dailyOrders: draft.dailyOrders }, { ...store.costs })
+  const cap = achievableOrdersForHours(draft.dailyHours, store.work.avgDistance, store.capacityModel)
+  const feasibleOrders = Math.min(draft.dailyOrders, Math.floor(cap))
+  if (feasibleOrders < draft.dailyOrders) {
+    message.warning(
+      `该工时下产能上限约 ${Math.floor(cap)} 单/天（按你的产能参数），已按 ${feasibleOrders} 单创建；想跑更多单请先提高工时。`,
+    )
+  }
+  store.addScenario(name, { ...store.work, dailyHours: draft.dailyHours, dailyOrders: feasibleOrders }, { ...store.costs })
   showAdd.value = false
 }
 </script>

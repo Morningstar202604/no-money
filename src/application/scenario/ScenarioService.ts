@@ -63,7 +63,6 @@ function safeDivisor(v: number): number {
 }
 
 export class ScenarioService {
-  private readonly cityId: string
   /** 原始规则：洞察文案需要读取非数值字段（如本城养老基数下限），故保留 */
   private readonly rawRule: CityRule
   private readonly incomeRule: DomainIncomeRule
@@ -74,7 +73,6 @@ export class ScenarioService {
 
   constructor(rule: CityRule, overrides?: IncomeOverrides) {
     if (!rule) throw AppError.ruleInvalid('unknown', 'CityRule is required')
-    this.cityId = rule.city
     this.rawRule = rule
     // 规则是常量，构造时适配一次，避免每次计算重复转换。
     // overrides 是用户按自己 APP 流水填的实测计价（见 IncomeOverrides 注释）
