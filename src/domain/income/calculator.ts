@@ -2,13 +2,10 @@
 
 import type { IncomeRule, WorkParams, CostParams, IncomeBreakdown, CostBreakdown, Cent, Hour, Kilometer } from './rules'
 import { cent } from './rules'
-import { clampNumber as clamp } from '../shared/number'
+import { clampNumber as clamp, safeDivide } from '../shared/number'
 
-/** 安全除法：分母为 0 时返回 0 */
-export function safeDiv(numerator: number, denominator: number): number {
-  if (denominator === 0) return 0
-  return numerator / denominator
-}
+// 安全除法：统一实现见 ../shared/number.ts（额外处理 NaN/Infinity）
+export const safeDiv = safeDivide
 
 /** 解析峰时时段字符串数组，返回总小时数 */
 export function peakHoursTotal(peakHours: string[]): number {

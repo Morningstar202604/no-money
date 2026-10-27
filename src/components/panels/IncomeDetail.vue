@@ -153,6 +153,7 @@ import { computed, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
 import { NCard, NGrid, NGi, NInputNumber, NDivider, NAlert, NSlider } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
+import { formatDivide } from '../../domain/shared/number'
 import {
   calcMonthlyCostByKm,
   estimateMonthlyKm,
@@ -289,11 +290,8 @@ const adSolve = computed(() => {
   })
 })
 
-/** 安全除法：除数非有限或为 0 时返回 0，避免 Infinity 渲染到界面 */
-function safeDiv(numerator: number, denominator: number, digits: number): string {
-  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator === 0) return '0'
-  return (numerator / denominator).toFixed(digits)
-}
+// 安全除法（含格式化）：实现见 domain/shared/number.ts 的 formatDivide
+const safeDiv = formatDivide
 
 const waterfallOption = computed<EChartsCoreOption>(() => {
   void store.isDark // 主题依赖：浅深切换后重算配色

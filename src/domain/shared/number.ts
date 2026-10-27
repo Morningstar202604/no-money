@@ -35,3 +35,9 @@ export function safeDivide(numerator: number, denominator: number): number {
   if (!Number.isFinite(denominator) || denominator === 0) return 0
   return numerator / denominator
 }
+
+/** 安全除法 + 固定小数位格式化（供 UI 直接渲染，避免 Infinity/NaN 上屏） */
+export function formatDivide(numerator: number, denominator: number, digits: number): string {
+  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator === 0) return '0'
+  return (numerator / denominator).toFixed(digits)
+}
