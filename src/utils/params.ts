@@ -5,10 +5,21 @@
  * 用户看到的是一个看起来笃定的评级。因此夹取必须发生在唯一的入口处。
  */
 
-import { clampNumber } from '../domain/shared/number'
-
-// 本地别名：hydrateParams 内部大量使用，同时保持既有导入名不变
-const clamp = clampNumber
+/**
+ * 严格夹取：只接受真正的 number 类型。
+ *
+ * 为什么不能直接用 clampNumber：它用 Number(v) 强制转换，于是
+ *   "8" → 8（字符串被接受）
+ *   null → 0（被当成 0，可能静默改成最小值）
+ *   true → 1
+ * 而 hydrateParams 处理的是 localStorage / 导入文件里的 JSON，
+ * 这三种值都可能出现——旧实现会回退 fallback，语义更安全。
+ * 本轮曾把两者合并，属行为回归，此处恢复严格语义。
+ */
+function clamp(v: unknown, min: number, max: number, fallback: number): number {
+  if (typeof v !== 'number' || !Number.isFinite(v)) return fallback
+  return Math.min(Math.max(v, min), max)
+}
 
 /** 各参数组的合法区间。键名与 WorkParams / CostParams / PersonalParams 对齐。 */
 export const PARAM_BOUNDS = {

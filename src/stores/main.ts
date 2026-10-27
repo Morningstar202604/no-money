@@ -94,21 +94,33 @@ function loadParams() {
   } catch { return null }
 }
 
-/** 读取产能模型参数（非法字段回落默认值，避免 NaN 流入方案对比） */
-function loadCapacity(): CapacityModel {
+/**
+ * 产能模型参数校验：非法字段回落默认值，避免 NaN 流入方案对比。
+ * 写入端（persist / import）与读取端共用同一份夹取逻辑——
+ * 此前 loadCapacity 只读 CAPACITY_KEY，而全仓没有任何地方写它，
+ * 结果用户校准的产能参数刷新即丢。
+ */
+function hydrateCapacity(raw: unknown): CapacityModel {
   const fallback = { ...DEFAULT_CAPACITY }
+  if (!raw || typeof raw !== 'object') return fallback
+  const parsed = raw as Partial<CapacityModel>
+  const pick = (v: unknown, def: number, min: number, max: number) =>
+    typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(v, min), max) : def
+  return {
+    fixedMinutesPerOrder: pick(parsed.fixedMinutesPerOrder, fallback.fixedMinutesPerOrder, 1, 60),
+    avgSpeedKmh: pick(parsed.avgSpeedKmh, fallback.avgSpeedKmh, 5, 60),
+    breakMinutesPerDay: pick(parsed.breakMinutesPerDay, fallback.breakMinutesPerDay, 0, 480),
+  }
+}
+
+/** 读取产能模型参数：优先当前快照内的值，其次兼容旧的独立存储键 */
+function loadCapacity(saved?: Record<string, unknown> | null): CapacityModel {
+  if (saved?.capacityModel) return hydrateCapacity(saved.capacityModel)
   try {
     const raw = localStorage.getItem(CAPACITY_KEY)
-    if (!raw) return fallback
-    const parsed = JSON.parse(raw) as Partial<CapacityModel>
-    const pick = (v: unknown, def: number, min: number, max: number) =>
-      typeof v === 'number' && Number.isFinite(v) ? Math.min(Math.max(v, min), max) : def
-    return {
-      fixedMinutesPerOrder: pick(parsed.fixedMinutesPerOrder, fallback.fixedMinutesPerOrder, 1, 60),
-      avgSpeedKmh: pick(parsed.avgSpeedKmh, fallback.avgSpeedKmh, 5, 60),
-      breakMinutesPerDay: pick(parsed.breakMinutesPerDay, fallback.breakMinutesPerDay, 0, 480),
-    }
-  } catch { return fallback }
+    if (!raw) return { ...DEFAULT_CAPACITY }
+    return hydrateCapacity(JSON.parse(raw))
+  } catch { return { ...DEFAULT_CAPACITY } }
 }
 
 export const useMainStore = defineStore('main', () => {
@@ -141,7 +153,7 @@ export const useMainStore = defineStore('main', () => {
    * 产能模型参数（单均固定耗时/平均速度/休息时间）。
    * 默认值是行业量级假设，用户可用自己的实际数据校准后重算方案对比。
    */
-  const capacityModel = ref<CapacityModel>(loadCapacity())
+  const capacityModel = ref<CapacityModel>(loadCapacity(saved))
 
   /** 收入波动率假设（月度变异系数），默认 20%：灵活就业收入的常见量级，可调 */
   const volatilityCv = ref<number>(
@@ -233,6 +245,15 @@ export const useMainStore = defineStore('main', () => {
           personal.value.incomeOverrides = undefined
           if (hadOverride) {
             notices.push('你在「我的计价」里填的单价属于上一城市，已清空；请按新城市的 APP 流水重新填写。')
+          }
+        }
+        // 法定参数覆盖同理：填的是「本省社保基数上下限」，跨省沿用等于把广东的
+        // 基数套到北京规则上——与 incomeOverrides 同类跨城串值。
+        if (personal.value.statutoryOverrides !== undefined) {
+          const hadStatutory = Object.keys(personal.value.statutoryOverrides).length > 0
+          personal.value.statutoryOverrides = undefined
+          if (hadStatutory) {
+            notices.push('你在「本省法定参数」里填的社保基数属于上一省份，已清空；请按新省份人社厅公布的值重新填写。')
           }
         }
         personal.value.pensionBase = undefined
@@ -368,6 +389,9 @@ export const useMainStore = defineStore('main', () => {
             && !!o.work && typeof o.work === 'object' && !!o.costs && typeof o.costs === 'object'
         }).map(p => ({ id: p.id, name: p.name, work: hydrateParams(p.work, DEFAULT_WORK), costs: hydrateParams(p.costs, DEFAULT_COSTS) }))
       : []
+    if (typeof snap.volatilityCv === 'number' && Number.isFinite(snap.volatilityCv)) {
+      volatilityCv.value = Math.max(0.05, Math.min(0.6, snap.volatilityCv))
+    }
     if (snap.capacityModel && typeof snap.capacityModel === 'object') {
       const cm = snap.capacityModel as Record<string, unknown>
       const pick = (v: unknown, def: number, min: number, max: number) =>
@@ -395,6 +419,10 @@ export const useMainStore = defineStore('main', () => {
     costs.value = { ...DEFAULT_COSTS }
     personal.value = { ...DEFAULT_PERSONAL }
     customPlans.value = []
+    // 这些是独立 ref（不在 personal/work 里），此前「重置为默认参数」没复位它们，
+    // 用户以为全清了、实际产能与波动率还是上次调过的值
+    capacityModel.value = { ...DEFAULT_CAPACITY }
+    volatilityCv.value = 0.2
     paramsRestored.value = false
     return loadRule(keepCity)
   }

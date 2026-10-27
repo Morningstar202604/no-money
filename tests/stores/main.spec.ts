@@ -394,3 +394,52 @@ describe('品牌重命名后的旧数据迁移（不能让老用户数据静默�
     }
   })
 })
+
+describe('跨省切换与参数完整往返（技术债审计发现）', () => {
+  beforeEach(() => setActivePinia(createPinia()))
+  afterEach(() => {
+    vi.restoreAllMocks()
+    delete (globalThis as { fetch?: unknown }).fetch
+  })
+
+  it('切城必须清空「本省法定参数」：广东基数不能套到北京', async () => {
+    const ruleBj = JSON.parse(readFileSync('public/rules/beijing.json', 'utf8')) as CityRule
+    mockFetchJson(ruleBj)
+    const store = useMainStore()
+    store.rule = rule
+    store.personal.statutoryOverrides = { baseMin: 3600, baseMax: 18000, minWageMonthly: 1800 }
+
+    await store.setCity('beijing')
+
+    expect(store.personal.statutoryOverrides, '跨省沿用法定基数会算错社保').toBeUndefined()
+    expect(store.cityNotice ?? '', '清空必须告知').toContain('本省法定参数')
+  })
+
+  it('导出快照必须包含 volatilityCv，导入后要恢复（此前导入静默丢弃）', () => {
+    const store = useMainStore()
+    store.volatilityCv = 0.45
+    const snap = JSON.parse(store.exportParams())
+    expect(snap.volatilityCv, '导出必须写 volatilityCv').toBe(0.45)
+
+    setActivePinia(createPinia())
+    const fresh = useMainStore()
+    fresh.volatilityCv = 0.1
+    expect(fresh.importParams(snap)).toBeNull()
+    expect(fresh.volatilityCv, '导入必须恢复 volatilityCv').toBe(0.45)
+  })
+
+  it('重置为默认参数必须同时复位产能模型与波动率', async () => {
+    mockFetchJson(rule)
+    const store = useMainStore()
+    store.rule = rule
+    store.capacityModel.fixedMinutesPerOrder = 25
+    store.capacityModel.avgSpeedKmh = 8
+    store.volatilityCv = 0.55
+
+    await store.resetParams()
+
+    expect(store.capacityModel.fixedMinutesPerOrder, '产能参数应回到默认 8 分钟').toBe(8)
+    expect(store.capacityModel.avgSpeedKmh).toBe(18)
+    expect(store.volatilityCv, '波动率应回到默认 20%').toBe(0.2)
+  })
+})

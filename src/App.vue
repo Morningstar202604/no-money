@@ -136,7 +136,9 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
     borderColorError: 'var(--color-danger-200)',
   },
   Button: {
-    textColor: 'var(--color-text-inverse)',
+    // 不能设 textColor：naive-ui 用它作为 default/quaternary 按钮的文字色，
+    // 覆盖成 text-inverse 会让默认按钮在白底/深底上都不可读（1:1 对比度），
+    // 各类按钮的文字色由 naive-ui 按 type 自行推导
     fontWeight: 500,
   },
   Modal: {
