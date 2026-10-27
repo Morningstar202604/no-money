@@ -7,7 +7,8 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync } from 'node:fs'
+import { loadAllRulesArray } from './helpers/rules'
+import { readFileSync } from 'node:fs'
 import { BenefitEngine } from '../src/engine/BenefitEngine'
 import { buildPensionGrowthSeries, buildPensionTiers, socialAverageWage } from '../src/utils/pensionSeries'
 import type { CityRule } from '../src/types'
@@ -55,10 +56,7 @@ describe('增长曲线与引擎同口径', () => {
 })
 
 describe('缴费档次基数必须与档位标签一致', () => {
-  const rulesDir = 'public/rules'
-  const allRules = readdirSync(rulesDir)
-    .filter(f => f.endsWith('.json'))
-    .map(f => JSON.parse(readFileSync(`${rulesDir}/${f}`, 'utf8')) as CityRule)
+  const allRules = loadAllRulesArray()
 
   it('每档基数 = 档位百分比 × (基数下限 ÷ 60%)，且随档位单调递增', () => {
     for (const r of allRules) {

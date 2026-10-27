@@ -11,17 +11,11 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync } from 'node:fs'
+import { loadAllRules } from './helpers/rules'
 import { ScenarioService } from '../src/application/scenario/ScenarioService'
-import type { CityRule, WorkParams, CostParams, PersonalParams } from '../src/types'
+import type { WorkParams, CostParams, PersonalParams } from '../src/types'
 
-const CITY_FILES = readdirSync('public/rules').filter(f => f.endsWith('.json'))
-const rules = Object.fromEntries(
-  CITY_FILES.map(f => {
-    const r = JSON.parse(readFileSync(`public/rules/${f}`, 'utf8')) as CityRule
-    return [r.city, r]
-  }),
-) as Record<string, CityRule>
+const rules = loadAllRules()
 
 const GZ = rules.guangzhou
 const svc = new ScenarioService(GZ)

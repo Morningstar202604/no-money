@@ -8,6 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
+import { loadRuleFile, loadAllRules, loadAllRulesArray } from './helpers/rules'
 import { readFileSync } from 'node:fs'
 import {
   buildStaticKbEntries,
@@ -26,7 +27,7 @@ import { CITY_REGISTRY } from '../src/data/cities'
 
 // 与 scripts/export-kb.ts 同源：全部城市，避免新增城市后导出文件与测试口径不一致
 const CITIES = CITY_REGISTRY.map(c => c.value)
-const rules = CITIES.map(c => JSON.parse(readFileSync(`public/rules/${c}.json`, 'utf8')) as CityRule)
+const rules = CITIES.map(c => loadRuleFile(`${c}.json`))
 
 describe('知识库条目结构', () => {
   const entries = buildStaticKbEntries()

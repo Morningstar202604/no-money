@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { loadRuleFile, loadAllRules, loadAllRulesArray } from './helpers/rules'
 import { ScenarioEngine } from '../src/engine/ScenarioEngine'
 import { IncomeEngine } from '../src/engine/IncomeEngine'
 import { TaxEngine } from '../src/engine/TaxEngine'
@@ -8,7 +8,7 @@ import { hydrateParams as hydrate } from '../src/utils/params'
 import { validateEndpoint } from '../src/utils/endpoint'
 import type { CityRule, WorkParams, CostParams, PersonalParams } from '../src/types'
 
-const rule = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+const rule = loadRuleFile('guangzhou.json')
 
 const work: WorkParams = {
   city: 'guangzhou', dailyHours: 10, dailyOrders: 35,
@@ -173,7 +173,7 @@ describe('ScenarioEngine 结构不变式', () => {
 /** 数据可信度是这个产品的主张，必须有测试守住，否则会被慢慢改回裸数字 */
 describe('规则文件溯源约束', () => {
   for (const city of ['guangzhou', 'shenzhen', 'dongguan']) {
-    const r = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+    const r = loadRuleFile(`${city}.json`)
 
     it(`${city}：每个来源都有文号或链接、核对日期与置信度`, () => {
       expect(Object.keys(r.sources).length).toBeGreaterThanOrEqual(6)
@@ -237,7 +237,7 @@ const OFFICIAL_PARAMS: Record<string, {
 
 describe('R1 外部参数必须是各城官方原文值', () => {
   for (const city of ['guangzhou', 'shenzhen', 'dongguan']) {
-    const r = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+    const r = loadRuleFile(`${city}.json`)
     const exp = OFFICIAL_PARAMS[city]
 
     it(`${city}：养老基数上下限为粤人社发〔2026〕24号现行值`, () => {
@@ -273,7 +273,7 @@ describe('R1 外部参数必须是各城官方原文值', () => {
  */
 describe('R1 个税税率表口径必须自述正确', () => {
   for (const city of ['guangzhou', 'shenzhen', 'dongguan']) {
-    const r = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+    const r = loadRuleFile(`${city}.json`)
 
     it(`${city}：税率表标题标注为税率表一（综合所得），不得称预扣率表二`, () => {
       // 只查 title：note 里必须保留"若平台代扣应改用预扣率表二"的对比说明，那是有益的
@@ -301,7 +301,7 @@ describe('R1 个税税率表口径必须自述正确', () => {
 
 /** R2: 费用减除必须实现 4000 元分支（个人所得税扣缴申报管理办法第八条） */
 describe('R2 劳务报酬费用减除的 4000 元分支', () => {
-  const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+  const gz = loadRuleFile('guangzhou.json')
 
   it('月收入 3000（低于 4000）时按 800 元减除，而非 20%', () => {
     const t = new TaxEngine(gz.tax).calcLabor(new Array(12).fill(3000), 0)
@@ -331,7 +331,7 @@ describe('R2 劳务报酬费用减除的 4000 元分支', () => {
 
 /** R3: 非有限与越界输入不得产生 NaN 或 Infinity */
 describe('R3 越界输入不得产生 NaN 或 Infinity', () => {
-  const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+  const gz = loadRuleFile('guangzhou.json')
   const eng = new ScenarioEngine(gz)
 
   const allFinite = (v: unknown) => Number.isFinite(v)
@@ -402,7 +402,7 @@ describe('R4 医保档次跨会话保留', () => {
   })
 
   it('东莞规则确实提供该档次，且费率与默认值可区分', () => {
-    const dg = JSON.parse(readFileSync('public/rules/dongguan.json', 'utf8')) as CityRule
+    const dg = loadRuleFile('dongguan.json')
     expect(dg.benefit.medicalTiers?.map(t => t.id)).toContain('combined_account')
     expect(dg.benefit.medicalTiers?.length).toBe(3)
   })
@@ -410,7 +410,7 @@ describe('R4 医保档次跨会话保留', () => {
 
 /** R5: 缴费基数可由用户在上下限内自选（粤人社规〔2026〕14号第六条） */
 describe('R5 缴费基数可自选', () => {
-  const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+  const gz = loadRuleFile('guangzhou.json')
 
   it('指定最低档基数时，养老月缴按 baseMin 而非实收收入夹取', () => {
     const eng = new BenefitEngine(gz.benefit)
@@ -482,7 +482,7 @@ describe('R6 endpoint 校验与 Key 存储', () => {
 
 /** 跨项一致性：年度与月度净额必须闭合 */
 describe('年度与月度净额闭合', () => {
-  const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+  const gz = loadRuleFile('guangzhou.json')
   const eng = new ScenarioEngine(gz)
 
   it('netAnnual 与 netMonthly×12 的差在 0.1 元内', () => {
@@ -506,7 +506,7 @@ describe('年度与月度净额闭合', () => {
  */
 describe('V1 个体户税负：增值税与个税口径分离', () => {
   for (const city of ['guangzhou', 'shenzhen', 'dongguan']) {
-    const r = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+    const r = loadRuleFile(`${city}.json`)
 
     it(`${city}：个体户配置中增值税与个税是两个独立字段`, () => {
       const s = r.soleProprietorship
@@ -518,25 +518,25 @@ describe('V1 个体户税负：增值税与个税口径分离', () => {
     })
 
     it(`${city}：增值税与个税各自有官方来源，不共用一个 sources 条目`, () => {
-      const r2 = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+      const r2 = loadRuleFile(`${city}.json`)
       expect(r2.sources.soleVat, '缺增值税来源').toBeTruthy()
       expect(r2.sources.soleVat.docNo, '增值税来源必须有文号').toContain('2026')
       expect(r2.sources.soleItr, '缺个税来源').toBeTruthy()
     })
 
     it(`${city}：个税来源必须说明按行业与地区核定，不存在全国统一税率`, () => {
-      const r2 = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+      const r2 = loadRuleFile(`${city}.json`)
       expect(r2.sources.soleItr.note).toMatch(/行业|地区/)
     })
 
     it(`${city}：旧字段 tax.soleRate 已移除，避免与增值税税率混淆`, () => {
-      const r2 = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+      const r2 = loadRuleFile(`${city}.json`)
       expect((r2.tax as unknown as Record<string, unknown>).soleRate).toBeUndefined()
     })
   }
 
   it('calcSoleProprietorship 按核定征收公式计算并闭合', () => {
-    const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+    const gz = loadRuleFile('guangzhou.json')
     const sp = gz.soleProprietorship
     const profit = 1200000
     // 应纳税所得额 = 经营额 × 行业所得率 − 费用减除标准 × 12
@@ -553,7 +553,7 @@ describe('V1 个体户税负：增值税与个税口径分离', () => {
   })
 
   it('calcSoleProprietorship 年度税额与公式手算值一致（非 12 期之和）', () => {
-    const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+    const gz = loadRuleFile('guangzhou.json')
     const sp = gz.soleProprietorship
     const profit = 1200000
     const taxable = Math.max(0, profit * sp.itrIncomeRate - 5000 * 12)
@@ -565,14 +565,14 @@ describe('V1 个体户税负：增值税与个税口径分离', () => {
   })
 
   it('calcSoleProprietorship 的税率表来自规则文件而非代码写死', () => {
-    const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+    const gz = loadRuleFile('guangzhou.json')
     expect(gz.soleProprietorship.bizTaxTable[0].rate).toBe(0.05)
     expect(gz.soleProprietorship.bizTaxTable[gz.soleProprietorship.bizTaxTable.length - 1].rate).toBe(0.35)
     expect(gz.soleProprietorship.itrDeductionMonthly).toBe(5000)
   })
 
   it('低收入个体户应纳税所得额为 0 时税额为 0', () => {
-    const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+    const gz = loadRuleFile('guangzhou.json')
     // 60000 × 10% − 60000 = 0
     const t = new TaxEngine({ laborRemuneration: gz.tax.laborRemuneration, soleProprietorship: gz.soleProprietorship }).calcSoleProprietorship(60000)
     expect(t.annualTax).toBe(0)
@@ -585,7 +585,7 @@ describe('V1 个体户税负：增值税与个税口径分离', () => {
    */
   it('个税核定来源为 unverified 时，不得被当作可估算的税率', () => {
     for (const city of ['guangzhou', 'shenzhen', 'dongguan']) {
-      const r = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+      const r = loadRuleFile(`${city}.json`)
       expect(r.sources.soleItr.confidence, `${city} 个税核定来源应为 unverified`).toBe('unverified')
       // UI 用它决定是否展示节税结论
       const verified = r.sources.soleItr.confidence === 'official'
@@ -595,7 +595,7 @@ describe('V1 个体户税负：增值税与个税口径分离', () => {
 
   it('增值税来源为 official（国家层面统一文号），可独立于个税估算', () => {
     for (const city of ['guangzhou', 'shenzhen', 'dongguan']) {
-      const r = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+      const r = loadRuleFile(`${city}.json`)
       expect(r.sources.soleVat.confidence).toBe('official')
       expect(r.sources.soleVat.docNo).toBe('财政部 税务总局公告2026年第10号')
     }
@@ -604,7 +604,7 @@ describe('V1 个体户税负：增值税与个税口径分离', () => {
 
 /** V2: 峰时补贴必须按峰时段占比折算 */
 describe('V2 峰时补贴按峰时段占比折算', () => {
-  const gz = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+  const gz = loadRuleFile('guangzhou.json')
   const peakHoursTotal = gz.income.timeSubsidy.peakHours.reduce((sum, r) => {
     const [a, b] = r.split('-').map(x => Number(x.slice(0, 2)))
     return sum + (b - a)
@@ -650,7 +650,7 @@ describe('V2 峰时补贴按峰时段占比折算', () => {
 
 /** 退休测算使用规则文件计发基数 */
 describe('退休测算使用规则文件计发基数', () => {
-  const base = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
+  const base = loadRuleFile('guangzhou.json')
 
   it('基础养老金按 国发〔2005〕38号 公式 = 计发基数×(1+缴费指数)÷2×年限×1%', () => {
     const eng = new BenefitEngine(base.benefit, base.retirement)
@@ -681,13 +681,13 @@ describe('退休测算使用规则文件计发基数', () => {
   })
 
   it('深圳计发基数单列为 11293，不得沿用全省 9493', () => {
-    const sz = JSON.parse(readFileSync('public/rules/shenzhen.json', 'utf8')) as CityRule
+    const sz = loadRuleFile('shenzhen.json')
     expect(sz.retirement.benefitBaseMonthly).toBe(11293)
   })
 
   it('广州与东莞沿用全省计发基数 9493', () => {
     for (const city of ['guangzhou', 'dongguan']) {
-      const r = JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
+      const r = loadRuleFile(`${city}.json`)
       expect(r.retirement.benefitBaseMonthly, city).toBe(9493)
     }
   })

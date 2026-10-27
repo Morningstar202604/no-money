@@ -8,6 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
+import { loadRuleFile, loadAllRules, loadAllRulesArray } from './helpers/rules'
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { CITY_REGISTRY, provinceCoverage } from '../src/data/cities'
 import type { CityRule } from '../src/types'
@@ -15,7 +16,7 @@ import type { CityRule } from '../src/types'
 const RULE_FILES = readdirSync('public/rules').filter(f => f.endsWith('.json'))
 const RULES = RULE_FILES.map(f => ({
   file: f,
-  rule: JSON.parse(readFileSync(`public/rules/${f}`, 'utf8')) as CityRule,
+  rule: loadRuleFile(f),
 }))
 
 describe('城市规则文件基础完整性', () => {
@@ -159,7 +160,7 @@ describe('全国覆盖：31 个省级行政区全部可选', () => {
     for (const c of CITY_REGISTRY) {
       const path = `public/rules/${c.value}.json`
       expect(existsSync(path), `缺少规则文件 ${path}`).toBe(true)
-      const rule = JSON.parse(readFileSync(path, 'utf8'))
+      const rule = loadRuleFile(`${c.value}.json`)
       expect(rule.city, `${c.value}.json 的 city 字段不匹配`).toBe(c.value)
       expect(rule.cityName, `${c.value}.json 的 cityName 应为 ${c.label}`).toBe(c.label)
     }
@@ -167,7 +168,7 @@ describe('全国覆盖：31 个省级行政区全部可选', () => {
 
   it('未核实的城市必须在来源 note 中写明「不可对外引用」或「待核实」', () => {
     for (const c of CITY_REGISTRY) {
-      const rule = JSON.parse(readFileSync(`public/rules/${c.value}.json`, 'utf8'))
+      const rule = loadRuleFile(`${c.value}.json`)
       const unverifiedKeys = Object.entries(rule.sources ?? {})
         .filter(([, s]) => (s as { confidence?: string }).confidence === 'unverified')
         .map(([k]) => k)
@@ -184,7 +185,7 @@ describe('全国覆盖：31 个省级行政区全部可选', () => {
 
   it('基数上下限之比符合法定 60%–300%（比率 = 5）', () => {
     for (const c of CITY_REGISTRY) {
-      const rule = JSON.parse(readFileSync(`public/rules/${c.value}.json`, 'utf8'))
+      const rule = loadRuleFile(`${c.value}.json`)
       const { baseMin, baseMax } = rule.benefit.pension
       expect(baseMax / baseMin, `${c.value} 养老基数上下限之比应为 5`).toBeCloseTo(5, 1)
     }
