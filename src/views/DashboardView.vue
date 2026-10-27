@@ -89,6 +89,46 @@
       </n-grid>
     </FoldCard>
 
+    <!-- 收入波动与风险：单点数字会让人误以为是稳定现金流 -->
+    <n-card v-if="volatility" title="这个收入有多稳？—— 收入波动与应急储备" class="card" style="margin-top: 12px">
+      <n-alert type="info" :show-icon="true" style="margin-bottom: 10px">
+        上面的 ¥{{ Math.round(volatility.mean).toLocaleString() }} 是<strong>平均值</strong>。灵活就业的真实特征是波动，
+        所以更该看「最差的月份能有多少」。下方按 {{ (volatilityCv * 100).toFixed(0) }}% 的月度波动率模拟
+        {{ volatility.sampleSize }} 个月（固定种子，可复现）。
+      </n-alert>
+
+      <div class="vol-controls">
+        <span class="vc-label">月度波动率假设</span>
+        <n-slider :value="Math.round(volatilityCv * 100)" :min="5" :max="60" :step="5" style="flex:1;max-width:260px"
+          @update:value="(v: number) => store.volatilityCv = v / 100" />
+        <span class="vc-value">{{ (volatilityCv * 100).toFixed(0) }}%</span>
+      </div>
+
+      <n-grid :x-gap="12" cols="2 m:4" responsive="screen" style="margin-top: 8px">
+        <n-gi>
+          <div class="vol-stat"><span class="vs-label">最差 10% 月份</span><span class="vs-value danger">¥{{ Math.round(volatility.p10).toLocaleString() }}</span><span class="vs-foot">P10 分位</span></div>
+        </n-gi>
+        <n-gi>
+          <div class="vol-stat"><span class="vs-label">中位数月份</span><span class="vs-value">¥{{ Math.round(volatility.p50).toLocaleString() }}</span><span class="vs-foot">P50 分位</span></div>
+        </n-gi>
+        <n-gi>
+          <div class="vol-stat"><span class="vs-label">最好 10% 月份</span><span class="vs-value ok">¥{{ Math.round(volatility.p90).toLocaleString() }}</span><span class="vs-foot">P90 分位</span></div>
+        </n-gi>
+        <n-gi>
+          <div class="vol-stat"><span class="vs-label">收入不够覆盖成本的月份</span><span class="vs-value danger">{{ (volatility.belowCostMonthRatio * 100).toFixed(1) }}%</span><span class="vs-foot">低于生存线</span></div>
+        </n-gi>
+      </n-grid>
+
+      <n-alert type="warning" :show-icon="true" style="margin-top: 10px">
+        <div><b>应急储备建议：¥{{ Math.round(buffer.recommendedBuffer).toLocaleString() }}</b></div>
+        <div style="margin-top:4px;font-size:12px">{{ buffer.rationale }}</div>
+      </n-alert>
+      <p class="vol-boundary">
+        模型边界：乘性波动假设（收入恒为正、波动幅度与收入成比例），未建模封号/伤病等断流事件；
+        波动率是假设，请按自己的实际流水调整。此处的储备建议不含社保断缴与债务月供。
+      </p>
+    </n-card>
+
     <!-- 洞察 + 排行：默认收起 -->
     <FoldCard
       title="决策洞察与方案排行"
@@ -118,8 +158,9 @@
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { EChartsCoreOption } from 'echarts/core'
-import { NCard, NGrid, NGi, NEmpty, NDataTable, NButton, NAlert, type DataTableColumns } from 'naive-ui'
+import { NCard, NGrid, NGi, NEmpty, NDataTable, NButton, NAlert, NSlider, type DataTableColumns } from 'naive-ui'
 import { useMainStore } from '../stores/main'
+import { simulateIncomeDistribution, recommendBuffer } from '../domain/income/volatility'
 import { axisX, axisY, GRID, chartColors } from '../utils/chart'
 import { scoreTier, scoreLevel, TIER_COLORS } from '../utils/score'
 import ChartBox from '../components/ChartBox.vue'
@@ -136,6 +177,22 @@ const dataReady = computed(() => !!store.rule && !!store.comparison?.best)
 const provisional = computed(() => store.comparison?.best?.dataQuality?.provisional === true)
 const unverifiedFields = computed(() => store.comparison?.best?.dataQuality?.unverifiedFields ?? [])
 const overriddenFields = computed(() => store.comparison?.best?.dataQuality?.overriddenFields ?? [])
+
+/**
+ * 收入波动：用当前方案的月净收入做乘性波动模拟。
+ * 固定种子保证同一参数下结果稳定（不是每次刷新都跳）。
+ */
+const volatilityCv = computed(() => store.volatilityCv)
+const volatility = computed(() => {
+  const best = store.comparison?.best
+  if (!best) return null
+  return simulateIncomeDistribution(best.netMonthly, { cv: volatilityCv.value, months: 600, seed: 20260101 }, best.costBreakdown.total)
+})
+const buffer = computed(() => {
+  const best = store.comparison?.best
+  if (!best || !volatility.value) return { recommendedBuffer: 0, months: 3, rationale: '' }
+  return recommendBuffer(best.netMonthly, best.costBreakdown.total, volatility.value)
+})
 
 const bestNetMonthly = computed(() => store.comparison?.best?.netMonthly || 0)
 const bestNetAnnual = computed(() => store.comparison?.best?.netAnnual || 0)
@@ -230,4 +287,14 @@ const pieOption = computed<EChartsCoreOption>(() => {
 .rf-list { flex: 1; display: flex; flex-direction: column; gap: 3px; max-height: 120px; overflow-y: auto; }
 .rf-item { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; display: flex; align-items: flex-start; gap: 6px; }
 .rf-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--color-text-warning); flex-shrink: 0; margin-top: 7px; }
+.vol-controls { display: flex; align-items: center; gap: 10px; }
+.vc-label { font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }
+.vc-value { font-size: 13px; font-weight: 600; color: var(--color-text-primary); min-width: 40px; }
+.vol-stat { display: flex; flex-direction: column; gap: 2px; padding: 8px 0; }
+.vs-label { font-size: 12px; color: var(--color-text-secondary); }
+.vs-value { font-size: 20px; font-weight: 600; color: var(--color-text-primary); }
+.vs-value.ok { color: var(--color-text-success); }
+.vs-value.danger { color: var(--color-text-danger, #d03050); }
+.vs-foot { font-size: 11px; color: var(--color-text-tertiary); }
+.vol-boundary { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.6; margin: 8px 0 0; }
 </style>

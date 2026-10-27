@@ -110,6 +110,13 @@ export const useMainStore = defineStore('main', () => {
    */
   const capacityModel = ref<CapacityModel>(loadCapacity())
 
+  /** 收入波动率假设（月度变异系数），默认 20%：灵活就业收入的常见量级，可调 */
+  const volatilityCv = ref<number>(
+    typeof saved?.volatilityCv === 'number' && Number.isFinite(saved.volatilityCv as number)
+      ? Math.max(0.05, Math.min(0.6, saved.volatilityCv as number))
+      : 0.2,
+  )
+
   /** 自定义方案是嵌套结构，数组不能走 hydrate 的键值白名单，需单独校验必要字段 */
   const customPlans = ref<CustomPlan[]>(
     Array.isArray(saved?.customPlans)
@@ -259,7 +266,7 @@ export const useMainStore = defineStore('main', () => {
     try {
       localStorage.setItem(PARAMS_KEY, JSON.stringify({
         work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
-        capacityModel: capacityModel.value,
+        capacityModel: capacityModel.value, volatilityCv: volatilityCv.value,
       }))
       persistError.value = null
     } catch (err) {
@@ -270,7 +277,7 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
-  watch([work, costs, personal, customPlans, capacityModel], () => {
+  watch([work, costs, personal, customPlans, capacityModel, volatilityCv], () => {
     clearTimeout(persistTimer)
     persistTimer = setTimeout(writePersist, 300)
   }, { deep: true })
@@ -293,7 +300,7 @@ export const useMainStore = defineStore('main', () => {
   function exportParams(): string {
     return JSON.stringify({
       work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
-      capacityModel: capacityModel.value,
+      capacityModel: capacityModel.value, volatilityCv: volatilityCv.value,
     }, null, 2)
   }
 
@@ -421,5 +428,5 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
-  return { rule, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams, capacityModel }
+  return { rule, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams, capacityModel, volatilityCv }
 })
