@@ -50,6 +50,7 @@ const DEFAULT_PERSONAL: PersonalParams = {
   assumedAnnualReturn: undefined,
   pensionAdjustRate: undefined,
   discountRate: undefined,
+  selfInvestReturn: undefined,
 }
 
 function loadParams() {

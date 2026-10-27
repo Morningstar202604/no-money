@@ -46,6 +46,8 @@ export const PARAM_BOUNDS = {
     // 精算假设：养老金调整率与贴现率，均以 3% 为默认，可调范围 0-10%
     pensionAdjustRate: [0, 0.1],
     discountRate: [0, 0.1],
+    // 自助投资收益率假设：允许 -10%（亏损）到 15%
+    selfInvestReturn: [-0.1, 0.15],
   },
 } as const
 

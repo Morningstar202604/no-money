@@ -127,6 +127,67 @@
       </p>
     </n-card>
 
+    <!-- 自助养老 vs 社保：同样一笔钱的两条出路 -->
+    <n-card title="同样的钱：缴社保，还是自己存？" class="card" style="margin-top: 12px">
+      <p class="desc">
+        下面把「每月 ¥{{ monthlyContribution.toLocaleString() }}」的两条出路放在同一口径下比较。
+        自助侧收益率是<strong>假设</strong>，可调整；两侧用同一贴现率折现，因此可比。
+      </p>
+      <div class="return-row">
+        <span class="rr-label">自助投资年化收益率假设</span>
+        <n-input-number :value="selfReturnPct" :min="0" :max="12" :step="0.5" size="small" style="width:120px"
+          @update:value="(v: number | null) => store.personal.selfInvestReturn = v === null ? undefined : v / 100" />
+        <span class="rr-unit">%</span>
+        <n-tag v-if="store.personal.selfInvestReturn !== undefined" size="tiny" type="success" :bordered="false">按你的假设</n-tag>
+        <n-tag v-else size="tiny" :bordered="false">默认假设 4%</n-tag>
+      </div>
+
+      <n-grid :x-gap="12" cols="1 m:2" responsive="screen" style="margin-top: 10px">
+        <n-gi>
+          <div class="cmp-card">
+            <div class="cmp-title">缴社保</div>
+            <div class="cmp-row"><span>退休月领</span><b>¥{{ selfComparison.social.monthlyPension.toLocaleString() }}</b></div>
+            <div class="cmp-row"><span>终身现值</span><b>¥{{ selfComparison.social.presentValue.toLocaleString() }}</b></div>
+            <div class="cmp-row"><span>回本年龄</span><b>{{ selfComparison.social.breakEvenAge ?? '—' }} 岁</b></div>
+            <div class="cmp-row"><span>领取期限</span><b class="ok">终身（活多久领多久）</b></div>
+          </div>
+        </n-gi>
+        <n-gi>
+          <div class="cmp-card">
+            <div class="cmp-title">自己存/投（{{ selfReturnPct }}% 年化）</div>
+            <div class="cmp-row"><span>退休时余额</span><b>¥{{ selfComparison.selfFunded.balanceAtRetirement.toLocaleString() }}</b></div>
+            <div class="cmp-row"><span>折算月领</span><b>¥{{ selfComparison.selfFunded.monthlyWithdrawal.toLocaleString() }}</b></div>
+            <div class="cmp-row"><span>领取现值</span><b>¥{{ selfComparison.selfFunded.presentValue.toLocaleString() }}</b></div>
+            <div class="cmp-row">
+              <span>资金可撑到</span>
+              <b :class="selfComparison.selfFunded.coversLifeExpectancy ? 'ok' : 'danger'">
+                {{ selfComparison.selfFunded.depletionAge }} 岁
+              </b>
+            </div>
+          </div>
+        </n-gi>
+      </n-grid>
+
+      <n-alert :type="selfComparison.presentValueGap >= 0 ? 'success' : 'warning'" :show-icon="true" style="margin-top: 10px">
+        <template v-if="selfComparison.presentValueGap >= 0">
+          按当前假设，缴社保的终身现值比自助方案高 ¥{{ selfComparison.presentValueGap.toLocaleString() }}，
+          且没有资金耗尽风险。
+        </template>
+        <template v-else>
+          按当前假设，自助方案的现值比缴社保高 ¥{{ Math.abs(selfComparison.presentValueGap).toLocaleString() }}。
+          但请注意下方结构性差异——自助方案没有长寿兜底，资金可能在
+          {{ selfComparison.selfFunded.depletionAge }} 岁耗尽。
+        </template>
+      </n-alert>
+
+      <div class="caveat-block">
+        <div class="caveat-title">现金流之外的差异（不能只看数字）</div>
+        <ul class="caveat-list">
+          <li v-for="(c, i) in selfComparison.caveats" :key="i">{{ c }}</li>
+        </ul>
+      </div>
+    </n-card>
+
     <!-- 分析图表：默认收起 -->
     <FoldCard
       title="养老金测算图表"
@@ -200,6 +261,7 @@ import { useMainStore } from '../../stores/main'
 import { BenefitEngine } from '../../engine/BenefitEngine'
 import { issuanceMonthsForAge } from '../../utils/issuanceMonths'
 import { calcPensionActuarial, expectedPensionYears } from '../../domain/benefit/actuarial'
+import { compareSocialVsSelf } from '../../domain/benefit/selfFunded'
 import { buildPensionGrowthSeries, buildPensionTiers, socialAverageWage } from '../../utils/pensionSeries'
 import { axisX, axisY, GRID, legend, chartColors } from '../../utils/chart'
 import ChartBox from '../ChartBox.vue'
@@ -324,6 +386,29 @@ const breakEvenText = computed(() => {
   const age = actuarial.value.breakEvenAge
   return age === null ? '领取期内无法回本' : `${age} 岁`
 })
+
+/**
+ * 自助养老 vs 社保：同样月缴额的两条出路。
+ * 自助收益率默认为 4%（假设），与社保侧共用同一贴现率以保证可比。
+ */
+const selfReturnPct = computed(() => Math.round((store.personal.selfInvestReturn ?? 0.04) * 1000) / 10)
+const selfComparison = computed(() => compareSocialVsSelf(
+  {
+    monthlyPension: retireResult.value.totalPension,
+    retireAge: store.personal.expectedRetireAge,
+    monthlyContribution: monthlyContribution.value,
+    contributionYears: contributionYears.value,
+    adjustRate: adjustRate.value,
+    discountRate: discountRate.value,
+  },
+  {
+    monthlyAmount: monthlyContribution.value,
+    years: contributionYears.value,
+    annualReturn: store.personal.selfInvestReturn ?? 0.04,
+    payoutReturn: 0.02,
+    discountRate: discountRate.value,
+  },
+))
 
 const fifteenYearCost = computed(() => {
   const wan = (15 * 12 * monthlyContribution.value) / 10000
@@ -463,4 +548,14 @@ const compareYears = computed(() => {
 .as-value.ok { color: var(--color-text-success); }
 .as-value.danger { color: var(--color-text-danger, #d03050); }
 .as-foot { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; }
+.cmp-card { border: 1px solid var(--color-border-primary); border-radius: 6px; padding: 10px 12px; }
+.cmp-title { font-weight: 600; font-size: 13px; color: var(--color-text-primary); margin-bottom: 6px; }
+.cmp-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--color-text-secondary); padding: 3px 0; }
+.cmp-row b { color: var(--color-text-primary); }
+.cmp-row b.ok { color: var(--color-text-success); }
+.cmp-row b.danger { color: var(--color-text-danger, #d03050); }
+.caveat-block { margin-top: 10px; padding: 10px 12px; background: var(--color-bg-tertiary); border-radius: 6px; }
+.caveat-title { font-size: 12px; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 4px; }
+.caveat-list { margin: 0; padding-left: 18px; }
+.caveat-list li { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.7; }
 </style>

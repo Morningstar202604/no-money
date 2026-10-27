@@ -194,6 +194,11 @@ export interface PersonalParams {
    * 影响养老金现值与回本判断，不是市场收益率预测。
    */
   discountRate?: number
+  /**
+   * 自助养老方案的投资年化收益率假设（默认 4%）。
+   * 用于「缴社保 vs 自己存」的对照测算；这是假设，不是收益承诺。
+   */
+  selfInvestReturn?: number
 }
 
 // ===== 计算结果模型 =====
