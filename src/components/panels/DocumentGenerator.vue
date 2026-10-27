@@ -453,8 +453,21 @@ const generatedDoc = computed(() => {
 
 async function copyDoc() {
   const ok = await copyText(generatedDoc.value)
-  if (ok) message.success('已复制到剪贴板')
-  else message.error('复制失败，请手动选择文本复制')
+  if (ok) {
+    message.success('已复制到剪贴板')
+    return
+  }
+  // 复制失败的常见原因：浏览器隐私策略、页面未聚焦、非安全上下文。
+  // 直接让用户「手动选择」比只说「失败」更有用——提供一键选中预览区文本。
+  message.warning('自动复制被浏览器阻止（常见于未聚焦窗口或隐私设置），已为你选中文书内容，按 Ctrl+C 复制', { duration: 5000 })
+  const el = previewRef.value
+  if (el) {
+    const range = document.createRange()
+    range.selectNodeContents(el)
+    const sel = window.getSelection()
+    sel?.removeAllRanges()
+    sel?.addRange(range)
+  }
 }
 
 function downloadDoc() {
