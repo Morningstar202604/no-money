@@ -27,6 +27,16 @@
       </div>
     </n-alert>
 
+    <!-- 最优方案是超长工时方案时必须点破：按净收入排序会天然偏向加班，
+         不提示等于用「最优」二字鼓励 12 小时以上的强度 -->
+    <n-alert v-if="dataReady && bestOverwork" type="warning" :show-icon="true" style="margin-bottom: 12px">
+      <div><b>「{{ store.comparison?.best?.name }}」是 {{ store.comparison?.best?.work.dailyHours }} 小时/天的高强度方案</b></div>
+      <div style="margin-top:4px;font-size:12px">
+        按净收入排序它排第一，但日均超过 12 小时的事故与健康风险显著上升（权益评分已因此扣分）。
+        它更适合当作「上限参考」，不建议作为长期节奏——先看「当前方案」的可持续收入。
+      </div>
+    </n-alert>
+
     <!-- KPI Row -->
     <div class="kpi-row">
       <div class="stat">
@@ -203,6 +213,8 @@ const buffer = computed(() => {
 const bestNetMonthly = computed(() => store.comparison?.best?.netMonthly || 0)
 const bestNetAnnual = computed(() => store.comparison?.best?.netAnnual || 0)
 const bestHourly = computed(() => store.comparison?.best?.netHourly.toFixed(1) || '0')
+/** 最优方案是否属于超长工时（≥12h/天）：用于在页顶明确提示，而不是默默推荐 */
+const bestOverwork = computed(() => (store.comparison?.best?.work.dailyHours ?? 0) >= 12)
 
 // 统一权益评分（越高越好）
 const bestScenario = computed(() => store.comparison?.best)
