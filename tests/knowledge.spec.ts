@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { loadRuleFile, loadAllRules, loadAllRulesArray } from './helpers/rules'
+import { loadRuleFile } from './helpers/rules'
 import { readFileSync } from 'node:fs'
 import {
   buildStaticKbEntries,
@@ -22,7 +22,6 @@ import {
   SYNONYMS,
   missingSynonymTargets,
 } from '../src/utils/knowledge'
-import type { CityRule } from '../src/types'
 import { CITY_REGISTRY } from '../src/data/cities'
 
 // 与 scripts/export-kb.ts 同源：全部城市，避免新增城市后导出文件与测试口径不一致

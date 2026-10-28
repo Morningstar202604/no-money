@@ -28,7 +28,7 @@ import { calcMonthly as domainCalcBenefit } from '../../src/domain/benefit/calcu
 import { projectRetirement as domainProjectRetirement } from '../../src/domain/benefit/calculator'
 import type { BenefitRule as DomainBenefitRule, RetirementRule as DomainRetirementRule } from '../../src/domain/benefit/rules'
 
-import type { CityRule, WorkParams, CostParams, PersonalParams } from '../../src/types'
+import type { CityRule, WorkParams, CostParams } from '../../src/types'
 
 const CITIES = ['guangzhou', 'shenzhen', 'dongguan'] as const
 const rules = Object.fromEntries(
@@ -332,12 +332,7 @@ describe('对拍：退休测算 旧(元) vs 新(分)', () => {
 describe('对拍：个体验证值不变（新旧应完全一致）', () => {
   const rule = rules.guangzhou
   const oldIncome = new OldIncomeEngine(rule.income)
-  const personal: PersonalParams = {
-    currentAge: 25,
-    expectedRetireAge: 60,
-    hasSocialInsurance: false,
-    specialDeductionMonth: 0,
-  }
+  // 本组只对拍收入侧，不需要 personal；保留类型引用会触发 noUnusedLocals
 
   it('毛收入 8856.25 与 9311.25 的历史结论在新实现下复现', () => {
     // 这两个数字来自峰时折算修复时的审计记录，若对拍失败说明口径已被改动

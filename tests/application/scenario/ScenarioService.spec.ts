@@ -1,9 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { ScenarioService } from '../../../src/application/scenario/ScenarioService';
-import { IncomeEngine } from '../../../src/engine/IncomeEngine';
-import { TaxEngine } from '../../../src/engine/TaxEngine';
-import { BenefitEngine } from '../../../src/engine/BenefitEngine';
 import type { CityRule, WorkParams, CostParams, PersonalParams } from '../../../src/types';
 import { isOk, isErr, unwrap } from '../../../src/domain/shared/result';
 

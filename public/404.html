@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>页面不存在 — 没钱 No Money</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #111c2e; color: #e8eef6; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+    .box { max-width: 420px; text-align: center; padding: 32px; }
+    h1 { font-size: 18px; margin: 0 0 8px; }
+    p { font-size: 13px; color: #94a3b8; line-height: 1.7; }
+    a { display: inline-block; margin-top: 16px; background: #0d9488; color: #fff; text-decoration: none; padding: 8px 22px; border-radius: 6px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>页面不存在</h1>
+    <p>地址可能拼错，或这段深链在版本更新后失效。</p>
+    <a href="/dashboard">回到总览</a>
+  </div>
+  <!-- 说明：本应用用 history 路由，静态托管必须配置 SPA fallback 才能深链刷新；
+       本页只作为未配置 fallback 时的兜底出口，不做路径改写（改写会掩盖配置问题）。 -->
+</body>
+</html>

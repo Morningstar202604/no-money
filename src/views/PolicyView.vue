@@ -151,9 +151,9 @@
           <p class="desc">
             把政策、办事手册、现实核查、本城参数溯源聚合成 {{ kbTotal }} 条结构化条目，全部带官方原文链接。
             检索在本地完成、不联网；AI 助手在离线模式下也会用它作答，在线模式下作为检索上下文注入。
-            结构化全量数据（供外部 Agent / RAG 摄取）：<a class="kb-file-link" href="/knowledge/kb.json" target="_blank" rel="noopener noreferrer">/knowledge/kb.json</a>
+            结构化全量数据（供外部 Agent / RAG 摄取）：<a class="kb-file-link" :href="kbJsonUrl" target="_blank" rel="noopener noreferrer">/knowledge/kb.json</a>
             ·
-            <a class="kb-file-link" href="/knowledge/README.md" target="_blank" rel="noopener noreferrer">摄取说明</a>
+            <a class="kb-file-link" :href="kbReadmeUrl" target="_blank" rel="noopener noreferrer">摄取说明</a>
           </p>
           <div class="kb-stats">
             <span v-for="(label, key) in KB_TYPE_LABELS" :key="key" class="kb-stat">
@@ -221,6 +221,7 @@ import { NCard, NTabs, NTabPane, NGrid, NGi, NTag, NSteps, NStep, NEmpty, NInput
 import { useMainStore } from '../stores/main'
 import { CITY_REGISTRY } from '../data/cities'
 import { SOURCE_LABELS } from '../utils/sources'
+import { assetUrl } from '../utils/asset'
 import FoldCard from '../components/FoldCard.vue'
 import RealityList from '../components/RealityList.vue'
 import GuideCard from '../components/GuideCard.vue'
@@ -240,6 +241,8 @@ import {
 
 const store = useMainStore()
 const rule = computed(() => store.rule)
+const kbJsonUrl = assetUrl('knowledge/kb.json')
+const kbReadmeUrl = assetUrl('knowledge/README.md')
 
 /**
  * 省级页签标题跟随当前城市：本页只收录了广东省地方政策，

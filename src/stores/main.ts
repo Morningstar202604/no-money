@@ -11,6 +11,7 @@ import {
   type CapacityModel,
 } from '../domain/income/capacity'
 import { CITY_OPTIONS } from '../data/cities'
+import { assetUrl } from '../utils/asset'
 
 // 城市清单以 src/data/cities.ts 注册表为准（含地图坐标）；规则文件在 public/rules/<value>.json
 export const CITIES = CITY_OPTIONS
@@ -207,7 +208,7 @@ export const useMainStore = defineStore('main', () => {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), 12000)
     try {
-      const res = await fetch(`/rules/${city}.json`, { signal: controller.signal })
+      const res = await fetch(assetUrl(`rules/${city}.json`), { signal: controller.signal })
       if (!res.ok) throw new Error(`规则文件加载失败（HTTP ${res.status}）`)
       // 不信任 content-type（CDN 对 .json 可能回 octet-stream），直接按文本读再解析：
       // 静态托管的 SPA 回退会用 200 + HTML 应答缺失文件，JSON.parse 在此自然拦截

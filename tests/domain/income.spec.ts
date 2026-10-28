@@ -96,8 +96,9 @@ describe('domain/income - 纯函数', () => {
       // 月峰时补贴 = 2625 * 26 = 68250分
       const dailyBase = 35 * 500
       const fullPeakDaily = dailyBase * 0.25
-      const expectedPeakDaily = fullPeakDaily * 0.6
-      
+      // 峰时补贴按「峰时总时长 ÷ 日工时」折算：6h/10h = 60%
+      expect(fullPeakDaily * 0.6).toBeGreaterThan(0)
+
       // 总补贴 = 峰时 + 雨天 + 节假日
       // 雨天：3天 × 17500 × 0.35 = 18375分
       // 节假日：2天 × 17500 × 0.6 = 21000分
@@ -150,15 +151,20 @@ describe('domain/income - 纯函数', () => {
       const inc = calcIncome(guangzhouRule, { ...baseWork, rainDaysMonth: 5 })
       const dailyBase = 35 * 500
       const rainExtra = 5 * dailyBase * 0.35
-      // 验证补贴包含雨天部分
-      expect(inc.subsidyPay).toBeGreaterThan(0)
+      // 验证补贴随雨天增加：5 天比 3 天多出 2 天的雨天加价
+      const base3 = calcIncome(guangzhouRule, { ...baseWork, rainDaysMonth: 3 })
+      expect(inc.subsidyPay - base3.subsidyPay).toBeCloseTo(2 * dailyBase * 0.35, 0)
+      expect(rainExtra).toBeGreaterThan(0)
     })
 
     it('节假日：节假日补贴正常计算', () => {
       const inc = calcIncome(guangzhouRule, { ...baseWork, holidayDaysMonth: 4 })
       const dailyBase = 35 * 500
       const holidayExtra = 4 * dailyBase * 0.6
-      expect(inc.subsidyPay).toBeGreaterThan(0)
+      // 4 天比 2 天多出 2 天的节假日加价
+      const base2 = calcIncome(guangzhouRule, { ...baseWork, holidayDaysMonth: 2 })
+      expect(inc.subsidyPay - base2.subsidyPay).toBeCloseTo(2 * dailyBase * 0.6, 0)
+      expect(holidayExtra).toBeGreaterThan(0)
     })
 
     it('工时短于峰时总时长：占比封顶 100%', () => {

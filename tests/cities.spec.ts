@@ -8,10 +8,9 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { loadRuleFile, loadAllRules, loadAllRulesArray } from './helpers/rules'
+import { loadRuleFile } from './helpers/rules'
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { CITY_REGISTRY, provinceCoverage } from '../src/data/cities'
-import type { CityRule } from '../src/types'
 
 const RULE_FILES = readdirSync('public/rules').filter(f => f.endsWith('.json'))
 const RULES = RULE_FILES.map(f => ({

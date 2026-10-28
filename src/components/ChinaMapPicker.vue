@@ -29,6 +29,7 @@ import type { EChartsCoreOption } from 'echarts/core'
 import { useMainStore } from '../stores/main'
 import { CITY_REGISTRY, provinceCoverage, type CityDef } from '../data/cities'
 import { ensureECharts } from '../utils/echarts'
+import { assetUrl } from '../utils/asset'
 import { chartColors } from '../utils/chart'
 import type { EChartsType } from 'echarts/core'
 
@@ -50,7 +51,7 @@ let ro: ResizeObserver | null = null
 let mapJsonPromise: Promise<unknown> | null = null
 function loadChinaMap(): Promise<unknown> {
   if (!mapJsonPromise) {
-    mapJsonPromise = fetch('/maps/china.json')
+    mapJsonPromise = fetch(assetUrl('maps/china.json'))
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()

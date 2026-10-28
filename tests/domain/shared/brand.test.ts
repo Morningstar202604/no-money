@@ -10,7 +10,6 @@ describe('Brand 类型工具', () => {
   // 类型测试（编译时验证）
   type UserId = Brand<string, 'UserId'>;
   type PostId = Brand<string, 'PostId'>;
-  type Age = Brand<number, 'Age'>;
 
   it('应创建品牌值', () => {
     const userId = assertBrand<string, 'UserId'>('user-123');
@@ -67,14 +66,14 @@ describe('Brand 类型工具', () => {
 
   it('Unbrand 应提取底层类型', () => {
     type Extracted = Unbrand<UserId>;
-    const _check: Extracted = 'string'; // 编译时验证
-    expect(true).toBe(true);
+    const check: Extracted = 'string'; // 编译时验证
+    expect(check).toBe('string');
   });
 
   it('BrandOf 应提取品牌标识符', () => {
     type BrandName = BrandOf<UserId>;
-    const _check: BrandName = 'UserId'; // 编译时验证
-    expect(true).toBe(true);
+    const check: BrandName = 'UserId'; // 编译时验证
+    expect(check).toBe('UserId');
   });
 
   it('不带验证器的 createBrandUtils 应接受任意值', () => {

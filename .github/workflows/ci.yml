@@ -16,13 +16,24 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - name: 类型检查
-        run: npx vue-tsc --noEmit
-      - name: 单元与对拍测试（含规则溯源门禁）
+      - name: 类型检查（源码）
+        run: npm run typecheck
+      - name: 类型检查（测试与脚本）
+        run: npm run typecheck:test
+      - name: 单元 / 对拍 / 组件挂载测试（含规则溯源门禁）
         run: npm test
-      - name: 引擎自检（净收入恒等式 / 饼图闭合）
+      - name: 引擎自检（断言失败会 exit 1）
         run: npm run verify
+      - name: 知识库产物同步
+        run: npm run kb:check
       - name: 构建
         run: npm run build
-      - name: 依赖漏洞
-        run: npm audit --audit-level=high
+      - name: 生产构建不得包含 sourcemap
+        run: |
+          if find dist -name '*.map' | grep -q .; then
+            echo "::error::dist 里出现了 .map 文件，生产构建不应外发源码映射"
+            find dist -name '*.map' | head -5
+            exit 1
+          fi
+      - name: 依赖漏洞审计
+        run: npm audit --registry=https://registry.npmjs.org --audit-level=high

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { Cent, Rate, yuanToCent } from '@/domain/shared/value-objects'
+import { Rate, yuanToCent } from '@/domain/shared/value-objects'
 import {
   findBracket,
   calcLaborMonthly,

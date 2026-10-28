@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 import { visualizer } from 'rollup-plugin-visualizer'
@@ -7,6 +7,14 @@ import { visualizer } from 'rollup-plugin-visualizer'
 const isProd = process.env.NODE_ENV === 'production'
 
 export default defineConfig({
+  // 部署到子路径时设 VITE_BASE=/app/（构建期注入，运行时资源统一走 assetUrl）
+  base: process.env.VITE_BASE || '/',
+  // 默认 node 环境（domain 纯函数最快）；组件挂载测试在文件头用
+  // `// @vitest-environment happy-dom` 单独切环境，避免全部用例付 DOM 启动成本
+  test: {
+    environment: 'node',
+    include: ['tests/**/*.{spec,test}.ts'],
+  },
   plugins: [
     vue({
       // 生产环境开启 template 编译优化
@@ -39,7 +47,8 @@ export default defineConfig({
 
   build: {
     outDir: 'dist',
-    sourcemap: true,
+    // 生产不外发源码映射：dist 曾 14M 里 11M 是 .map，等于公开全部注释与内部逻辑
+    sourcemap: process.env.SOURCE_MAP === '1',
     // 目标现代浏览器，启用更多现代语法压缩
     target: 'es2022',
     // CSS 代码分割：每个 async chunk 单独的 CSS 文件

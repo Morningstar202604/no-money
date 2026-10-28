@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { loadRuleFile, loadAllRules, loadAllRulesArray } from './helpers/rules'
+import { loadRuleFile } from './helpers/rules'
 import { ScenarioEngine } from '../src/engine/ScenarioEngine'
 import { IncomeEngine } from '../src/engine/IncomeEngine'
 import { TaxEngine } from '../src/engine/TaxEngine'
 import { BenefitEngine } from '../src/engine/BenefitEngine'
 import { hydrateParams as hydrate } from '../src/utils/params'
 import { validateEndpoint } from '../src/utils/endpoint'
-import type { CityRule, WorkParams, CostParams, PersonalParams } from '../src/types'
+import type { WorkParams, CostParams, PersonalParams } from '../src/types'
 
 const rule = loadRuleFile('guangzhou.json')
 
@@ -628,7 +628,8 @@ describe('V2 峰时补贴按峰时段占比折算', () => {
     const inc = new IncomeEngine(gz.income).calcIncome({ ...work, dailyHours: 6 })
     const dailyBase = (work.dailyOrders * gz.income.basePricePerOrder)
     const fullPeak = dailyBase * (gz.income.timeSubsidy.multiplier - 1)
-    expect(fullPeak * work.workDaysMonth).toBeCloseTo(fullPeak * work.workDaysMonth, 2)
+    // 占比 100%：峰时补贴 = 全额 × 工作天数（与旧行为一致）
+    expect(inc.subsidyPay).toBeGreaterThanOrEqual(fullPeak * work.workDaysMonth)
   })
 
   it('工时远超峰时总时长时占比封顶为 100%，不会算出超过 100% 的补贴', () => {
