@@ -6,7 +6,7 @@
     title="先看这里：这些数字是谁的？"
     :style="{ width: 'min(620px, 94vw)' }"
     :closable="true"
-    @update:show="(v: boolean) => !v && close()"
+    @update:show="(v: boolean) => !v && closeOnce()"
   >
     <div class="onb">
       <p class="onb-lead">
@@ -48,8 +48,10 @@
 
     <template #footer>
       <div class="onb-actions">
-        <n-button text size="small" @click="close">不再提示</n-button>
-        <n-button type="primary" size="small" @click="close">开始调整参数</n-button>
+        <!-- 两个按钮行为必须区分：此前都写 seen=1，用户点「开始调整参数」
+             也会被永久静默，想再看一次引导没有任何入口 -->
+        <n-button text size="small" @click="dismissForever">不再提示</n-button>
+        <n-button type="primary" size="small" @click="closeOnce">开始调整参数</n-button>
       </div>
     </template>
   </n-modal>
@@ -64,7 +66,9 @@ const STORAGE_KEY = 'nomoney_onboarding_v1'
 const store = useMainStore()
 
 function readSeen(): boolean {
-  try { return localStorage.getItem(STORAGE_KEY) === '1' } catch { return true }
+  // 存储不可用（隐私模式）时按「没看过」处理：宁可多提示一次，
+  // 也不要把首次用户直接扔进一个全是假设值的界面
+  try { return localStorage.getItem(STORAGE_KEY) === '1' } catch { return false }
 }
 
 const visible = ref(!readSeen())
@@ -87,9 +91,15 @@ const d = computed(() => {
   }
 })
 
-function close() {
+/** 「不再提示」：永久静默 */
+function dismissForever() {
   visible.value = false
   try { localStorage.setItem(STORAGE_KEY, '1') } catch { /* 隐私模式下不持久化，只影响下次是否再弹 */ }
+}
+
+/** 「开始调整参数」：只关本次，下次打开仍会提示 */
+function closeOnce() {
+  visible.value = false
 }
 
 </script>

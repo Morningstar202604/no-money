@@ -413,7 +413,10 @@
         <button class="ps-notice-x" aria-label="关闭提示" @click="store.cityNotice = null">×</button>
       </div>
       <div v-if="store.persistError" class="ps-persist-error">{{ store.persistError }}</div>
-      <div v-if="store.paramsRestored" class="ps-restored">已恢复上次未完成的测算参数</div>
+      <div v-if="store.paramsRestored" class="ps-restored">
+        <span>已恢复上次未完成的测算参数</span>
+        <button class="ps-restored-x" aria-label="关闭提示" @click="store.paramsRestored = false">×</button>
+      </div>
       <div v-if="importError" class="ps-persist-error">{{ importError }}</div>
       <div class="ps-io">
         <n-button size="tiny" quaternary block @click="exportParams">导出参数</n-button>
@@ -664,12 +667,27 @@ const autoMedicalBase = computed(() => autoBase(medicalBaseMin.value, medicalBas
   flex-direction: column;
   gap: 6px;
 }
+.ps-restored-x {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-brand);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
 .ps-restored {
+  position: relative;
   font-size: 10px;
+  text-align: left;
   color: var(--color-text-brand);
   background: rgba(13,148,136,0.07);
   border-radius: 3px;
+  /* padding-right 必须在 padding 简写之后声明，否则被简写覆盖、× 压住文字 */
   padding: 3px 6px;
+  padding-right: 20px;
 }
 
 .ps-notice {
