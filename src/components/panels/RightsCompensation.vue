@@ -4,7 +4,9 @@
     <n-card title="权益补偿计算器" class="card">
       <FoldCard title="测算依据与用工关系前提（务必先读）">
         <p class="desc">
-          依据《劳动合同法》《工伤保险条例》《广东省工伤保险条例》（2019修正）《劳动法》及人社部发〔2021〕56号等现行规定测算。
+          依据《劳动合同法》《工伤保险条例》《劳动法》及人社部发〔2021〕56号等现行规定测算；
+          一次性工伤医疗/就业补助金的月数由省级政府规定，<b>当前城市为{{ store.rule?.cityName ?? '未选择' }}（{{ province || '未知省份' }}）</b>，
+          {{ province === '广东' ? '按《广东省工伤保险条例》（2019修正）第34条口径给出。' : '本产品只内置广东口径，你所在省不估算该项，页面会提示以本省实施办法为准。' }}
           合计仅计入可直接主张项，需行政责令、劳动关系认定等前置条件的金额单列。所有结果不构成法律意见，实际维权请咨询12348法律援助热线或当地工会法律援助。
         </p>
         <n-alert type="warning" :show-icon="true" style="margin-top: 8px">
@@ -29,14 +31,21 @@
 
     <!-- Scenario selector -->
     <n-card title="选择侵权场景" class="card" style="margin-top: 12px">
-      <div class="scenario-grid">
-        <div v-for="s in scenarios" :key="s.id"
-             :class="['scenario-card', { active: currentScene === s.id }]"
-             @click="selectScene(s.id)">
-          <div class="sc-icon">{{ s.icon }}</div>
-          <div class="sc-name">{{ s.name }}</div>
-          <div class="sc-basis">{{ s.legalBasis }}</div>
-        </div>
+      <!-- 场景卡必须是真按钮：此前是可点击 div，键盘用户完全无法切换场景，
+           读屏也拿不到「当前选中」状态 -->
+      <div class="scenario-grid" role="group" aria-label="侵权场景">
+        <button
+          v-for="s in scenarios"
+          :key="s.id"
+          type="button"
+          :class="['scenario-card', { active: currentScene === s.id }]"
+          :aria-pressed="currentScene === s.id"
+          @click="selectScene(s.id)"
+        >
+          <span class="sc-icon">{{ s.icon }}</span>
+          <span class="sc-name">{{ s.name }}</span>
+          <span class="sc-basis">{{ s.legalBasis }}</span>
+        </button>
       </div>
     </n-card>
 
@@ -306,6 +315,7 @@ import FoldCard from '../FoldCard.vue'
 import RealityList from '../RealityList.vue'
 import { realityFactsBy } from '../../utils/reality'
 import { CompensationService } from '../../application/compensation/CompensationService'
+import { provinceOf } from '../../data/provinces'
 import type { CompensationResult } from '../../types'
 
 const message = useMessage()
@@ -316,15 +326,25 @@ function goTab(t: string) { if (rightsTab) rightsTab.value = t }
 
 const currentScene = ref('wage')
 
-const scenarios = [
+/** 当前城市所属省份：工伤依据文字与法条引用都按省切换 */
+const province = computed(() => provinceOf(store.rule?.city ?? store.work.city) ?? '')
+/** 场景卡的依据文字：工伤项必须按省份切换，否则北京用户看到「广东省条例第34条」 */
+const scenarios = computed(() => [
   { id: 'wage', name: '欠薪/克扣报酬', icon: '1', legalBasis: '《劳动合同法》第30、38、85条' },
-  { id: 'injury', name: '职业伤害/工伤', icon: '2', legalBasis: '《工伤保险条例》+广东省条例第34条' },
+  {
+    id: 'injury',
+    name: '职业伤害/工伤',
+    icon: '2',
+    legalBasis: province.value === '广东'
+      ? '《工伤保险条例》+广东省条例第34条'
+      : '《工伤保险条例》（地方补助金月数按本省办法）',
+  },
   { id: 'dismiss', name: '违法解约', icon: '3', legalBasis: '《劳动合同法》第47、87条' },
   { id: 'algorithm', name: '平台算法/处罚争议', icon: '4', legalBasis: '《个保法》第24条+人社部发〔2021〕56号' },
   { id: 'overwork', name: '超时加班费', icon: '5', legalBasis: '《劳动法》第41、44条' },
-]
+])
 
-const activeScene = computed(() => scenarios.find(s => s.id === currentScene.value)!)
+const activeScene = computed(() => scenarios.value.find(s => s.id === currentScene.value)!)
 
 const DEFAULT_FORM = {
   wage: { months: 3, monthly: 8000, percent: 50, tenureMonths: 6, hasContract: false, forcedQuit: false },
@@ -461,6 +481,10 @@ calc()
   gap: 8px;
 }
 .scenario-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
   border: 1px solid var(--color-border-primary);
   border-radius: 6px;
   padding: 12px 8px;
@@ -468,6 +492,13 @@ calc()
   text-align: center;
   transition: border-color 0.15s, background 0.15s;
   user-select: none;
+  background: var(--color-bg-primary);
+  color: inherit;
+  font: inherit;
+}
+.scenario-card:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
 }
 .scenario-card:hover { border-color: var(--color-text-brand); }
 .scenario-card.active { border-color: var(--color-text-brand); background: rgba(13,148,136,0.04); }
