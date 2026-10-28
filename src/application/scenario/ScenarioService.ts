@@ -273,7 +273,12 @@ export class ScenarioService {
           rightsFlags: flags,
           recommendation,
           keyInsights,
-          dataQuality: dataQualityOf(this.rawRule.sources, personal.hasSocialInsurance, this.overrides ?? personal.incomeOverrides),
+          dataQuality: dataQualityOf(
+            this.rawRule.sources,
+            personal.hasSocialInsurance,
+            this.overrides ?? personal.incomeOverrides,
+            this.statutory,
+          ),
         } satisfies ScenarioResult
       },
       e => AppError.engine('ScenarioService.runScenario', e instanceof Error ? e.message : String(e)),

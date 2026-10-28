@@ -42,18 +42,28 @@ const OVERRIDE_LABELS: Array<[keyof NonNullable<IncomeOverrides>, string]> = [
   ['holidayMultiplier', '节假日倍率'],
 ]
 
+/**
+ * @param statutory 用户填入的「本省法定参数」覆盖。填了哪一项，对应的
+ *   未核实字段就应移入 overriddenFields——否则用户在参数栏填了本省官方值，
+ *   页顶仍把他刚填过的字段列为「假设测算」，自相矛盾。
+ */
 export function dataQualityOf(
   sources: Record<string, SourceRef> | undefined,
   hasSocialInsurance: boolean,
   incomeOverrides?: IncomeOverrides,
+  statutory?: { baseMin?: number; baseMax?: number; minWageMonthly?: number },
 ): DataQuality {
   const official: string[] = []
   const unverified: string[] = []
   const overridden: string[] = []
+  const baseFilled = isPositive(statutory?.baseMin) && isPositive(statutory?.baseMax)
+  const wageFilled = isPositive(statutory?.minWageMonthly)
   for (const [key, label] of DEPS) {
     // 用户用自己的 APP 流水覆盖了计价参数 → 该字段不再是「占位假设」，
     // 而是实测值：既不算 official（不是官方发布），也不再计入 provisional
     if (key === 'income' && hasIncomeOverride(incomeOverrides)) overridden.push(label)
+    else if ((key === 'pension' || key === 'medical') && baseFilled) overridden.push(label)
+    else if (key === 'minimumWage' && wageFilled) overridden.push(label)
     // 缺来源条目的键按未核实处理：宁可多提示，也不能默认可信
     else if (sources?.[key]?.confidence === 'official') official.push(label)
     else unverified.push(label)
@@ -89,6 +99,10 @@ export function missingOverrideFields(o?: IncomeOverrides): string[] {
       return !(typeof v === 'number' && Number.isFinite(v) && v > 0)
     })
     .map(([, label]) => label)
+}
+
+function isPositive(v?: number): boolean {
+  return typeof v === 'number' && Number.isFinite(v) && v > 0
 }
 
 /** 至少填写一项计价覆盖即视为「用户已用自己的流水实测」 */

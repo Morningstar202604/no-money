@@ -11,7 +11,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { loadAllRules } from './helpers/rules'
+import { loadAllRules, loadRuleFile } from './helpers/rules'
 import { ScenarioService } from '../src/application/scenario/ScenarioService'
 import type { WorkParams, CostParams, PersonalParams } from '../src/types'
 
@@ -98,5 +98,50 @@ describe('数据质量标记', () => {
       // provisional 与「是否有未核实依赖」必须一致，不能有一边说了另一边不说
       expect(q.provisional, `${city} provisional 与其依赖清单不一致`).toBe(q.unverifiedFields.length > 0)
     }
+  })
+})
+
+describe('本省法定参数覆盖后的数据质量判定', () => {
+  it('未核实城市：填入本省基数与最低工资后，对应字段移出「未核实」清单', () => {
+    // 石家庄的 pension / minimumWage 都是 unverified（全国量级占位值）
+    const sjz = loadRuleFile('shijiazhuang.json')
+    const before = new ScenarioService(sjz).runScenario({ id: 'q', name: 'q', work, costs, personal: personal({ hasSocialInsurance: true }) })
+    expect(before.ok).toBe(true)
+    if (!before.ok) return
+    expect(before.value.dataQuality.unverifiedFields).toContain('养老缴费基数')
+    expect(before.value.dataQuality.unverifiedFields).toContain('最低工资')
+
+    const after = new ScenarioService(sjz, undefined, { baseMin: 4000, baseMax: 20000, minWageMonthly: 2200 })
+      .runScenario({ id: 'q', name: 'q', work, costs, personal: personal({ hasSocialInsurance: true }) })
+    expect(after.ok).toBe(true)
+    if (!after.ok) return
+    expect(after.value.dataQuality.unverifiedFields, '填了本省值就不该再列为未核实').not.toContain('养老缴费基数')
+    expect(after.value.dataQuality.unverifiedFields).not.toContain('最低工资')
+    expect(after.value.dataQuality.overriddenFields).toContain('养老缴费基数')
+    expect(after.value.dataQuality.overriddenFields).toContain('最低工资')
+  })
+})
+
+describe('计价覆盖的缺口提示', () => {
+  it('只填单价时，缺失字段列表里仍包含倍率项', () => {
+    const svcPartial = new ScenarioService(GZ, { basePricePerOrder: 6 })
+    const r = svcPartial.runScenario({ id: 'q', name: 'q', work, costs, personal: personal() })
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    const q = r.value.dataQuality
+    expect(q.overriddenFields).toContain('计价单价/补贴')
+    expect(q.missingOverrideFields, '只填单价不能宣称全部按实测').toBeTruthy()
+    expect(q.missingOverrideFields!.length).toBeGreaterThan(0)
+    expect(q.missingOverrideFields).toContain('峰时倍率')
+  })
+
+  it('填满五项后缺口列表为空', () => {
+    const svcFull = new ScenarioService(GZ, {
+      basePricePerOrder: 6, distanceRate: 1.5, peakMultiplier: 1.3, rainSurcharge: 1.4, holidayMultiplier: 1.7,
+    })
+    const r = svcFull.runScenario({ id: 'q', name: 'q', work, costs, personal: personal() })
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    expect(r.value.dataQuality.missingOverrideFields).toEqual([])
   })
 })
