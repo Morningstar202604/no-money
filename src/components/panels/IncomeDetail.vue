@@ -160,8 +160,17 @@
         </n-gi>
       </n-grid>
 
-      <n-card title="年度收支预测" class="card" style="margin-top: 12px">
+      <n-card title="年度收支预测（行业季节性示意）" class="card" style="margin-top: 12px">
+        <p class="yearly-note">
+          下图的月度波动来自<strong>固定的行业季节性系数</strong>（春节前高峰、盛夏与年末回落），
+          与你填写的「月雨天 / 月节假日」无关，也不是对你所在城市的预测——
+          它只回答「同样月均收入下，一年里各月的相对起伏大概长什么样」。
+        </p>
         <ChartBox :option="yearlyOption" :height="320" />
+        <p class="yearly-note">
+          图表中成本随收入同比例缩放，与左侧「成本按里程变动」的模型不同：固定成本不随单量下降，
+          真实淡季的净收入会比这条曲线更差。
+        </p>
       </n-card>
     </FoldCard>
   </div>
@@ -432,6 +441,12 @@ const yearlyOption = computed<EChartsCoreOption>(() => {
   color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;
   min-width: 34px;
+}
+.yearly-note {
+  margin: 0 0 8px;
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--color-text-tertiary);
 }
 .ad-claim {
   display: flex;
