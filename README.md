@@ -1,6 +1,6 @@
 # 没钱 No Money — 灵活就业者收入精算与权益决策平台
 
-[![tests](https://img.shields.io/badge/vitest-890%20passed-brightgreen.svg)](#测试覆盖什么)
+[![tests](https://img.shields.io/badge/vitest-898%20passed-brightgreen.svg)](#测试覆盖什么)
 [![audit](https://img.shields.io/badge/npm%20audit-0%20vulnerabilities-brightgreen.svg)](#测试覆盖什么)
 [![cities](https://img.shields.io/badge/cities-34%20%C2%B7%2031%20provinces-4a7c8c.svg)](#范围与设计主张)
 [![telemetry](https://img.shields.io/badge/telemetry-none-4a7c8c.svg)](#数据在哪里来自哪里)
@@ -36,7 +36,7 @@
 
 已收录 **34 座城市，覆盖全部 31 个省级行政区**，可在地图选择器中切换。每座城市的社保、医保与最低工资参数逐条挂在 `sources` 里，界面按字段显示置信度：
 
-- **有官方原文来源的 15 城**（按字段计：社保基数 14 城、最低工资 7 城、计发基数 2 城，无任何一城三项全 official）：广州 / 深圳 / 东莞 / 北京 / 天津 / 上海 / 杭州 / 南京 / 苏州 / 武汉 / 长沙 / 郑州 / 成都 / 重庆 / 西安
+- **有官方原文来源的 15 城**（按字段计：社保基数 14 城、最低工资 8 城、计发基数 2 城，无任何一城三项全 official）：广州 / 深圳 / 东莞 / 北京 / 天津 / 上海 / 杭州 / 南京 / 苏州 / 武汉 / 长沙 / 郑州 / 成都 / 重庆 / 西安
 - **全国覆盖新增的 19 个省会/首府**：石家庄 / 太原 / 呼和浩特 / 沈阳 / 长春 / 哈尔滨 / 合肥 / 福州 / 南昌 / 济南 / 南宁 / 海口 / 贵阳 / 昆明 / 拉萨 / 兰州 / 西宁 / 银川 / 乌鲁木齐。这 19 城的社保基数与最低工资为**全国量级参考值**（全部标 `unverified`），不是本省官方公布值——参数栏会显示「本省法定参数（XX 尚未核实）」卡片，请填入本省人社厅公布的当年值后再看结论。
 
 - **official** — 已回溯到主管部门原文页面（含文号与链接）
@@ -49,7 +49,7 @@
 |---|---|---|---|
 | 社保缴费基数 | 14 | 0 | 20 |
 | 养老金计发基数 | 2（长沙、天津） | 5（北京 / 东莞 / 广州 / 杭州 / 深圳） | 27 |
-| 最低工资 | 7 | 1 | 26 |
+| 最低工资 | 8 | 0 | 26 |
 | 平台接单计价 | 0 | 0 | **34（全部）** |
 
 平台计价属平台商业规则，不存在跨平台权威来源，因此永远不可能是 `official`——用「我的计价」覆盖才是唯一正确路径。
@@ -72,7 +72,7 @@
 npm ci
 npm run dev          # http://localhost:3000（Web）
 npm run tauri:dev    # 桌面端（需 Rust 工具链）
-npm test             # vitest，890 例（含规则溯源门禁）
+npm test             # vitest，898 例（含规则溯源门禁）
 npm run verify       # 引擎自检：净收入恒等式闭合
 npm run build        # vue-tsc --noEmit && vite build
 npm run tauri:build  # 桌面端安装包
@@ -318,4 +318,4 @@ g = 养老金年调整率（默认 3%，近年全国调幅量级 2%–4%）、d 
 - 东莞三档医保费率必须分离，且外地城收到东莞档次 id 时回落默认档（跨城不串值）
 - 规则文件溯源约束：official 必须有文号或链接、`verified` 不得与实际置信度冲突、平台计价必须标 `unverified`
 
-验证入口收敛为两条命令：`npm test`（890 例，含规则文件溯源门禁 `tests/rulesGate.spec.ts`）与 `npm run verify`（引擎自检：净收入恒等式闭合）；`npm run build` 跑类型检查与构建。
+验证入口收敛为两条命令：`npm test`（898 例，含规则文件溯源门禁 `tests/rulesGate.spec.ts`）与 `npm run verify`（引擎自检：净收入恒等式闭合）；`npm run build` 跑类型检查与构建。

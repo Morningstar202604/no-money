@@ -8,7 +8,7 @@
 
 | 文件 | 说明 |
 |---|---|
-| `kb.json` | 全量条目（34 城规则溯源 + 静态政策/手册/现实核查） |
+| `kb.json` | 全量条目（34 城规则溯源 309 条 + 静态政策 17 / 手册 26 / 现实核查 23，合计 375 条，`npm run kb:check` 校验同步） |
 | `README.md` | 本说明 |
 
 ## 条目结构（schemaVersion = 1）
@@ -36,13 +36,16 @@
 
 - 切块：按条目切块（一条 ≈ 一个语义单元，无需再切）；过长条目可再拆 `summary / keyPoints / steps`。
 - 嵌入文本建议：`title + summary + keyPoints + numbers`（`notes` 为免责/核对信息，可单独存元数据）。
-- `links[].url` 均为收录时核验过的官方原文，可直接回链引用；回答涉及政策时应引用 `docNo` 与链接。
+- `links[].url`：官方条目均带原文链接；`unverified` 的溯源条目可能没有链接（无公开来源），其 `notes` 会写明「占位/未回溯」，不可当作官方口径引用。
+- 回答涉及政策时应引用 `docNo` 与链接；没有链接的条目只能作为「待核验线索」使用。
 - 引用纪律：`confidence = 经验·待自验` 的条目没有权威统计支撑，只可作提示，不可作为事实断言。
 
 ## 最小示例（Node）
 
 ```js
-const kb = require('./kb.json')
+// package.json 是 "type": "module"，require() 会直接报错，用 ESM 读取
+import { readFileSync } from 'node:fs'
+const kb = JSON.parse(readFileSync(new URL('./kb.json', import.meta.url), 'utf8'))
 const hits = kb.entries.filter(e => e.title.includes('个人养老金'))
 console.log(hits[0].links[0].url)
 ```

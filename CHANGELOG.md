@@ -24,7 +24,7 @@
 
 **工程**
 
-- 890 个测试（含 363 例新旧引擎对拍）
+- 898 个测试（含 363 例新旧引擎对拍 + 6 例组件挂载回归）
 - 严格 TypeScript（strict + noUnusedLocals + noUnusedParameters）
 - 零 npm 依赖漏洞
 - 纯前端，无后端；桌面端 Tauri 不启用任何插件
