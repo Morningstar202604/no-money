@@ -21,9 +21,9 @@ import {
 } from '../../../src/domain/income/capacity'
 
 describe('单均耗时：固定开销 + 骑行时间', () => {
-  it('2.5km、18km/h：8 + 8.33 ≈ 16.33 分钟', () => {
+  it('2.5km、20km/h：6 + 7.5 = 13.5 分钟', () => {
     const m = effectiveMinutesPerOrder(2.5)
-    expect(m).toBeCloseTo(8 + (2.5 / 18) * 60, 2)
+    expect(m).toBeCloseTo(6 + (2.5 / 20) * 60, 2)
   })
 
   it('距离越远，单均耗时越长', () => {
@@ -43,12 +43,12 @@ describe('单均耗时：固定开销 + 骑行时间', () => {
 })
 
 describe('产能评估：工时与单量必须自洽', () => {
-  it('10 小时、2.5km：可用 510 分钟，产能上限再乘疲劳折减', () => {
+  it('10 小时、2.5km：可用 540 分钟，产能上限再乘疲劳折减', () => {
     const r = calcCapacity(10, 30, 2.5)
-    expect(r.availableMinutes).toBe(600 - 90)
+    expect(r.availableMinutes).toBe(600 - 60)
     // 产能 = 可用分钟 ÷ 单均耗时 × 疲劳系数（10 小时已超 8 小时阈值）
-    expect(r.maxOrdersPerDay).toBeCloseTo((510 / r.minutesPerOrder) * fatigueFactor(10), 3)
-    expect(r.maxOrdersPerDay).toBeLessThan(510 / r.minutesPerOrder)
+    expect(r.maxOrdersPerDay).toBeCloseTo((540 / r.minutesPerOrder) * fatigueFactor(10), 3)
+    expect(r.maxOrdersPerDay).toBeLessThan(540 / r.minutesPerOrder)
   })
 
   it('工时越长，疲劳折减越强（10h 上限低于按分钟线性推算）', () => {

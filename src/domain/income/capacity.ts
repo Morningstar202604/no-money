@@ -28,11 +28,18 @@ export interface CapacityModel {
   breakMinutesPerDay: number
 }
 
-/** 行业量级默认值（假设，非官方数据） */
+/**
+ * 行业量级默认值（假设，非官方数据）。
+ *
+ * 校准依据：常见全职强度 10 小时 35 单必须在默认参数下「不超载」，否则首屏
+ * 就自相矛盾（左侧写 35 单、产能卡写 30 单/日）。按 6 分钟固定开销 + 20km/h
+ * 骑行 + 60 分钟休息：单均 13.5 分钟，10 小时可完成约 37 单（含疲劳折减），
+ * 35 单落在产能内；用户可用自己的实测数据覆盖这三个值。
+ */
 export const DEFAULT_CAPACITY: CapacityModel = {
-  fixedMinutesPerOrder: 8,
-  avgSpeedKmh: 18,
-  breakMinutesPerDay: 90,
+  fixedMinutesPerOrder: 6,
+  avgSpeedKmh: 20,
+  breakMinutesPerDay: 60,
 }
 
 export interface CapacityResult {

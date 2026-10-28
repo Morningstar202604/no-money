@@ -438,8 +438,8 @@ describe('跨省切换与参数完整往返（技术债审计发现）', () => {
 
     await store.resetParams()
 
-    expect(store.capacityModel.fixedMinutesPerOrder, '产能参数应回到默认 8 分钟').toBe(8)
-    expect(store.capacityModel.avgSpeedKmh).toBe(18)
+    expect(store.capacityModel.fixedMinutesPerOrder, '产能参数应回到默认 6 分钟').toBe(6)
+    expect(store.capacityModel.avgSpeedKmh).toBe(20)
     expect(store.volatilityCv, '波动率应回到默认 20%').toBe(0.2)
   })
 })

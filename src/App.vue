@@ -143,10 +143,10 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
     // primary-500 是亮青 #2dd4bf —— 白字压亮青对比度约 1.9:1，远低于
     // WCAG AA 的 4.5:1，按钮文字几乎看不清。--color-text-inverse 在
     // 深色主题是近黑 #0b1120、浅色主题是白，两个主题都达标。
-    textColorPrimary: 'var(--color-text-inverse)',
-    textColorHoverPrimary: 'var(--color-text-inverse)',
-    textColorPressedPrimary: 'var(--color-text-inverse)',
-    textColorFocusPrimary: 'var(--color-text-inverse)',
+    textColorPrimary: 'var(--color-text-on-primary)',
+    textColorHoverPrimary: 'var(--color-text-on-primary)',
+    textColorPressedPrimary: 'var(--color-text-on-primary)',
+    textColorFocusPrimary: 'var(--color-text-on-primary)',
   },
   Modal: {
     color: 'var(--color-bg-primary)',
