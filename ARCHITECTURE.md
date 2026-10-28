@@ -80,7 +80,18 @@ components / views 渲染
 | `tests/parity/` | 新旧引擎对拍（363 例），重构护栏 |
 | `tests/stores/` | 状态、持久化、跨城切换 |
 | `tests/wiring/` | 组件接线回归（防「改了一处忘另一处」） |
+| `tests/components/` | 组件挂载级回归（happy-dom）：补偿时序、文书金额与按月分段、页签配置 |
+| `tests/data/` | 省份归属映射（决定是否引用地方性法规） |
 | `tests/rulesGate.spec.ts` | 规则文件溯源门禁 |
 | `tests/cities.spec.ts` | 34 城数据完整性 |
 
-`npm test` 一条命令覆盖全部；`npm run verify` 额外跑引擎自检（失败会 exit 1）。
+`npm test` 一条命令覆盖全部；`npm run verify` 额外跑引擎自检（断言失败会 exit 1）；
+`npm run kb:check` 校验 `public/knowledge/kb.json` 与数据源逐字段同步；
+`npm run typecheck`（src）与 `npm run typecheck:test`（tests + scripts）分别把关类型。
+
+### 部署
+
+- Web：支持子路径部署（构建时 `VITE_BASE=/app/`），运行时资源统一走 `src/utils/asset.ts` 的 `assetUrl()`；
+  路由用 `createWebHistory(import.meta.env.BASE_URL)`。静态托管需配置 SPA fallback（Nginx `try_files`），
+  未配置时 `public/404.html` 提供兜底出口。
+- 桌面：`npm run tauri:build`，CSP 见 `src-tauri/tauri.conf.json`（`connect-src https:` 是允许自定义 AI 端点的已知取舍，详见 `SECURITY.md`）。

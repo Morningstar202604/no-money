@@ -1170,8 +1170,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "flexcalc-pro"
-version = "2.0.0"
+name = "no-money"
+version = "2.1.0"
 dependencies = [
  "anyhow",
  "serde",

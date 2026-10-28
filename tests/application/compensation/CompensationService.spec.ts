@@ -169,3 +169,26 @@ describe('按月给付不得混入一次性合计（审计发现）', () => {
     expect(r.items.some(i => i.period === 'monthly')).toBe(false)
   })
 })
+
+describe('法律依据按省切换（不得给外省用户引用广东条例）', () => {
+  const injuryForm = {
+    injury: { medical: 5000, leaveMonths: 3, income: 8000, hasInsurance: true, mealPerDay: 0, nursingPerDay: 0, level: 8 },
+  }
+
+  it('广东城市：legalRefs 含《广东省工伤保险条例》第34条', () => {
+    const r = unwrap(service.calculate({ scene: 'injury', form: injuryForm, rule: { ...serviceRule, city: 'guangzhou' } }))
+    expect(r.legalRefs.some(x => x.law.includes('广东省工伤保险条例'))).toBe(true)
+  })
+
+  it('非广东城市：legalRefs 不得出现「广东」，改为提示查本省办法', () => {
+    const r = unwrap(service.calculate({ scene: 'injury', form: injuryForm, rule: { ...serviceRule, city: 'beijing' } }))
+    const joined = r.legalRefs.map(x => x.law + x.article + x.summary).join(' ')
+    expect(joined).not.toContain('广东')
+    expect(joined).toContain('本省')
+  })
+
+  it('佛山（无规则文件但属广东）：按广东口径给月数，而不是当作外省', () => {
+    const r = unwrap(service.calculate({ scene: 'injury', form: injuryForm, rule: { ...serviceRule, city: '佛山' } }))
+    expect(r.items.some(i => i.name.includes('一次性工伤医疗补助金'))).toBe(true)
+  })
+})
