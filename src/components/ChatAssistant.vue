@@ -80,8 +80,24 @@
           <n-checkbox v-model:checked="rememberKey">在本机记住 API Key</n-checkbox>
           <div class="ps-note-sm">默认不记住：Key 只存在于内存，关闭标签页即失效。勾选后会以明文写入本浏览器 localStorage，同源脚本与浏览器扩展均可读取。</div>
         </n-form-item>
+        <div class="key-actions">
+          <span class="key-status">
+            Key 当前：{{ config.apiKey ? (config.rememberKey ? '已明文保存在本机' : '仅本次会话内存中') : '未填写' }}
+          </span>
+          <n-button v-if="config.apiKey" size="tiny" quaternary type="error" @click="clearKey">立即清除 Key</n-button>
+        </div>
 
-        <n-form-item label="模型"><n-select v-model:value="config.model" :options="modelOptions" /></n-form-item>
+        <n-form-item label="模型">
+          <!-- 允许自定义模型名：自填 OpenAI 兼容端点（如 Ollama、vLLM、自建网关）时
+               固定 6 项列表里没有可用值，用户会以为「不支持」 -->
+          <n-select
+            v-model:value="config.model"
+            :options="modelOptions"
+            filterable
+            tag
+            placeholder="选择或直接输入模型名（如 deepseek-chat）"
+          />
+        </n-form-item>
         <div style="display:flex;gap:8px;justify-content:flex-end">
           <n-button @click="testConnection" :loading="testing">测试连接</n-button>
           <n-button type="primary" @click="saveAndClose">保存</n-button>
@@ -114,6 +130,14 @@ const testing = ref(false)
 const endpointCheck = computed(() => validateEndpoint(config.value.endpoint))
 const endpointHost = computed(() => endpointCheck.value.ok ? endpointCheck.value.host : '')
 const endpointError = computed(() => endpointCheck.value.ok ? '' : endpointCheck.value.error)
+/** 立即清除 Key：此前只能靠取消勾选后保存，用户不知道 Key 何时真正离开本机 */
+function clearKey() {
+  config.value.apiKey = ''
+  config.value.rememberKey = false
+  updateConfig({ apiKey: '', rememberKey: false })
+  message.success('已从内存与本机存储中清除 API Key')
+}
+
 const rememberKey = computed({
   get: () => config.value.rememberKey,
   set: (v: boolean) => { config.value.rememberKey = v },
@@ -277,6 +301,17 @@ function saveAndClose() {
 .exfil-list li { font-size: 12px; line-height: 1.6; }
 .host-line { font-size: 12px; color: var(--color-text-secondary); padding: 0 0 4px; }
 .host-line b { color: var(--color-text-brand); word-break: break-all; }
+.key-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: -4px;
+  padding: 6px 8px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+.key-status { font-size: 11px; color: var(--color-text-secondary); }
 .ps-note-sm { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; margin-top: 2px; }
 
 .msg-src {
