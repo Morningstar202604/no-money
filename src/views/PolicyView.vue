@@ -207,6 +207,7 @@
                   <span class="step-text">{{ step }}</span>
                 </n-step>
               </n-steps>
+              <p v-if="item.note" class="step-note">{{ item.note }}</p>
             </n-card>
           </n-gi>
         </n-grid>
@@ -343,6 +344,16 @@ const reliefGuide = RELIEF_GUIDE
 .src-note { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; margin: 0 0 6px; }
 
 .step-text { color: var(--color-text-secondary); font-size: 12px; }
+.step-note {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--color-text-warning);
+  background: var(--color-warning-50);
+  border-left: 2px solid var(--color-text-warning);
+  padding: 6px 8px;
+  border-radius: 0 3px 3px 0;
+}
 
 /* ---------- 知识库 ---------- */
 .kb-file-link { color: var(--color-text-brand); }
