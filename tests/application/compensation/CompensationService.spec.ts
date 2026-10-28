@@ -142,3 +142,30 @@ describe('示例值不得进入文书（诚信护栏）', () => {
     expect(after).toBe(before)
   })
 })
+
+describe('按月给付不得混入一次性合计（审计发现）', () => {
+  it('1–4 级按月伤残津贴标记 period=monthly，且不计入 conditionalTotal', () => {
+    const r = unwrap(service.calculate({
+      scene: 'injury',
+      form: { injury: { medical: 5000, leaveMonths: 3, income: 8000, hasInsurance: true, mealPerDay: 0, nursingPerDay: 0, level: 4 } },
+      rule: serviceRule,
+    }))
+    const allowance = r.items.find(i => i.name.includes('按月伤残津贴'))!
+    expect(allowance.period).toBe('monthly')
+    expect(allowance.amount).toBeGreaterThan(0)
+    // 条件项合计只能含一次性项：4 级时没有一次性条件项（医疗/就业补助金仅 5–10 级）
+    expect(r.conditionalTotal).toBe(0)
+  })
+
+  it('5–10 级一次性医疗/就业补助金仍是 one-time，且计入 conditionalTotal', () => {
+    const r = unwrap(service.calculate({
+      scene: 'injury',
+      form: { injury: { medical: 5000, leaveMonths: 3, income: 8000, hasInsurance: true, mealPerDay: 0, nursingPerDay: 0, level: 8 } },
+      rule: serviceRule,
+    }))
+    const oneTime = r.items.filter(i => i.kind === 'conditional' && (i.period ?? 'one-time') === 'one-time')
+    expect(oneTime.length).toBeGreaterThan(0)
+    expect(r.conditionalTotal).toBeGreaterThan(0)
+    expect(r.items.some(i => i.period === 'monthly')).toBe(false)
+  })
+})

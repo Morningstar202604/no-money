@@ -20,7 +20,11 @@
     </n-alert>
     <!-- 用户已用自己的流水覆盖计价：如实说明这是「你的实测」，不是官方数据，也不再用占位值 -->
     <n-alert v-else-if="overriddenFields.length > 0" type="success" :show-icon="true" style="margin-bottom: 12px">
-      计价参数已按你填写的实际值计算（{{ overriddenFields.join('、') }}）；这些是你自己的流水数据，非官方发布值。
+      <div>计价参数已按你填写的实际值计算（{{ overriddenFields.join('、') }}）；这些是你自己的流水数据，非官方发布值。</div>
+      <!-- 只填了部分字段时不能整块宣称「已按实测」：未填的倍率仍在用占位假设 -->
+      <div v-if="missingOverrideFields.length" style="margin-top:4px;font-size:12px">
+        仍有 {{ missingOverrideFields.length }} 项沿用占位假设：{{ missingOverrideFields.join('、') }}——补全后结论才完全基于你的流水。
+      </div>
     </n-alert>
 
     <!-- KPI Row -->
@@ -178,6 +182,7 @@ const dataReady = computed(() => !!store.rule && !!store.comparison?.best)
 const provisional = computed(() => store.comparison?.best?.dataQuality?.provisional === true)
 const unverifiedFields = computed(() => store.comparison?.best?.dataQuality?.unverifiedFields ?? [])
 const overriddenFields = computed(() => store.comparison?.best?.dataQuality?.overriddenFields ?? [])
+const missingOverrideFields = computed(() => store.comparison?.best?.dataQuality?.missingOverrideFields ?? [])
 
 /**
  * 收入波动：用当前方案的月净收入做乘性波动模拟。

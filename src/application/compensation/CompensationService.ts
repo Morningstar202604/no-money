@@ -128,8 +128,8 @@ export class CompensationService {
   }
 
   /** 创建条件项（需前置条件） */
-  private cond(name: string, amount: number, note: string): CompensationItem {
-    return { name, amount: Math.round(amount), note, kind: 'conditional' };
+  private cond(name: string, amount: number, note: string, period: 'one-time' | 'monthly' = 'one-time'): CompensationItem {
+    return { name, amount: Math.round(amount), note, kind: 'conditional', period };
   }
 
   /** 创建说明项（无金额） */
@@ -142,7 +142,11 @@ export class CompensationService {
     return {
       scene: sceneName,
       total: items.filter((i) => i.kind === 'claim').reduce((s, i) => s + i.amount, 0),
-      conditionalTotal: items.filter((i) => i.kind === 'conditional').reduce((s, i) => s + i.amount, 0),
+      // 按月给付项（如 1–4 级伤残津贴）不得混进一次性条件项合计：
+      // 把「每月 6,400 元」写成「条件项合计 6,400 元」，用户会误以为是一次性到手金额
+      conditionalTotal: items
+        .filter((i) => i.kind === 'conditional' && (i.period ?? 'one-time') === 'one-time')
+        .reduce((s, i) => s + i.amount, 0),
       items,
       legalRefs,
     };
@@ -284,9 +288,10 @@ export class CompensationService {
       const allowancePctLabel = { 1: 90, 2: 85, 3: 80, 4: 75 }[level] ?? 0;
       items.push(this.claim(`一次性伤残补助金（${level}级 · ${subsidy[level]}个月本人工资）`, ownWage * subsidy[level], '《工伤保险条例》第35–38条月数表，由工伤保险基金支付'));
       items.push(this.cond(
-        `按月伤残津贴（${level}级 · 本人工资的${allowancePctLabel}%）`,
+        `按月伤残津贴（${level}级 · 本人工资的${allowancePctLabel}%/月）`,
         ownWage * allowancePct,
-        `《工伤保险条例》第35、36条：每月发放直至退休，按月计发、金额显示为一个月的津贴，不并入上方一次性合计；伤残津贴实际金额低于最低工资标准的由工伤保险基金补差，未参保期间由用人单位支付`,
+        `《工伤保险条例》第35、36条：每月发放直至退休，按月计发；伤残津贴实际金额低于最低工资标准的由工伤保险基金补差，未参保期间由用人单位支付`,
+        'monthly',
       ));
     } else if (level === 0) {
       items.push(this.info('尚未进行劳动能力鉴定', '伤残等级决定一次性补助金有无与月数，建议先申请劳动能力鉴定再主张'));

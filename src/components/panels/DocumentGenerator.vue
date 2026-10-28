@@ -136,7 +136,10 @@ const yuan = (n: number) => n.toLocaleString('zh-CN')
 /** 中文数字序号，超出时回退为阿拉伯数字 */
 const CN_NUM = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十']
 const claimItems = computed(() => comp.value?.items.filter(i => i.kind === 'claim' && i.amount > 0) ?? [])
-const condItems = computed(() => comp.value?.items.filter(i => i.kind === 'conditional' && i.amount > 0) ?? [])
+const condItems = computed(() => comp.value?.items.filter(i => i.kind === 'conditional' && i.amount > 0 && (i.period ?? 'one-time') === 'one-time') ?? [])
+/** 按月给付项（1–4 级伤残津贴）：在文书里单列，不能并进「条件项合计」 */
+const monthlyItems = computed(() => comp.value?.items.filter(i => i.period === 'monthly' && i.amount > 0) ?? [])
+const monthlyTotal = computed(() => monthlyItems.value.reduce((s, i) => s + i.amount, 0))
 
 /**
  * 文书城市跟随当前测算城市（全国 34 城 + 省内补充），不再写死 6 城。
@@ -232,6 +235,10 @@ ${condItems.value.length
   ? `\n以下项需前置条件成立后方可主张（不计入上项合计，请在庭前逐项确认条件是否满足）：
 ${condItems.value.map((r, i) => `${CN_NUM[i] || (i + 1)}. ${r.name.replace(/（.*?）/g, '')}人民币${yuan(r.amount)}元（条件：${r.note}）；`).join('\n')}
 （条件项合计：人民币${yuan(comp.value?.conditionalTotal ?? 0)}元）`
+  : ''}${monthlyItems.value.length
+  ? `\n\n另请求裁决被申请人自__年__月起按月支付：
+${monthlyItems.value.map((r, i) => `${CN_NUM[i] || (i + 1)}. ${r.name.replace(/（.*?）/g, '')}人民币${yuan(r.amount)}元/月（${r.note}）；`).join('\n')}
+（按月给付合计：人民币${yuan(monthlyTotal.value)}元/月，持续至法定终止条件出现，不计入一次性请求合计）`
   : ''}
 
 事实与理由：

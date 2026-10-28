@@ -312,6 +312,11 @@ export interface DataQuality {
   officialFields: string[]
   /** 用户用自己的流水实测覆盖过的字段名（中文标签）；这些字段不再计入 provisional */
   overriddenFields?: string[]
+  /**
+   * 计价覆盖里仍未填写的字段（中文标签）。
+   * 只填单价、不填倍率时，收入里仍有一部分走占位假设——不能整块标成「已按实测」。
+   */
+  missingOverrideFields?: string[]
 }
 
 export interface ComparisonResult {
@@ -328,7 +333,14 @@ export interface ComparisonResult {
  * conditional  — 需前置条件（行政责令、劳动关系认定、解除/终止等）才成立
  * info         — 无金额或裁审口径不一，仅作提示
  */
-export interface CompensationItem { name: string; amount: number; note: string; kind: 'claim' | 'conditional' | 'info' }
+export interface CompensationItem {
+  name: string
+  amount: number
+  note: string
+  kind: 'claim' | 'conditional' | 'info'
+  /** one-time（默认）= 一次性给付，计入合计；monthly = 按月给付（如 1–4 级伤残津贴），不计入一次性合计 */
+  period?: 'one-time' | 'monthly'
+}
 export interface CompensationLegalRef { law: string; article: string; summary: string }
 export interface CompensationResult {
   scene: string

@@ -231,6 +231,11 @@
               <span>条件项合计（需行政责令 / 劳动关系认定 / 解除终止等前置成立，<strong>不并入上方合计</strong>）</span>
               <strong>¥{{ result.conditionalTotal.toLocaleString() }}</strong>
             </div>
+            <!-- 按月给付项单列：把「每月津贴」写进一次性合计会让用户误读为到手金额 -->
+            <div v-if="monthlyItems.length > 0" class="result-monthly">
+              <span>按月给付（持续至退休，<strong>不计入上述一次性合计</strong>）</span>
+              <strong>¥{{ monthlyTotal.toLocaleString() }}/月</strong>
+            </div>
             <n-table :bordered="false" :single-line="true" size="small" :style="{ marginBottom: '12px' }">
               <thead>
                 <tr><th>项目</th><th style="text-align:right">金额</th></tr>
@@ -247,7 +252,7 @@
                     </n-tooltip>
                   </td>
                   <td style="text-align:right">
-                    <span v-if="item.amount > 0">¥{{ item.amount.toLocaleString() }}</span>
+                    <span v-if="item.amount > 0">¥{{ item.amount.toLocaleString() }}<template v-if="item.period === 'monthly'"><small>/月</small></template></span>
                     <span v-else class="text-muted">—</span>
                   </td>
                 </tr>
@@ -342,10 +347,13 @@ const rightsFacts = realityFactsBy([
 ])
 const conditionalSummary = computed(() => {
   if (!result.value) return null
-  const items = result.value.items.filter(i => i.kind === 'conditional' && i.amount > 0)
+  const items = result.value.items.filter(i => i.kind === 'conditional' && i.amount > 0 && (i.period ?? 'one-time') === 'one-time')
   if (!items.length) return null
   return { count: items.length, total: items.reduce((s, i) => s + i.amount, 0) }
 })
+/** 按月给付项（1–4 级伤残津贴）：单独展示，不混入一次性合计 */
+const monthlyItems = computed(() => result.value?.items.filter(i => i.period === 'monthly' && i.amount > 0) ?? [])
+const monthlyTotal = computed(() => monthlyItems.value.reduce((s, i) => s + i.amount, 0))
 
 /** 计算逻辑单一事实源在 application 层服务（可单测）；组件只负责表单与展示。
  *  此前本组件内联副本与提取件并行且已开始漂移（1–4 级伤残待遇两处同时缺失） */
@@ -481,6 +489,13 @@ calc()
 }
 .result-total span { font-size: 12px; opacity: 0.85; }
 .result-total strong { font-size: 20px; }
+.result-monthly {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 16px; background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-primary); border-radius: 6px; margin-bottom: 12px;
+}
+.result-monthly span { font-size: 11px; color: var(--color-text-secondary); line-height: 1.4; max-width: 60%; }
+.result-monthly strong { font-size: 15px; color: var(--color-text-primary); }
 .result-conditional {
   display: flex; justify-content: space-between; align-items: center;
   padding: 8px 16px; background: var(--color-warning-50);

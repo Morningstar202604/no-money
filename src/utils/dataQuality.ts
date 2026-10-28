@@ -33,6 +33,15 @@ const DEPS: Array<[string, string]> = [
 /** 未参保时不产生个人支出、因而不构成结论依据的字段 */
 const ENROLLED_ONLY = new Set(['养老缴费基数', '养老费率', '医保缴费基数'])
 
+/** 计价覆盖字段 → 中文标签（用于「还差哪几项实测」提示） */
+const OVERRIDE_LABELS: Array<[keyof NonNullable<IncomeOverrides>, string]> = [
+  ['basePricePerOrder', '每单基础配送费'],
+  ['distanceRate', '距离费'],
+  ['peakMultiplier', '峰时倍率'],
+  ['rainSurcharge', '雨天倍率'],
+  ['holidayMultiplier', '节假日倍率'],
+]
+
 export function dataQualityOf(
   sources: Record<string, SourceRef> | undefined,
   hasSocialInsurance: boolean,
@@ -55,9 +64,31 @@ export function dataQualityOf(
       unverifiedFields: unverified.filter(f => !ENROLLED_ONLY.has(f)),
       officialFields: official.filter(f => !ENROLLED_ONLY.has(f)),
       overriddenFields: overridden.filter(f => !ENROLLED_ONLY.has(f)),
+      missingOverrideFields: missingOverrideFields(incomeOverrides),
     }
   }
-  return { provisional: unverified.length > 0, unverifiedFields: unverified, officialFields: official, overriddenFields: overridden }
+  return {
+    provisional: unverified.length > 0,
+    unverifiedFields: unverified,
+    officialFields: official,
+    overriddenFields: overridden,
+    missingOverrideFields: missingOverrideFields(incomeOverrides),
+  }
+}
+
+/**
+ * 计价覆盖里「一项都没填」的字段。
+ * 产品立场：只填单价不填倍率时，峰时/雨天/节假日仍按占位假设算，
+ * 不能整块标成「已按你的实测计算」——必须告诉用户还差哪几项。
+ */
+export function missingOverrideFields(o?: IncomeOverrides): string[] {
+  if (!o) return OVERRIDE_LABELS.map(([, label]) => label)
+  return OVERRIDE_LABELS
+    .filter(([key]) => {
+      const v = o[key]
+      return !(typeof v === 'number' && Number.isFinite(v) && v > 0)
+    })
+    .map(([, label]) => label)
 }
 
 /** 至少填写一项计价覆盖即视为「用户已用自己的流水实测」 */
