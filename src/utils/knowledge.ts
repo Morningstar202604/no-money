@@ -144,7 +144,8 @@ export function citySourceEntries(rule: Pick<CityRule, 'city' | 'cityName' | 'so
     notes: [
       ...(s.issuedBy ? [s.issuedBy] : []),
       ...(s.effectiveFrom ? [`生效：${s.effectiveFrom}`] : []),
-      `核对于 ${s.retrievedAt}`,
+      // 「核对于」只对真正打开过原文的条目成立；unverified 只是录入占位
+      `${s.confidence === 'unverified' ? '登记于' : '核对于'} ${s.retrievedAt}`,
     ],
     docNo: s.docNo,
     confidence: s.confidence,

@@ -100,7 +100,7 @@
               <div class="src-meta">
                 <span v-if="s.issuedBy">{{ s.issuedBy }} · </span>
                 <span v-if="s.effectiveFrom">生效：{{ s.effectiveFrom }} · </span>
-                <span>核对于 {{ s.retrievedAt }}</span>
+                <span>{{ s.confidence === 'unverified' ? '登记于' : '核对于' }} {{ s.retrievedAt }}</span>
               </div>
               <p v-if="s.note" class="src-note">{{ s.note }}</p>
               <a v-if="s.url" :href="s.url" target="_blank" rel="noopener noreferrer" class="pi-link">查看原文 ↗</a>

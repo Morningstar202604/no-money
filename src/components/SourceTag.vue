@@ -24,7 +24,9 @@
       <div class="st-pop-meta">
         <span v-if="source.issuedBy">{{ source.issuedBy }}</span>
         <span v-if="source.effectiveFrom">生效：{{ source.effectiveFrom }}</span>
-        <span>核对于 {{ source.retrievedAt }}</span>
+        <!-- unverified 条目写「核对于」是假信息：它从未被核对过，
+             只是录入日期。占位条目必须如实写「登记于」 -->
+        <span>{{ source.confidence === 'unverified' ? '登记于' : '核对于' }} {{ source.retrievedAt }}</span>
       </div>
       <p v-if="source.note" class="st-pop-note">{{ source.note }}</p>
       <p v-if="source.confidence === 'unverified'" class="st-pop-warn">
