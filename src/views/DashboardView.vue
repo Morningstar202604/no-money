@@ -288,10 +288,24 @@ const pieOption = computed<EChartsCoreOption>(() => {
 .rs-bar { width: 100%; height: 6px; background: var(--color-bg-tertiary); border-radius: 3px; overflow: hidden; margin: 4px 0; }
 .rs-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s; }
 .rs-level { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+
+/* 窄屏改纵向：160px 固定评分框 + 缺口列表在 390px 视口里会把文字挤成竖条。
+   必须写在基础规则之后，否则同特异性下基础规则的 width/border 会覆盖它 */
+@media (max-width: 640px) {
+  .rights-row { flex-direction: column; }
+  .rights-score-box {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border-primary);
+    padding-bottom: 10px;
+  }
+  .rf-list { max-height: none; }
+}
 .rights-flags { flex: 1; display: flex; flex-direction: column; }
 .rf-title { font-size: 11px; font-weight: 600; color: var(--color-text-primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
 .rf-list { flex: 1; display: flex; flex-direction: column; gap: 3px; max-height: 120px; overflow-y: auto; }
 .rf-item { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; display: flex; align-items: flex-start; gap: 6px; }
+.rf-item span:last-child { min-width: 0; }
 .rf-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--color-text-warning); flex-shrink: 0; margin-top: 7px; }
 .vol-controls { display: flex; align-items: center; gap: 10px; }
 .vc-label { font-size: 12px; color: var(--color-text-secondary); white-space: nowrap; }

@@ -308,6 +308,8 @@ onUnmounted(() => {
   display: flex;
   align-items: baseline;
   gap: var(--space-1);
+  /* 品牌名不换行：窄屏下「没钱」两个字曾被挤成两行，把 header 撑高 */
+  white-space: nowrap;
 }
 
 .brand-name {
@@ -366,14 +368,35 @@ onUnmounted(() => {
   color: currentColor;
 }
 
+/* 窄屏只显示图标：文字改用视觉隐藏（而非 display:none）——
+   display:none 会把文字移出无障碍树，读屏软件读到的链接就没有名字了 */
 .nav-label {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (min-width: 640px) {
   .nav-label {
-    display: inline;
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
   }
+}
+
+/* 极窄屏（≤380px）：品牌只留图标，把宽度让给导航与操作区 */
+@media (max-width: 380px) {
+  .brand-text { display: none; }
+  .header-brand { padding: var(--space-1); }
 }
 
 /* Header Actions */

@@ -10,7 +10,7 @@
       <div style="margin-top:4px">请在左侧「我的计价」填入你 APP 内的实际单价与倍率，否则整条收入链都是假设。</div>
     </n-alert>
 
-    <n-grid :x-gap="12" :cols="2">
+    <n-grid :x-gap="12" cols="1 m:2" responsive="screen">
       <n-gi>
         <n-card title="收入结构拆解" class="card">
           <div v-if="s" class="detail-block">
@@ -49,26 +49,43 @@
             <!-- 这些参数必须可校准：README 承诺「可用自己的账本校准」，
                  但此前全是硬编码默认值，用户无法输入 -->
             <div class="ue-controls">
-              <span class="ue-ctl-label">空驶率</span>
-              <n-slider :value="Math.round(deadheadRatio * 100)" :min="0" :max="60" :step="5" style="flex:1;max-width:180px"
-                @update:value="(v: number) => store.personal.deadheadRatio = v / 100" />
-              <span class="ue-ctl-value">{{ (deadheadRatio * 100).toFixed(0) }}%</span>
-              <span class="ue-ctl-label">百公里能耗</span>
-              <n-input-number
-                :value="store.personal.vehicleProfile?.energyPer100km ?? vehicleProfile.energyPer100km"
-                :min="0" :max="50" :step="0.1" size="small" style="width:90px"
-                @update:value="(v: number | null) => setVehicleProfile('energyPer100km', v)" />
-              <span class="ue-ctl-label">{{ store.costs.vehicleType === 'fuel' ? '元/L' : '元/kWh' }}</span>
-              <n-input-number
-                :value="store.personal.vehicleProfile?.energyPrice ?? vehicleProfile.energyPrice"
-                :min="0" :max="20" :step="0.1" size="small" style="width:90px"
-                @update:value="(v: number | null) => setVehicleProfile('energyPrice', v)" />
+              <div class="ue-ctl">
+                <span class="ue-ctl-label">空驶率</span>
+                <n-slider :value="Math.round(deadheadRatio * 100)" :min="0" :max="60" :step="5" style="flex:1;min-width:110px"
+                  @update:value="(v: number) => store.personal.deadheadRatio = v / 100" />
+                <span class="ue-ctl-value">{{ (deadheadRatio * 100).toFixed(0) }}%</span>
+              </div>
+              <div class="ue-ctl">
+                <span class="ue-ctl-label">{{ store.costs.vehicleType === 'fuel' ? '百公里油耗' : '百公里电耗' }}</span>
+                <n-input-number
+                  :value="store.personal.vehicleProfile?.energyPer100km ?? vehicleProfile.energyPer100km"
+                  :min="0" :max="50" :step="0.1" size="small" style="width:84px"
+                  @update:value="(v: number | null) => setVehicleProfile('energyPer100km', v)" />
+                <span class="ue-ctl-label">{{ store.costs.vehicleType === 'fuel' ? 'L/100km' : 'kWh/100km' }}</span>
+              </div>
+              <div class="ue-ctl">
+                <span class="ue-ctl-label">能源单价</span>
+                <n-input-number
+                  :value="store.personal.vehicleProfile?.energyPrice ?? vehicleProfile.energyPrice"
+                  :min="0" :max="20" :step="0.1" size="small" style="width:84px"
+                  @update:value="(v: number | null) => setVehicleProfile('energyPrice', v)" />
+                <span class="ue-ctl-label">{{ store.costs.vehicleType === 'fuel' ? '元/L' : '元/kWh' }}</span>
+              </div>
             </div>
             <div class="d-row"><span>月行驶里程（含 {{ (deadheadRatio * 100).toFixed(0) }}% 空驶）</span><b>{{ unitEconomics.monthlyKm.toLocaleString() }} km</b></div>
             <div class="d-row"><span>每公里变动成本</span><b>¥{{ unitEconomics.variablePerKm.toFixed(3) }}/km</b></div>
             <div class="d-row note"><span>能耗 ¥{{ unitEconomics.energyPerKm.toFixed(3) }} + 保养 ¥{{ unitEconomics.maintenancePerKm.toFixed(3) }} + 易损 ¥{{ unitEconomics.wearPerKm.toFixed(3) }} + 折旧 ¥{{ unitEconomics.depreciationPerKm.toFixed(3) }}</span><span></span></div>
             <div class="d-row"><span>月度变动成本</span><b>¥{{ unitEconomics.monthlyVariable.toLocaleString() }}</b></div>
             <div class="d-row total"><span>固定 + 变动合计</span><b>¥{{ unitEconomics.monthlyTotal.toLocaleString() }}</b></div>
+            <!-- 两套口径并列必然出现差额，必须解释而不是让用户自己猜：
+                 上方月总成本把维护/折旧按整月固定额计，这里改成按里程摊销 -->
+            <div class="d-row note">
+              <span>
+                与上方月总成本相差 ¥{{ costModelGap.toLocaleString() }}：上方把维护与折旧按整月固定额计，
+                此处按实际里程摊销。里程越低，按里程口径越省——两套口径都在，是为了让你看到
+                「多跑单成本也会涨」这件事，净收入仍按上方固定额口径计算（更保守）。
+              </span><span></span>
+            </div>
             <div class="d-row"><span>每单边际成本（多跑一单多花）</span><b>¥{{ marginalCostPerOrder.toFixed(2) }}</b></div>
             <div class="d-row note">
               <span>
@@ -249,6 +266,12 @@ const marginalRevenuePerOrder = computed(() => {
   return v.income.grossIncome / (v.work.dailyOrders * v.work.workDaysMonth)
 })
 const marginalProfitPerOrder = computed(() => marginalRevenuePerOrder.value - marginalCostPerOrder.value)
+/** 两套成本口径的差额（见模板说明）：固定额口径 − 按里程口径 */
+const costModelGap = computed(() => {
+  const v = s.value
+  if (!v || !unitEconomics.value) return 0
+  return Math.max(0, Math.round(v.costBreakdown.total - unitEconomics.value.monthlyTotal))
+})
 
 /** 设置车辆档案字段：空值即恢复默认，不写入 undefined 键 */
 function setVehicleProfile(key: 'energyPer100km' | 'energyPrice' | 'purchasePrice' | 'lifetimeKm' | 'wearPerKm' | 'residualRate' | 'maintenanceIntervalKm' | 'maintenanceCostPerService', v: number | null) {
@@ -374,6 +397,40 @@ const yearlyOption = computed<EChartsCoreOption>(() => {
 </script>
 
 <style scoped>
+/* 单位经济学校准区：空驶率滑块 + 能耗/单价输入，窄屏必须换行，
+   否则「25%百公里能耗」会粘在一起（此前没有任何样式定义，全靠默认行内流） */
+.ue-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+.ue-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+}
+.ue-ctl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ue-ctl-label {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+.ue-ctl-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+  min-width: 34px;
+}
 .ad-claim {
   display: flex;
   flex-direction: column;
