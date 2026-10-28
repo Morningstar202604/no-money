@@ -149,9 +149,10 @@
       <n-tab-pane name="kb" tab="知识库">
         <n-card class="card" style="margin-top: 0" title="统一知识库 — 本地检索，AI 可直接摄取">
           <p class="desc">
-            把政策、办事手册、现实核查、本城参数溯源聚合成 {{ kbTotal }} 条结构化条目，全部带官方原文链接。
+            当前城市视图聚合成 <b>{{ kbTotal }} 条</b>结构化条目（政策 {{ kbCounts.policy }} / 手册 {{ kbCounts.guide }} / 现实 {{ kbCounts.reality }} / 本城溯源 {{ kbCounts.source }}）。
+            <b>官方条目均带原文链接</b>；<code>unverified</code> 的占位条目没有公开来源，其说明里会写明「未回溯、不可引用」，不能当官方口径使用。
             检索在本地完成、不联网；AI 助手在离线模式下也会用它作答，在线模式下作为检索上下文注入。
-            结构化全量数据（供外部 Agent / RAG 摄取）：<a class="kb-file-link" :href="kbJsonUrl" target="_blank" rel="noopener noreferrer">/knowledge/kb.json</a>
+            全量导出（34 城，供外部 Agent / RAG 摄取）：<a class="kb-file-link" :href="kbJsonUrl" target="_blank" rel="noopener noreferrer">/knowledge/kb.json</a>
             ·
             <a class="kb-file-link" :href="kbReadmeUrl" target="_blank" rel="noopener noreferrer">摄取说明</a>
           </p>
