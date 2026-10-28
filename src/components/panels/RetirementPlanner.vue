@@ -58,7 +58,9 @@
       </p>
     </n-card>
 
-    <div class="kpi-row" style="margin-top: 12px">
+    <!-- 规则未就绪时不渲染 0 值：¥0 预估养老金会被读成真实结论 -->
+    <n-skeleton v-if="!engine" height="120px" style="margin-top: 12px" />
+    <div v-else class="kpi-row" style="margin-top: 12px">
       <div class="stat">
         <span class="stat-label">{{ store.personal.expectedRetireAge }}岁预估月养老金</span>
         <span class="stat-value">¥{{ retireResult.totalPension.toLocaleString() }}</span>
@@ -261,7 +263,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
-import { NCard, NGrid, NGi, NTable, NAlert, NInputNumber, NTag, NButton } from 'naive-ui'
+import { NCard, NGrid, NGi, NTable, NAlert, NInputNumber, NTag, NButton, NSkeleton } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
 import { BenefitEngine } from '../../engine/BenefitEngine'
 import { issuanceMonthsForAge } from '../../utils/issuanceMonths'

@@ -13,7 +13,8 @@
     <n-grid :x-gap="12" cols="1 m:2" responsive="screen">
       <n-gi>
         <n-card title="收入结构拆解" class="card">
-          <div v-if="s" class="detail-block">
+          <n-skeleton v-if="!s" height="200px" />
+          <div v-else class="detail-block">
             <div class="d-row"><span>基础配送费 ({{ s.work.dailyOrders }}单 × ¥{{ effectivePrice.basePricePerOrder }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.basePay.toLocaleString() }}</b></div>
             <div class="d-row"><span>距离加价 ({{ s.work.dailyOrders }}单 × {{ s.work.avgDistance }}km × ¥{{ effectivePrice.distanceRate }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.distancePay.toLocaleString() }}</b></div>
             <div v-if="s.income.weightPay > 0" class="d-row"><span>超重件加价 ({{ s.work.dailyOrders }}单 × 超重 {{ overweightKg.toFixed(1) }}kg × ¥{{ rule?.income.weightSurcharge.rate }} × {{ s.work.workDaysMonth }}天)</span><b>¥{{ s.income.weightPay.toLocaleString() }}</b></div>
@@ -27,7 +28,8 @@
       </n-gi>
       <n-gi>
         <n-card title="成本结构拆解" class="card">
-          <div v-if="s" class="detail-block">
+          <n-skeleton v-if="!s" height="240px" />
+          <div v-else class="detail-block">
             <!-- 必须读 costBreakdown（已按车型过滤），不能读 s.costs（原始输入）：
                  电动车用户看不到的油费此前仍被加进这一行，与月总成本对不上 -->
             <div class="d-row"><span>油费/电费</span><b>¥{{ (s.costBreakdown.fuelCostMonth + s.costBreakdown.electricityCostMonth).toLocaleString() }}</b></div>
@@ -168,7 +170,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
-import { NCard, NGrid, NGi, NInputNumber, NDivider, NAlert, NSlider } from 'naive-ui'
+import { NCard, NGrid, NGi, NInputNumber, NDivider, NAlert, NSlider, NSkeleton } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
 import { formatDivide } from '../../domain/shared/number'
 import {
