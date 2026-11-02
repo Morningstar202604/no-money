@@ -22,3 +22,12 @@ src-tauri/gen/
 
 # 临时文件与调试产物
 .tmp*
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# 版本工具演练产物
+.work/

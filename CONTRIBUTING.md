@@ -1,50 +1,84 @@
-# 贡献指南
+# Contributing to No Money
 
-## 开发环境
+Thanks for considering a contribution. This project has an unusually strict data policy, so please read the first section before opening a PR.
+
+[简体中文](CONTRIBUTING.zh-CN.md)
+
+## The one rule that overrides everything
+
+**Never invent a number.**
+
+Every provincial parameter must carry a `source` with:
+
+- `confidence`: `official` | `derived` | `unverified`
+- `docNo` and/or `url` when `confidence` is `official`
+- `retrievedAt` and `effectiveFrom` where applicable
+
+If you cannot find an authoritative source, set `confidence: "unverified"` and add a `note` explaining what is missing. A labeled placeholder is always better than a plausible wrong number. PRs that add unverifiable figures with `official` confidence will be rejected.
+
+## Development setup
 
 ```bash
 npm ci
-npm run dev        # http://localhost:3000
-npm test           # 全量测试（含规则溯源门禁）
-npm run verify     # 引擎自检（失败会 exit 1）
-npm run build      # 类型检查 + 构建
+npm run dev
 ```
 
-Node 22+。桌面端需要 Rust 工具链（`npm run tauri:dev`）。
+Requirements: Node 22+, npm 10+.
 
-## 动手前必读
+## Before you open a PR
 
-1. **先跑一遍 `npm test`**，确认基线全绿再改
-2. **读相邻代码**：项目有明确分层（见 `ARCHITECTURE.md`），照现有模式写
-3. **改计算逻辑要同步对拍基准**：`ScenarioService` 的任何评分/文案改动都要同步 `src/engine/ScenarioEngine.ts`，否则 `tests/parity/` 的 213 例会红
-4. **数据诚实是硬约束**：不得为新增城市编造社保基数、最低工资数值。没有官方原文就标 `unverified` 并在 note 写明「不可对外引用」
+```bash
+npm run typecheck
+npm run typecheck:test
+npm test
+npm run verify
+npm run verify:reality
+npm run kb:check
+npm run build
+```
 
-## 代码约定
+All seven must pass. CI runs the same commands on Ubuntu with Node 22.
 
-- **金额用分**：domain 层一律 `Cent`（整数），对外契约用元，换算只在 `ruleAdapters.ts` 与 `ScenarioService` 结果边界
-- **不写注释解释「这行在做什么」**，只解释「为什么必须这样」（尤其是防回归的坑）
-- **纯函数优先**：能放 `domain/` 的别放组件里——组件内联逻辑无法单测
-- **假设必须显式**：任何非官方参数都要可调、在结果里回显实际取值、写明边界
+## Code layout
 
-## 新增城市
-
-1. 在 `src/data/cities.ts` 的 `CITY_REGISTRY` 登记（value / label / province / 经纬度）
-2. 提供 `public/rules/<value>.json`（可复制邻城模板）
-3. 逐字段填 `sources`：有官方原文才写 `official` 并给 `docNo`/`url`，否则 `unverified` + note 说明
-4. 跑 `npm test`，`tests/cities.spec.ts` 会校验注册表与规则文件同步、基数比率为 5、unverified 必须披露
-
-## 提交
-
-- 一个可交付切片一个 commit，message 用 `type(scope): 摘要`
-- type：`feat` / `fix` / `refactor` / `docs` / `test` / `chore`
-- 提交前必须跑过 `npm test` + `npm run build`
-
-## 测试
-
-| 想验证什么 | 写在哪 |
+| Directory | Rule |
 |---|---|
-| 纯计算 | `tests/domain/` |
-| 服务编排 | `tests/application/` |
-| 组件接线（改了一处忘另一处） | `tests/wiring/` |
-| 状态与持久化 | `tests/stores/` |
-| 规则数据完整性 | `tests/cities.spec.ts` / `tests/rulesGate.spec.ts` |
+| `src/domain/` | Pure functions only. No Vue, no `localStorage`, no `fetch`. Money in integer cents. |
+| `src/application/` | Orchestration only. No formulas. |
+| `src/stores/` | All I/O (fetch, localStorage) lives here. |
+| `src/components/`, `src/views/` | Presentation. No business math. |
+
+If you need a calculation, put it in `domain/` and write a unit test for it. If you need data, put it in `public/rules/<city>.json` and let the loader validate it.
+
+## Commit messages
+
+Conventional Commits, imperative mood:
+
+```
+feat(tax): add withholding table for platform employees
+fix(capacity): correct fatigue discount at 12h+
+docs(readme): clarify annual settlement basis
+```
+
+Keep commits scoped. Do not mix a refactor with a behavior change.
+
+## Adding a city
+
+1. Add the city to `src/data/cities.ts` with map coordinates.
+2. Create `public/rules/<city>.json` following the schema in an existing verified city (e.g. `guangzhou.json`).
+3. Fill `sources` for every field. Unknown values → `unverified` with a note.
+4. Run `npm test` — `tests/cities.spec.ts` will reject missing provenance or invalid numeric ranges.
+
+## Reporting a bug
+
+Include:
+
+- What you did, what you expected, what happened
+- Browser and OS
+- If it's a calculation issue: the exact input parameters and the number you got vs expected
+
+Calculation bugs are the highest priority in this project.
+
+## Security
+
+Do not open a public issue for a security problem. See [SECURITY.md](SECURITY.md).
