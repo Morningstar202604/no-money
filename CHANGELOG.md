@@ -1,5 +1,30 @@
 # 更新日志
 
+All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## 2.2.0 — 2026-11-02
+
+### Added
+
+- 城市规则运行时校验（`src/utils/cityRule.ts`）：字段形状、社保基数区间、税档连续性与来源一致性
+  在加载阶段一次性拦截，避免损坏的规则文件静默算出错误金额
+- AI 对话隐私控制：历史默认仅存标签页内存，显式勾选后才持久化最近 50 条
+- API Key 默认不落盘，支持存储状态显示与一键清除
+- 英文主 README，中文版同步维护（`README.md` / `README.zh-CN.md`）
+
+### Fixed
+
+- 320×640 窄屏下首次引导弹窗高 956px 超出视口，底部按钮不可见且无法滚动
+- 320px 宽度下第五个导航项溢出视口 5px
+- 深色主题下告警卡片浅底近白字造成的对比度不足
+
+### Changed
+
+- 主分支统一为 `main`，删除功能分支
+
 ## 2.1.0 — 2026-10-28
 
 本轮聚焦「参数覆盖了 34 城、内容却只有广东」的结构性缺口，并修掉一批会产生错误金额与错误法条的缺陷。

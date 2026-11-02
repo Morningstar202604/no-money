@@ -1,45 +1,55 @@
-# 安全说明
+# Security Policy
 
-## 数据边界
+[简体中文](SECURITY.zh-CN.md)
 
-本应用**没有后端**。所有测算都在浏览器本地完成，参数存在浏览器 localStorage；AI 对话历史默认只保留当前标签页内存，只有用户显式选择后才持久化。
+## Reporting a vulnerability
 
-Web 版加载应用及同源资源可能需要网络。启用 AI 并发送对话时，以下数据会发送到用户填写的第三方模型接口：
+Please **do not** open a public issue for security problems.
 
-- 城市、日工时、日单量、月工作天数
-- 月收入、月成本、月个税、净收入、时薪、权益评分
-- 最近 6 条对话内容
+Report privately via GitHub Security Advisories:
 
-主动点击“测试连接”也会向所配置的模型接口发送请求，即使 AI 开关处于关闭状态。
+- https://github.com/badhope/no-money/security/advisories/new
+- https://github.com/X33834/no-money/security/advisories/new
+- https://github.com/Morningstar202604/no-money/security/advisories/new
 
-## API Key 处理
+Include: affected version, reproduction steps, and impact. We aim to respond within 7 days.
 
-- **默认不持久化**：Key 只存在于内存，关闭标签页即失效
-- 勾选「在本机记住」后才以明文写入 localStorage，同源脚本与浏览器扩展均可读取（用户显式承担的风险）
-- **对话历史默认不持久化**：历史只存在当前标签页内存；只有用户主动勾选「在本机记住对话历史」才保存最近 50 条经形状校验的消息。取消勾选时会尝试删除 `nomoney_chat_hist` 与旧品牌 `flexcalc_chat_hist`；删除失败会提示检查浏览器存储权限
-- **Endpoint 强制校验**（`src/utils/endpoint.ts`）：非本机地址必须 `https`；拒绝相对路径；拒绝内嵌用户名密码的 URL（`https://legit.com@evil.com` 这类钓鱼写法）
-- **错误信息保护**：不将服务端错误体写入控制台、聊天气泡或历史；界面显示本地化错误文案
+## Scope
 
-## 桌面端（Tauri）
+This is a static, client-only application with no backend, no accounts, and no server-side data. The realistic attack surface is narrow:
 
-- CSP 以 `default-src 'self'` 为基线，并补 `object-src 'none'` / `base-uri 'self'` / `frame-ancestors 'none'` / `form-action 'self'`（防 XSS 后的对象注入、`<base>` 劫持与点击劫持）
-- `connect-src` 放开 `https:` 是**已知取舍**：产品允许用户填任意 OpenAI 兼容端点，无法预先穷举域名。由此产生的风险与缓解：
-  - 风险：同源脚本被注入或浏览器扩展篡改 `nomoney_ai_cfg` 后，Key 可被发往任意 HTTPS 主机
-  - 缓解：Endpoint 强制 https、拒绝内嵌凭据、设置页实时显示「Key 将发送至 <host>」、Key 默认不持久化
-  - 若要进一步收紧：把自定义端点请求改走 Rust 命令并维护域名白名单（当前未实现，属已知缺口）
-- **不启用任何 Tauri 插件**（store / fs / shell 等全部移除）：应用是纯前端 + 本地静态资源，不需要原生能力；`shell` 与 `fs` 尤其扩大攻击面
-- 唯一保留的 Rust 命令是 `get_app_version`（无 I/O）
-
-## 已修复的安全问题
-
-| 问题 | 修复 |
+| Area | In scope |
 |---|---|
-| Tauri `get_rules_data` / `save_rules_data` 的 `city` 参数直接拼路径，可读写应用目录外任意文件 | 已删除这两个命令（前端走 `fetch('/rules/*.json')`） |
-| 致命错误屏用 `innerHTML` 拼接 `err.message`（可含用户可篡改的 localStorage 片段） | 改为 DOM API 按文本节点插入 |
-| 历史 npm 依赖漏洞 | 删除未使用的开发依赖并升级受影响组件；当前状态以官方 registry 的 `npm audit` 为准 |
+| XSS via rule files or knowledge base content | Yes |
+| API key leakage to third parties | Yes |
+| Endpoint validation bypass (user-configured AI endpoint) | Yes |
+| localStorage poisoning via crafted values | Yes |
+| Tauri IPC / CSP misconfiguration | Yes |
+| Dependency vulnerabilities | Yes |
+| Compromised CDN or build pipeline | Yes |
 
-## 报告问题
+## Security design decisions
 
-发现安全问题请勿公开提交 issue，直接联系维护者（见仓库主页）。处理时限：72 小时内确认，修复前不公开细节。
+**No backend.** There is no server to breach and no database to leak. All calculation happens in the browser.
 
-**Key 泄露处置**：①到提供商后台立即撤销该 Key → ②在本应用「AI 设置」里清除并取消勾选「记住」→ ③检查 endpoint 是否被改成陌生域名 → ④观察提供商账单是否有异常调用。文书生成里的姓名、电话和身份证信息仅用于页面内存中的文书生成，不写入 localStorage、不参与 AI 联网请求；导出文件由用户自行保管。
+**API key handling.** The key is held in memory by default and is never written to disk unless the user explicitly enables "remember". When enabled it is stored in `localStorage` in plaintext — the UI states this plainly rather than implying encryption that does not exist. A same-origin script or browser extension can read it; that is the user's accepted trade-off.
+
+**Chat history.** Same model: in-memory by default, persisted only on explicit opt-in, capped at 50 messages.
+
+**Endpoint validation.** The AI endpoint must be an `https:` URL (or `http://localhost`) — this blocks accidental plaintext transmission of the key.
+
+**No third-party scripts.** No analytics, no CDN fonts, no external JS. Everything is bundled.
+
+**Content Security Policy.** The Tauri build sets `object-src 'none'`, `base-uri 'self'`, `frame-ancestors 'none'`, and `form-action 'self'`.
+
+**No `innerHTML` with untrusted data.** Error messages that may contain user-influenced text are inserted as text nodes.
+
+## Dependency policy
+
+- `npm audit --audit-level=high` runs in CI and must pass.
+- `overrides` pin `minimatch` and `glob` to patched versions where transitive ranges would otherwise resolve vulnerable builds.
+- Production builds never emit sourcemaps (`SOURCE_MAP=1` is required to opt in).
+
+## Supported versions
+
+Only the latest release on `main` receives security fixes.
