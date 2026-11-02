@@ -40,6 +40,16 @@ This tool makes every one of those assumptions visible, and refuses to print a c
 | **Rights** | Compensation for 5 injury/dispute scenarios, split into "claimable now" vs "conditional" |
 | **Policy wiki** | 34 cities, every parameter traced to a document number and source link |
 
+## Built for repeated use, not a one-off visit
+
+Comparing cities and work patterns is something you do over and over. The interface is built around that:
+
+- **Command palette (`⌘K` / `Ctrl+K`)** — jump to any page, switch to any of the 34 cities, or run an action by typing. No map-hunting, no menu diving.
+- **Live numbers** — dragging a slider animates the result, so you can see *which* change moved the number, not just the final value.
+- **Keyboard-first** — arrow keys and Enter work throughout the palette; focus rings are visible for keyboard users and hidden for mouse users.
+- **Honest loading states** — a skeleton that matches the real layout, so the page never looks broken while rules load.
+- **Reduced motion respected** — every animation is disabled when the OS asks for it.
+
 ## Screenshots
 
 **Overview** — the weakest link is named, not buried. When inputs are unverified the banner says so and "best option" degrades to "assumed best".

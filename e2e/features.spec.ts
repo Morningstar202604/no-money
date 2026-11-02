@@ -72,10 +72,16 @@ test.describe('核心功能', () => {
     await dismissOnboarding(page)
     await openSidebar(page)
 
+    // KPI 数字被 AnimatedNumber 包成多个 span，innerText 会在 ¥ 与数字间插入换行，
+    // 因此直接读 KPI 卡片的文本并归一化空白，而不是正则匹配整页文本。
     const readNet = async () => {
-      const t = await page.locator('body').innerText()
-      return t.match(/月净收入（假设）\s*¥([\d,]+\.?\d*)/)?.[1] ?? null
+      const card = page.locator('.kpi-row .stat').first()
+      const text = await card.locator('.stat-value').innerText()
+      const m = text.replace(/\s/g, '').match(/¥([\d,]+\.?\d*)/)
+      return m ? m[1] : null
     }
+    // 数字滚动动画约 600ms，等它落定再取值，否则读到中间帧
+    await page.waitForTimeout(900)
     const before = await readNet()
     expect(before).toBeTruthy()
 
@@ -85,6 +91,7 @@ test.describe('核心功能', () => {
     // 地图弹窗里点深圳
     await dialog.getByText('深圳', { exact: true }).first().click()
 
+    await page.waitForTimeout(900)
     await expect.poll(readNet, { timeout: 10_000 }).not.toBe(before)
     // 城市切换必须真实生效：侧边栏城市名与页面内容都要变成深圳
     const body = await page.locator('body').innerText()
