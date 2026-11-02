@@ -13,6 +13,9 @@
     <!-- Chat panel -->
     <transition name="panel">
       <div v-if="open" class="chat-panel">
+        <n-alert v-if="storageWarning" type="warning" :show-icon="true" closable @close="storageWarning = null">
+          {{ storageWarning }}
+        </n-alert>
         <div class="chat-head">
           <span class="ch-title">AI 助手</span>
           <n-tag v-if="isOnline && config.enabled && config.apiKey" size="small" type="success" :bordered="false">在线</n-tag>
@@ -48,7 +51,7 @@
 
         <div class="chat-foot">
           <n-button text size="tiny" @click="showSettings = true">API 设置</n-button>
-          <n-button text size="tiny" @click="clearHistory">清除对话</n-button>
+          <n-button text size="tiny" @click="onClearHistory">清除对话</n-button>
         </div>
       </div>
     </transition>
@@ -63,7 +66,7 @@
             <li>月收入、月成本、月个税、净收入、时薪、权益评分</li>
             <li>最近 6 条对话内容</li>
           </ul>
-          <div>本应用自身没有后端，不另存这些数据；关闭 AI 即完全离线。</div>
+          <div>本应用自身没有后端；对话历史默认只保留在当前标签页内存中，只有你主动选择在本机记住时才会写入 localStorage。关闭 AI 后不会自动发送对话；但「测试连接」仍会向你填写的接口发起请求。</div>
         </n-alert>
 
         <n-form-item label="启用 AI"><n-switch v-model:value="config.enabled" /></n-form-item>
@@ -79,6 +82,10 @@
         <n-form-item>
           <n-checkbox v-model:checked="rememberKey">在本机记住 API Key</n-checkbox>
           <div class="ps-note-sm">默认不记住：Key 只存在于内存，关闭标签页即失效。勾选后会以明文写入本浏览器 localStorage，同源脚本与浏览器扩展均可读取。</div>
+        </n-form-item>
+        <n-form-item>
+          <n-checkbox v-model:checked="rememberHistory">在本机记住对话历史</n-checkbox>
+          <div class="ps-note-sm">默认不记住：对话只在当前标签页内存中保留。勾选后仅保存最近 50 条经过校验的消息，可随时取消并删除本机历史。</div>
         </n-form-item>
         <div class="key-actions">
           <span class="key-status">
@@ -119,7 +126,7 @@ const props = defineProps<{ scenarios: ScenarioResult[] }>()
 const message = useMessage()
 const store = useMainStore()
 
-const { config, messages, isStreaming, isOnline, showSettings, sendMessage, stopStreaming, clearHistory, updateConfig } = useAIChat()
+const { config, messages, isStreaming, isOnline, showSettings, storageWarning, sendMessage, stopStreaming, clearHistory, updateConfig } = useAIChat()
 
 const open = ref(false)
 const input = ref('')
@@ -132,15 +139,22 @@ const endpointHost = computed(() => endpointCheck.value.ok ? endpointCheck.value
 const endpointError = computed(() => endpointCheck.value.ok ? '' : endpointCheck.value.error)
 /** 立即清除 Key：此前只能靠取消勾选后保存，用户不知道 Key 何时真正离开本机 */
 function clearKey() {
-  config.value.apiKey = ''
-  config.value.rememberKey = false
-  updateConfig({ apiKey: '', rememberKey: false })
-  message.success('已从内存与本机存储中清除 API Key')
+  const ok = updateConfig({ apiKey: '', rememberKey: false })
+  if (ok) message.success('已从内存与本机存储中清除 API Key')
+  else message.warning(storageWarning.value ?? '清除 API Key 时发生错误，请检查本机存储')
 }
 
 const rememberKey = computed({
   get: () => config.value.rememberKey,
   set: (v: boolean) => { config.value.rememberKey = v },
+})
+
+const rememberHistory = computed({
+  get: () => config.value.rememberHistory,
+  set: (v: boolean) => {
+    const ok = updateConfig({ rememberHistory: v })
+    if (!ok) message.warning('本地存储不可用，历史偏好仅在当前会话有效')
+  },
 })
 
 const modelOptions = [
@@ -160,6 +174,12 @@ const quickQuestions = [
 ]
 
 function ask(q: string) { input.value = q; sendChat() }
+
+function onClearHistory() {
+  const ok = clearHistory()
+  if (ok) message.success('对话历史已清除')
+  else message.warning('当前对话已清除，但本机历史未能完全删除')
+}
 
 function onEnter(e: KeyboardEvent) {
   // Shift+Enter 换行；n-input 的 textarea 上 @keydown.enter 默认不拦截，只处理无修饰键回车
@@ -196,7 +216,7 @@ async function testConnection() {
     let body: unknown = null
     try { body = await resp.json() } catch { /* 非 JSON 体按结构异常处理 */ }
     const errObj = body as { error?: { message?: string } } | null
-    if (errObj?.error) { message.error(`网关返回错误：${errObj.error.message ?? '未知错误'}`); return }
+    if (errObj?.error) { message.error('网关返回错误，请检查连接设置'); return }
     const list = body as { data?: unknown[]; object?: string } | null
     if (Array.isArray(list?.data)) {
       message.success(`连接成功（可用模型 ${list!.data!.length} 个）`)
@@ -213,6 +233,7 @@ function saveAndClose() {
   const ok = updateConfig({
     endpoint: config.value.endpoint, apiKey: config.value.apiKey,
     model: config.value.model, enabled: config.value.enabled, rememberKey: config.value.rememberKey,
+    rememberHistory: config.value.rememberHistory,
   })
   // 隐私模式/配额耗尽时写盘会失败：不能假报「已保存」，刷新后配置全丢
   if (ok) message.success('已保存')
@@ -238,7 +259,7 @@ function saveAndClose() {
 
 .chat-panel {
   position: fixed; bottom: 80px; right: 24px;
-  width: 360px; max-height: 560px;
+  width: min(360px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 104px));
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-primary); border-radius: 8px;
   display: flex; flex-direction: column; z-index: 9999;

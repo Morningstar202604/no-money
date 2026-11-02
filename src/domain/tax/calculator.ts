@@ -153,10 +153,9 @@ export function calcSoleProprietorship(
   // 年度税额直接由公式算出
   const annualTax = nonNegCent(subCent(mulCentRate(taxable, bracket.rate), bracket.deduction))
 
-  // 月度值仅用于展示，最后一月兜底使 12 期之和等于年度税额
-  const monthly = divCent(annualTax, 12)
-  const monthlyTax = Array(12).fill(monthly)
-  monthlyTax[11] = nonNegCent(subCent(annualTax, mulCentRate(monthly, Rate.create(11))))
+  const monthly = Math.floor(Number(annualTax) / 12)
+  const remainder = Number(annualTax) % 12
+  const monthlyTax = Array.from({ length: 12 }, (_, i) => safeCent(monthly + (i < remainder ? 1 : 0)))
 
   // 有效税率 = 年度税额 / 营业额
   const effectiveRate = Number(turnover) > 0

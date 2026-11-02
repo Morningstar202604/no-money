@@ -12,6 +12,7 @@ import {
 } from '../domain/income/capacity'
 import { CITY_OPTIONS } from '../data/cities'
 import { assetUrl } from '../utils/asset'
+import { parseCityRule, ruleTimeNotice as describeRuleTime } from '../utils/cityRule'
 
 // 城市清单以 src/data/cities.ts 注册表为准（含地图坐标）；规则文件在 public/rules/<value>.json
 export const CITIES = CITY_OPTIONS
@@ -60,33 +61,29 @@ const DEFAULT_PERSONAL: PersonalParams = {
   taxHealthInsuranceAnnual: undefined,
 }
 
-/** 品牌重命名前的旧存储键：老用户数据在这里，必须迁移而不是静默丢弃 */
+/** 品牌重命名前的旧存储键；对话历史和 API Key 不在启动阶段静默迁移 */
 const LEGACY_KEYS: Record<string, string> = {
   flexcalc_params_v1: PARAMS_KEY,
   flexcalc_capacity_v1: CAPACITY_KEY,
   flexcalc_onboarding_v1: 'nomoney_onboarding_v1',
   flexcalc_ai_cfg: 'nomoney_ai_cfg',
-  flexcalc_ai_key: 'nomoney_ai_key',
-  flexcalc_chat_hist: 'nomoney_chat_hist',
 }
 
 /**
- * 一次性迁移旧品牌存储键。
- * 背景：品牌从「灵算 Pro」改为「没钱 No Money」时键名从 flexcalc_* 换成
- * nomoney_*，但没写迁移——老用户刷新后参数、AI 配置、对话历史全部"消失"
- * （数据其实还在 localStorage 里，只是没人读）。
- * 迁移策略：仅当新键不存在时复制，成功后删除旧键；失败不阻断启动。
+ * 一次性迁移不含秘密或对话内容的旧品牌键。
+ * AI Key 与对话历史由 AI composable 根据当前显式偏好处理，避免启动阶段扩大敏感数据读取。
  */
 function migrateLegacyKeys(): void {
-  try {
-    for (const [oldKey, newKey] of Object.entries(LEGACY_KEYS)) {
+  for (const [oldKey, newKey] of Object.entries(LEGACY_KEYS)) {
+    try {
       const legacy = localStorage.getItem(oldKey)
       if (legacy === null) continue
       if (localStorage.getItem(newKey) === null) localStorage.setItem(newKey, legacy)
-      // 旧键只在确认新键有值后删除，避免半途失败丢数据
       if (localStorage.getItem(newKey) !== null) localStorage.removeItem(oldKey)
+    } catch {
+      // 隐私模式或配额耗尽时保留原键，启动仍可使用默认值
     }
-  } catch { /* 隐私模式下 localStorage 不可用，静默跳过迁移 */ }
+  }
 }
 
 function loadParams() {
@@ -129,6 +126,7 @@ function loadCapacity(saved?: Record<string, unknown> | null): CapacityModel {
 
 export const useMainStore = defineStore('main', () => {
   const rule = ref<CityRule | null>(null)
+  const ruleTimeNotice = computed(() => rule.value ? describeRuleTime(rule.value) : '')
   const loading = ref(false)
   const loadError = ref<string | null>(null)
   const paramsRestored = ref(false)
@@ -213,12 +211,13 @@ export const useMainStore = defineStore('main', () => {
       // 不信任 content-type（CDN 对 .json 可能回 octet-stream），直接按文本读再解析：
       // 静态托管的 SPA 回退会用 200 + HTML 应答缺失文件，JSON.parse 在此自然拦截
       const text = await res.text()
-      let data: CityRule
+      let parsed: unknown
       try {
-        data = JSON.parse(text) as CityRule
+        parsed = JSON.parse(text)
       } catch {
         throw new Error(`未找到 ${city} 的规则文件（响应不是合法 JSON）`)
       }
+      const data = parseCityRule(parsed)
       // CDN 边缘节点返回错版本时，规则里的 cityName 会与用户选的城市静默不一致，
       // 而侧边栏显示的是 work.city —— 正是本项目反复要防的"深圳抄广州"类事故
       if (data.city !== city) throw new Error(`规则文件与请求城市不一致（期望 ${city}，实际 ${data.city}）`)
@@ -511,5 +510,5 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
-  return { rule, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams, capacityModel, volatilityCv }
+  return { rule, ruleTimeNotice, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams, capacityModel, volatilityCv }
 })

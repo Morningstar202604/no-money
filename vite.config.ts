@@ -41,6 +41,9 @@ export default defineConfig({
     open: false,
     strictPort: true,
     headers: { 'Access-Control-Allow-Origin': '*' },
+    // 不监听 Rust 构建产物：tauri:build 会写入 src-tauri/target，
+    // 其中 .dll/.pdb 在链接期被占用，chokidar 触发 EBUSY 会让 dev 服务器直接退出
+    watch: { ignored: ['**/src-tauri/**', '**/dist/**', '**/.aqg/**'] },
   },
 
   preview: { port: 4173 },

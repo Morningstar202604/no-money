@@ -360,7 +360,7 @@ describe('品牌重命名后的旧数据迁移（不能让老用户数据静默�
       // 旧键应被清理，新键应存在
       expect(storeMap.has('flexcalc_params_v1'), '迁移成功后旧键应删除').toBe(false)
       expect(storeMap.has('nomoney_params_v1')).toBe(true)
-      expect(storeMap.has('flexcalc_chat_hist')).toBe(false)
+      expect(storeMap.has('flexcalc_chat_hist'), '对话历史必须等用户显式启用本地历史后再迁移').toBe(true)
     } finally {
       ;(globalThis as unknown as { localStorage: Storage }).localStorage = original
       vi.resetModules()
