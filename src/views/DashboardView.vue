@@ -2,12 +2,11 @@
   <div class="dashboard">
     <OnboardingHint />
 
-    <!-- 规则未就绪（加载中/加载失败）时不得显示 0 值：¥0/0分 会被读成真实结论 -->
-    <n-alert v-if="!store.rule" :type="store.loadError ? 'error' : 'info'" :show-icon="true" style="margin-bottom: 12px">
-      <template v-if="store.loadError">
-        本城规则加载失败，以下数字无法计算。请用顶部提示的「重新加载」重试，或切换城市。
-      </template>
-      <template v-else>正在加载本城政策规则，测算数字稍后显示……</template>
+    <!-- 规则未就绪（加载中/加载失败）时不得显示 0 值：¥0/0分 会被读成真实结论。
+         加载中给骨架屏而不是空白页——空白会让人以为页面坏了。 -->
+    <SkeletonLoader v-if="!store.rule && !store.loadError" />
+    <n-alert v-else-if="!store.rule" type="error" :show-icon="true" style="margin-bottom: 12px">
+      本城规则加载失败，以下数字无法计算。请用顶部提示的「重新加载」重试，或切换城市。
     </n-alert>
 
     <!-- 占位数据门禁：不挡住数字，但必须让用户知道这些结论建立在假设上 -->
@@ -37,26 +36,46 @@
       </div>
     </n-alert>
 
-    <!-- KPI Row -->
+    <!-- KPI Row：数字用滚动动画呈现，让"拖滑块 → 数字变化"的因果可见 -->
     <div class="kpi-row">
       <div class="stat">
         <span class="stat-label">月净收入{{ provisional ? '（假设）' : '' }}</span>
-        <span class="stat-value">{{ dataReady ? '¥' + bestNetMonthly.toLocaleString() : '—' }}</span>
+        <span class="stat-value">
+          <template v-if="dataReady">
+            <AnimatedNumber :value="bestNetMonthly" prefix="¥" />
+          </template>
+          <template v-else>—</template>
+        </span>
         <span class="stat-foot">{{ dataReady ? (store.comparison?.best?.name || '—') : '等待规则加载' }}</span>
       </div>
       <div class="stat">
         <span class="stat-label">年净收入</span>
-        <span class="stat-value">{{ dataReady ? '¥' + bestNetAnnual.toLocaleString() : '—' }}</span>
+        <span class="stat-value">
+          <template v-if="dataReady">
+            <AnimatedNumber :value="bestNetAnnual" prefix="¥" />
+          </template>
+          <template v-else>—</template>
+        </span>
         <span class="stat-foot">含成本扣除</span>
       </div>
       <div class="stat">
         <span class="stat-label">有效时薪</span>
-        <span class="stat-value">{{ dataReady ? '¥' + bestHourly : '—' }}</span>
+        <span class="stat-value">
+          <template v-if="dataReady">
+            <AnimatedNumber :value="bestHourly" prefix="¥" :formatter="oneDecimal" />
+          </template>
+          <template v-else>—</template>
+        </span>
         <span class="stat-foot">{{ dataReady ? (store.comparison?.best?.work.dailyHours ?? '—') + 'h/天' : '—' }}</span>
       </div>
       <div class="stat">
         <span class="stat-label">权益评分</span>
-        <span class="stat-value" :class="rightsScoreClass">{{ dataReady ? rightsScore + '/100' : '—' }}</span>
+        <span class="stat-value" :class="rightsScoreClass">
+          <template v-if="dataReady">
+            <AnimatedNumber :value="rightsScore" :formatter="scoreFormatter" />
+          </template>
+          <template v-else>—</template>
+        </span>
         <span class="stat-foot">{{ dataReady ? rightsLevel : '等待规则加载' }}</span>
       </div>
     </div>
@@ -175,6 +194,8 @@ import { useRouter } from 'vue-router'
 import type { EChartsCoreOption } from 'echarts/core'
 import { NCard, NGrid, NGi, NEmpty, NDataTable, NButton, NAlert, NSlider, type DataTableColumns } from 'naive-ui'
 import { useMainStore } from '../stores/main'
+import AnimatedNumber from '../components/AnimatedNumber.vue'
+import SkeletonLoader from '../components/SkeletonLoader.vue'
 import { simulateIncomeDistribution, recommendBuffer } from '../domain/income/volatility'
 import { axisX, axisY, GRID, chartColors } from '../utils/chart'
 import { scoreTier, scoreLevel, TIER_COLORS } from '../utils/score'
@@ -212,7 +233,11 @@ const buffer = computed(() => {
 
 const bestNetMonthly = computed(() => store.comparison?.best?.netMonthly || 0)
 const bestNetAnnual = computed(() => store.comparison?.best?.netAnnual || 0)
-const bestHourly = computed(() => store.comparison?.best?.netHourly.toFixed(1) || '0')
+/** 数值型时薪：交给 AnimatedNumber 做滚动，格式化由 oneDecimal 负责 */
+const bestHourly = computed(() => store.comparison?.best?.netHourly ?? 0)
+const oneDecimal = (n: number) => n.toFixed(1)
+/** 评分显示为 "62/100"，动画过程中也要保持这个形状 */
+const scoreFormatter = (n: number) => `${Math.round(n)}/100`
 /** 最优方案是否属于超长工时（≥12h/天）：用于在页顶明确提示，而不是默默推荐 */
 const bestOverwork = computed(() => (store.comparison?.best?.work.dailyHours ?? 0) >= 12)
 

@@ -44,6 +44,21 @@
 
         <!-- Status & Actions -->
         <div class="header-actions">
+          <!-- 命令面板入口：既是可点击按钮，也提示了快捷键，用户第一次就知道有这东西 -->
+          <button
+            class="search-trigger"
+            @click="paletteOpen = true"
+            aria-label="搜索页面、城市或操作"
+            title="搜索（Ctrl/⌘ + K）"
+          >
+            <svg class="search-trigger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" stroke-linecap="round" />
+            </svg>
+            <span class="search-trigger-text">搜索</span>
+            <kbd class="search-trigger-kbd">⌘K</kbd>
+          </button>
+
           <!-- City Status -->
           <div class="status-badge" v-if="store.rule">
             <span class="status-dot" :class="store.rule.verified ? 'verified' : 'partial'" />
@@ -69,6 +84,8 @@
         </div>
       </div>
     </header>
+
+    <CommandPalette v-model:open="paletteOpen" :commands="paletteCommands" />
 
     <!-- Main Content Area -->
     <div class="layout-main">
@@ -151,8 +168,12 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { NButton } from 'naive-ui'
 import { useMainStore } from '../stores/main'
+import { CITY_OPTIONS } from '../data/cities'
 import ParamSidebar from '../components/ParamSidebar.vue'
 import ChatAssistant from '../components/ChatAssistant.vue'
+import CommandPalette from '../components/CommandPalette.vue'
+import type { Command } from '../utils/commandPalette'
+import { downloadTextFile } from '../utils/download'
 
 // Icons
 import {
@@ -179,6 +200,65 @@ const sidebarCollapsed = ref(false)
 const mobileSidebarOpen = ref(false)
 const isDark = computed(() => store.isDark)
 const isMobile = ref(false)
+
+/** 命令面板开关：⌘K / Ctrl+K 唤起 */
+const paletteOpen = ref(false)
+
+/**
+ * 命令注册表。
+ * 页面 + 城市 + 操作三类：这是用户每天真正会重复做的事。
+ * 城市列表来自 CITY_OPTIONS，新增城市自动出现在面板里，不需要改这里。
+ */
+const paletteCommands = computed<Command[]>(() => [
+  ...navItems.map((item) => ({
+    id: `nav-${item.key}`,
+    label: item.label,
+    hint: item.path,
+    kind: 'navigate' as const,
+    group: '页面',
+    keywords: [item.key.toLowerCase()],
+    run: () => onNav(item.key),
+  })),
+  ...CITY_OPTIONS.map((city) => ({
+    id: `city-${city.value}`,
+    label: city.label,
+    hint: store.work.city === city.value ? '当前城市' : '切换城市',
+    kind: 'city' as const,
+    group: '城市',
+    keywords: [city.value],
+    run: () => store.setCity(city.value),
+  })),
+  {
+    id: 'action-toggle-theme',
+    label: isDark.value ? '切换到浅色模式' : '切换到深色模式',
+    kind: 'action' as const,
+    group: '操作',
+    keywords: ['theme', 'dark', 'light', '主题', '深色', '浅色'],
+    run: toggleTheme,
+  },
+  {
+    id: 'action-reset-params',
+    label: '重置为默认参数',
+    kind: 'action' as const,
+    group: '操作',
+    keywords: ['reset', 'default', '重置', '默认'],
+    run: () => store.resetParams?.(),
+  },
+  {
+    id: 'action-export-params',
+    label: '导出参数',
+    kind: 'action' as const,
+    group: '操作',
+    keywords: ['export', 'download', '导出', '备份'],
+    run: () => {
+      downloadTextFile({
+        filename: `no-money-params-${store.work.city}.json`,
+        content: store.exportParams(),
+        mimeType: 'application/json',
+      })
+    },
+  },
+] as Command[])
 
 // key 必须与 src/app/router.ts 中的路由 name 完全一致：
 // onNav 用 router.push({ name: key })，大小写不符会静默失败；
@@ -220,8 +300,28 @@ function handleScroll() {
 }
 
 function onGlobalKeydown(e: KeyboardEvent) {
+  // ⌘K / Ctrl+K 唤起命令面板：这是编辑器与 IDE 的通用约定，用户会本能去按
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault()
+    paletteOpen.value = !paletteOpen.value
+    return
+  }
+  // 斜杠快捷唤起：GitHub / Linear 的约定，单手就能按
+  if (e.key === '/' && !isEditableTarget(e.target)) {
+    e.preventDefault()
+    paletteOpen.value = true
+    return
+  }
   // 移动抽屉此前只能点遮罩关闭，键盘用户没有退出路径
   if (e.key === 'Escape' && mobileSidebarOpen.value) mobileSidebarOpen.value = false
+}
+
+/** 在输入框里按 / 时应该输入斜杠，而不是打开面板 */
+function isEditableTarget(target: EventTarget | null): boolean {
+  const el = target as HTMLElement | null
+  if (!el) return false
+  const tag = el.tagName
+  return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || el.isContentEditable
 }
 
 onMounted(() => {
@@ -415,6 +515,73 @@ onUnmounted(() => {
   margin-left: auto;
   flex-shrink: 0;
   min-width: 0;
+}
+
+/* 命令面板入口：看起来像搜索框，实际是按钮——比纯图标更容易被发现 */
+.search-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 32px;
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--surface-border);
+  background: var(--surface-1);
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.search-trigger:hover {
+  border-color: var(--surface-border-strong);
+  background: var(--surface-2);
+  color: var(--color-text-secondary);
+}
+
+.search-trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.search-trigger-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.search-trigger-kbd {
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--surface-border);
+  color: var(--color-text-tertiary);
+  line-height: 1.5;
+}
+
+/* 窄屏只留图标：搜索文字挤占导航空间，但按钮本身必须还在 */
+@media (max-width: 900px) {
+  .search-trigger-text,
+  .search-trigger-kbd {
+    display: none;
+  }
+
+  .search-trigger {
+    width: 32px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .search-trigger {
+    display: none;
+  }
 }
 
 /* Status Badge */

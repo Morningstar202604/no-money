@@ -122,6 +122,11 @@
   --z-fixed: 300;
   --z-modal-backdrop: 400;
   --z-modal: 500;
+  /* 命令面板必须高于所有业务弹窗：它是"随时可唤起的操作入口"，
+     被引导弹窗盖住会让用户以为快捷键失效。
+     3000 是实测值——naive-ui 的 n-modal-container 固定用 2000，
+     低于它就一定被盖住（800 时实测确认被遮挡）。 */
+  --z-command-palette: 3000;
   --z-popover: 600;
   --z-tooltip: 700;
 
@@ -130,6 +135,32 @@
   --sider-width: 296px;
   --sider-collapsed-width: 64px;
   --container-max-width: 1440px;
+
+  /* ---------- 表面层次（surface elevation） ----------
+     深色界面里靠"高度"区分层级，不靠阴影：越靠前的表面越亮。
+     这两个 token 让卡片、浮层、命令面板各自有稳定的层次，组件不再各自调色。 */
+  --surface-0: transparent;
+  --surface-1: rgba(255, 255, 255, 0.02);
+  --surface-2: rgba(255, 255, 255, 0.04);
+  --surface-3: rgba(255, 255, 255, 0.06);
+  --surface-border: rgba(255, 255, 255, 0.07);
+  --surface-border-strong: rgba(255, 255, 255, 0.12);
+
+  /* 毛玻璃：浮层与命令面板用它和正文区分开，同时保留背景上下文 */
+  --glass-bg: rgba(17, 28, 46, 0.82);
+  --glass-blur: saturate(180%) blur(20px);
+
+  /* ---------- 动效时长与曲线 ----------
+     统一曲线让所有过渡"感觉是同一个产品"：快出慢入，末端轻微过冲。 */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-instant: 80ms;
+  --duration-fast: 140ms;
+  --duration-normal: 220ms;
+  --duration-slow: 380ms;
+
+  /* 焦点环：键盘用户能看清当前焦点在哪，鼠标用户看不到 */
+  --focus-ring: 0 0 0 2px var(--color-bg-primary), 0 0 0 4px var(--color-primary-400);
 }
 
 /* ==========================================================================
@@ -268,6 +299,16 @@
   --color-shadow-xl: 0 28px 60px -18px rgb(15 23 42 / 0.2);
 
   --glow-teal: 0 0 0 1px rgba(13, 148, 136, 0.2), 0 8px 28px -10px rgba(13, 148, 136, 0.35);
+
+  /* 浅色主题的表面层次：靠阴影而非亮度区分，否则白底叠白底看不出层级 */
+  --surface-0: transparent;
+  --surface-1: rgba(15, 23, 42, 0.015);
+  --surface-2: rgba(15, 23, 42, 0.03);
+  --surface-3: rgba(15, 23, 42, 0.05);
+  --surface-border: rgba(15, 23, 42, 0.08);
+  --surface-border-strong: rgba(15, 23, 42, 0.14);
+
+  --glass-bg: rgba(255, 255, 255, 0.86);
 
   color-scheme: light;
 }

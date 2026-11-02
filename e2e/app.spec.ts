@@ -82,12 +82,16 @@ test.describe('应用可用性', () => {
     await openSidebar(page)
 
     const netLocator = page.locator('.kpi-value, [data-kpi="net"]').first()
+    // KPI 数字由 AnimatedNumber 渲染为多个 span，读卡片文本并归一化空白
     const readNet = async () => {
-      const t = await page.locator('body').innerText()
-      const m = t.match(/月净收入（假设）\s*¥([\d,]+\.?\d*)/)
+      const card = page.locator('.kpi-row .stat').first()
+      const text = (await card.locator('.stat-value').innerText()).replace(/\s/g, '')
+      const m = text.match(/¥([\d,]+\.?\d*)/)
       return m ? Number(m[1].replace(/,/g, '')) : NaN
     }
 
+    // 数字滚动动画约 600ms，等它落定再取值
+    await page.waitForTimeout(900)
     const before = await readNet()
     expect(before).toBeGreaterThan(0)
 
@@ -96,7 +100,8 @@ test.describe('应用可用性', () => {
     await hoursSlider.focus()
     for (let i = 0; i < 4; i++) await hoursSlider.press('ArrowRight')
 
-    await expect.poll(readNet, { timeout: 5000 }).not.toBe(before)
+    await page.waitForTimeout(900)
+    await expect.poll(readNet, { timeout: 8000 }).not.toBe(before)
     const after = await readNet()
     expect(after).toBeGreaterThan(before)
   })
