@@ -171,6 +171,24 @@
   --color-text-danger: #f87171;
   --color-text-info: #60a5fa;
 
+  /* 告警条：深色主题必须用暗底 + 亮字，不能沿用浅色主题的近白底 */
+  --color-alert-bg-info: rgba(96, 165, 250, 0.12);
+  --color-alert-border-info: rgba(96, 165, 250, 0.32);
+  --color-alert-title-info: #bfdbfe;
+  --color-alert-text-info: #dbeafe;
+  --color-alert-bg-success: rgba(74, 222, 128, 0.12);
+  --color-alert-border-success: rgba(74, 222, 128, 0.32);
+  --color-alert-title-success: #bbf7d0;
+  --color-alert-text-success: #dcfce7;
+  --color-alert-bg-warning: rgba(251, 191, 36, 0.14);
+  --color-alert-border-warning: rgba(251, 191, 36, 0.36);
+  --color-alert-title-warning: #fde68a;
+  --color-alert-text-warning: #fef3c7;
+  --color-alert-bg-error: rgba(248, 113, 113, 0.12);
+  --color-alert-border-error: rgba(248, 113, 113, 0.34);
+  --color-alert-title-error: #fecaca;
+  --color-alert-text-error: #fee2e2;
+
   /* 语义：描边 */
   --color-border-primary: var(--color-ink-600);
   --color-border-secondary: #2a3b54;
@@ -221,6 +239,23 @@
   --color-text-warning: var(--color-warning-600);
   --color-text-danger: var(--color-danger-600);
   --color-text-info: var(--color-info-600);
+
+  --color-alert-bg-info: #eff6ff;
+  --color-alert-border-info: #bfdbfe;
+  --color-alert-title-info: #1e40af;
+  --color-alert-text-info: #1e3a8a;
+  --color-alert-bg-success: #f0fdf4;
+  --color-alert-border-success: #bbf7d0;
+  --color-alert-title-success: #166534;
+  --color-alert-text-success: #14532d;
+  --color-alert-bg-warning: #fffbeb;
+  --color-alert-border-warning: #fde68a;
+  --color-alert-title-warning: #92400e;
+  --color-alert-text-warning: #78350f;
+  --color-alert-bg-error: #fef2f2;
+  --color-alert-border-error: #fecaca;
+  --color-alert-title-error: #991b1b;
+  --color-alert-text-error: #7f1d1d;
 
   --color-border-primary: #e2e8f0;
   --color-border-secondary: #cbd5e1;

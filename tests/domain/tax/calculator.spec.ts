@@ -220,6 +220,16 @@ describe('calcSoleProprietorship - 个体工商户核定征收', () => {
     }
   })
 
+  it.each(Array.from({ length: 25 }, (_, tax) => tax))('年度税额为 %i 分时月税合计一致且非负', (tax) => {
+    const r = calcSoleProprietorship(cent(600000 + tax * 2), rule)
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    expect(Number(r.value.annualTax)).toBe(tax)
+    expect(r.value.monthlyTax).toHaveLength(12)
+    expect(r.value.monthlyTax.every(value => Number(value) >= 0)).toBe(true)
+    expect(r.value.monthlyTax.reduce((sum, value) => sum + Number(value), 0)).toBe(tax)
+  })
+
   it('低收入个体户应纳税所得额为 0 时税额为 0', () => {
     const r = calcSoleProprietorship(cent(60000), rule)
     expect(r.ok).toBe(true)

@@ -49,7 +49,7 @@
             <span class="status-dot" :class="store.rule.verified ? 'verified' : 'partial'" />
             <span class="status-text">{{ store.rule.cityName }} · {{ store.rule.year }}版</span>
             <span class="status-label" :class="store.rule.verified ? 'verified' : 'partial'">
-              {{ store.rule.verified ? '已核验' : '部分待核验' }}
+              {{ store.rule.verified ? '历史已核验' : '部分待核验' }}
             </span>
           </div>
 
@@ -115,6 +115,10 @@
           <n-button size="small" @click="store.loadRule(store.work.city)" variant="outlined">
             重新加载
           </n-button>
+        </div>
+
+        <div v-if="store.rule" class="global-alert info" role="status">
+          <div class="alert-content"><p>{{ store.ruleTimeNotice }}</p></div>
         </div>
 
         <!-- Page Content -->
@@ -397,6 +401,10 @@ onUnmounted(() => {
 @media (max-width: 380px) {
   .brand-text { display: none; }
   .header-brand { padding: var(--space-1); }
+  /* 320px 下图标按钮 5 个 + 间距仍会超出可用宽度，
+     收紧内边距与间距，保证最后一个导航项完整落在视口内 */
+  .header-nav { gap: 2px; margin-left: var(--space-1); }
+  .nav-link { padding: var(--space-1); }
 }
 
 /* Header Actions */
@@ -619,26 +627,39 @@ onUnmounted(() => {
 }
 
 /* ---------- Global Alert ---------- */
+/* 正常文档流：固定定位会把提示压在首屏正文上，用户看不到第一屏内容 */
 .global-alert {
-  position: fixed;
-  top: calc(var(--header-height) + var(--space-4));
-  left: calc(var(--sider-width) + var(--space-4));
-  right: var(--space-4);
-  z-index: var(--z-tooltip);
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
+  margin: var(--space-4) var(--space-4) 0;
   padding: var(--space-4);
-  background: var(--color-danger-50);
-  border: 1px solid var(--color-danger-200);
+  background: var(--color-alert-bg-error);
+  border: 1px solid var(--color-alert-border-error);
   border-radius: var(--radius-lg);
-  box-shadow: var(--color-shadow-lg);
   animation: slideDown var(--transition-normal);
 }
 
+.global-alert .alert-content p {
+  color: var(--color-alert-text-error);
+}
+
+.global-alert .alert-title {
+  color: var(--color-alert-title-error);
+}
+
+.global-alert.info {
+  background: var(--color-alert-bg-info);
+  border-color: var(--color-alert-border-info);
+}
+
+.global-alert.info .alert-content p {
+  color: var(--color-alert-text-info);
+}
+
 .global-alert.error {
-  background: var(--color-danger-50);
-  border-color: var(--color-danger-200);
+  background: var(--color-alert-bg-error);
+  border-color: var(--color-alert-border-error);
 }
 
 .global-alert .icon {
@@ -734,9 +755,9 @@ onUnmounted(() => {
     margin-left: 0;
   }
 
-  /* 全局告警在移动端必须从屏幕左侧铺满，否则会按侧栏宽度偏移出可视区 */
+  /* 移动端告警保持正常文档流，左右留白由 margin 控制 */
   .global-alert {
-    left: var(--space-4);
+    margin: var(--space-3) var(--space-3) 0;
   }
 
   .sidebar-overlay {

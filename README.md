@@ -1,14 +1,12 @@
 # 没钱 No Money — 灵活就业者收入精算与权益决策平台
 
-[![tests](https://img.shields.io/badge/vitest-912%20passed-brightgreen.svg)](#测试覆盖什么)
-[![audit](https://img.shields.io/badge/npm%20audit-0%20vulnerabilities-brightgreen.svg)](#测试覆盖什么)
 [![cities](https://img.shields.io/badge/cities-34%20%C2%B7%2031%20provinces-4a7c8c.svg)](#范围与设计主张)
 [![telemetry](https://img.shields.io/badge/telemetry-none-4a7c8c.svg)](#数据在哪里来自哪里)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 面向外卖骑手等灵活就业群体的收入 / 税务 / 社保 / 权益测算工具。纯前端，所有参数与测算结果默认只留在本机浏览器。
 
-**唯一例外**：若你在「AI 助手」设置中主动启用并填入 API Key，则城市、工时、接单量、收入、成本、净收入、时薪、权益评分与最近 6 条对话会发送至**你自己填写的**第三方模型接口。本应用自身没有后端，不另存这些数据；不启用 AI 即完全离线。
+测算在本地进行，Web 版加载应用及资源可能需要网络。启用 AI 并提问时，城市、工时、收入、成本等测算上下文及最近对话会发送到你填写的模型接口；主动测试连接也会向该接口发送请求。本应用没有后端。对话历史默认仅保存在当前标签页内存中；主动勾选「在本机记住对话历史」后，才会在浏览器本地存储最近 50 条消息。
 
 ## 截图
 
@@ -72,7 +70,7 @@
 npm ci
 npm run dev          # http://localhost:3000（Web）
 npm run tauri:dev    # 桌面端（需 Rust 工具链）
-npm test             # vitest，912 例（含规则溯源门禁）
+npm test             # 全量测试，含规则溯源门禁
 npm run verify       # 引擎自检：净收入恒等式闭合
 npm run build        # vue-tsc --noEmit && vite build
 npm run tauri:build  # 桌面端安装包
@@ -132,11 +130,12 @@ HTTP 规则加载 / 密钥 / 日志）从未被任何运行时路径接线，属
 
 ## AI 助手与你的 API Key
 
-支持 OpenAI 兼容接口（DeepSeek / Qwen / GPT 等）。三条安全约束：
+支持 OpenAI 兼容接口（DeepSeek / Qwen / GPT 等）。安全约束：
 
 - **Key 默认不持久化**，只存在于内存，关闭标签页即失效。勾选「在本机记住」后才会以明文写入本浏览器 localStorage
+- **对话历史默认不持久化**，只存在当前标签页内存；勾选「在本机记住对话历史」后才保存最近 50 条经形状校验的消息。取消勾选时会尝试删除当前与旧品牌键名下的本机历史；删除失败会提示检查浏览器存储权限
 - **Endpoint 强制校验**：非本机地址必须 `https`，拒绝相对路径与内嵌用户名密码的 URL（`https://legit.com@evil.com` 这类钓鱼写法），设置弹窗实时显示 Key 将发往哪个主机
-- **失败信息不外泄**：服务端错误体只留在浏览器 console，聊天气泡里显示的是按状态码本地化的文案
+- **错误信息保护**：服务端错误体不写入聊天气泡、历史或控制台，界面显示本地化的错误文案
 
 ## 数据在哪里，来自哪里
 
@@ -318,4 +317,4 @@ g = 养老金年调整率（默认 3%，近年全国调幅量级 2%–4%）、d 
 - 东莞三档医保费率必须分离，且外地城收到东莞档次 id 时回落默认档（跨城不串值）
 - 规则文件溯源约束：official 必须有文号或链接、`verified` 不得与实际置信度冲突、平台计价必须标 `unverified`
 
-验证入口收敛为两条命令：`npm test`（912 例，含规则文件溯源门禁 `tests/rulesGate.spec.ts`）与 `npm run verify`（引擎自检：净收入恒等式闭合）；`npm run build` 跑类型检查与构建。
+验证入口收敛为两条命令：`npm test`（含规则文件溯源门禁 `tests/rulesGate.spec.ts`）与 `npm run verify`（引擎自检：净收入恒等式闭合）；`npm run build` 跑类型检查与构建。

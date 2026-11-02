@@ -18,9 +18,13 @@ fn main() {
             
             let menu = Menu::with_items(app, &[&show_item, &hide_item, &quit_item])?;
 
-            // 托盘图标：缺省图标缺失时不 panic（icon 接受 Option），仅无图标显示
-            let _tray = TrayIconBuilder::with_id("main-tray")
-                .icon(app.default_window_icon().cloned())
+            let tray = TrayIconBuilder::with_id("main-tray");
+            let tray = if let Some(icon) = app.default_window_icon() {
+                tray.icon(icon.clone())
+            } else {
+                tray
+            };
+            let _tray = tray
                 .menu(&menu)
                 .show_menu_on_left_click(false)
                 .on_menu_event(|app, event| match event.id.as_ref() {

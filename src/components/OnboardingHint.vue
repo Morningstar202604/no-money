@@ -4,8 +4,9 @@
     :show="visible"
     preset="card"
     title="先看这里：这些数字是谁的？"
-    :style="{ width: 'min(620px, 94vw)' }"
+    :style="{ width: 'min(620px, 94vw)', maxHeight: 'calc(100dvh - 32px)', display: 'flex', flexDirection: 'column' }"
     :closable="true"
+    content-style="overflow-y: auto; min-height: 0; flex: 1 1 auto;"
     @update:show="(v: boolean) => !v && closeOnce()"
   >
     <div class="onb">
@@ -105,7 +106,7 @@ function closeOnce() {
 </script>
 
 <style scoped>
-.onb { display: flex; flex-direction: column; gap: 10px; }
+.onb { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 0; }
 .onb-lead { font-size: 13px; line-height: 1.7; color: var(--color-text-secondary); margin: 0; }
 .onb-lead strong { color: var(--color-text-primary); }
 
