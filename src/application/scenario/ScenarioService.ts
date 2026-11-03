@@ -332,6 +332,12 @@ export class ScenarioService {
     if (!Number.isFinite(work.dailyHours) || work.dailyHours <= 0) {
       return AppError.validation('work.dailyHours 必须为正数')
     }
+    // 上限 20 小时：一天只有 24 小时，扣掉睡眠与通勤，20 小时已是物理极值。
+    // 不设上限时「24 小时」也能算出结果，但那个数字没有现实含义，
+    // 会让调用方（CLI/API/MCP）以为这是一个可参考的配置。
+    if (work.dailyHours > 20) {
+      return AppError.validation('work.dailyHours 不得超过 20（一天只有 24 小时）')
+    }
     // 允许 0 天：与 domain/income/calculator 的口径一致（「本月工作 0 天」收入即为 0，
     // 成本仍在，净收入为负是正确结果）。此处曾要求 >0，与域层注释直接矛盾，
     // 会导致「0 天」在域层可算、经服务层却被拒——两层必须同口径。
@@ -340,6 +346,11 @@ export class ScenarioService {
     }
     if (!Number.isFinite(work.dailyOrders) || work.dailyOrders < 0) {
       return AppError.validation('work.dailyOrders 必须为非负数')
+    }
+    // 上限 200 单/日：按单均 13.5 分钟算，200 单需要 45 小时，已远超物理可能。
+    // 设这个上限是为了拦住「误把月单量填进日单量」这类输入错误。
+    if (work.dailyOrders > 200) {
+      return AppError.validation('work.dailyOrders 不得超过 200 单/日（请确认没有把月单量填成日单量）')
     }
     if (!Number.isFinite(personal.currentAge) || personal.currentAge < 16) {
       return AppError.validation('personal.currentAge 必须 ≥ 16')

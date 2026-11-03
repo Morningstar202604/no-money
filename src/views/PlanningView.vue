@@ -1,4 +1,5 @@
 <template>
+  <PageHeading />
   <n-tabs type="line" v-model:value="tab" style="margin-top: -8px">
     <n-tab-pane name="tax" tab="税务优化">
       <TaxOptimizer />
@@ -10,6 +11,9 @@
 </template>
 
 <script setup lang="ts">
+import { createPageHeading } from '../components/PageHeading'
+const PageHeading = createPageHeading('planning')
+
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NTabs, NTabPane } from 'naive-ui'

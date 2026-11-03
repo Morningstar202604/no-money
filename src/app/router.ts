@@ -10,6 +10,9 @@ export const router = createRouter({
     { path: '/planning', name: 'Planning', component: () => import('../views/PlanningView.vue'), meta: { title: '税务优化与养老规划' } },
     { path: '/rights', name: 'Rights', component: () => import('../views/RightsView.vue'), meta: { title: '权益护航 — 补偿计算与文书' } },
     { path: '/policy', name: 'Policy', component: () => import('../views/PolicyView.vue'), meta: { title: '政策百科与民生手册' } },
+    // 数据管理后台：统计 34 城规则覆盖率并跑一致性检查。
+    // 不做登录：它管理的是公开只读的规则文件，没有需要保护的私有数据。
+    { path: '/admin', name: 'Admin', component: () => import('../views/AdminView.vue'), meta: { title: '数据管理后台' } },
     // 未知路径显式 404：静默重定向会让用户以为地址是对的（深链写错也无从发现）
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/NotFoundView.vue'), meta: { title: '页面不存在' } },
   ],

@@ -1,4 +1,5 @@
 <template>
+  <PageHeading />
   <!-- display-directive="show:lazy"：三个面板是同一条链路（补偿 → 指南 → 文书），
        默认的 if 会在切页签时卸载组件——补偿面板重新挂载即把 store.compensation
        置空，用户切去看指南再回来，文书页的金额已全部丢失 -->
@@ -16,6 +17,9 @@
 </template>
 
 <script setup lang="ts">
+import { createPageHeading } from '../components/PageHeading'
+const PageHeading = createPageHeading('rights')
+
 import { provide, ref } from 'vue'
 import { NTabs, NTabPane } from 'naive-ui'
 import RightsCompensation from '../components/panels/RightsCompensation.vue'

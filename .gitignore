@@ -31,3 +31,8 @@ blob-report/
 
 # 版本工具演练产物
 .work/
+
+# 构建产物（CLI/API 打包输出）
+dist-cli/
+dist-server/
+.tmp/

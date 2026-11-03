@@ -303,6 +303,9 @@ function onGlobalKeydown(e: KeyboardEvent) {
   // ⌘K / Ctrl+K 唤起命令面板：这是编辑器与 IDE 的通用约定，用户会本能去按
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
     e.preventDefault()
+    // 引导弹窗打开时 naive-ui 的焦点陷阱会持续抢回焦点，导致面板输入框拿不到焦点。
+    // 打开面板前先让引导自行收起（通过自定义事件解耦，不直接持有子组件实例）。
+    if (!paletteOpen.value) window.dispatchEvent(new CustomEvent('app:close-onboarding'))
     paletteOpen.value = !paletteOpen.value
     return
   }
