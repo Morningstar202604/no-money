@@ -28,7 +28,7 @@ onMounted(() => {
 })
 
 // 同步全局主题 DOM：布局与内容组件都依赖 html[data-theme] 驱动的 CSS 变量。
-// 默认深色（:root 无属性），store.isDark 为 true 时仍显式写 dark，保持一致且可读。
+// 默认浅色（:root 即浅色变量），store.isDark 为 true 时显式写 dark 覆盖。
 watch(
   () => store.isDark,
   (v) => {

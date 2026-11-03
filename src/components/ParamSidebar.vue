@@ -407,7 +407,9 @@
     </FoldCard>
 
     <div class="ps-foot">
-      <n-tag size="small" :bordered="false" type="info">参数与测算均在本机完成</n-tag>
+      <!-- 不用 n-tag type="info"：它用 naive-ui 自带配色，深色主题下正文对比度只有 1.34:1。
+           这里用设计 token，两套主题都达标。 -->
+      <span class="ps-privacy">参数与测算均在本机完成</span>
       <div v-if="store.cityNotice" class="ps-notice">
         <span>{{ store.cityNotice }}</span>
         <button class="ps-notice-x" aria-label="关闭提示" @click="store.cityNotice = null">×</button>
@@ -430,7 +432,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { NSlider, NRadioGroup, NRadioButton, NSwitch, NTag, NSelect, NButton, NModal, NInputNumber } from 'naive-ui'
+import { NSlider, NRadioGroup, NRadioButton, NSwitch, NSelect, NButton, NModal, NInputNumber } from 'naive-ui'
 import { ref } from 'vue'
 import { useMainStore, CITIES } from '../stores/main'
 import { calcCosts } from '../domain/income/calculator'
@@ -658,6 +660,16 @@ const autoMedicalBase = computed(() => autoBase(medicalBaseMin.value, medicalBas
   color: var(--color-text-tertiary);
   margin-top: 2px;
   padding-left: 2px;
+}
+
+.ps-privacy {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-50);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xs);
+  border: 1px solid var(--surface-border);
 }
 
 .ps-foot {

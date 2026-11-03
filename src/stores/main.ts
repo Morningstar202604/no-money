@@ -489,16 +489,14 @@ export const useMainStore = defineStore('main', () => {
     return unwrap(eng.compare({ scenarios: list }))
   })
 
-  // ---------- 主题（深/浅） ----------
-  // 默认深色（品牌基调）。初值读取 localStorage，其次跟随系统偏好。
+  // ---------- 主题（浅/深） ----------
+  // 默认浅色：产品主要在白天户外使用，强光下浅色可读性更好。
+  // 只有用户显式选过深色才用深色；不跟随系统偏好（系统深色 ≠ 这里要深色）。
   const isDark = ref(false)
   try {
-    const savedTheme = localStorage.getItem('theme')
-    isDark.value = savedTheme
-      ? savedTheme === 'dark'
-      : window.matchMedia('(prefers-color-scheme: dark)').matches
+    isDark.value = localStorage.getItem('theme') === 'dark'
   } catch {
-    /* localStorage 不可用时保持默认深色 */
+    /* localStorage 不可用时保持默认浅色 */
   }
 
   function toggleTheme() {
