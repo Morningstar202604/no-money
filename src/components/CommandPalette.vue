@@ -144,7 +144,10 @@ watch(() => props.open, async (isOpen) => {
     query.value = ''
     activeIndex.value = 0
     await nextTick()
+    // 单次 nextTick 不够：面板挂载后浏览器还会处理遮罩层的焦点行为，
+    // 下一帧再抢一次焦点，确保键盘用户按 Ctrl+K 后能直接打字。
     inputRef.value?.focus()
+    requestAnimationFrame(() => inputRef.value?.focus())
   } else {
     previouslyFocused?.focus?.()
     previouslyFocused = null

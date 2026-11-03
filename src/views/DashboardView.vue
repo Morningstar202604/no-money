@@ -1,5 +1,6 @@
 <template>
   <div class="dashboard">
+    <PageHeading />
     <OnboardingHint />
 
     <!-- 规则未就绪（加载中/加载失败）时不得显示 0 值：¥0/0分 会被读成真实结论。
@@ -189,6 +190,9 @@
 </template>
 
 <script setup lang="ts">
+import { createPageHeading } from '../components/PageHeading'
+const PageHeading = createPageHeading('dashboard')
+
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import type { EChartsCoreOption } from 'echarts/core'

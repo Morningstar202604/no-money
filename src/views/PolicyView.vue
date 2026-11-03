@@ -1,4 +1,5 @@
 <template>
+  <PageHeading />
   <div>
     <n-card title="政策百科 — 法规依据与维权指引" class="card">
       <p class="desc">
@@ -218,6 +219,9 @@
 </template>
 
 <script setup lang="ts">
+import { createPageHeading } from '../components/PageHeading'
+const PageHeading = createPageHeading('policy')
+
 import { computed, ref } from 'vue'
 import { NCard, NTabs, NTabPane, NGrid, NGi, NTag, NSteps, NStep, NEmpty, NInput, NRadioGroup, NRadioButton, NAlert } from 'naive-ui'
 import { useMainStore } from '../stores/main'

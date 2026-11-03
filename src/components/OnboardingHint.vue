@@ -3,6 +3,7 @@
     v-if="visible"
     :show="visible"
     preset="card"
+    class="onb-modal"
     title="先看这里：这些数字是谁的？"
     :style="{ width: 'min(620px, 94vw)', maxHeight: 'calc(100dvh - 32px)', display: 'flex', flexDirection: 'column' }"
     :closable="true"
@@ -59,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { NModal, NButton, NAlert } from 'naive-ui'
 import { useMainStore } from '../stores/main'
 
@@ -103,9 +104,21 @@ function closeOnce() {
   visible.value = false
 }
 
+/** 供父组件调用：命令面板等全局浮层打开时，先收起引导，
+    否则 naive-ui 的 modal 焦点陷阱会持续抢回焦点，用户按 Ctrl+K 后打不了字。 */
+defineExpose({ dismiss: closeOnce })
+
+// 监听全局事件：MainLayout 在打开命令面板前广播，引导自行收起
+function onCloseRequest() {
+  if (visible.value) visible.value = false
+}
+onMounted(() => window.addEventListener('app:close-onboarding', onCloseRequest))
+onBeforeUnmount(() => window.removeEventListener('app:close-onboarding', onCloseRequest))
+
 </script>
 
 <style scoped>
+
 .onb { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 0; }
 .onb-lead { font-size: 13px; line-height: 1.7; color: var(--color-text-secondary); margin: 0; }
 .onb-lead strong { color: var(--color-text-primary); }
@@ -118,4 +131,38 @@ function closeOnce() {
 
 .onb-foot { font-size: 12px; color: var(--color-text-tertiary); margin: 0; }
 .onb-actions { display: flex; justify-content: space-between; align-items: center; }
+</style>
+
+<!-- 非 scoped：n-modal 被 Teleport 到 body，scoped 样式的作用域属性加不到那些节点上，
+     只有全局样式能命中。把引导弹窗压到 header（z-index 200）之下，
+     这样首次进入时头部仍然可点，用户不会被强制读完引导才能操作。 -->
+<style>
+/* 引导弹窗的层级与遮罩
+   --------------------------------------------------------------------------
+   naive-ui 的 n-modal-container 固定用 z-index: 2000，遮罩覆盖整个视口，
+   连 header 上的主题切换、搜索、导航都拦住——用户必须先读完引导才能做任何事。
+
+   但直接把整个 modal 压到 header(200) 之下会连带把遮罩也压下去，
+   结果遮罩仍覆盖按钮、按钮却点不到（Playwright 实测：mask intercepts pointer events）。
+
+   正确做法：
+   1. 弹窗容器压到 header 之下（150），header 保持可交互
+   2. 遮罩改为不接收指针事件（pointer-events: none）——
+      它只是视觉上的「背景压暗」，不该拦任何点击。
+      弹窗本身在容器内，仍然可点。 */
+.n-modal-container:has(.onb-modal) {
+  z-index: 150 !important;
+}
+.n-modal-container:has(.onb-modal) ~ .n-modal-mask,
+.n-modal-mask {
+  z-index: 149 !important;
+  pointer-events: none !important;
+}
+
+/* 引导弹窗打开时隐藏 AI 悬浮按钮：移动端它固定在右下角，
+   正好压住弹窗的「开始调整参数」主按钮，用户点不到。
+   用 body:has() 判断弹窗是否存在，弹窗关闭后自动恢复。 */
+body:has(.onb-modal) .chat-fab {
+  display: none !important;
+}
 </style>

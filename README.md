@@ -1,162 +1,229 @@
 <div align="center">
 
-# No Money
+# 没钱 No Money
 
-**Know exactly what a gig job actually pays — before you take it.**
+**别人说「月入过万」，这个工具告诉你这笔钱是怎么算出来的、哪一部分还没核实。**
 
-Income, tax, social insurance and labor-rights calculator for China's gig workers.
-Runs entirely in your browser. No backend, no account, no telemetry.
+面向中国灵活就业者（外卖骑手、网约车司机等）的收入 / 个税 / 社保 / 权益测算平台。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1018%20passing-brightgreen)](https://github.com/badhope/no-money)
-[![cities](https://img.shields.io/badge/cities-34%20%C2%B7%2031%20provinces-4a7c8c)](#data-provenance)
-[![telemetry](https://img.shields.io/badge/telemetry-none-4a7c8c)](#privacy)
+[![tests](https://img.shields.io/badge/tests-1041-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-70-3fb950)](https://github.com/badhope/no-money)
+[![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
+[![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**English** · [简体中文](README.zh-CN.md)
+**简体中文** · [English](README.en.md)
 
 </div>
 
 ---
 
-## Why this exists
+## 算力入口
 
-A delivery rider is told "up to ¥10,000 a month." What that number hides:
+同一套计算内核，四种用法。
 
-- The per-order price is a placeholder, not their real rate
-- Social insurance is unpaid, so a hospital stay is 100% out of pocket
-- Working 12h/day is the only way the number works — and that carries real injury risk
-- Tax depends on whether they register as a sole proprietor, and most calculators get the rate wrong
+```mermaid
+flowchart LR
+    K["src/kernel<br/>calculate.ts"]
+    W["🌐 Web<br/>浏览器"]
+    D["🖥️ 桌面<br/>Windows EXE"]
+    C["⌨️ CLI<br/>命令行"]
+    A["🔌 HTTP API<br/>:8787"]
+    M["🤖 MCP<br/>AI 工具协议"]
+    W --> K
+    D --> K
+    C --> K
+    A --> K
+    M --> K
+```
 
-This tool makes every one of those assumptions visible, and refuses to print a confident number when the input isn't verified.
+| 入口 | 命令 | 适合 |
+|---|---|---|
+| **Web** | `npm run dev` | 日常使用，全功能界面 |
+| **桌面** | 安装 `没钱 No Money_2.4.0_x64-setup.exe` | 离线使用，无需浏览器 |
+| **CLI** | `npm run cli -- calc --city shenzhen` | 批量对比、脚本化 |
+| **API** | `npm run api` | 内部系统集成 |
+| **MCP** | `npm run mcp` | 让 AI 助手直接算 |
 
-## What it does
-
-| Module | Answers |
-|---|---|
-| **Overview** | Net monthly income, effective hourly wage, rights score — with the weakest link named |
-| **Scenario lab** | Side-by-side comparison of work patterns; ranks by sustainable income, not raw output |
-| **Tax & pension** | Labor remuneration vs sole proprietorship, both tax codes computed separately |
-| **Rights** | Compensation for 5 injury/dispute scenarios, split into "claimable now" vs "conditional" |
-| **Policy wiki** | 34 cities, every parameter traced to a document number and source link |
-
-## Screenshots
-
-**Overview** — the weakest link is named, not buried. When inputs are unverified the banner says so and "best option" degrades to "assumed best".
-
-![Overview](docs/screenshots/01-dashboard.png)
-
-**Scenario lab** — compare work patterns horizontally. The 12h/day option ranks first on income and is explicitly flagged as an upper bound, not a recommendation.
-
-![Scenario](docs/screenshots/02-scenario.png)
-
-**Tax & pension** — labor remuneration and sole proprietorship computed as two separate tax codes. Where the local deemed-profit rate hasn't been verified, the tool refuses to estimate the saving rather than printing a plausible wrong number.
-
-![Tax](docs/screenshots/03-planning.png)
-
-**Rights** — compensation split into "directly claimable" and "conditional", with province-specific legal basis instead of one province's regulation applied nationwide.
-
-![Rights](docs/screenshots/04-rights.png)
-
-**Policy wiki** — every parameter carries a document number, source URL, effective date and verification date.
-
-![Policy](docs/screenshots/05-policy.png)
-
-## Quick start
+### 30 秒上手
 
 ```bash
 npm ci
-npm run dev          # http://localhost:3000
-npm run tauri:dev    # desktop build (needs Rust toolchain)
-npm test             # 1018 tests incl. data-provenance gates
-npm run test:e2e     # 50 browser tests (desktop + mobile)
-npm run build        # typecheck + production build
+npm run dev        # 打开 http://localhost:3000
 ```
 
-Node 22+ required.
+```bash
+# 命令行：广州跑外卖，一个月到手多少
+npm run cli -- calc --city guangzhou
 
-## Built for repeated use
+# 三个城市横向对比
+npm run cli -- compare --cities guangzhou,shenzhen,dongguan
 
-Comparing cities and work patterns is something you do over and over:
-
-- **Command palette (`⌘K` / `Ctrl+K`)** — jump to any page, switch to any of the 34 cities, or run an action by typing
-- **Live numbers** — dragging a slider animates the result, so you see *which* change moved the number
-- **Keyboard-first** — arrows and Enter throughout; visible focus rings for keyboard users
-- **Honest loading states** — skeleton matches the real layout, so the page never looks broken
-- **Reduced motion respected** — animations disabled when the OS asks
-
-## The core design principle
-
-> **Show "unverified" rather than present an unverified number as official.**
-
-Every city parameter carries a confidence level:
-
-- `official` — traced to a government document with number and link
-- `derived` — computed from official figures, not directly published
-- `unverified` — no authoritative source; placeholder only
-
-When a calculation depends on an `unverified` field, the UI downgrades "best option" to "assumed" and lists exactly which fields are unverified. Twenty of the 34 cities have unverified social-insurance bases, and the app says so on screen instead of inventing a number.
-
-Platform per-order pricing is **never** `official` — it's a commercial rule with no cross-platform authority. The only correct path is the user entering their own actual rate.
-
-## Data provenance
-
-| Field | official | derived | unverified |
-|---|---|---|---|
-| Social insurance base | 14 | 0 | 20 |
-| Pension calculation base | 2 | 5 | 27 |
-| Minimum wage | 8 | 0 | 26 |
-| Platform pricing | 0 | 0 | **34 (all)** |
-
-Enforced by `tests/cities.spec.ts` — adding a city without provenance fails the build.
-
-## Privacy
-
-- No backend. Nothing is uploaded.
-- No analytics, no telemetry, no third-party scripts.
-- AI assistant is **opt-in**. Your API key stays in memory unless you explicitly tick "remember"; chat history stays in the tab unless you tick "remember history."
-- When AI is enabled, only the scenario context and your question go to the endpoint **you** configure. Non-local endpoints must be HTTPS, and credentials embedded in URLs are rejected.
-
-See [SECURITY.md](SECURITY.md).
-
-## Architecture
-
-```
-src/
-├── domain/          Pure functions. No Vue, no localStorage, no network.
-│   ├── income/      Earnings, capacity, vehicle unit economics, volatility
-│   ├── tax/         Annual settlement (table 1), withholding (table 2), sole prop
-│   └── benefit/     Contributions, pension actuarial, social vs self-funded
-├── application/     Use-case orchestration. No formulas.
-├── stores/          Pinia. All I/O lives here.
-├── components/      UI
-└── views/           Five pages
+# 34 城规则完整性自检
+npm run cli -- check
 ```
 
-Dependency direction is one-way: `views → components → stores → application → domain`. Money is integer **cents** inside `domain`, yuan at every boundary.
+---
 
-Full detail: [ARCHITECTURE.md](ARCHITECTURE.md).
+## 这个数字是怎么来的
 
-## Testing
+```mermaid
+flowchart TD
+    A["月总收入<br/>单价 × 单量 × 距离 + 补贴"] --> B["减：车辆与生活成本<br/>充电/维护/餐费/折旧"]
+    B --> C["减：个人所得税<br/>劳务报酬年度汇算"]
+    C --> D["减：社保个人缴纳<br/>养老 + 医疗"]
+    D --> E["月净收入"]
+    E --> F["÷ 有效工时"]
+    F --> G["有效时薪"]
+    E --> H["权益评分<br/>社保/工时/收入结构"]
+```
 
-- **Domain math** — every formula, including boundary and degenerate cases
-- **Parity** — the domain layer is checked numerically against the legacy engine
-- **Data gates** — provenance, schema and numeric-range validation for all 34 city files
-- **Components** — real mount tests, not source-text matching
-- **E2E** — 50 Playwright assertions on desktop and mobile covering real user paths
-- **AI privacy** — default-no-persist, explicit opt-in, deletion failure paths
+**每一步都可在界面上展开看明细。** 没有黑箱。
 
-## Known limits
+---
 
-- Annual settlement tax basis, **not** platform withholding. If a platform withholds, the real amount uses a different rate table — the UI says so.
-- Volatility is a multiplicative model; account bans and injury are not modeled.
-- 19 provincial capitals use national-magnitude placeholders, clearly labeled `unverified`.
-- This is a decision aid, not tax or legal advice.
+## 数据覆盖
 
-## Contributing
+```
+34 座城市 · 全部 31 个省级行政区
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Bug reports and city-data corrections with a source document are especially welcome.
+官方原文   ███████████████░░░░░░░░░░░░░░░░░░░░░░░   105 项 (34%)
+推算得出   ██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    37 项 (12%)
+未核实占位 ████████████████████████░░░░░░░░░░░░░░   167 项 (54%)
+```
 
-## License
+每个参数都带来源等级：
+
+| 等级 | 含义 | 界面上 |
+|---|---|---|
+| `official` | 能追到政府文号与原文链接 | ✅ 已核实 |
+| `derived` | 由官方数据推算，非直接公布 | 🔶 推算 |
+| `unverified` | 无权威来源，仅占位 | ⚠️ 待核实 |
+
+**当结论依赖未核实字段时，界面会把「最优方案」降级为「假设最优」，并列出具体哪几个字段没核实。**
+
+平台计价单价永远是 `unverified`——它是平台商业规则，没有官方发布渠道。唯一正确的做法是你自己填入 APP 里的真实单价。
+
+---
+
+## 为什么要做这个
+
+一个骑手被告知「月入过万」。这个数字藏了四件事：
+
+- 计价单价是占位值，不是他的真实单价
+- 社保没缴，住一次院全部自付
+- 只有每天干 12 小时这个数才成立，而这带来真实的工伤风险
+- 税取决于是否注册个体户，多数计算器把税率算错
+
+**这个工具把这四项假设全部摊开；输入没有核实来源时，不给出确定结论。**
+
+---
+
+## 界面
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/01-dashboard.png" alt="总览" /></td>
+<td width="50%"><img src="docs/screenshots/02-scenario.png" alt="方案对比" /></td>
+</tr>
+<tr>
+<td><b>总览</b> — 净收入、有效时薪、权益评分，点名最薄弱的一环</td>
+<td><b>方案对比</b> — 横向比较多套工作节奏，按可持续收入排序</td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/03-planning.png" alt="税务与养老" /></td>
+<td><img src="docs/screenshots/04-rights.png" alt="权益护航" /></td>
+</tr>
+<tr>
+<td><b>税务与养老</b> — 劳务报酬与个体工商户两套税制分开算</td>
+<td><b>权益护航</b> — 五类纠纷的补偿金额与法律依据</td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/05-policy.png" alt="政策百科" /></td>
+<td><img src="docs/screenshots/06-admin.png" alt="数据后台" /></td>
+</tr>
+<tr>
+<td><b>政策百科</b> — 34 城参数逐条溯源</td>
+<td><b>数据后台</b> — 覆盖率统计与一致性检查</td>
+</tr>
+</table>
+
+---
+
+## 五个模块
+
+| 模块 | 回答什么 |
+|---|---|
+| **总览** | 月净收入、有效时薪、权益评分，最薄弱的一环是什么 |
+| **方案对比** | 换一套工作节奏能多赚多少，值不值 |
+| **税务与养老** | 劳务报酬 vs 个体户，哪套更省；社保缴多少年划算 |
+| **权益护航** | 被欠薪/工伤/违法解约能拿多少，依据哪条法 |
+| **政策百科** | 这座城市的社保基数、最低工资、税率是多少，出处在哪 |
+
+---
+
+## 隐私
+
+```
+✅ 无后端        ✅ 无账号        ✅ 无埋点
+✅ 无第三方脚本  ✅ 数据不出设备  ✅ 可完全离线
+```
+
+AI 助手是**可选**的：
+- API Key 默认只在内存，勾选「记住」才落盘
+- 对话历史默认只存当前标签页
+- 只发送测算上下文与你填的问题，发往**你自己配置**的端点
+- 非本机端点强制 HTTPS，拒绝 URL 内嵌凭据
+
+详见 [SECURITY.md](SECURITY.md)。
+
+---
+
+## 开发
+
+```bash
+npm ci
+npm run dev            # Web 开发服务器
+npm test               # 1041 项单元测试
+npm run test:e2e       # 70 项浏览器测试（构建 + 跑）
+npm run typecheck      # 类型检查
+npm run verify         # 引擎恒等式自检
+npm run verify:reality # 数据现实性核查
+npm run kb:check       # 知识库同步检查
+npm run build          # 生产构建
+npm run tauri:build    # Windows 安装包
+```
+
+**架构**：`views → components → stores → application → domain`，单向依赖。
+所有入口共用 `src/kernel/calculate.ts`，绝不各自重算。
+
+完整开发约定见 [AGENTS.md](AGENTS.md) 与 [ARCHITECTURE.md](ARCHITECTURE.md)。
+
+---
+
+## 已知边界
+
+| 边界 | 说明 |
+|---|---|
+| 税制口径 | 按**年度汇算**算，不是平台预扣预缴。若平台代扣，实际到手用另一套税率表 |
+| 波动模型 | 乘性模型，未建模封号与工伤等尾部事件 |
+| 省级代表值 | 19 个省会用全国量级占位，已标 `unverified` |
+| 定位 | 决策辅助工具，不构成税务或法律意见 |
+
+---
+
+## 文档
+
+| 文档 | 内容 |
+|---|---|
+| [AGENTS.md](AGENTS.md) | AI 编码代理的开发约定 |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | 分层与数据流 |
+| [ROADMAP.md](ROADMAP.md) | 路线图与优先级 |
+| [SECURITY.md](SECURITY.md) | 安全模型与漏洞上报 |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | 贡献指南 |
+| [docs/VERSIONING.md](docs/VERSIONING.md) | 版本规范 |
+
+## 许可
 
 [MIT](LICENSE)

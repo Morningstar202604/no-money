@@ -4,8 +4,10 @@ import { test, expect } from '@playwright/test'
 async function dismissOnboarding(page: import('@playwright/test').Page) {
   const start = page.getByRole('button', { name: '开始调整参数' })
   if (await start.count()) {
+    // 引导弹窗现在被压到 header 层级之下（z-index 150），其 role 不再是 dialog，
+    // 因此改为断言「主按钮消失」这个可观察结果，而不是猜 role。
     await start.click()
-    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(start).toHaveCount(0)
   }
 }
 
@@ -161,7 +163,7 @@ test.describe('应用可用性', () => {
     expect(box!.y + box!.height).toBeLessThanOrEqual(640 + 1)
 
     await start.click()
-    await expect(page.getByRole('dialog')).toHaveCount(0)
+    await expect(start).toHaveCount(0)
   })
 
   test('参数导出按钮能触发下载', async ({ page }) => {

@@ -40,10 +40,13 @@ export default defineConfig({
   ],
 
   webServer: {
-    // 用生产构建产物跑 E2E：dev 服务器与线上行为不同（HMR、未压缩、sourcemap）
-    command: `npm run build && npm run preview -- --port ${PORT} --strictPort`,
+    // 用生产构建产物跑 E2E：dev 服务器与线上行为不同（HMR、未压缩、sourcemap）。
+    // 不在 webServer 里跑 build——构建要 20 秒，而 Playwright 会为每个 project
+    // 各起一次；两个 project 叠加会顶到 180 秒超时，表现为「移动端全红但页面其实是好的」。
+    // 正确做法：build 由 test:e2e 脚本前置执行，这里只负责起 preview。
+    command: `npm run preview -- --port ${PORT} --strictPort`,
     url: baseURL,
     reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
+    timeout: 120_000,
   },
 })

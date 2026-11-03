@@ -250,7 +250,9 @@ function saveAndClose() {
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 8px rgba(13,148,136,0.25);
-  z-index: 9999;
+  /* 不能是 9999：AI 悬浮按钮此前压在所有弹窗之上，移动端会盖住
+     引导弹窗的「开始调整参数」主按钮，用户点不到。改成与 header 同层。 */
+  z-index: var(--z-sticky);
   transition: background 0.15s, transform 0.15s;
 }
 .chat-fab:hover { background: var(--color-bg-brand-hover); }
@@ -262,7 +264,7 @@ function saveAndClose() {
   width: min(360px, calc(100vw - 32px)); max-height: min(560px, calc(100vh - 104px));
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-primary); border-radius: 8px;
-  display: flex; flex-direction: column; z-index: 9999;
+  display: flex; flex-direction: column; z-index: var(--z-fixed);
   box-shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
 
