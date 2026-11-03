@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const PORT = Number(process.env.E2E_PORT ?? 4173)
+// 默认 4173 可能被同机其他项目（如 015/workbench）的 preview 占用，
+// 冲突时 Playwright 会连到别人的站点，测试全挂但看不出原因。默认改用 4273。
+const PORT = Number(process.env.E2E_PORT ?? 4273)
 const baseURL = `http://127.0.0.1:${PORT}`
 
 /**
