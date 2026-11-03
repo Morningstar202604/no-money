@@ -8,8 +8,8 @@ Income, tax, social insurance and labor-rights calculator for China's gig worker
 Runs entirely in your browser. No backend, no account, no telemetry.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1001%20passing-brightgreen)](https://github.com/badhope/no-money)
-[![cities](https://img.shields.io/badge/cities-34%20%C2%B7%2031%20provinces-4a7c8c)](docs/DATA.md)
+[![tests](https://img.shields.io/badge/tests-1018%20passing-brightgreen)](https://github.com/badhope/no-money)
+[![cities](https://img.shields.io/badge/cities-34%20%C2%B7%2031%20provinces-4a7c8c)](#data-provenance)
 [![telemetry](https://img.shields.io/badge/telemetry-none-4a7c8c)](#privacy)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
@@ -19,7 +19,7 @@ Runs entirely in your browser. No backend, no account, no telemetry.
 
 ---
 
-## The problem
+## Why this exists
 
 A delivery rider is told "up to ¥10,000 a month." What that number hides:
 
@@ -39,16 +39,6 @@ This tool makes every one of those assumptions visible, and refuses to print a c
 | **Tax & pension** | Labor remuneration vs sole proprietorship, both tax codes computed separately |
 | **Rights** | Compensation for 5 injury/dispute scenarios, split into "claimable now" vs "conditional" |
 | **Policy wiki** | 34 cities, every parameter traced to a document number and source link |
-
-## Built for repeated use, not a one-off visit
-
-Comparing cities and work patterns is something you do over and over. The interface is built around that:
-
-- **Command palette (`⌘K` / `Ctrl+K`)** — jump to any page, switch to any of the 34 cities, or run an action by typing. No map-hunting, no menu diving.
-- **Live numbers** — dragging a slider animates the result, so you can see *which* change moved the number, not just the final value.
-- **Keyboard-first** — arrow keys and Enter work throughout the palette; focus rings are visible for keyboard users and hidden for mouse users.
-- **Honest loading states** — a skeleton that matches the real layout, so the page never looks broken while rules load.
-- **Reduced motion respected** — every animation is disabled when the OS asks for it.
 
 ## Screenshots
 
@@ -78,12 +68,22 @@ Comparing cities and work patterns is something you do over and over. The interf
 npm ci
 npm run dev          # http://localhost:3000
 npm run tauri:dev    # desktop build (needs Rust toolchain)
-npm test             # 1001 tests incl. data-provenance gates
-npm run verify       # engine self-check: net-income identity closes
+npm test             # 1018 tests incl. data-provenance gates
+npm run test:e2e     # 50 browser tests (desktop + mobile)
 npm run build        # typecheck + production build
 ```
 
 Node 22+ required.
+
+## Built for repeated use
+
+Comparing cities and work patterns is something you do over and over:
+
+- **Command palette (`⌘K` / `Ctrl+K`)** — jump to any page, switch to any of the 34 cities, or run an action by typing
+- **Live numbers** — dragging a slider animates the result, so you see *which* change moved the number
+- **Keyboard-first** — arrows and Enter throughout; visible focus rings for keyboard users
+- **Honest loading states** — skeleton matches the real layout, so the page never looks broken
+- **Reduced motion respected** — animations disabled when the OS asks
 
 ## The core design principle
 
@@ -115,7 +115,7 @@ Enforced by `tests/cities.spec.ts` — adding a city without provenance fails th
 - No backend. Nothing is uploaded.
 - No analytics, no telemetry, no third-party scripts.
 - AI assistant is **opt-in**. Your API key stays in memory unless you explicitly tick "remember"; chat history stays in the tab unless you tick "remember history."
-- When AI is enabled, only the scenario context and your question go to the endpoint **you** configure.
+- When AI is enabled, only the scenario context and your question go to the endpoint **you** configure. Non-local endpoints must be HTTPS, and credentials embedded in URLs are rejected.
 
 See [SECURITY.md](SECURITY.md).
 
@@ -133,26 +133,18 @@ src/
 └── views/           Five pages
 ```
 
-Dependency direction is one-way: `views → components → stores → application → domain`. Money is integer **cents** inside `domain`, yuan at every boundary. Conversion happens in exactly two files.
+Dependency direction is one-way: `views → components → stores → application → domain`. Money is integer **cents** inside `domain`, yuan at every boundary.
 
 Full detail: [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Testing
 
-1001 tests across 42 files:
-
 - **Domain math** — every formula, including boundary and degenerate cases
-- **Parity** — the new domain layer is checked numerically against the legacy engine
+- **Parity** — the domain layer is checked numerically against the legacy engine
 - **Data gates** — provenance, schema and numeric-range validation for all 34 city files
-- **Components** — real mount tests for the document generator, compensation panel, tab routing
+- **Components** — real mount tests, not source-text matching
+- **E2E** — 50 Playwright assertions on desktop and mobile covering real user paths
 - **AI privacy** — default-no-persist, explicit opt-in, deletion failure paths
-
-```bash
-npm test
-npm run typecheck:test
-npm run verify:reality
-npm run kb:check
-```
 
 ## Known limits
 
