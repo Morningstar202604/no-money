@@ -44,7 +44,7 @@
     "@modelcontextprotocol/server": "^2.4.0",
     "@playwright/test": "^1.64.1",
     "@tauri-apps/cli": "^2.12.4",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@vitejs/plugin-vue": "^5.1.0",
     "@vue/test-utils": "^2.5.1",
     "happy-dom": "21.0.4",
