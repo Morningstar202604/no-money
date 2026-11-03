@@ -131,6 +131,43 @@ describe('HTTP API', () => {
     expect(body.error.hint).toContain('openapi.json')
   })
 
+  it('限流生效：超过配额后返回 429', async () => {
+    // 用独立实例（低配额）避免影响其它用例
+    const limitedPort = 18788
+    const limited = spawn(process.execPath, ['node_modules/tsx/dist/cli.mjs', 'server/api.ts'], {
+      cwd: ROOT,
+      env: { ...process.env, PORT: String(limitedPort), RATE_LIMIT: '5' },
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+
+    try {
+      const base = `http://127.0.0.1:${limitedPort}`
+      const deadline = Date.now() + 20000
+      while (Date.now() < deadline) {
+        try {
+          if ((await fetch(`${base}/health`)).ok) break
+        } catch { /* 未就绪 */ }
+        await new Promise((r) => setTimeout(r, 200))
+      }
+
+      // 前 5 次应通过
+      for (let i = 0; i < 5; i++) {
+        const res = await fetch(`${base}/api/cities`)
+        expect(res.status).toBe(200)
+      }
+      // 第 6 次应被限流
+      const blocked = await fetch(`${base}/api/cities`)
+      expect(blocked.status).toBe(429)
+      expect(blocked.headers.get('Retry-After')).toBeTruthy()
+
+      // 健康检查不受限流影响（容器探针依赖它）
+      const health = await fetch(`${base}/health`)
+      expect(health.status).toBe(200)
+    } finally {
+      limited.kill()
+    }
+  }, 40000)
+
   it('超大请求体被拒绝，不拖垮进程', async () => {
     const huge = JSON.stringify({ city: 'guangzhou', pad: 'x'.repeat(100_000) })
     const res = await fetch(`${BASE}/api/calculate`, {

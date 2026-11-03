@@ -5,6 +5,56 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## 3.0.0 — 2026-11-04
+
+多入口版本。同一套计算内核，四种运行方式。
+
+### Added
+
+- **计算内核** `src/kernel/calculate.ts`：把「加载规则 → 归一化参数 → 调领域函数 →
+  输出稳定 JSON」收成一条路径。CLI / MCP / HTTP API / Web 全部调它，
+  不再各自拼装参数——避免「同一输入四个答案」。
+- **CLI**：`calc` / `compare` / `cities` / `check` 四个命令，支持 `--json` 与表格输出。
+  退出码 0/1/2 供脚本判断。
+- **MCP Server**：4 个工具（calculate_income / compare_cities / list_cities /
+  get_data_provenance），stdio 传输，可接入 Claude Desktop、Cursor、Zed 等任意 MCP 宿主。
+- **HTTP API**：Node 原生 http，6 个端点，含 OpenAPI 3.1 规范、健康检查、
+  令牌桶限流、请求体上限、SIGTERM 优雅退出。只读无状态，不存任何用户数据。
+- **数据管理后台** `/admin`：34 城规则覆盖率统计、置信度分布图、逐城明细表、
+  一键一致性检查（实测 34/34 通过）。
+- **AGENTS.md**：面向 AI 编码代理的开发约定，含数据政策与内核规则。
+- **入口一致性自检** `verify:entrypoints`：把 CLI/API/MCP/Web 的结果与固定基准对拍。
+
+### Fixed
+
+- **可访问性：所有页面都没有 `<h1>`**。五个页面的标题全是卡片内的 div/span，
+  屏幕阅读器用户按 H 键跳标题时发现整站零标题。已补 sr-only 语义标题。
+- **移动端 AI 悬浮按钮遮挡引导弹窗主按钮**。`z-index: 9999` 压在所有弹窗之上，
+  401px 屏幕上正好盖住「开始调整参数」，用户点不到主 CTA。
+- **首次进入时弹窗锁死整个界面**。naive-ui 的 modal 遮罩覆盖全视口连 header 一起拦，
+  用户必须读完引导才能用搜索、切换主题、导航。现改为遮罩不接收指针事件。
+- **命令面板在引导弹窗打开时拿不到焦点**。modal 的焦点陷阱持续抢回，
+  按 Ctrl+K 后面板打开了却打不了字。改为打开面板前先收起引导。
+- **CLI/API 缺少输入上限**。24 小时工时、999 单/日都能算出「结果」，
+  但这些数字没有现实含义。已加 20 小时 / 200 单上限并给出可操作提示。
+- **`public/rules/index.json` 污染规则目录**。后台需要城市索引，
+  放在 rules/ 下会让「34 城」变成 35 个文件，7 个门禁测试全红。移到 `public/city-index.json`。
+- **E2E 在每个 project 重复执行 build**。构建 20 秒 × 2 个 project 顶到 180 秒超时，
+  表现为「移动端全红但页面其实是好的」。build 移到 test:e2e 脚本前置。
+
+### Changed
+
+- README 重写为中英双语，加入 Mermaid 架构图、算力入口对照表、数据覆盖率条形图。
+- README 主文档改为中文（项目受众），英文版 `README.en.md`。
+- E2E 从 50 项扩到 70 项，新增无障碍语义检查（h1、导航名称、按钮可访问名、
+  纯键盘操作全流程、主题持久化）。
+- 单测从 1018 项扩到 1046 项。
+
+### Security
+
+- API 限流默认 120 次/分钟/IP，可用 `RATE_LIMIT` 环境变量调整。
+- 健康检查端点不参与限流（容器探针依赖它）。
+
 ## 2.4.0 — 2026-11-03
 
 ### Changed

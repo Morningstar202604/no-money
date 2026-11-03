@@ -57,6 +57,39 @@ function listCities() {
     .sort((a, b) => a.id.localeCompare(b.id))
 }
 
+// ---------- 简单令牌桶限流 ----------
+/**
+ * 为什么需要：这个服务虽然默认只监听 127.0.0.1，但用户可能用 HOST=0.0.0.0
+ * 暴露到局域网或容器里。没有限流时，一个循环请求就能把 CPU 打满——
+ * 每次请求都要加载并校验一个城市的规则 JSON。
+ *
+ * 用固定窗口而非滑动窗口：实现只要十几行、无外部依赖、对"防滥用"这个目标足够。
+ * 引入 redis 或 express-rate-limit 会给一个只读小服务背上运维负担。
+ */
+interface Bucket { count: number; resetAt: number }
+const buckets = new Map<string, Bucket>()
+const RATE_LIMIT = Number(process.env.RATE_LIMIT ?? 120) // 每分钟每 IP 请求数
+const RATE_WINDOW = 60_000
+
+function rateLimited(ip: string): boolean {
+  const now = Date.now()
+  const bucket = buckets.get(ip)
+  if (!bucket || now > bucket.resetAt) {
+    buckets.set(ip, { count: 1, resetAt: now + RATE_WINDOW })
+    return false
+  }
+  bucket.count++
+  return bucket.count > RATE_LIMIT
+}
+
+// 定期清理过期桶，避免长期运行时 Map 无限增长
+setInterval(() => {
+  const now = Date.now()
+  for (const [ip, b] of buckets) {
+    if (now > b.resetAt) buckets.delete(ip)
+  }
+}, 5 * 60_000).unref()
+
 // ---------- HTTP 工具 ----------
 function sendJson(res: ServerResponse, status: number, body: unknown): void {
   const payload = JSON.stringify(body, null, 2)
@@ -183,6 +216,15 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
   const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`)
   const path = url.pathname.replace(/\/+$/, '') || '/'
   const method = req.method ?? 'GET'
+
+  // 健康检查不参与限流：容器探针每分钟可能请求多次，被限流会导致误判为不健康
+  if (path !== '/health') {
+    const ip = req.socket.remoteAddress ?? 'unknown'
+    if (rateLimited(ip)) {
+      res.setHeader('Retry-After', '60')
+      return sendError(res, 429, `请求过于频繁，上限 ${RATE_LIMIT} 次/分钟`, '稍后重试')
+    }
+  }
 
   // 健康检查：不依赖任何外部资源，供容器探针使用
   if (method === 'GET' && path === '/health') {

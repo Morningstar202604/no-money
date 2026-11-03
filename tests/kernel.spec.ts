@@ -96,6 +96,24 @@ describe('计算内核', () => {
     expect(r.costBreakdown).not.toHaveProperty('vehicleType')
   })
 
+  it('工时超过 20 小时被拒绝（物理不可能）', async () => {
+    await expect(calculate({ city: 'guangzhou', work: { dailyHours: 24 } }, loadRule)).rejects.toThrow(/不得超过 20/)
+  })
+
+  it('日单量超过 200 被拒绝（防把月单量填成日单量）', async () => {
+    await expect(calculate({ city: 'guangzhou', work: { dailyOrders: 900 } }, loadRule)).rejects.toThrow(/不得超过 200/)
+  })
+
+  it('工时 0 被拒绝而不是返回 0 或 NaN', async () => {
+    await expect(calculate({ city: 'guangzhou', work: { dailyHours: 0 } }, loadRule)).rejects.toThrow()
+  })
+
+  it('工作 0 天时净收入为负且有限（只有成本没有收入）', async () => {
+    const r = await calculate({ city: 'guangzhou', work: { workDaysMonth: 0, dailyOrders: 0 } }, loadRule)
+    expect(r.netMonthly).toBeLessThan(0)
+    expect(Number.isFinite(r.netMonthly)).toBe(true)
+  })
+
   it('默认参数是稳定常量，不被调用副作用污染', async () => {
     const before = JSON.stringify(DEFAULT_WORK) + JSON.stringify(DEFAULT_COSTS)
     await calculate({ city: 'guangzhou', work: { dailyHours: 14 }, costs: { foodCostMonth: 3000 } }, loadRule)
