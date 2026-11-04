@@ -2,6 +2,7 @@ import { defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 import { visualizer } from 'rollup-plugin-visualizer'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // 生产环境启用压缩与分析
 const isProd = process.env.NODE_ENV === 'production'
@@ -24,6 +25,70 @@ export default defineConfig({
           cacheHandlers: isProd,
         },
       },
+    }),
+    // PWA：让用户能"安装到桌面"并离线使用。
+    // 对这个产品是刚需而不是锦上添花——骑手在电梯、地下车库、电梯间接单，
+    // 那些地方没有信号，而"这个月到底能拿多少"恰恰是等单时才想算的。
+    //
+    // 缓存策略：
+    //   - 应用外壳（JS/CSS/HTML）：预缓存，秒开
+    //   - 城市规则 JSON：StaleWhileRevalidate —— 先给旧值保证可用，后台再更新
+    //   - 不缓存任何用户数据（本来也不出设备）
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg', 'robots.txt'],
+      manifest: {
+        name: '没钱 No Money — 灵活就业收入精算',
+        short_name: '没钱',
+        description: '收入 / 个税 / 社保 / 权益测算，离线可用，数据不出设备',
+        lang: 'zh-CN',
+        start_url: '/',
+        scope: '/',
+        display: 'standalone',
+        orientation: 'portrait',
+        background_color: '#f8fafc',
+        theme_color: '#0d9488',
+        categories: ['finance', 'productivity', 'utilities'],
+        icons: [
+          { src: 'icons/128x128.png', sizes: '128x128', type: 'image/png' },
+          { src: 'icons/256x256.png', sizes: '256x256', type: 'image/png' },
+          { src: 'icons/512x512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icons/512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // 规则 JSON 体积小但数量多，单独走运行时缓存而不是预缓存，
+        // 避免首次安装时下载全部 34 城（用户通常只用一个城市）
+        globIgnores: ['**/rules/**', '**/knowledge/**'],
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024,
+        runtimeCaching: [
+          {
+            // 城市规则：先返回缓存（保证离线可用），同时后台拉新版
+            urlPattern: /\/rules\/.*\.json$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'no-money-rules',
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // 知识库：同上
+            urlPattern: /\/knowledge\/.*\.json$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'no-money-kb',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
+        // 用户手动切换主题后刷新，不该被缓存挡住
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/rules\//, /^\/knowledge\//],
+      },
+      devOptions: { enabled: false },
     }),
     // 打包体积分析：npm run build && npx serve dist && open http://localhost:4173/stats.html
     isProd && visualizer({

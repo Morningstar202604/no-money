@@ -159,10 +159,15 @@ onBeforeUnmount(() => window.removeEventListener('app:close-onboarding', onClose
   pointer-events: none !important;
 }
 
-/* 引导弹窗打开时隐藏 AI 悬浮按钮：移动端它固定在右下角，
-   正好压住弹窗的「开始调整参数」主按钮，用户点不到。
-   用 body:has() 判断弹窗是否存在，弹窗关闭后自动恢复。 */
-body:has(.onb-modal) .chat-fab {
+/* 引导弹窗打开时隐藏所有浮动按钮
+   --------------------------------------------------------------------------
+   移动端 401px 屏上，右下角的 AI 按钮与反馈按钮都会压住弹窗底部的
+   「开始调整参数」主按钮——用户第一次打开应用就点不到主 CTA。
+   这不是某一个按钮的问题，是"浮层 + 浮层"的通用冲突：
+   引导是模态的，模态期间任何常驻浮层都应该让位。
+   用 body:has() 判断弹窗是否存在，关闭后自动恢复。 */
+body:has(.onb-modal) .chat-fab,
+body:has(.onb-modal) .feedback {
   display: none !important;
 }
 </style>

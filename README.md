@@ -45,6 +45,7 @@ flowchart LR
 | **CLI** | `npm run cli -- calc --city shenzhen` | 批量对比、脚本化 |
 | **API** | `npm run api` | 内部系统集成 |
 | **MCP** | `npm run mcp` | 让 AI 助手直接算 |
+| **PWA** | 浏览器地址栏「安装」 | 装到桌面，断网可用 |
 
 ### 30 秒上手
 
@@ -170,6 +171,8 @@ flowchart TD
 ✅ 无第三方脚本  ✅ 数据不出设备  ✅ 可完全离线
 ```
 
+**可离线**：安装为 PWA 后，断网也能打开并完成测算。实测断网后页面完整可用。
+
 AI 助手是**可选**的：
 - API Key 默认只在内存，勾选「记住」才落盘
 - 对话历史默认只存当前标签页
@@ -223,6 +226,10 @@ npm run tauri:build    # Windows 安装包
 | [SECURITY.md](SECURITY.md) | 安全模型与漏洞上报 |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | 贡献指南 |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | 版本规范 |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署与缓存头配置 |
+| [PRIVACY.md](PRIVACY.md) | 隐私政策 |
+| [TERMS.md](TERMS.md) | 服务条款 |
+| [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | 第三方许可 |
 
 ## 许可
 
