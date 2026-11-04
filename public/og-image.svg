@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="55%" stop-color="#111c2e"/>
+      <stop offset="100%" stop-color="#0f2f2b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="100%" stop-color="#f5b301"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.035" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- 品牌标记 -->
+  <rect x="88" y="96" width="76" height="76" rx="18" fill="#2dd4bf"/>
+  <path d="M126 114 L110 138 H124 L120 154 L140 126 H126 Z" fill="#0b1120"/>
+
+  <text x="184" y="128" font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="34" font-weight="700" fill="#e8eef6">没钱 No Money</text>
+  <text x="184" y="158" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
+        font-size="17" fill="#7d8ea6">灵活就业收入精算与权益决策</text>
+
+  <!-- 主标题 -->
+  <text x="88" y="268" font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="46" font-weight="700" fill="#e8eef6">别人说「月入过万」</text>
+  <text x="88" y="330" font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif"
+        font-size="46" font-weight="700" fill="#2dd4bf">这笔钱是怎么算出来的？</text>
+
+  <rect x="88" y="386" width="164" height="4" rx="2" fill="url(#accent)"/>
+
+  <!-- 三个卖点 -->
+  <g font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="21" fill="#94a3b8">
+    <circle cx="96" cy="446" r="5" fill="#2dd4bf"/>
+    <text x="116" y="453">34 城政策参数，逐条溯源到政府文号</text>
+
+    <circle cx="96" cy="494" r="5" fill="#f5b301"/>
+    <text x="116" y="501">未核实的数据，界面上显著标注「待核实」</text>
+
+    <circle cx="96" cy="542" r="5" fill="#38bdf8"/>
+    <text x="116" y="549">纯本地计算 · 无后端 · 数据不出设备 · 离线可用</text>
+  </g>
+
+  <!-- 右侧数据卡 -->
+  <g transform="translate(820, 240)">
+    <rect width="292" height="300" rx="20" fill="#ffffff" fill-opacity="0.04"
+          stroke="#ffffff" stroke-opacity="0.12"/>
+    <text x="28" y="48" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
+          font-size="15" fill="#7d8ea6">广州 · 当前方案</text>
+    <text x="28" y="104" font-family="'JetBrains Mono',ui-monospace,Consolas,monospace"
+          font-size="42" font-weight="700" fill="#e8eef6">¥8,969</text>
+    <text x="28" y="134" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
+          font-size="14" fill="#7d8ea6">月净收入（含成本扣除）</text>
+
+    <line x1="28" y1="160" x2="264" y2="160" stroke="#ffffff" stroke-opacity="0.1"/>
+
+    <text x="28" y="196" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
+          font-size="14" fill="#7d8ea6">有效时薪</text>
+    <text x="264" y="196" text-anchor="end" font-family="'JetBrains Mono',ui-monospace,monospace"
+          font-size="20" font-weight="600" fill="#e8eef6">¥28.8</text>
+
+    <text x="28" y="232" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
+          font-size="14" fill="#7d8ea6">权益评分</text>
+    <text x="264" y="232" text-anchor="end" font-family="'JetBrains Mono',ui-monospace,monospace"
+          font-size="20" font-weight="600" fill="#f5b301">50/100</text>
+
+    <rect x="28" y="252" width="236" height="6" rx="3" fill="#ffffff" fill-opacity="0.1"/>
+    <rect x="28" y="252" width="118" height="6" rx="3" fill="#f5b301"/>
+    <text x="28" y="285" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
+          font-size="12" fill="#5f738c">保障不足</text>
+  </g>
+
+  <!-- 底部 -->
+  <text x="88" y="596" font-family="'JetBrains Mono',ui-monospace,Consolas,monospace"
+        font-size="15" fill="#5f738c">github.com/badhope/no-money  ·  MIT License</text>
+</svg>

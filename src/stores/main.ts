@@ -86,13 +86,56 @@ function migrateLegacyKeys(): void {
   }
 }
 
+/**
+ * 用户数据的 schema 版本。
+ *
+ * 为什么要它：localStorage 里的参数结构会随版本变化（新增字段、重命名字段）。
+ * 没有版本号时，老用户升级后读到的是"旧结构"，轻则丢参数，重则算出错误结果。
+ * 有了版本号，每次读取都能判断要不要迁移；写回时把当前版本一起存进去。
+ *
+ * 版本变更规则（与 docs/VERSIONING.md 对应）：
+ *   1 → 2：增加 personalPensionAnnual / taxHealthInsuranceAnnual（旧数据无此字段，
+ *          迁移为 undefined，由 business 层按"未填写"处理）
+ *   2 → 3：增加 capacityModel（旧数据无此字段，迁移为默认产能模型）
+ *   3 → 4：参数结构稳定，仅补 schemaVersion 字段本身
+ *
+ * 当前：4
+ */
+const SCHEMA_VERSION = 4
+
+/** 把任意历史结构规范化到当前版本；无法识别时返回 null 让调用方回落默认值 */
+function migrateParams(raw: Record<string, unknown>): Record<string, unknown> {
+  const version = typeof raw.schemaVersion === 'number' ? raw.schemaVersion : 1
+  let data: Record<string, unknown> = { ...raw }
+
+  if (version < 2) {
+    // v1 没有这两个年度税前扣除项；显式置 undefined 表示"用户未填写"，
+    // 而不是 0——0 会被当成"用户明确选择不买"，影响税优测算文案。
+    if (!('personalPensionAnnual' in data)) data.personalPensionAnnual = undefined
+    if (!('taxHealthInsuranceAnnual' in data)) data.taxHealthInsuranceAnnual = undefined
+  }
+  if (version < 3) {
+    // v2 没有产能模型；缺失时由 loadCapacity 回落 DEFAULT_CAPACITY
+    if (!('capacityModel' in data)) delete data.capacityModel
+  }
+  // v4 只是把 schemaVersion 补进结构，字段本身无需变换
+
+  data.schemaVersion = SCHEMA_VERSION
+  return data
+}
+
 function loadParams() {
   try {
     migrateLegacyKeys()
     const raw = localStorage.getItem(PARAMS_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as Record<string, unknown>
-  } catch { return null }
+    const parsed = JSON.parse(raw) as unknown
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return null
+    return migrateParams(parsed as Record<string, unknown>)
+  } catch {
+    // JSON 损坏：返回 null 回落默认值，而不是让整个应用白屏
+    return null
+  }
 }
 
 /**
@@ -332,6 +375,7 @@ export const useMainStore = defineStore('main', () => {
   function writePersist() {
     try {
       localStorage.setItem(PARAMS_KEY, JSON.stringify({
+        schemaVersion: SCHEMA_VERSION,
         work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
         capacityModel: capacityModel.value, volatilityCv: volatilityCv.value,
       }))
@@ -365,7 +409,12 @@ export const useMainStore = defineStore('main', () => {
 
   /** 导出参数快照（与持久化同构，换设备/清缓存迁移用；不含 AI Key 等敏感数据） */
   function exportParams(): string {
+    // 导出带上 schemaVersion：用户备份文件可能跨多个版本恢复，
+    // 没有版本号时导入端只能猜结构，猜错会静默丢字段。
     return JSON.stringify({
+      schemaVersion: SCHEMA_VERSION,
+      exportedAt: new Date().toISOString(),
+      appVersion: '3.1.0',
       work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
       capacityModel: capacityModel.value, volatilityCv: volatilityCv.value,
     }, null, 2)

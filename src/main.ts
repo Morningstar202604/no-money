@@ -46,3 +46,16 @@ window.addEventListener('app:chunk-error', () => {
 app.use(createPinia())
 app.use(router)
 app.mount('#app')
+
+// PWA 注册：让浏览器知道这个站点可安装、可离线。
+// registerType 是 autoUpdate，新版本会在后台装好，下次打开自动生效——
+// 不用弹「有新版本，是否更新」打扰用户（这类提示在移动端很容易被误点关闭）。
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  import('virtual:pwa-register')
+    .then(({ registerSW }) => {
+      registerSW({ immediate: true })
+    })
+    .catch(() => {
+      // SW 注册失败不影响主功能，静默降级为纯在线模式
+    })
+}

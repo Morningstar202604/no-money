@@ -45,6 +45,7 @@ flowchart LR
 | **CLI** | `npm run cli -- calc --city shenzhen` | Batch comparison, scripting |
 | **API** | `npm run api` | System integration |
 | **MCP** | `npm run mcp` | Let an AI assistant compute directly |
+| **PWA** | "Install" in the address bar | Install to desktop, works offline |
 
 ### Quick start
 
@@ -170,6 +171,8 @@ No backend        No account        No telemetry
 No third-party JS Data stays local  Fully offline
 ```
 
+**Works offline**: once installed as a PWA, the app opens and computes with no network. Verified by a real offline E2E test.
+
 The AI assistant is **opt-in**:
 - API key lives in memory unless you tick "remember"
 - Chat history stays in the tab unless you tick "remember history"
@@ -223,6 +226,10 @@ Full conventions in [AGENTS.md](AGENTS.md) and [ARCHITECTURE.md](ARCHITECTURE.md
 | [SECURITY.md](SECURITY.md) | Security model and reporting |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | Version policy |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment and cache headers |
+| [PRIVACY.md](PRIVACY.md) | Privacy policy |
+| [TERMS.md](TERMS.md) | Terms of service |
+| [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | Third-party licenses |
 
 ## License
 

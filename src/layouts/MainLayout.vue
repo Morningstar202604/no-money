@@ -86,6 +86,7 @@
     </header>
 
     <CommandPalette v-model:open="paletteOpen" :commands="paletteCommands" />
+    <FeedbackButton />
 
     <!-- Main Content Area -->
     <div class="layout-main">
@@ -172,6 +173,7 @@ import { CITY_OPTIONS } from '../data/cities'
 import ParamSidebar from '../components/ParamSidebar.vue'
 import ChatAssistant from '../components/ChatAssistant.vue'
 import CommandPalette from '../components/CommandPalette.vue'
+import FeedbackButton from '../components/FeedbackButton.vue'
 import type { Command } from '../utils/commandPalette'
 import { downloadTextFile } from '../utils/download'
 
