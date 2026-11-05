@@ -1,6 +1,6 @@
 {
   "name": "no-money",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "private": true,
   "type": "module",
   "description": "没钱 No Money — 灵活就业者收入精算与权益决策平台（企业级）",
@@ -31,7 +31,8 @@
     "cli:build": "esbuild cli/index.ts --bundle --platform=node --format=esm --outfile=dist-cli/index.mjs --packages=external",
     "test:e2e:only": "playwright test",
     "build:entries": "npm run cli:build && npm run api:build",
-    "verify:entrypoints": "tsx scripts/verify-entrypoints.ts"
+    "verify:entrypoints": "tsx scripts/verify-entrypoints.ts",
+    "doctor": "tsx scripts/doctor.ts"
   },
   "dependencies": {
     "echarts": "^6.1.0",
