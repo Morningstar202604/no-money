@@ -75,7 +75,7 @@ const open = ref(false)
 const copied = ref(false)
 const store = useMainStore()
 
-const version = '3.1.1'
+const version = '3.1.2'
 const REPO = 'https://github.com/badhope/no-money/issues/new'
 
 const bugUrl = computed(() =>
