@@ -5,6 +5,43 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## 3.1.2 — 2026-11-05
+
+清理历史遗留，并纠正一处**错误的自我认知**。
+
+### Fixed
+
+- **`display-directive="show:lazy"` 的注释与测试描述了一个不存在的问题。**
+  原注释称「默认 if 会在切页签时卸载组件，补偿面板重新挂载即把
+  store.compensation 置空」。实测（真实浏览器 + 单测双向验证）证明：
+  `calc()` 只由规则变更与用户输入触发，**不在 onMounted 里跑**，
+  面板重挂载根本不会清空结果。改回 `if` 后金额依然保留。
+
+  保留 `show:lazy` 的真正理由不是"防丢数据"，而是**省掉重复挂载表单与重算模型的开销**。
+  注释已据实改写，避免后来者基于错误前提做决策。
+
+- **源码正则假测试清理**：`tests/components/RightsView.tabs.mount.spec.ts`
+  原先是 `readFileSync('src/views/RightsView.vue')` + 正则匹配属性字符串，
+  改属性值就能通过、却验证不了任何运行时行为。重写为真实挂载断言
+  （4 项：页签结构、顺序、切页签状态保留、跨视图重挂载状态保留）。
+  并用「临时破坏 setCompensation → 2 项测试立即失败」反证过测试有效性。
+- `tests/layoutOverlay.spec.ts` 的 `role="status"` 检查改为先真实挂载布局，
+  再做静态契约断言（模板切换依赖 store 数据，该部分由 E2E 覆盖）。
+
+### Changed
+
+- **Dependabot 不再为 major 版本自动开 PR**（`.github/dependabot.yml`）。
+  之前 vite 6→8、TypeScript 5→7、vue-router 4→5、actions 4→7 一次性开了
+  9/9/10 个 PR，全挂在那里没人处理，分支越堆越多。
+  现在 npm / cargo / actions 三类都限制 major，minor/patch 才自动提。
+- 三个 GitHub 仓库的 28 个 Dependabot 分支与 PR 已全部关闭清理，现在各自只有 `main`。
+
+### Testing
+
+- 单测 1061 → **1063**
+- E2E 84 保持全绿
+- `doctor` 19 项全通过
+
 ## 3.1.1 — 2026-11-05
 
 把「符合劳动人民诉求」落到具体一句话上。

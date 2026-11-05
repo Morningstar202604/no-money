@@ -7,7 +7,7 @@
 Income, tax, social insurance and labor-rights calculator for China's gig workers.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1061-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1063-3fb950)](https://github.com/badhope/no-money)
 [![e2e](https://img.shields.io/badge/e2e-84-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)

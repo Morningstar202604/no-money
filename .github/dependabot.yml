@@ -1,5 +1,10 @@
 version: 2
 updates:
+  # ---- npm 依赖 ----
+  # 只对 dev 依赖做自动 minor/patch 合并；生产依赖逐条提 PR 人工审。
+  # 理由：这个项目的生产依赖只有 5 个（vue/pinia/vue-router/naive-ui/echarts），
+  # 每个都直接影响用户看到的界面；自动合并等于把渲染回归风险交给 CI 兜底，
+  # 而 E2E 覆盖不到所有视觉细节。
   - package-ecosystem: npm
     directory: "/"
     schedule:
@@ -12,12 +17,15 @@ updates:
       dev-dependencies:
         dependency-type: development
         update-types: [minor, patch]
-      production-dependencies:
-        dependency-type: production
-        update-types: [minor, patch]
+    # 主版本更新（vite 6→8、TypeScript 5→7 这类）不自动开 PR：
+    # 它们需要迁移代码、重跑全量验证，挂在那里只会堆积成 9 个待办。
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"
 
+  # ---- Rust 依赖 ----
   - package-ecosystem: cargo
     directory: "/src-tauri"
     schedule:
@@ -26,12 +34,28 @@ updates:
       time: "03:30"
       timezone: Asia/Shanghai
     open-pull-requests-limit: 3
+    groups:
+      cargo-minor-patch:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(deps)"
 
+  # ---- GitHub Actions ----
+  # 之前没限 major，导致 checkout 4→7 / setup-node 4→7 / upload-artifact 4→7
+  # 一次性开了 3 个 PR，加上 npm/cargo 共 9 个分支堆着。
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: monthly
+    open-pull-requests-limit: 2
+    groups:
+      actions-minor-patch:
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore(ci)"
