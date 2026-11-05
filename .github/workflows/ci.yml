@@ -48,6 +48,11 @@ jobs:
       - name: Build CLI and API bundles
         run: npm run build:entries
 
+      # 项目健康检查：跨切面一致性（四端数字、34 城数据、文件齐全、
+      # 版本一致、PWA 产物、打包体积、首屏依赖）。单测测不到的在这里兜底。
+      - name: Project doctor
+        run: npm run doctor
+
       - name: Reality-check data gates
         run: npm run verify:reality
 

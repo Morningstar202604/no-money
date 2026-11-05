@@ -122,7 +122,15 @@ describe('端到端对拍：ScenarioEngine(旧) vs ScenarioService(新)', () => 
         it('权益评分、缺口提示、评级、洞察完全一致', () => {
           if (!res.ok) return
           expect(res.value.rightsScore).toBe(old.rightsScore)
-          expect(res.value.rightsFlags).toEqual(old.rightsFlags)
+          // 新引擎在迁移后新增了「有效时薪 vs 法定最低时薪」提示（v3.1.1），
+          // 旧引擎没有这条能力。对拍的是「迁移是否等价」，不是「新功能是否更好」，
+          // 因此这里比对的是旧引擎产出的那部分，新增条目单独由
+          // tests/hourlyWage.spec.ts 覆盖。
+          const NEW_FLAG = /有效时薪.*(低于当地非全日制最低时薪|是当地最低时薪的)/
+          const newOnly = res.value.rightsFlags.filter((f) => NEW_FLAG.test(f))
+          const comparable = res.value.rightsFlags.filter((f) => !NEW_FLAG.test(f))
+          expect(newOnly.length).toBeLessThanOrEqual(1)
+          expect(comparable).toEqual(old.rightsFlags)
           expect(res.value.recommendation).toBe(old.recommendation)
           expect(res.value.keyInsights).toEqual(old.keyInsights)
         })

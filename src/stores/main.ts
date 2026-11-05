@@ -414,7 +414,7 @@ export const useMainStore = defineStore('main', () => {
     return JSON.stringify({
       schemaVersion: SCHEMA_VERSION,
       exportedAt: new Date().toISOString(),
-      appVersion: '3.1.0',
+      appVersion: '3.1.1',
       work: work.value, costs: costs.value, personal: personal.value, customPlans: customPlans.value,
       capacityModel: capacityModel.value, volatilityCv: volatilityCv.value,
     }, null, 2)

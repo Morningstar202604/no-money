@@ -7,8 +7,8 @@
 Income, tax, social insurance and labor-rights calculator for China's gig workers.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1041-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-70-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1061-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-84-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -189,7 +189,7 @@ See [SECURITY.md](SECURITY.md).
 npm ci
 npm run dev            # web dev server
 npm test               # 1041 unit tests
-npm run test:e2e       # 70 browser tests (builds first)
+npm run test:e2e       # 84 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check
 npm run verify:reality # data reality check

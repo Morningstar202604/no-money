@@ -212,6 +212,26 @@ export class ScenarioService {
           medicalMonthly: toYuan(benefitResult.value.medicalMonthly),
         }, personal)
 
+        // ---- 有效时薪 vs 当地非全日制最低时薪 ----
+        // 这是对劳动者最有信息量的一句话：月收入看似不低，但如果时薪低于最低标准，
+        // 说明"多跑的那几个小时"实际上是在用低于法定标准的价格出售时间。
+        const minHourly = this.effectiveMinHourly()
+        if (minHourly !== null) {
+          const netHourlyYuan = netMonthly / Math.max(1, work.dailyHours * work.workDaysMonth)
+          if (netHourlyYuan < minHourly) {
+            const gap = ((minHourly - netHourlyYuan) / minHourly) * 100
+            flags.push(
+              `有效时薪 ¥${netHourlyYuan.toFixed(2)} 低于当地非全日制最低时薪 ¥${minHourly.toFixed(2)}（低 ${gap.toFixed(0)}%）：` +
+                `同样的时间去做受雇工作，法定最低也应有 ¥${minHourly.toFixed(2)}/小时`,
+            )
+          } else if (netHourlyYuan > minHourly * 3) {
+            flags.push(
+              `有效时薪 ¥${netHourlyYuan.toFixed(2)} 是当地最低时薪的 ${(netHourlyYuan / minHourly).toFixed(1)} 倍：` +
+                `这个水平值得优先保住当前节奏，减少无效等单`,
+            )
+          }
+        }
+
         // 不变式：年度与月度必须闭合
         if (Math.abs(netAnnual - netMonthly * 12) > 0.1) {
           throw AppError.invariantViolation('年度净额与月度净额×12 不闭合', { netAnnual, netMonthly })
@@ -362,6 +382,21 @@ export class ScenarioService {
   }
 
   /** 生效的最低工资：用户覆盖优先（省级值），否则用规则文件值 */
+  /**
+   * 当地非全日制最低时薪。
+   *
+   * 为什么需要它：月最低工资只能回答"这个月够不够活"，
+   * 但骑手真正该问的是"我这一小时值不值"——
+   * 因为同样的时间可以去做保安、进厂、跑滴滴。
+   * 时薪是唯一能跨职业比较的尺度。
+   *
+   * 数据缺失时返回 null，调用方跳过该项提示，而不是编一个数。
+   */
+  private effectiveMinHourly(): number | null {
+    const v = this.rawRule.minimumWage?.nonFullTimeHourly
+    return typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : null
+  }
+
   private effectiveMinWage(): number {
     const o = this.statutory?.minWageMonthly
     return typeof o === 'number' && Number.isFinite(o) && o > 0 ? o : this.rawRule.minimumWage.monthly
