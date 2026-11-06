@@ -37,6 +37,19 @@
       </div>
     </n-alert>
 
+    <!-- KPI 归属说明：这三个数字是「最优方案」的，不是左侧参数那一套。
+         不加这句时，用户设 10h 却看到 12h 的钱，会以为工具算错了。 -->
+    <div v-if="dataReady" class="kpi-scope">
+      <span class="kpi-scope-label">以下为最优方案</span>
+      <b class="kpi-scope-name">{{ store.comparison?.best?.name || '—' }}</b>
+      <span class="kpi-scope-detail">
+        {{ store.comparison?.best?.work.dailyHours }}h/天 ·
+        {{ store.comparison?.best?.work.dailyOrders }}单/天 ·
+        {{ store.comparison?.best?.work.workDaysMonth }}天/月
+      </span>
+      <span class="kpi-scope-hint">左侧「当前方案」的数字见方案对比页</span>
+    </div>
+
     <!-- KPI Row：数字用滚动动画呈现，让"拖滑块 → 数字变化"的因果可见 -->
     <div class="kpi-row">
       <div class="stat">
@@ -316,6 +329,39 @@ const pieOption = computed<EChartsCoreOption>(() => {
 </script>
 
 <style scoped>
+.kpi-scope {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0 0 var(--space-2) 2px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+}
+
+.kpi-scope-label {
+  color: var(--color-text-secondary);
+}
+
+.kpi-scope-name {
+  color: var(--color-text-brand);
+  font-weight: var(--font-weight-semibold);
+}
+
+.kpi-scope-detail {
+  font-family: var(--font-family-num);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-scope-hint {
+  margin-left: auto;
+  font-size: 10px;
+}
+
+@media (max-width: 768px) {
+  .kpi-scope-hint { margin-left: 0; width: 100%; }
+}
+
 /* Rights Score */
 .rights-row { display: flex; gap: 12px; align-items: stretch; }
 .rights-score-box {

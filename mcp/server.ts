@@ -78,9 +78,12 @@ function resultToText(r: CalculateResult): string {
   return lines.join('\n')
 }
 
+// 版本从 package.json 读，与 API/CLI/Web 保持一致
+const PKG_VERSION = (JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { version: string }).version
+
 const server = new McpServer({
   name: 'no-money',
-  version: '2.4.0',
+  version: PKG_VERSION,
 })
 
 // ---------- Tool 1: 单城市测算 ----------

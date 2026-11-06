@@ -47,7 +47,7 @@ function warn(name: string, detail: string) {
 function checkFiles() {
   const required = [
     'README.md',
-    'README.en.md',
+    'README.zh-CN.md',
     'LICENSE',
     'PRIVACY.md',
     'TERMS.md',
@@ -83,6 +83,38 @@ function checkVersions() {
 
   if (unique.size === 1) pass('版本号一致', `三处均为 ${pkg.version}`)
   else fail('版本号一致', `不一致：${JSON.stringify(versions)}`)
+}
+
+// ---------- 2b. 无硬编码版本号 ----------
+function checkNoHardcodedVersion() {
+  const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'))
+  const SEMVER_LIKE = /['"]\d+\.\d+\.\d+['"]/g
+
+  // 这些文件里的版本号必须来自 package.json 或构建期注入，
+  // 手写字符串一定会随版本迭代漂移（此前 API 报 2.4.0 而项目已 3.1.2）。
+  const files = ['server/api.ts', 'mcp/server.ts', 'cli/index.ts', 'src/components/FeedbackButton.vue', 'src/stores/main.ts']
+  const offenders: string[] = []
+
+  for (const rel of files) {
+    const full = join(ROOT, rel)
+    if (!existsSync(full)) continue
+    const src = readFileSync(full, 'utf8')
+    // 排除注释行
+    const codeLines = src.split(String.fromCharCode(10)).filter((l) => !/^\s*(\/\/|\*|\/\*)/.test(l))
+    const code = codeLines.join(String.fromCharCode(10))
+    const hits = code.match(SEMVER_LIKE) ?? []
+    // 排除技术标准版本号：OpenAPI '3.1.0' 是规范版本，不是应用版本，
+    // 把它当漂移会逼着人改错东西。
+    const allowed = new Set(["'3.1.0'", '"3.1.0"', "'2.0.0'", '"2.0.0"'])
+    const stale = hits.filter((h) => !h.includes(pkg.version) && !allowed.has(h))
+    if (stale.length) offenders.push(`${rel}: ${stale.join(', ')}`)
+  }
+
+  if (offenders.length) {
+    fail('版本号无硬编码', `以下文件手写了非当前版本号：${offenders.join(' | ')}`)
+  } else {
+    pass('版本号无硬编码', 'API / MCP / CLI / UI 均从 package.json 或构建注入读取')
+  }
 }
 
 // ---------- 3. 34 城数据完整且可算 ----------
@@ -287,6 +319,7 @@ async function main() {
 
   checkFiles()
   checkVersions()
+  checkNoHardcodedVersion()
   await checkCities()
   await checkEntrypointConsistency()
   checkA11y()

@@ -83,6 +83,51 @@ test.describe('语义结构', () => {
     expect(new URL(page.url()).pathname).toBe('/policy')
   })
 
+  test('总览 KPI 明确标注"以下为最优方案"，避免与左侧参数混淆', async ({ page }) => {
+    await page.goto('/dashboard')
+    await page.waitForTimeout(2500)
+    const start = page.getByRole('button', { name: '开始调整参数' })
+    if (await start.count()) await start.click()
+    await page.waitForTimeout(1000)
+
+    // 这三张 KPI 卡显示的是"最优方案"，不是左侧参数那一套。
+    // 没有标注时，用户设 10h 却看到 12h 的钱，会以为工具算错了。
+    await expect(page.getByText(/以下为最优方案/)).toBeVisible()
+    // 标注里要带上方案名与具体强度，否则只是一个没有信息的标签
+    const scope = page.locator('.kpi-scope')
+    await expect(scope).toContainText(/\d+h\/天/)
+    await expect(scope).toContainText(/\d+单\/天/)
+  })
+
+  test('移动端触控目标不小于 24×24（WCAG 2.2 AA）', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/dashboard')
+    await page.waitForTimeout(2500)
+    const start = page.getByRole('button', { name: '开始调整参数' })
+    if (await start.count()) await start.click()
+    await page.waitForTimeout(800)
+
+    // size="tiny" 的按钮只有 22px 高，手机上明显点不准。
+    // 这条不是"锦上添花"：它是 WCAG 2.2 SC 2.5.8 的最低要求。
+    const tooSmall = await page.evaluate(() => {
+      const out: Array<{ label: string; w: number; h: number }> = []
+      document.querySelectorAll('a, button, [role=button]').forEach((el) => {
+        const rc = el.getBoundingClientRect()
+        if (rc.width === 0 || rc.height === 0) return
+        if (rc.width < 24 || rc.height < 24) {
+          out.push({
+            label: (el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 20),
+            w: Math.round(rc.width),
+            h: Math.round(rc.height),
+          })
+        }
+      })
+      return out
+    })
+
+    expect(tooSmall, `触控目标过小：${JSON.stringify(tooSmall)}`).toHaveLength(0)
+  })
+
   test('主题切换后刷新仍保持选择', async ({ page }) => {
     await page.goto('/dashboard')
     await page.waitForTimeout(1500)

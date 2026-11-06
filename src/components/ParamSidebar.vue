@@ -16,7 +16,8 @@
         :disabled="store.loading"
         @update:value="(v: string) => store.setCity(v)"
       />
-      <n-button size="tiny" quaternary block style="margin-top:4px" @click="showMap = true">
+      <!-- 触控目标：tiny 只有 22px 高，手机上难点，这里显式抬到 32px -->
+      <n-button size="tiny" quaternary block style="margin-top:4px; min-height: 32px" @click="showMap = true">
         在地图上选城市（全国）
       </n-button>
     </div>
@@ -736,4 +737,21 @@ const autoMedicalBase = computed(() => autoBase(medicalBaseMin.value, medicalBas
 }
 
 .map-foot { font-size: 11px; color: var(--color-text-tertiary); }
+
+/* 触控目标最小尺寸（WCAG 2.2 AA 要求 24×24 CSS px）。
+   size="tiny" 的 n-button 只有 22px 高，手机上点起来很吃力，
+   实测「导出/导入/重置/选城市」四个按钮全部低于阈值。 */
+.ps-io :deep(.n-button),
+.ps-foot :deep(.n-button) {
+  min-height: 28px;
+}
+
+@media (max-width: 768px) {
+  .ps-io :deep(.n-button),
+  .ps-foot :deep(.n-button),
+  .ps-io .n-button,
+  .ps-foot .n-button {
+    min-height: 36px;
+  }
+}
 </style>
