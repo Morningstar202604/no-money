@@ -75,7 +75,8 @@ const open = ref(false)
 const copied = ref(false)
 const store = useMainStore()
 
-const version = '3.1.2'
+// 构建期从 package.json 注入，不再手写
+const version = __APP_VERSION__
 const REPO = 'https://github.com/badhope/no-money/issues/new'
 
 const bugUrl = computed(() =>

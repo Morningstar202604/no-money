@@ -1,36 +1,36 @@
 <div align="center">
 
-# 没钱 No Money
+# No Money
 
-**别人说「月入过万」，这个工具告诉你这笔钱是怎么算出来的、哪一部分还没核实。**
+**A gig job says "up to ¥10,000 a month." This tells you how that number is built — and which parts of it are unverified.**
 
-面向中国灵活就业者（外卖骑手、网约车司机等）的收入 / 个税 / 社保 / 权益测算平台。
+Income, tax, social insurance and labor-rights calculator for China's gig workers.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-1063-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-84-3fb950)](https://github.com/badhope/no-money)
-[![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
-[![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
+[![e2e](https://img.shields.io/badge/e2e-88-3fb950)](https://github.com/badhope/no-money)
+[![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
+[![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**简体中文** · [English](README.en.md)
+[简体中文](README.zh-CN.md) · **English**
 
 </div>
 
 ---
 
-## 算力入口
+## Four ways to run it
 
-同一套计算内核，四种用法。
+One calculation kernel, four entry points.
 
 ```mermaid
 flowchart LR
     K["src/kernel<br/>calculate.ts"]
-    W["🌐 Web<br/>浏览器"]
-    D["🖥️ 桌面<br/>Windows EXE"]
-    C["⌨️ CLI<br/>命令行"]
-    A["🔌 HTTP API<br/>:8787"]
-    M["🤖 MCP<br/>AI 工具协议"]
+    W["Web<br/>browser"]
+    D["Desktop<br/>Windows EXE"]
+    C["CLI<br/>terminal"]
+    A["HTTP API<br/>:8787"]
+    M["MCP<br/>AI tool protocol"]
     W --> K
     D --> K
     C --> K
@@ -38,199 +38,207 @@ flowchart LR
     M --> K
 ```
 
-| 入口 | 命令 | 适合 |
+| Entry | Command | Use when |
 |---|---|---|
-| **Web** | `npm run dev` | 日常使用，全功能界面 |
-| **桌面** | 安装 `没钱 No Money_2.4.0_x64-setup.exe` | 离线使用，无需浏览器 |
-| **CLI** | `npm run cli -- calc --city shenzhen` | 批量对比、脚本化 |
-| **API** | `npm run api` | 内部系统集成 |
-| **MCP** | `npm run mcp` | 让 AI 助手直接算 |
-| **PWA** | 浏览器地址栏「安装」 | 装到桌面，断网可用 |
+| **Web** | `npm run dev` | Everyday use, full interface |
+| **Desktop** | Install `NoMoney_2.4.0_x64-setup.exe` | Offline, no browser |
+| **CLI** | `npm run cli -- calc --city shenzhen` | Batch comparison, scripting |
+| **API** | `npm run api` | System integration |
+| **MCP** | `npm run mcp` | Let an AI assistant compute directly |
+| **PWA** | "Install" in the address bar | Install to desktop, works offline |
 
-### 30 秒上手
+### Quick start
 
 ```bash
 npm ci
-npm run dev        # 打开 http://localhost:3000
+npm run dev        # http://localhost:3000
 ```
 
 ```bash
-# 命令行：广州跑外卖，一个月到手多少
+# What does delivery work actually pay in Guangzhou?
 npm run cli -- calc --city guangzhou
 
-# 三个城市横向对比
+# Compare three cities
 npm run cli -- compare --cities guangzhou,shenzhen,dongguan
 
-# 34 城规则完整性自检
+# Verify all 34 city rule files
 npm run cli -- check
 ```
 
 ---
 
-## 这个数字是怎么来的
+## How the number is built
 
 ```mermaid
 flowchart TD
-    A["月总收入<br/>单价 × 单量 × 距离 + 补贴"] --> B["减：车辆与生活成本<br/>充电/维护/餐费/折旧"]
-    B --> C["减：个人所得税<br/>劳务报酬年度汇算"]
-    C --> D["减：社保个人缴纳<br/>养老 + 医疗"]
-    D --> E["月净收入"]
-    E --> F["÷ 有效工时"]
-    F --> G["有效时薪"]
-    E --> H["权益评分<br/>社保/工时/收入结构"]
+    A["Gross monthly<br/>rate × orders × distance + subsidies"] --> B["minus vehicle and living costs<br/>charging / upkeep / meals / depreciation"]
+    B --> C["minus income tax<br/>annual settlement basis"]
+    C --> D["minus social insurance<br/>pension + medical"]
+    D --> E["Net monthly income"]
+    E --> F["divided by effective hours"]
+    F --> G["Effective hourly wage"]
+    E --> H["Rights score<br/>insurance / hours / income diversity"]
 ```
 
-**每一步都可在界面上展开看明细。** 没有黑箱。
+**Every step expands to line items in the UI.** No black box.
 
 ---
 
-## 数据覆盖
+## Data coverage
 
 ```
-34 座城市 · 全部 31 个省级行政区
+34 cities · all 31 provincial-level regions
 
-官方原文   ███████████████░░░░░░░░░░░░░░░░░░░░░░░   105 项 (34%)
-推算得出   ██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    37 项 (12%)
-未核实占位 ████████████████████████░░░░░░░░░░░░░░   167 项 (54%)
+official   ███████████████░░░░░░░░░░░░░░░░░░░░░░░   105 items (34%)
+derived    ██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    37 items (12%)
+unverified ████████████████████████░░░░░░░░░░░░░░   167 items (54%)
 ```
 
-每个参数都带来源等级：
+Every parameter carries a confidence level:
 
-| 等级 | 含义 | 界面上 |
+| Level | Meaning | Shown as |
 |---|---|---|
-| `official` | 能追到政府文号与原文链接 | ✅ 已核实 |
-| `derived` | 由官方数据推算，非直接公布 | 🔶 推算 |
-| `unverified` | 无权威来源，仅占位 | ⚠️ 待核实 |
+| `official` | Traced to a government document number and source link | verified |
+| `derived` | Computed from official figures, not directly published | derived |
+| `unverified` | No authoritative source; placeholder only | unverified |
 
-**当结论依赖未核实字段时，界面会把「最优方案」降级为「假设最优」，并列出具体哪几个字段没核实。**
+**When a result depends on an unverified field, the UI downgrades "best option" to "assumed best" and names exactly which fields are missing.**
 
-平台计价单价永远是 `unverified`——它是平台商业规则，没有官方发布渠道。唯一正确的做法是你自己填入 APP 里的真实单价。
-
----
-
-## 为什么要做这个
-
-一个骑手被告知「月入过万」。这个数字藏了四件事：
-
-- 计价单价是占位值，不是他的真实单价
-- 社保没缴，住一次院全部自付
-- 只有每天干 12 小时这个数才成立，而这带来真实的工伤风险
-- 税取决于是否注册个体户，多数计算器把税率算错
-
-**这个工具把这四项假设全部摊开；输入没有核实来源时，不给出确定结论。**
+Platform per-order pricing is always `unverified` — it is a commercial term with no public authority. The only honest path is the user entering their own real rate.
 
 ---
 
-## 界面
+## Why this exists
+
+A delivery rider is told "up to ¥10,000 a month." That number hides four things:
+
+- The per-order rate is a placeholder, not their real rate
+- Social insurance is unpaid, so a hospital stay is 100% out of pocket
+- Working 12h/day is the only way the number works — and that carries real injury risk
+- Tax depends on whether they register as a sole proprietor, and most calculators get the rate wrong
+
+**This tool makes all four assumptions visible, and refuses to print a confident number when the input isn't verified.**
+
+---
+
+## Screenshots
 
 <table>
 <tr>
-<td width="50%"><img src="docs/screenshots/01-dashboard.png" alt="总览" /></td>
-<td width="50%"><img src="docs/screenshots/02-scenario.png" alt="方案对比" /></td>
+<td width="50%"><img src="docs/screenshots/01-dashboard.png" alt="Overview" /></td>
+<td width="50%"><img src="docs/screenshots/02-scenario.png" alt="Scenario lab" /></td>
 </tr>
 <tr>
-<td><b>总览</b> — 净收入、有效时薪、权益评分，点名最薄弱的一环</td>
-<td><b>方案对比</b> — 横向比较多套工作节奏，按可持续收入排序</td>
+<td><b>Overview</b> — net income, effective hourly wage, rights score, with the weakest link named</td>
+<td><b>Scenario lab</b> — compare work patterns, ranked by sustainable income</td>
 </tr>
 <tr>
-<td><img src="docs/screenshots/03-planning.png" alt="税务与养老" /></td>
-<td><img src="docs/screenshots/04-rights.png" alt="权益护航" /></td>
+<td><img src="docs/screenshots/03-planning.png" alt="Tax and pension" /></td>
+<td><img src="docs/screenshots/04-rights.png" alt="Rights" /></td>
 </tr>
 <tr>
-<td><b>税务与养老</b> — 劳务报酬与个体工商户两套税制分开算</td>
-<td><b>权益护航</b> — 五类纠纷的补偿金额与法律依据</td>
+<td><b>Tax and pension</b> — labor remuneration and sole proprietorship computed separately</td>
+<td><b>Rights</b> — compensation amounts with legal basis for five dispute types</td>
 </tr>
 <tr>
-<td><img src="docs/screenshots/05-policy.png" alt="政策百科" /></td>
-<td><img src="docs/screenshots/06-admin.png" alt="数据后台" /></td>
+<td><img src="docs/screenshots/05-policy.png" alt="Policy wiki" /></td>
+<td><img src="docs/screenshots/06-admin.png" alt="Data admin" /></td>
 </tr>
 <tr>
-<td><b>政策百科</b> — 34 城参数逐条溯源</td>
-<td><b>数据后台</b> — 覆盖率统计与一致性检查</td>
+<td><b>Policy wiki</b> — every parameter traced to its source</td>
+<td><b>Data admin</b> — coverage statistics and consistency checks</td>
+</tr>
+<tr>
+<td><img src="docs/screenshots/07-mobile.png" alt="Mobile" /></td>
+<td><img src="docs/screenshots/08-dark.png" alt="Dark theme" /></td>
+</tr>
+<tr>
+<td><b>Mobile</b> — 390px layout, touch targets ≥ 24px</td>
+<td><b>Dark theme</b> — opt-in, persisted across reloads</td>
 </tr>
 </table>
 
 ---
 
-## 五个模块
+## The five modules
 
-| 模块 | 回答什么 |
+| Module | Answers |
 |---|---|
-| **总览** | 月净收入、有效时薪、权益评分，最薄弱的一环是什么 |
-| **方案对比** | 换一套工作节奏能多赚多少，值不值 |
-| **税务与养老** | 劳务报酬 vs 个体户，哪套更省；社保缴多少年划算 |
-| **权益护航** | 被欠薪/工伤/违法解约能拿多少，依据哪条法 |
-| **政策百科** | 这座城市的社保基数、最低工资、税率是多少，出处在哪 |
+| **Overview** | Net monthly income, effective hourly wage, rights score — and the weakest link |
+| **Scenario lab** | What a different work pattern pays, and whether it is worth it |
+| **Tax and pension** | Labor remuneration vs sole proprietorship; how many years of contributions break even |
+| **Rights** | What you can claim for unpaid wages, injury or wrongful dismissal, and under which article |
+| **Policy wiki** | This city's insurance bases, minimum wage and tax rates — with sources |
 
 ---
 
-## 隐私
+## Privacy
 
 ```
-✅ 无后端        ✅ 无账号        ✅ 无埋点
-✅ 无第三方脚本  ✅ 数据不出设备  ✅ 可完全离线
+No backend        No account        No telemetry
+No third-party JS Data stays local  Fully offline
 ```
 
-**可离线**：安装为 PWA 后，断网也能打开并完成测算。实测断网后页面完整可用。
+**Works offline**: once installed as a PWA, the app opens and computes with no network. Verified by a real offline E2E test.
 
-AI 助手是**可选**的：
-- API Key 默认只在内存，勾选「记住」才落盘
-- 对话历史默认只存当前标签页
-- 只发送测算上下文与你填的问题，发往**你自己配置**的端点
-- 非本机端点强制 HTTPS，拒绝 URL 内嵌凭据
+The AI assistant is **opt-in**:
+- API key lives in memory unless you tick "remember"
+- Chat history stays in the tab unless you tick "remember history"
+- Only the calculation context and your question are sent, to the endpoint **you** configure
+- Non-local endpoints must be HTTPS; credentials embedded in URLs are rejected
 
-详见 [SECURITY.md](SECURITY.md)。
+See [SECURITY.md](SECURITY.md).
 
 ---
 
-## 开发
+## Development
 
 ```bash
 npm ci
-npm run dev            # Web 开发服务器
-npm test               # 1063 项单元测试
-npm run test:e2e       # 84 项浏览器测试（构建 + 跑）
-npm run typecheck      # 类型检查
-npm run verify         # 引擎恒等式自检
-npm run verify:reality # 数据现实性核查
-npm run kb:check       # 知识库同步检查
-npm run build          # 生产构建
-npm run tauri:build    # Windows 安装包
+npm run dev            # web dev server
+npm test               # 1041 unit tests
+npm run test:e2e       # 88 browser tests (builds first)
+npm run typecheck      # type check
+npm run verify         # engine identity self-check
+npm run verify:reality # data reality check
+npm run kb:check       # knowledge base sync
+npm run build          # production build
+npm run tauri:build    # Windows installer
 ```
 
-**架构**：`views → components → stores → application → domain`，单向依赖。
-所有入口共用 `src/kernel/calculate.ts`，绝不各自重算。
+**Architecture**: `views → components → stores → application → domain`, one-way.
+Every entry point calls `src/kernel/calculate.ts`. No entry point re-implements a formula.
 
-完整开发约定见 [AGENTS.md](AGENTS.md) 与 [ARCHITECTURE.md](ARCHITECTURE.md)。
-
----
-
-## 已知边界
-
-| 边界 | 说明 |
-|---|---|
-| 税制口径 | 按**年度汇算**算，不是平台预扣预缴。若平台代扣，实际到手用另一套税率表 |
-| 波动模型 | 乘性模型，未建模封号与工伤等尾部事件 |
-| 省级代表值 | 19 个省会用全国量级占位，已标 `unverified` |
-| 定位 | 决策辅助工具，不构成税务或法律意见 |
+Full conventions in [AGENTS.md](AGENTS.md) and [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
-## 文档
+## Known limits
 
-| 文档 | 内容 |
+| Limit | Detail |
 |---|---|
-| [AGENTS.md](AGENTS.md) | AI 编码代理的开发约定 |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | 分层与数据流 |
-| [ROADMAP.md](ROADMAP.md) | 路线图与优先级 |
-| [SECURITY.md](SECURITY.md) | 安全模型与漏洞上报 |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | 贡献指南 |
-| [docs/VERSIONING.md](docs/VERSIONING.md) | 版本规范 |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署与缓存头配置 |
-| [PRIVACY.md](PRIVACY.md) | 隐私政策 |
-| [TERMS.md](TERMS.md) | 服务条款 |
-| [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | 第三方许可 |
+| Tax basis | **Annual settlement**, not platform withholding. If a platform withholds, the real amount uses a different rate table |
+| Volatility | Multiplicative model; bans and injury are not modeled |
+| Provincial values | 19 provincial capitals use national-magnitude placeholders, labeled `unverified` |
+| Scope | A decision aid, not tax or legal advice |
 
-## 许可
+---
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [AGENTS.md](AGENTS.md) | Conventions for AI coding agents |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Layers and data flow |
+| [ROADMAP.md](ROADMAP.md) | Roadmap and priorities |
+| [SECURITY.md](SECURITY.md) | Security model and reporting |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
+| [docs/VERSIONING.md](docs/VERSIONING.md) | Version policy |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment and cache headers |
+| [PRIVACY.md](PRIVACY.md) | Privacy policy |
+| [TERMS.md](TERMS.md) | Terms of service |
+| [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | Third-party licenses |
+
+## License
 
 [MIT](LICENSE)

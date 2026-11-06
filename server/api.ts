@@ -37,6 +37,11 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
 const rulesDir = join(ROOT, 'public', 'rules')
 
+// 版本从 package.json 读，不硬编码：此前写死 '2.4.0'，
+// 项目到 3.1.2 时 /health 还在对外报旧版本。
+const PKG = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { version: string }
+const APP_VERSION = PKG.version
+
 const PORT = Number(process.env.PORT ?? 8787)
 const HOST = process.env.HOST ?? '127.0.0.1'
 const MAX_BODY = 64 * 1024
@@ -137,7 +142,7 @@ const OPENAPI = {
   openapi: '3.1.0',
   info: {
     title: 'No Money API',
-    version: '2.4.0',
+    version: APP_VERSION,
     description:
       '中国灵活就业者收入 / 个税 / 社保 / 权益测算 API。只读服务，不存储任何用户数据。' +
       '所有结果会标注数据置信度——未核实字段的结论只能视为假设测算。',
@@ -230,7 +235,7 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
   if (method === 'GET' && path === '/health') {
     return sendJson(res, 200, {
       status: 'ok',
-      version: '2.4.0',
+      version: APP_VERSION,
       cities: listCities().length,
       uptime: Math.round(process.uptime()),
     })

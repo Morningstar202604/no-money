@@ -3,6 +3,13 @@ import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { VitePWA } from 'vite-plugin-pwa'
+import { readFileSync } from 'node:fs'
+
+// 版本号的单一来源：package.json。
+// 构建期注入成 __APP_VERSION__，前端任何地方要用版本号都读它，
+// 不再手写字符串——此前 server/api.ts 与 mcp/server.ts 各硬编码了一个
+// '2.4.0'，项目已经到 3.1.2 它们还停在旧值，health 接口对外报错版本。
+const APP_VERSION = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')).version
 
 // 生产环境启用压缩与分析
 const isProd = process.env.NODE_ENV === 'production'
@@ -98,6 +105,10 @@ export default defineConfig({
       brotliSize: true,
     }),
   ].filter(Boolean),
+
+  define: {
+    __APP_VERSION__: JSON.stringify(APP_VERSION),
+  },
 
   resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
 
