@@ -444,7 +444,7 @@ import { useMainStore, CITIES } from '../stores/main'
 import { calcCosts } from '../domain/income/calculator'
 import { adaptCosts } from '../application/adapters/ruleAdapters'
 import { calcCapacity } from '../domain/income/capacity'
-import { downloadTextFile } from '../utils/download'
+import { downloadTextFile, copyText } from '../utils/download'
 import SourceTag from './SourceTag.vue'
 import FoldCard from './FoldCard.vue'
 import ChinaMapPicker from './ChinaMapPicker.vue'
@@ -467,7 +467,9 @@ async function shareLink() {
       capacityModel: store.capacityModel, volatilityCv: store.volatilityCv,
     })
     const url = `${location.origin}${location.pathname}?s=${code}`
-    await navigator.clipboard.writeText(url)
+    // 走统一复制工具：Clipboard API 被拒（http 局域网/老内核/无权限）时自动回退 execCommand
+    const ok = await copyText(url)
+    if (!ok) throw new Error('execCommand 复制失败')
     shared.value = true
     clearTimeout(sharedTimer)
     sharedTimer = setTimeout(() => (shared.value = false), 2500)

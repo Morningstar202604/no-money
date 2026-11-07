@@ -441,3 +441,20 @@ code, pre {
 .n-modal-mask:has(+ .n-modal-container .onb) {
   z-index: 150 !important;
 }
+
+/* ---------- Reduced Motion 兜底 ---------- */
+/* AnimatedNumber/CommandPalette 等组件内已各自处理；这里兜住全局动画类，
+   确保系统开启"减少动态效果"后没有任何不可关闭的动画。 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-slide-down,
+  .animate-scale-in,
+  .skeleton {
+    animation: none;
+  }
+  .skeleton {
+    /* 保留骨架占位的可辨识度：静默渐变替代闪烁 */
+    background: var(--color-neutral-200);
+  }
+}

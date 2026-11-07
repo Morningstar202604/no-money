@@ -43,7 +43,7 @@ flowchart LR
 | Entry | Command | Use when |
 |---|---|---|
 | **Web** | `npm run dev` | Everyday use, full interface |
-| **Desktop** | Install `NoMoney_2.4.0_x64-setup.exe` | Offline, no browser |
+| **Desktop** | Install the Windows installer from [Releases](https://github.com/badhope/no-money/releases) | Offline, no browser |
 | **CLI** | `npm run cli -- calc --city shenzhen` | Batch comparison, scripting |
 | **API** | `npm run api` | System integration |
 | **MCP** | `npm run mcp` | Let an AI assistant compute directly |
@@ -198,7 +198,7 @@ See [SECURITY.md](SECURITY.md).
 ```bash
 npm ci
 npm run dev            # web dev server
-npm test               # 1041 unit tests
+npm test               # 1088 unit tests
 npm run test:e2e       # 92 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check
@@ -237,7 +237,7 @@ Full conventions in [AGENTS.md](AGENTS.md) and [ARCHITECTURE.md](ARCHITECTURE.md
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | Version policy |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment, cache headers, Docker |
-| [docs/RESEARCH.md](docs/RESEARCH.md) | Survey of 12 similar projects and what we adopted |
+| [docs/RESEARCH.md](docs/RESEARCH.md) | Survey of 18 similar projects and what we adopted |
 | [PRIVACY.md](PRIVACY.md) | Privacy policy |
 | [TERMS.md](TERMS.md) | Terms of service |
 | [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | Third-party licenses |

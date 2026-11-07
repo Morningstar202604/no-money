@@ -70,6 +70,7 @@
  */
 import { ref, computed } from 'vue'
 import { useMainStore } from '../stores/main'
+import { copyText } from '../utils/download'
 
 const open = ref(false)
 const copied = ref(false)
@@ -103,11 +104,12 @@ async function copyDiagnostics(): Promise<void> {
   ].join('\n')
 
   try {
-    await navigator.clipboard.writeText(info)
-    copied.value = true
-    setTimeout(() => (copied.value = false), 2000)
+    // 统一复制工具：Clipboard API 失败时自动回退 execCommand
+    const ok = await copyText(info)
+    copied.value = ok
+    if (ok) setTimeout(() => (copied.value = false), 2000)
   } catch {
-    // 剪贴板被拒（非 HTTPS 或权限拒绝）：退化为选中文本让用户手动复制
+    // 剪贴板彻底不可用：提示用户手动复制
     copied.value = false
   }
 }

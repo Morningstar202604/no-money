@@ -5,6 +5,39 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## 3.3.1 — 2026-11-07
+
+落地执行收尾轮：竞品二轮深挖 + 全流程走查揪出的三处体验修复 + 文档时效性。
+
+### Added
+
+- **全局 `prefers-reduced-motion` 兜底**（`src/styles/global.css`）：
+  AnimatedNumber/CommandPalette 等组件此前已各自处理，但 `animate-*`
+  全局动画类与骨架屏 shimmer 没有兜底——系统开启"减少动态效果"后
+  仍有不可关闭的动画。补齐后所有动画均可被系统设置关闭。
+- `scripts/walkthrough.mjs`：用户视角全流程走查脚本（12 步截图，
+  覆盖命令面板/各模块/分享/移动端/深色），供发版前人工复核。
+- `docs/RESEARCH.md` 第二轮深挖：新增 6 个项目（Actual Budget/
+  Firefly III/Pare/income-calc/MilkWind 养老金计算器/social-security-advisor），
+  逐条核对吸收状态；总调研数 12 → 18。
+
+### Fixed
+
+- **分享链接复制无降级**（走查实测发现）：`ParamSidebar`/`FeedbackButton`
+  直接裸调 `navigator.clipboard.writeText`，剪贴板权限被拒
+  （http 局域网、老内核、无头环境）时只报错不降级。统一改走
+  `copyText`（Clipboard API 失败自动回退 `execCommand`）。
+- **ChartBox 双重 resize**：ResizeObserver 与 window resize 对同一次
+  窗口变化各触发一次回调，改为 rAF 合并到下一帧。
+- **AnimatedNumber 读屏噪音**：数字滚动对辅助技术是逐帧播报；
+  容器加 `role="text"` + `aria-label`（最终值），中间帧 `aria-hidden`。
+- README/README.zh-CN 时效漂移：桌面入口写死 2.4.0 安装包名、
+  单测数 1041/1075、调研数 12 —— 全部更正并指向 Releases 页。
+
+### 验证
+
+- vue-tsc 全绿；全量单测 1088 通过；走查 12 步截图零控制台报错。
+
 ## 3.3.0 — 2026-11-07
 
 数据可信度与 AI 隐私边界两块历史欠账（源自 2.1.0 接手分析切片 P2/P3），

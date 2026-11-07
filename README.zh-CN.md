@@ -43,7 +43,7 @@ flowchart LR
 | 入口 | 命令 | 适合 |
 |---|---|---|
 | **Web** | `npm run dev` | 日常使用，全功能界面 |
-| **桌面** | 安装 `没钱 No Money_2.4.0_x64-setup.exe` | 离线使用，无需浏览器 |
+| **桌面** | 从 [Releases](https://github.com/badhope/no-money/releases) 下载 Windows 安装包 | 离线使用，无需浏览器 |
 | **CLI** | `npm run cli -- calc --city shenzhen` | 批量对比、脚本化 |
 | **API** | `npm run api` | 内部系统集成 |
 | **MCP** | `npm run mcp` | 让 AI 助手直接算 |
@@ -198,7 +198,7 @@ AI 助手是**可选**的：
 ```bash
 npm ci
 npm run dev            # Web 开发服务器
-npm test               # 1075 项单元测试
+npm test               # 1088 项单元测试
 npm run test:e2e       # 92 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检
@@ -237,7 +237,7 @@ npm run tauri:build    # Windows 安装包
 | [CONTRIBUTING.md](CONTRIBUTING.md) | 贡献指南 |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | 版本规范 |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署、缓存头与 Docker |
-| [docs/RESEARCH.md](docs/RESEARCH.md) | 12 个同类项目调研与采纳记录 |
+| [docs/RESEARCH.md](docs/RESEARCH.md) | 18 个同类项目调研与采纳记录 |
 | [PRIVACY.md](PRIVACY.md) | 隐私政策 |
 | [TERMS.md](TERMS.md) | 服务条款 |
 | [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | 第三方许可 |
