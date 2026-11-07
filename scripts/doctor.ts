@@ -65,6 +65,7 @@ function checkFiles() {
     'docker/Dockerfile.api',
     'docker-compose.yml',
     'docker/nginx.conf',
+    'scripts/rules-snapshot.mjs',
   ]
   const missing = required.filter((f) => !existsSync(join(ROOT, f)))
   if (missing.length) fail('关键文件齐全', `缺失：${missing.join('、')}`)

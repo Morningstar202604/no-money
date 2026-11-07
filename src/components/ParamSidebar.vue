@@ -438,7 +438,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { NSlider, NRadioGroup, NRadioButton, NSwitch, NSelect, NButton, NModal, NInputNumber, useMessage } from 'naive-ui'
+import { NSlider, NRadioGroup, NRadioButton, NSwitch, NSelect, NButton, NModal, NInputNumber, NAlert, useMessage } from 'naive-ui'
 import { ref } from 'vue'
 import { useMainStore, CITIES } from '../stores/main'
 import { calcCosts } from '../domain/income/calculator'

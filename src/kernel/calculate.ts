@@ -21,6 +21,14 @@ import { ScenarioService, type ScenarioInput } from '../application/scenario/Sce
 /** 规则加载器：浏览器与 Node 各自实现，内核不关心来源 */
 export type RuleLoader = (city: string) => Promise<CityRule>
 
+/**
+ * 产能模型默认值：与 DEFAULT_WORK / DEFAULT_COSTS / DEFAULT_PERSONAL 一样
+ * 从内核统一出口。tests/share.spec.ts 依赖它构造分享参数基准——漏导出时
+ * esbuild 运行时是 undefined，静默把空 capacityModel 编进分享链接，
+ * 所以默认值必须只从内核取、并经 typecheck:test 卡住。
+ */
+export { DEFAULT_CAPACITY } from '../domain/income/capacity'
+
 /** 一次测算的完整输入 */
 export interface CalculateRequest {
   city: string

@@ -7,7 +7,7 @@
 面向中国灵活就业者（外卖骑手、网约车司机等）的收入 / 个税 / 社保 / 权益测算平台。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1075-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1088-3fb950)](https://github.com/badhope/no-money)
 [![e2e](https://img.shields.io/badge/e2e-92-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)

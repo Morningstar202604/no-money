@@ -2,6 +2,7 @@ import { ref, onScopeDispose } from 'vue'
 import type { ScenarioResult } from '../types'
 import { scoreTier, scoreLevel } from '../utils/score'
 import { validateEndpoint } from '../utils/endpoint'
+import { redactContext } from '../utils/redact'
 import { searchKnowledge, kbContextForPrompt, KB_TYPE_LABELS, citySourceEntries, buildStaticKbEntries } from '../utils/knowledge'
 import type { CityRule } from '../types'
 import { provinceOf } from '../data/provinces'
@@ -34,6 +35,12 @@ export interface ApiConfig {
    * 默认 false —— 对话只留在当前标签页内存中，避免聊天内容被无提示长期留存。
    */
   rememberHistory: boolean
+  /**
+   * 出站脱敏：发送前把月收入/净收入/时薪等精确金额替换为区间档位
+   * （如 ¥6,843.70 → ¥6000-6999）。默认 false —— 脱敏会让建议的数字精度下降，
+   * 属于用户显式选择的隐私/效用取舍。
+   */
+  redactSensitive: boolean
 }
 
 const STORAGE_KEY = 'nomoney_ai_cfg'
@@ -56,6 +63,7 @@ const DEFAULT_CONFIG: ApiConfig = {
   enabled: false,
   rememberKey: false,
   rememberHistory: false,
+  redactSensitive: false,
 }
 
 interface LoadedConfig {
@@ -83,6 +91,7 @@ function loadConfig(): LoadedConfig {
     if (typeof cfg.enabled !== 'boolean') cfg.enabled = false
     if (typeof cfg.rememberKey !== 'boolean') cfg.rememberKey = false
     if (typeof cfg.rememberHistory !== 'boolean') cfg.rememberHistory = false
+    if (typeof cfg.redactSensitive !== 'boolean') cfg.redactSensitive = false
     cfg.apiKey = ''
     if (cfg.rememberKey) {
       const current = localStorage.getItem(KEY_STORE_KEY)
@@ -347,17 +356,21 @@ export function useAIChat() {
     return `本地知识库检索到 ${hits.length} 条相关内容（离线，附官方链接）：\n\n${blocks.join('\n\n')}\n\n提示：以上为知识库条目原文摘录；要结合你自己的数据做决策分析，请在「API 设置」启用 AI 大模型。`
   }
 
+  /** 组装出站 system prompt：sendOnline 与发送预览共用，保证"预览所见 = 实际所发" */
+  function buildSysPrompt(question: string, context: string, rule?: CityRule | null): string {
+    // RAG 雏形：发送前先做本地知识库检索，把命中条目作为上下文注入，
+    // 降低模型编造文号/政策的概率；检索在本地完成，不额外联网。
+    // 必须把本城溯源条目一起送进检索（传入 rule），否则任何城市都会检索到广东政策
+    const kbCtx = kbContextForPrompt(question, 3, rule ? [...buildStaticKbEntries(), ...citySourceEntries(rule)] : undefined)
+    return `你是"没钱 No Money"的决策助手，面向灵活就业者（外卖骑手、网约车司机等）。根据用户当前测算数据给出具体可操作建议。硬性要求：不超过205字；只依据下列数据与用户问题作答；不得编造法律法规名称、文号、税率或政策文件；涉及法律或税务结论时必须提示以官方机构或专业人士意见为准。以下是用户数据：\n${context}${kbCtx ? `\n\n${kbCtx}` : ''}`
+  }
+
   async function sendOnline(question: string, context: string, version: number, rule?: CityRule | null) {
     // Authorization 头会发往用户自填的地址，校验失败必须直接拒，不发请求
     const check = validateEndpoint(config.value.endpoint)
     if (!check.ok) throw new Error(check.error ?? 'Endpoint 不合法')
 
-    // RAG 雏形：发送前先做本地知识库检索，把命中条目作为上下文注入，
-    // 降低模型编造文号/政策的概率；检索在本地完成，不额外联网。
-    // 必须把本城溯源条目一起送进检索（传入 rule），否则任何城市都会检索到广东政策
-    const kbCtx = kbContextForPrompt(question, 3, rule ? [...buildStaticKbEntries(), ...citySourceEntries(rule)] : undefined)
-
-    const sysPrompt = `你是"没钱 No Money"的决策助手，面向灵活就业者（外卖骑手、网约车司机等）。根据用户当前测算数据给出具体可操作建议。硬性要求：不超过205字；只依据下列数据与用户问题作答；不得编造法律法规名称、文号、税率或政策文件；涉及法律或税务结论时必须提示以官方机构或专业人士意见为准。以下是用户数据：\n${context}${kbCtx ? `\n\n${kbCtx}` : ''}`
+    const sysPrompt = buildSysPrompt(question, context, rule)
 
     // 错误气泡（isError）不进上下文：上一轮的"AI连接失败…"被模型当事实复述会污染回答
     const recentMsgs = messages.value.filter(m => !m.isStreaming && !m.isError).slice(-6).map(m => ({ role: m.role, content: m.content }))
@@ -495,7 +508,9 @@ export function useAIChat() {
     if (isStreaming.value) return
     const safeQuestion = question.slice(0, MAX_MSG_CHARS)
     messages.value.push({ id: newId('u'), role: 'user', content: safeQuestion, timestamp: Date.now() })
-    const ctx = buildContext(scenarios, rule)
+    // 出站脱敏只作用于发给第三方的这条路径；本地展示与规则引擎应答不受影响
+    const rawCtx = buildContext(scenarios, rule)
+    const ctx = config.value.redactSensitive ? redactContext(rawCtx) : rawCtx
     const useAI = config.value.enabled && !!config.value.apiKey && isOnline.value
 
     if (useAI) {
@@ -653,5 +668,26 @@ export function useAIChat() {
     return finish(true)
   }
 
-  return { config, messages, isStreaming, isOnline, showSettings, storageWarning, clearHistory, updateConfig, stopStreaming, sendMessage }
+  /**
+   * 发送预览：返回"如果现在发送，将外发什么、发往哪里"。
+   * 与 sendOnline 共用 buildSysPrompt / buildContext / 脱敏管道，
+   * 保证预览内容与实际请求体逐字一致（问题文本除外）。
+   */
+  function buildOutboundPreview(question: string, scenarios: ScenarioResult[], rule?: CityRule | null) {
+    const rawCtx = buildContext(scenarios, rule)
+    const redacted = config.value.redactSensitive
+    const ctx = redacted ? redactContext(rawCtx) : rawCtx
+    const check = validateEndpoint(config.value.endpoint)
+    return {
+      /** 解析出的目标主机；endpoint 非法时为 undefined */
+      host: check.ok ? check.host : undefined,
+      endpointError: check.ok ? undefined : check.error,
+      model: config.value.model,
+      redacted,
+      /** 实际会作为 system 消息外发的完整内容 */
+      outbound: buildSysPrompt(question, ctx, rule),
+    }
+  }
+
+  return { config, messages, isStreaming, isOnline, showSettings, storageWarning, clearHistory, updateConfig, stopStreaming, sendMessage, buildOutboundPreview }
 }

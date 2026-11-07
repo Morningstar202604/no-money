@@ -16,6 +16,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { NMessageProvider } from 'naive-ui'
 import MainLayout from '../src/layouts/MainLayout.vue'
+import { useMainStore } from '../src/stores/main'
+import { parseCityRule } from '../src/utils/cityRule'
 
 beforeEach(() => {
   setActivePinia(createPinia())
@@ -104,5 +106,37 @@ describe('主布局渲染', () => {
     const src = readFileSync('src/layouts/MainLayout.vue', 'utf8')
     // 模板结构：<div v-if="store.rule" class="global-alert info" role="status">
     expect(src, '规则提示必须带 role=status').toMatch(/class="global-alert info"\s+role="status"/)
+  })
+
+  it('参数侧栏的规则提示由真实 NAlert 渲染，而非未解析的 <n-alert> 标签', async () => {
+    // 回归背景：ParamSidebar.vue 模板用了 <n-alert>，但 script 未从 naive-ui
+    // 导入 NAlert。生产环境 Vue 只在控制台告警，提示框整块静默不渲染——
+    // 「本省参数未回溯官方原文」这个数据诚实性入口就消失了。
+    // 修复前未解析组件按原样标签输出（无 .n-alert class），本断言必红。
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const store = useMainStore()
+    // 用真实城市规则（长春：pension 与 minimumWage 均为 unverified，恰好触发
+    // 法定参数提示卡），走与运行时一致的 parseCityRule 解析路径——手工 stub
+    // 会在 ScenarioService 重算 scenarios 时因缺字段崩溃，且掩盖解析回归
+    const raw = JSON.parse(readFileSync('public/rules/changchun.json', 'utf8'))
+    store.rule = parseCityRule(raw)
+    const router = makeRouter()
+    const Wrapper = defineComponent({
+      setup() {
+        return () => h(NMessageProvider, null, { default: () => h(MainLayout) })
+      },
+    })
+    const wrapper = mount(Wrapper, {
+      global: { plugins: [pinia, router] },
+      attachTo: document.body,
+    })
+    await nextTick()
+    await nextTick()
+
+    const alert = wrapper.find('.n-alert')
+    expect(alert.exists(), '规则提示必须渲染为真实的 naive-ui Alert（.n-alert）').toBe(true)
+    expect(alert.text(), '提示文案必须可见').toContain('未回溯官方原文')
+    wrapper.unmount()
   })
 })

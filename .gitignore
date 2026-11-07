@@ -36,3 +36,6 @@ blob-report/
 dist-cli/
 dist-server/
 .tmp/
+
+# 规则数据快照（本地安全点，长期事实源是 git 历史）
+.rules-snapshots/

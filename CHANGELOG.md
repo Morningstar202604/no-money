@@ -5,6 +5,52 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## 3.3.0 — 2026-11-07
+
+数据可信度与 AI 隐私边界两块历史欠账（源自 2.1.0 接手分析切片 P2/P3），
+外加一轮全量 debug。目标：把「可交付」补完整。
+
+### Added
+
+- **AI 出站脱敏开关**（`src/utils/redact.ts` + 设置面板）：启用后，
+  月收入/净收入/时薪等精确金额在发送给第三方模型前替换为区间档位
+  （月度量级按千元分档 ¥6,843.70 → ¥6000-6999；时薪按 5 元分档 ¥26.32 → ¥25-30），
+  保住量级与相对关系、抹掉精确到分的颗粒度。默认关闭——脱敏会降低建议的数字精度，
+  属于用户显式选择的隐私/效用取舍。5 项单测覆盖分档边界与替换完整性。
+- **发送预览**（设置面板折叠面板）：展开即可看到「启用 AI 后到底会外发什么」——
+  目标主机、模型、脱敏状态与完整 system prompt。预览与真实请求共用同一条
+  构建管道（`buildSysPrompt`），保证**预览所见 = 实际所发**；
+  endpoint 非法时预览如实标错，不给看似可用的目标。3 项单测含一致性断言。
+- **规则数据快照与回滚**（`scripts/rules-snapshot.mjs`，切片 P2 落地）：
+  34 城规则是唯一事实源，此前更新前没有任何本地安全点。现在：
+  `npm run rules:snapshot` 生成快照 + sha256 manifest + latest 指针；
+  `rules:verify` 检测改动/缺失/新增三类漂移（退出码 1，可进 CI）；
+  `rules:rollback <city|all>` 单城或全量回滚（覆盖性操作须 `--yes` 确认，
+  回滚后逐文件哈希校验）。4 项行为测试以真实子进程实跑 CLI 验证。
+- doctor 关键文件清单 19 → 20 项（纳入快照工具）。
+
+### Fixed
+
+- **参数侧栏的规则提示整块不渲染**：`ParamSidebar.vue` 模板用了 `<n-alert>`，
+  script 却没从 naive-ui 导入 `NAlert`——生产环境只在控制台告警，
+  「本省参数未回溯官方原文」这个数据诚实性入口静默消失。
+  补导入 + 真实挂载回归测试（修复前断言必红）。
+- **分享链接静默丢失产能模型**：内核漏导出 `DEFAULT_CAPACITY`，
+  esbuild 运行时拿到 undefined，`{...undefined}` 展开成空对象被编进分享 URL，
+  对方打开后产能默认值悄然丢失。补内核统一出口 + 往返解码回归测试。
+- **快照工具自身的一处设计缺陷**：`latest` 指针原在模块顶层急切解析，
+  导致 `snapshot` 命令在没有历史快照时自己也跑不起来（先有鸡还是先有蛋）。
+  改为 verify/rollback 按需解析。
+- **依赖审计现状核实**：官方 registry 实跑 `npm audit` —— 0 critical/high，
+  余 4 个 low（`vite-plugin-pwa → workbox-build → @rollup/plugin-node-resolve → deepmerge`
+  原型污染链），修复需把 vite-plugin-pwa 降到 0.2.x（breaking），记录在案暂不动。
+  此前接手分析记录的 8 项漏洞（happy-dom ≤20.14.6 链）已随 happy-dom 21 升级消除。
+
+### Verified
+
+- 单测 **1088**（1075 → 1088：脱敏 5 + 出站行为 3 + 快照工具 4 + 既有 1075 全绿）；
+  `vue-tsc` 与 `typecheck:test` 通过；doctor 20 项全绿。
+
 ## 3.2.0 — 2026-11-07
 
 三个新能力 + 一处架构改进，全部来自对 12 个同类项目的深度调研

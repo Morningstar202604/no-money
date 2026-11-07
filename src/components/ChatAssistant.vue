@@ -87,6 +87,21 @@
           <n-checkbox v-model:checked="rememberHistory">在本机记住对话历史</n-checkbox>
           <div class="ps-note-sm">默认不记住：对话只在当前标签页内存中保留。勾选后仅保存最近 50 条经过校验的消息，可随时取消并删除本机历史。</div>
         </n-form-item>
+        <n-form-item>
+          <n-checkbox v-model:checked="redactSensitive">发送前脱敏财务金额</n-checkbox>
+          <div class="ps-note-sm">开启后，月收入/净收入/时薪等精确金额会替换为区间档位（如 ¥6,843.70 → ¥6000-6999）再外发，降低精确财务数据离开本机的粒度。默认关闭：脱敏会让建议中的数字精度下降。</div>
+        </n-form-item>
+        <n-collapse>
+          <n-collapse-item title="发送预览：勾选启用后到底会外发什么" name="preview">
+            <div class="ps-note-sm">
+              目标：<b>{{ outboundPreview.host ?? '（endpoint 非法，将拒绝发送）' }}</b>
+              · 模型：{{ outboundPreview.model }}
+              · 脱敏：{{ outboundPreview.redacted ? '开（金额已替换为区间）' : '关（精确金额原样外发）' }}
+            </div>
+            <n-alert v-if="outboundPreview.endpointError" type="error" :show-icon="true">{{ outboundPreview.endpointError }}</n-alert>
+            <pre class="outbound-preview">{{ outboundPreview.outbound }}</pre>
+          </n-collapse-item>
+        </n-collapse>
         <div class="key-actions">
           <span class="key-status">
             Key 当前：{{ config.apiKey ? (config.rememberKey ? '已明文保存在本机' : '仅本次会话内存中') : '未填写' }}
@@ -116,7 +131,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, watch, computed } from 'vue'
-import { NButton, NInput, NTag, NDivider, NModal, NSpace, NFormItem, NSelect, NSwitch, NAlert, NCheckbox, useMessage } from 'naive-ui'
+import { NButton, NInput, NTag, NDivider, NModal, NSpace, NFormItem, NSelect, NSwitch, NAlert, NCheckbox, NCollapse, NCollapseItem, useMessage } from 'naive-ui'
 import { useAIChat } from '../composables/useAIChat'
 import { useMainStore } from '../stores/main'
 import { validateEndpoint, deriveModelsUrl } from '../utils/endpoint'
@@ -126,7 +141,7 @@ const props = defineProps<{ scenarios: ScenarioResult[] }>()
 const message = useMessage()
 const store = useMainStore()
 
-const { config, messages, isStreaming, isOnline, showSettings, storageWarning, sendMessage, stopStreaming, clearHistory, updateConfig } = useAIChat()
+const { config, messages, isStreaming, isOnline, showSettings, storageWarning, sendMessage, stopStreaming, clearHistory, updateConfig, buildOutboundPreview } = useAIChat()
 
 const open = ref(false)
 const input = ref('')
@@ -156,6 +171,16 @@ const rememberHistory = computed({
     if (!ok) message.warning('本地存储不可用，历史偏好仅在当前会话有效')
   },
 })
+
+const redactSensitive = computed({
+  get: () => config.value.redactSensitive,
+  set: (v: boolean) => { config.value.redactSensitive = v },
+})
+
+/** 发送预览：与实际外发共用同一条构建管道，示例问题仅用于占位 */
+const outboundPreview = computed(() =>
+  buildOutboundPreview('怎么合法省税？', props.scenarios, store.rule),
+)
 
 const modelOptions = [
   { label: 'DeepSeek Chat', value: 'deepseek-chat' },
@@ -336,6 +361,19 @@ function saveAndClose() {
 }
 .key-status { font-size: 11px; color: var(--color-text-secondary); }
 .ps-note-sm { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.5; margin-top: 2px; }
+.outbound-preview {
+  margin: 6px 0 0;
+  padding: 8px;
+  max-height: 220px;
+  overflow: auto;
+  font-size: 11px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: var(--color-bg-tertiary);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
 
 .msg-src {
   margin-top: 4px;

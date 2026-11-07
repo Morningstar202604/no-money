@@ -24,6 +24,10 @@ describe('分享编码', () => {
     expect(round!.work.dailyOrders).toBe(45)
     expect(round!.personal.currentAge).toBe(31)
     expect(round!.personal.hasSocialInsurance).toBe(true)
+    // 回归：kernel 必须真的导出 DEFAULT_CAPACITY。漏导出时 esbuild 运行时
+    // 是 undefined，{...undefined} 展开成空对象被编进分享 URL，对方打开后
+    // 产能模型全丢——正是文件头注释说的「看起来能用」型缺陷。
+    expect(round!.capacityModel).toEqual(DEFAULT_CAPACITY)
     expect(round!.volatilityCv).toBe(0.25)
   })
 
