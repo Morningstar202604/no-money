@@ -13,6 +13,8 @@ export const router = createRouter({
     // 数据管理后台：统计 34 城规则覆盖率并跑一致性检查。
     // 不做登录：它管理的是公开只读的规则文件，没有需要保护的私有数据。
     { path: '/admin', name: 'Admin', component: () => import('../views/AdminView.vue'), meta: { title: '数据管理后台' } },
+    // 数据核验对账页：面向用户的"这个数能不能信"，与 /admin 的治理视角互补
+    { path: '/audit', name: 'Audit', component: () => import('../views/AuditView.vue'), meta: { title: '数据核验对账' } },
     // 未知路径显式 404：静默重定向会让用户以为地址是对的（深链写错也无从发现）
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/NotFoundView.vue'), meta: { title: '页面不存在' } },
   ],

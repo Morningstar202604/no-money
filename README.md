@@ -8,7 +8,7 @@ Income, tax, social insurance and labor-rights calculator for China's gig worker
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-1088-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-92-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-100-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -158,6 +158,12 @@ A delivery rider is told "up to ¥10,000 a month." That number hides four things
 <td><b>Mobile</b> — 390px layout, touch targets ≥ 24px</td>
 <td><b>Dark theme</b> — opt-in, persisted across reloads</td>
 </tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/09-audit.png" alt="Data audit matrix" /></td>
+</tr>
+<tr>
+<td colspan="2"><b>Data audit</b> — every city × every policy field. 38% traced to an official document, and the page says so instead of hiding it.</td>
+</tr>
 </table>
 
 ---
@@ -199,7 +205,7 @@ See [SECURITY.md](SECURITY.md).
 npm ci
 npm run dev            # web dev server
 npm test               # 1088 unit tests
-npm run test:e2e       # 92 browser tests (builds first)
+npm run test:e2e       # 100 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check
 npm run verify:reality # data reality check

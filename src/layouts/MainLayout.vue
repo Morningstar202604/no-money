@@ -223,6 +223,18 @@ const paletteCommands = computed<Command[]>(() => [
     keywords: [item.key.toLowerCase()],
     run: () => onNav(item.key),
   })),
+  // 次要页不进主导航（避免五个主项被稀释），但要从命令面板可达：
+  // 数据核验对账是"这个数能不能信"的入口，用户想查时找不到会很挫败。
+  {
+    id: 'nav-audit', label: '数据核验对账', hint: '/audit', kind: 'navigate' as const,
+    group: '页面', keywords: ['audit', 'heyan', '数据', '核验', '对账', '可信'],
+    run: () => { router.push('/audit') },
+  },
+  {
+    id: 'nav-admin', label: '数据管理后台', hint: '/admin', kind: 'navigate' as const,
+    group: '页面', keywords: ['admin', 'houTai', '后台', '管理', '覆盖率'],
+    run: () => { router.push('/admin') },
+  },
   ...CITY_OPTIONS.map((city) => ({
     id: `city-${city.value}`,
     label: city.label,

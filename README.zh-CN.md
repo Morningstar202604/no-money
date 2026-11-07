@@ -8,7 +8,7 @@
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-1088-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-92-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-100-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -158,6 +158,12 @@ flowchart TD
 <td><b>移动端</b> — 390px 布局，触控目标 ≥ 24px</td>
 <td><b>深色主题</b> — 可选，刷新后保持</td>
 </tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/09-audit.png" alt="数据核验矩阵" /></td>
+</tr>
+<tr>
+<td colspan="2"><b>数据核验</b> — 34 城 × 5 类字段逐项标注。38% 已核到官方原文，页面如实说明而不是藏起来。</td>
+</tr>
 </table>
 
 ---
@@ -199,7 +205,7 @@ AI 助手是**可选**的：
 npm ci
 npm run dev            # Web 开发服务器
 npm test               # 1088 项单元测试
-npm run test:e2e       # 92 项浏览器测试（构建 + 跑）
+npm run test:e2e       # 100 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检
 npm run verify:reality # 数据现实性核查
