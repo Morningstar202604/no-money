@@ -147,9 +147,10 @@
             page-leave-active 永驻（整页停在旧页面上，点导航也换不掉）。
             入场淡入由 .page-content 自身的 fadeIn 动画承担，效果等价。
           -->
-          <router-view v-slot="{ Component }">
-            <component :is="Component" class="page-content" />
-          </router-view>
+          <!-- ViewOutlet = RouterView + 视图级错误边界：
+               某一页渲染抛错只降级该页，侧边栏/导航/其余页面继续可用
+               （全局 handler 的整页错误卡只留作 app 级兜底） -->
+          <ViewOutlet />
         </div>
       </main>
     </div>
@@ -172,6 +173,7 @@ import { useMainStore } from '../stores/main'
 import { CITY_OPTIONS } from '../data/cities'
 import ParamSidebar from '../components/ParamSidebar.vue'
 import ChatAssistant from '../components/ChatAssistant.vue'
+import ViewOutlet from '../app/ViewOutlet.vue'
 import CommandPalette from '../components/CommandPalette.vue'
 import FeedbackButton from '../components/FeedbackButton.vue'
 import type { Command } from '../utils/commandPalette'

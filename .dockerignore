@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-server
+dist-cli
+src-tauri/target
+test-results
+playwright-report
+.git
+.aqg
+docs
+*.log
+stats.html

@@ -7,13 +7,15 @@
 面向中国灵活就业者（外卖骑手、网约车司机等）的收入 / 个税 / 社保 / 权益测算平台。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1063-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-88-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1075-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-92-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 [English](README.md) · **简体中文**
+
+<img src="docs/screenshots/demo.gif" alt="按 Ctrl+K 输入城市名回车，所有指标实时重算" width="720" />
 
 </div>
 
@@ -196,8 +198,8 @@ AI 助手是**可选**的：
 ```bash
 npm ci
 npm run dev            # Web 开发服务器
-npm test               # 1063 项单元测试
-npm run test:e2e       # 88 项浏览器测试（构建 + 跑）
+npm test               # 1075 项单元测试
+npm run test:e2e       # 92 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检
 npm run verify:reality # 数据现实性核查
@@ -234,7 +236,8 @@ npm run tauri:build    # Windows 安装包
 | [SECURITY.md](SECURITY.md) | 安全模型与漏洞上报 |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | 贡献指南 |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | 版本规范 |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署与缓存头配置 |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署、缓存头与 Docker |
+| [docs/RESEARCH.md](docs/RESEARCH.md) | 12 个同类项目调研与采纳记录 |
 | [PRIVACY.md](PRIVACY.md) | 隐私政策 |
 | [TERMS.md](TERMS.md) | 服务条款 |
 | [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | 第三方许可 |

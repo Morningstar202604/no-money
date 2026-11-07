@@ -1,0 +1,42 @@
+# =====================================================================
+# 一键起整套服务：Web 静态站 + 可选 HTTP API
+# ---------------------------------------------------------------------
+# 用法：
+#   docker compose up -d web            # 只要网页（大多数人只需要这个）
+#   docker compose up -d api            # 需要程序化调用时再开
+#   docker compose up -d                # 全部
+#
+# 设计取舍：
+#   - Web 与 API 是两个独立镜像。Web 是纯静态、无状态；API 是只读计算服务。
+#     合成一个镜像会让静态站背上 Node 运行时（~120MB），违背"局部出错不影响整体"：
+#     API 被打挂时不应该连带网页也挂。
+#   - API 没有对外暴露端口默认注释掉。它是只读服务但仍是计算资源，
+#     暴露到公网前请先想清楚限流与访问控制（自带 120/min/IP）。
+# =====================================================================
+
+services:
+  web:
+    build: .
+    image: no-money/web:latest
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    # 静态站无状态，不需要卷
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    image: no-money/api:latest
+    # 需要外部访问时取消注释，并确认网络环境可信：
+    # ports:
+    #   - "8787:8787"
+    restart: unless-stopped
+    environment:
+      # 容器内默认 120/min/IP；内网压测时可临时调高
+      RATE_LIMIT: "120"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8787/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3

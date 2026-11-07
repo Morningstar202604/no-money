@@ -5,6 +5,46 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## 3.2.0 — 2026-11-07
+
+三个新能力 + 一处架构改进，全部来自对 12 个同类项目的深度调研
+（`docs/RESEARCH.md` 记录了「参考了谁、采纳了什么、为什么不采纳」）。
+
+### Added
+
+- **URL 方案分享**：侧边栏一键复制带参数的链接，发给同行/家人即可让对方
+  看到一模一样的测算现场。URL-safe Base64（无 +/=，粘进微信不转义），
+  默认参数下链接仅 814 字符；解码后走 `importParams` 的白名单夹取管道
+  （分享链接是不可信输入）；消费后从地址栏移除 `s=`，刷新不重复应用；
+  打开时显示「这是别人的参数」横幅。9 项编解码单测（篡改/截断/超长/白名单）
+  + 2 项真实浏览器 E2E。
+- **视图级错误边界**（`src/app/ViewOutlet.vue`）：此前任何一页渲染抛错都会
+  触发全局 handler 整页白屏——违背「部分出错不影响整体」。现在错误只降级
+  当前视图（保留侧边栏/导航/命令面板），提供重试与回总览出口。
+  3 项单测含反证（正常子组件不误伤）。
+- **容器化部署**：`Dockerfile`（web，nginx:1.27-alpine 运行时 <30MB，
+  多阶段构建利用层缓存）、`docker/Dockerfile.api`（node:22-alpine，
+  非 root + 只读文件系统 + 限流默认开启）、`docker-compose.yml`（web/api
+  独立镜像——API 被打挂不连带网页）、`docker/nginx.conf`（SPA 回退 +
+  分级缓存 + 安全头，与 docs/DEPLOYMENT.md 一致）。
+- **README 演示动图**：命令面板切城 + KPI 滚动实拍（183KB，ffmpeg 双遍
+  调色板压制），双语 README 顶部展示。
+- `docs/RESEARCH.md`：12 个同类项目（Gigbox/FairFare/Gridwise/PolicyEngine/
+  OpenFisca/HMRC/中文个税计算器等）的「采纳/不采纳/待做」对照表。
+
+### Fixed
+
+- **分享参数消费后不被移除**：vue-router 初始导航会等懒加载路由解析完，
+  然后把它记录的初始地址（含 `?s=`）写回 history——`setTimeout` 双宏任务
+  仍被覆盖（真实浏览器实测）。改为在 `router.isReady()` 后执行清理，
+  这是 router 写回完成后的第一个确定性时机。
+
+### Testing
+
+- 单测 1063 → **1075**（分享 9 + 错误边界 3）
+- E2E 88 → **92**（分享全链路 2 + 常规回归）
+- doctor 检查文件清单扩到 19 项（容器/调研文档入位）
+
 ## 3.1.3 — 2026-11-07
 
 修掉三个真实缺陷，并把 README 主次调整为英文优先。

@@ -60,6 +60,11 @@ function checkFiles() {
     'THIRD-PARTY-NOTICES.md',
     'docs/DEPLOYMENT.md',
     'docs/VERSIONING.md',
+    'docs/RESEARCH.md',
+    'Dockerfile',
+    'docker/Dockerfile.api',
+    'docker-compose.yml',
+    'docker/nginx.conf',
   ]
   const missing = required.filter((f) => !existsSync(join(ROOT, f)))
   if (missing.length) fail('关键文件齐全', `缺失：${missing.join('、')}`)
