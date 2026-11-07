@@ -5,6 +5,156 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## 3.4.0 — 2026-11-07
+
+补齐对账文档里剩余的确定性项，并把数据缺口做成用户可见的页面。
+
+### Added
+
+- **数据核验对账页 `/audit`**：34 城 × 5 类政策字段的核验矩阵。
+  绿色＝已核到官方原文，黄色＝占位待核实，一眼可辨。
+  真实统计实测：官方覆盖 **38%**（64/170），**全核实城市 0/34**。
+  页面还单列说明「平台计价为何永远无法官方化」——它是商业规则没有跨平台权威源，
+  唯一可信做法是用户填入自己 APP 的真实单价。这是产品诚实承诺的可视化落地。
+  从命令面板可直接到达（不占五主项导航）。
+- **漏洞例外记录** `docs/SECURITY-EXCEPTIONS.md` + doctor 门禁。
+  记录 deepmerge 传递依赖的三段式例外（影响评估/为何不修/复查触发条件），
+  并验证 `dist/` 中不含该包。高危漏洞不允许记例外。
+- **首屏 JS 预算门禁**：实测 406K gzip，预算 500K，超出即失败。
+
+### Changed
+
+- **vue-tsc 2.1 → 3.3.14**：大版本升级，类型检查零改动通过（1088 单测回归）。
+- **vendor 分块细化**：`vendor-other` 424K 拆为 `vendor-util`(29.9K gzip)
+  与 `vendor-misc`(117.6K gzip)，按"首屏是否需要"划分。
+- `deepmerge` 加 `overrides` 尝试升级（确认 4.3.1 已是最新，advisory 无修复版本）。
+
+### Testing
+
+- 单测 1075 → **1088**
+- E2E 92 → **100**（新增对账页 3 项 + a11y 覆盖 /audit）
+- 三轮模拟用户确认：门禁全绿 → 对账页专项 → 全量回归
+- doctor 检查项扩到 21 个文件 + 首屏预算 + 漏洞例外门禁
+
+## 3.3.1 — 2026-11-07
+
+落地执行收尾轮：竞品二轮深挖 + 全流程走查揪出的三处体验修复 + 文档时效性。
+
+### Added
+
+- **全局 `prefers-reduced-motion` 兜底**（`src/styles/global.css`）：
+  AnimatedNumber/CommandPalette 等组件此前已各自处理，但 `animate-*`
+  全局动画类与骨架屏 shimmer 没有兜底——系统开启"减少动态效果"后
+  仍有不可关闭的动画。补齐后所有动画均可被系统设置关闭。
+- `scripts/walkthrough.mjs`：用户视角全流程走查脚本（12 步截图，
+  覆盖命令面板/各模块/分享/移动端/深色），供发版前人工复核。
+- `docs/RESEARCH.md` 第二轮深挖：新增 6 个项目（Actual Budget/
+  Firefly III/Pare/income-calc/MilkWind 养老金计算器/social-security-advisor），
+  逐条核对吸收状态；总调研数 12 → 18。
+
+### Fixed
+
+- **分享链接复制无降级**（走查实测发现）：`ParamSidebar`/`FeedbackButton`
+  直接裸调 `navigator.clipboard.writeText`，剪贴板权限被拒
+  （http 局域网、老内核、无头环境）时只报错不降级。统一改走
+  `copyText`（Clipboard API 失败自动回退 `execCommand`）。
+- **ChartBox 双重 resize**：ResizeObserver 与 window resize 对同一次
+  窗口变化各触发一次回调，改为 rAF 合并到下一帧。
+- **AnimatedNumber 读屏噪音**：数字滚动对辅助技术是逐帧播报；
+  容器加 `role="text"` + `aria-label`（最终值），中间帧 `aria-hidden`。
+- README/README.zh-CN 时效漂移：桌面入口写死 2.4.0 安装包名、
+  单测数 1041/1075、调研数 12 —— 全部更正并指向 Releases 页。
+
+### 验证
+
+- vue-tsc 全绿；全量单测 1088 通过；走查 12 步截图零控制台报错。
+
+## 3.3.0 — 2026-11-07
+
+数据可信度与 AI 隐私边界两块历史欠账（源自 2.1.0 接手分析切片 P2/P3），
+外加一轮全量 debug。目标：把「可交付」补完整。
+
+### Added
+
+- **AI 出站脱敏开关**（`src/utils/redact.ts` + 设置面板）：启用后，
+  月收入/净收入/时薪等精确金额在发送给第三方模型前替换为区间档位
+  （月度量级按千元分档 ¥6,843.70 → ¥6000-6999；时薪按 5 元分档 ¥26.32 → ¥25-30），
+  保住量级与相对关系、抹掉精确到分的颗粒度。默认关闭——脱敏会降低建议的数字精度，
+  属于用户显式选择的隐私/效用取舍。5 项单测覆盖分档边界与替换完整性。
+- **发送预览**（设置面板折叠面板）：展开即可看到「启用 AI 后到底会外发什么」——
+  目标主机、模型、脱敏状态与完整 system prompt。预览与真实请求共用同一条
+  构建管道（`buildSysPrompt`），保证**预览所见 = 实际所发**；
+  endpoint 非法时预览如实标错，不给看似可用的目标。3 项单测含一致性断言。
+- **规则数据快照与回滚**（`scripts/rules-snapshot.mjs`，切片 P2 落地）：
+  34 城规则是唯一事实源，此前更新前没有任何本地安全点。现在：
+  `npm run rules:snapshot` 生成快照 + sha256 manifest + latest 指针；
+  `rules:verify` 检测改动/缺失/新增三类漂移（退出码 1，可进 CI）；
+  `rules:rollback <city|all>` 单城或全量回滚（覆盖性操作须 `--yes` 确认，
+  回滚后逐文件哈希校验）。4 项行为测试以真实子进程实跑 CLI 验证。
+- doctor 关键文件清单 19 → 20 项（纳入快照工具）。
+
+### Fixed
+
+- **参数侧栏的规则提示整块不渲染**：`ParamSidebar.vue` 模板用了 `<n-alert>`，
+  script 却没从 naive-ui 导入 `NAlert`——生产环境只在控制台告警，
+  「本省参数未回溯官方原文」这个数据诚实性入口静默消失。
+  补导入 + 真实挂载回归测试（修复前断言必红）。
+- **分享链接静默丢失产能模型**：内核漏导出 `DEFAULT_CAPACITY`，
+  esbuild 运行时拿到 undefined，`{...undefined}` 展开成空对象被编进分享 URL，
+  对方打开后产能默认值悄然丢失。补内核统一出口 + 往返解码回归测试。
+- **快照工具自身的一处设计缺陷**：`latest` 指针原在模块顶层急切解析，
+  导致 `snapshot` 命令在没有历史快照时自己也跑不起来（先有鸡还是先有蛋）。
+  改为 verify/rollback 按需解析。
+- **依赖审计现状核实**：官方 registry 实跑 `npm audit` —— 0 critical/high，
+  余 4 个 low（`vite-plugin-pwa → workbox-build → @rollup/plugin-node-resolve → deepmerge`
+  原型污染链），修复需把 vite-plugin-pwa 降到 0.2.x（breaking），记录在案暂不动。
+  此前接手分析记录的 8 项漏洞（happy-dom ≤20.14.6 链）已随 happy-dom 21 升级消除。
+
+### Verified
+
+- 单测 **1088**（1075 → 1088：脱敏 5 + 出站行为 3 + 快照工具 4 + 既有 1075 全绿）；
+  `vue-tsc` 与 `typecheck:test` 通过；doctor 20 项全绿。
+
+## 3.2.0 — 2026-11-07
+
+三个新能力 + 一处架构改进，全部来自对 12 个同类项目的深度调研
+（`docs/RESEARCH.md` 记录了「参考了谁、采纳了什么、为什么不采纳」）。
+
+### Added
+
+- **URL 方案分享**：侧边栏一键复制带参数的链接，发给同行/家人即可让对方
+  看到一模一样的测算现场。URL-safe Base64（无 +/=，粘进微信不转义），
+  默认参数下链接仅 814 字符；解码后走 `importParams` 的白名单夹取管道
+  （分享链接是不可信输入）；消费后从地址栏移除 `s=`，刷新不重复应用；
+  打开时显示「这是别人的参数」横幅。9 项编解码单测（篡改/截断/超长/白名单）
+  + 2 项真实浏览器 E2E。
+- **视图级错误边界**（`src/app/ViewOutlet.vue`）：此前任何一页渲染抛错都会
+  触发全局 handler 整页白屏——违背「部分出错不影响整体」。现在错误只降级
+  当前视图（保留侧边栏/导航/命令面板），提供重试与回总览出口。
+  3 项单测含反证（正常子组件不误伤）。
+- **容器化部署**：`Dockerfile`（web，nginx:1.27-alpine 运行时 <30MB，
+  多阶段构建利用层缓存）、`docker/Dockerfile.api`（node:22-alpine，
+  非 root + 只读文件系统 + 限流默认开启）、`docker-compose.yml`（web/api
+  独立镜像——API 被打挂不连带网页）、`docker/nginx.conf`（SPA 回退 +
+  分级缓存 + 安全头，与 docs/DEPLOYMENT.md 一致）。
+- **README 演示动图**：命令面板切城 + KPI 滚动实拍（183KB，ffmpeg 双遍
+  调色板压制），双语 README 顶部展示。
+- `docs/RESEARCH.md`：12 个同类项目（Gigbox/FairFare/Gridwise/PolicyEngine/
+  OpenFisca/HMRC/中文个税计算器等）的「采纳/不采纳/待做」对照表。
+
+### Fixed
+
+- **分享参数消费后不被移除**：vue-router 初始导航会等懒加载路由解析完，
+  然后把它记录的初始地址（含 `?s=`）写回 history——`setTimeout` 双宏任务
+  仍被覆盖（真实浏览器实测）。改为在 `router.isReady()` 后执行清理，
+  这是 router 写回完成后的第一个确定性时机。
+
+### Testing
+
+- 单测 1063 → **1075**（分享 9 + 错误边界 3）
+- E2E 88 → **92**（分享全链路 2 + 常规回归）
+- doctor 检查文件清单扩到 19 项（容器/调研文档入位）
+
 ## 3.1.3 — 2026-11-07
 
 修掉三个真实缺陷，并把 README 主次调整为英文优先。

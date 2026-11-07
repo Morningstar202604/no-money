@@ -284,3 +284,92 @@ describe('AI 对话历史隐私边界', () => {
     removeItem.mockRestore()
   })
 })
+
+describe('出站脱敏与发送预览', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    vi.useFakeTimers()
+  })
+
+  afterEach(() => {
+    scope?.stop()
+    scope = undefined
+    vi.useRealTimers()
+    vi.restoreAllMocks()
+  })
+
+  /** buildContext 只消费这些字段；用最小桩保证测试聚焦脱敏本身 */
+  function fakeScenario() {
+    return {
+      name: '当前方案',
+      work: { city: 'guangzhou', dailyHours: 10, dailyOrders: 30, workDaysMonth: 26 },
+      income: { grossIncome: 8969.7 },
+      costBreakdown: { total: 1200.5 },
+      tax: { annualTax: 1500 },
+      netMonthly: 6843.7,
+      netHourly: 26.32,
+      rightsScore: 72,
+      keyInsights: [],
+    } as unknown as Parameters<ReturnType<typeof useAIChat>['sendMessage']>[1][number]
+  }
+
+  function sseStream(): Response {
+    const encoder = new TextEncoder()
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(encoder.encode('data: {"choices":[{"delta":{"content":"ok"}}]}\n\ndata: [DONE]\n\n'))
+        controller.close()
+      },
+    })
+    return new Response(stream, { status: 200 })
+  }
+
+  it('开启脱敏后外发内容不含精确金额，已替换为区间档位', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(sseStream())
+    const chat = createChat()
+    expect(chat.updateConfig({ enabled: true, apiKey: 'k', endpoint: 'https://example.com/v1/chat/completions', redactSensitive: true })).toBe(true)
+    chat.isOnline.value = true
+
+    await chat.sendMessage('怎么省税', [fakeScenario()])
+
+    expect(fetchMock).toHaveBeenCalledOnce()
+    const body = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body)) as { messages: Array<{ content: string }> }
+    const sys = body.messages[0]?.content ?? ''
+    expect(sys).not.toContain('6843.7')
+    expect(sys).not.toContain('8969.7')
+    expect(sys).not.toContain('26.32')
+    expect(sys).toContain('¥6000-6999')
+    expect(sys).toContain('¥25-30')
+  })
+
+  it('默认不脱敏，外发内容保留精确金额', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(sseStream())
+    const chat = createChat()
+    expect(chat.updateConfig({ enabled: true, apiKey: 'k', endpoint: 'https://example.com/v1/chat/completions' })).toBe(true)
+    expect(chat.config.value.redactSensitive).toBe(false)
+    chat.isOnline.value = true
+
+    await chat.sendMessage('怎么省税', [fakeScenario()])
+
+    const body = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body)) as { messages: Array<{ content: string }> }
+    expect(body.messages[0]?.content).toContain('¥6843.7')
+  })
+
+  it('发送预览与实际外发一致：目标主机、脱敏状态与 prompt 内容', () => {
+    const chat = createChat()
+    expect(chat.updateConfig({ enabled: true, apiKey: 'k', endpoint: 'https://example.com/v1/chat/completions', redactSensitive: true })).toBe(true)
+
+    const preview = chat.buildOutboundPreview('怎么省税', [fakeScenario()])
+    expect(preview.host).toBe('example.com')
+    expect(preview.redacted).toBe(true)
+    expect(preview.endpointError).toBeUndefined()
+    expect(preview.outbound).not.toContain('6843.7')
+    expect(preview.outbound).toContain('¥6000-6999')
+
+    // endpoint 非法时预览必须如实标错，而不是给出看似可用的目标
+    expect(chat.updateConfig({ endpoint: 'http://evil.example.com/v1/chat/completions' })).toBe(true)
+    const bad = chat.buildOutboundPreview('怎么省税', [fakeScenario()])
+    expect(bad.host).toBeUndefined()
+    expect(bad.endpointError).toContain('https')
+  })
+})

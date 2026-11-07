@@ -7,13 +7,15 @@
 Income, tax, social insurance and labor-rights calculator for China's gig workers.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1063-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-88-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1088-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-100-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 [简体中文](README.zh-CN.md) · **English**
+
+<img src="docs/screenshots/demo.gif" alt="Press Ctrl+K, type a city name, press Enter — every KPI recalculates live" width="720" />
 
 </div>
 
@@ -41,7 +43,7 @@ flowchart LR
 | Entry | Command | Use when |
 |---|---|---|
 | **Web** | `npm run dev` | Everyday use, full interface |
-| **Desktop** | Install `NoMoney_2.4.0_x64-setup.exe` | Offline, no browser |
+| **Desktop** | Install the Windows installer from [Releases](https://github.com/badhope/no-money/releases) | Offline, no browser |
 | **CLI** | `npm run cli -- calc --city shenzhen` | Batch comparison, scripting |
 | **API** | `npm run api` | System integration |
 | **MCP** | `npm run mcp` | Let an AI assistant compute directly |
@@ -156,6 +158,12 @@ A delivery rider is told "up to ¥10,000 a month." That number hides four things
 <td><b>Mobile</b> — 390px layout, touch targets ≥ 24px</td>
 <td><b>Dark theme</b> — opt-in, persisted across reloads</td>
 </tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/09-audit.png" alt="Data audit matrix" /></td>
+</tr>
+<tr>
+<td colspan="2"><b>Data audit</b> — every city × every policy field. 38% traced to an official document, and the page says so instead of hiding it.</td>
+</tr>
 </table>
 
 ---
@@ -196,8 +204,8 @@ See [SECURITY.md](SECURITY.md).
 ```bash
 npm ci
 npm run dev            # web dev server
-npm test               # 1041 unit tests
-npm run test:e2e       # 88 browser tests (builds first)
+npm test               # 1088 unit tests
+npm run test:e2e       # 100 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check
 npm run verify:reality # data reality check
@@ -234,7 +242,8 @@ Full conventions in [AGENTS.md](AGENTS.md) and [ARCHITECTURE.md](ARCHITECTURE.md
 | [SECURITY.md](SECURITY.md) | Security model and reporting |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | Version policy |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment and cache headers |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment, cache headers, Docker |
+| [docs/RESEARCH.md](docs/RESEARCH.md) | Survey of 18 similar projects and what we adopted |
 | [PRIVACY.md](PRIVACY.md) | Privacy policy |
 | [TERMS.md](TERMS.md) | Terms of service |
 | [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | Third-party licenses |

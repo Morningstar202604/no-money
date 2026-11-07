@@ -4,6 +4,7 @@ import type { CityRule, WorkParams, CostParams, PersonalParams, ScenarioResult, 
 import { ScenarioService } from '../application/scenario/ScenarioService'
 import type { ScenarioInput } from '../application/scenario/ScenarioService'
 import { hydrateParams } from '../utils/params'
+import { decodeShare } from '../utils/share'
 import {
   calcCapacity,
   hoursForOrders,
@@ -234,6 +235,30 @@ export const useMainStore = defineStore('main', () => {
   /** 取出 Result 的成功值；失败时返回 null，让 UI 走空态而不是抛错白屏 */
   function unwrap<T>(r: { ok: true; value: T } | { ok: false }): T | null {
     return r.ok ? r.value : null
+  }
+
+  /**
+   * 应用 URL 中的分享参数（`?s=...`）。
+   * 在首次 loadRule 之前调用：分享链接带着别人的城市与参数，
+   * 必须在"加载哪个城市"这一步就生效，否则先加载默认城市再切换会闪两次。
+   * 成功后移除 URL 参数：刷新不应重复应用（用户此后改参数属于新状态）。
+   * 返回是否应用了分享（用于启动提示）。
+   */
+  function applySharedParams(): boolean {
+    try {
+      const shared = decodeShare(window.location.search)
+      if (!shared) return false
+      // 复用 importParams 的白名单+夹取管道：分享链接是不可信输入，
+      // 与手改 localStorage 同一容错口径——非法字段落默认值而不是报错。
+      // 不在这里清 URL：vue-router 的初始导航会等懒加载路由解析完，
+      // 然后把它记录的初始地址（含 ?s=）写回 history——任何 setTimeout
+      // 都抢不过它（实测双宏任务仍被覆盖）。清理由 App.vue 在
+      // router.isReady() 之后执行，那是 router 写回完成后的确定性时机。
+      const err = importParams(shared as unknown)
+      return err === null
+    } catch {
+      return false
+    }
   }
 
   async function loadRule(city: string) {
@@ -557,5 +582,5 @@ export const useMainStore = defineStore('main', () => {
     }
   }
 
-  return { rule, ruleTimeNotice, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams, capacityModel, volatilityCv }
+  return { rule, ruleTimeNotice, loading, loadError, paramsRestored, cityNotice, persistError, work, costs, personal, customPlans, compensation, setCompensation, applySharedParams, scenarios, comparison, isDark, toggleTheme, loadRule, setCity, resetParams, addScenario, removeScenario, exportParams, importParams, capacityModel, volatilityCv }
 })

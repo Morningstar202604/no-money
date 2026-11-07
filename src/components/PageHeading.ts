@@ -21,6 +21,7 @@ export const PAGE_TITLES = {
   rights: '权益护航 — 补偿计算与文书',
   policy: '政策百科与民生手册',
   admin: '数据管理后台',
+  audit: '数据核验对账',
 } as const
 
 export type PageKey = keyof typeof PAGE_TITLES

@@ -15,6 +15,7 @@ test.describe('语义结构', () => {
     ['/rights', '权益'],
     ['/policy', '政策'],
     ['/admin', '数据管理'],
+    ['/audit', '数据核验'],
   ] as const
 
   for (const [path, keyword] of pages) {

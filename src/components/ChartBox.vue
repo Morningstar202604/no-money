@@ -65,19 +65,31 @@ function resize() {
   chart.value.resize()
 }
 
+// ResizeObserver 与 window resize 会对同一次窗口变化各触发一次回调；
+// 用 rAF 合并到下一帧，一帧内多次触发只 resize 一次。
+let resizeScheduled = false
+function scheduleResize() {
+  if (resizeScheduled) return
+  resizeScheduled = true
+  requestAnimationFrame(() => {
+    resizeScheduled = false
+    if (!disposed) resize()
+  })
+}
+
 onMounted(() => {
   nextTick(render)
   if (typeof ResizeObserver !== 'undefined' && el.value) {
-    ro = new ResizeObserver(resize)
+    ro = new ResizeObserver(scheduleResize)
     ro.observe(el.value)
   }
-  window.addEventListener('resize', resize)
+  window.addEventListener('resize', scheduleResize)
 })
 
 onBeforeUnmount(() => {
   disposed = true
   renderSeq++
-  window.removeEventListener('resize', resize)
+  window.removeEventListener('resize', scheduleResize)
   ro?.disconnect()
   ro = null
   chart.value?.dispose()

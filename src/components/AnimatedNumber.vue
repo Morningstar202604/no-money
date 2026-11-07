@@ -1,8 +1,14 @@
 <template>
-  <span class="animated-number" :class="{ counting: isCounting }">
-    <span class="an-prefix" v-if="prefix">{{ prefix }}</span>
-    <span class="an-value">{{ displayText }}</span>
-    <span class="an-suffix" v-if="suffix">{{ suffix }}</span>
+  <!-- 读屏器播报最终值即可：滚动中间帧对辅助技术是逐帧噪音 -->
+  <span
+    class="animated-number"
+    :class="{ counting: isCounting }"
+    role="text"
+    :aria-label="finalText"
+  >
+    <span class="an-prefix" v-if="prefix" aria-hidden="true">{{ prefix }}</span>
+    <span class="an-value" aria-hidden="true">{{ displayText }}</span>
+    <span class="an-suffix" v-if="suffix" aria-hidden="true">{{ suffix }}</span>
   </span>
 </template>
 
@@ -48,6 +54,8 @@ const isCounting = ref(false)
 let frame: number | null = null
 
 const displayText = computed(() => props.formatter(current.value))
+/** 无障碍播报用：跳过动画，始终是目标值的最终文案 */
+const finalText = computed(() => props.formatter(props.value))
 
 function prefersReducedMotion(): boolean {
   if (typeof window === 'undefined' || !window.matchMedia) return false

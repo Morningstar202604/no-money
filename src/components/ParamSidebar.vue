@@ -421,6 +421,11 @@
         <button class="ps-restored-x" aria-label="关闭提示" @click="store.paramsRestored = false">×</button>
       </div>
       <div v-if="importError" class="ps-persist-error">{{ importError }}</div>
+      <!-- 分享：把当前参数编码进 URL，发给同行/家人让对方原样看到自己的情况。
+           消息类按钮必须给可感知反馈，"已复制"比静默成功重要 -->
+      <n-button size="tiny" quaternary block @click="shareLink">
+        {{ shared ? '已复制分享链接 ✓' : '复制分享链接' }}
+      </n-button>
       <div class="ps-io">
         <n-button size="tiny" quaternary block @click="exportParams">导出参数</n-button>
         <n-button size="tiny" quaternary block @click="importInput?.click()">导入参数</n-button>
@@ -433,13 +438,13 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { NSlider, NRadioGroup, NRadioButton, NSwitch, NSelect, NButton, NModal, NInputNumber } from 'naive-ui'
+import { NSlider, NRadioGroup, NRadioButton, NSwitch, NSelect, NButton, NModal, NInputNumber, NAlert, useMessage } from 'naive-ui'
 import { ref } from 'vue'
 import { useMainStore, CITIES } from '../stores/main'
 import { calcCosts } from '../domain/income/calculator'
 import { adaptCosts } from '../application/adapters/ruleAdapters'
 import { calcCapacity } from '../domain/income/capacity'
-import { downloadTextFile } from '../utils/download'
+import { downloadTextFile, copyText } from '../utils/download'
 import SourceTag from './SourceTag.vue'
 import FoldCard from './FoldCard.vue'
 import ChinaMapPicker from './ChinaMapPicker.vue'
@@ -449,6 +454,30 @@ const store = useMainStore()
 /** 参数导出/导入：快照与持久化同构，文件不含任何敏感数据 */
 const importInput = ref<HTMLInputElement>()
 const importError = ref<string | null>(null)
+
+/** 生成带参数的分享链接并复制。失败时用消息告知而不是静默。 */
+const message = useMessage()
+const shared = ref(false)
+let sharedTimer: ReturnType<typeof setTimeout> | undefined
+async function shareLink() {
+  try {
+    const { encodeShare } = await import('../utils/share')
+    const code = encodeShare({
+      work: store.work, costs: store.costs, personal: store.personal,
+      capacityModel: store.capacityModel, volatilityCv: store.volatilityCv,
+    })
+    const url = `${location.origin}${location.pathname}?s=${code}`
+    // 走统一复制工具：Clipboard API 被拒（http 局域网/老内核/无权限）时自动回退 execCommand
+    const ok = await copyText(url)
+    if (!ok) throw new Error('execCommand 复制失败')
+    shared.value = true
+    clearTimeout(sharedTimer)
+    sharedTimer = setTimeout(() => (shared.value = false), 2500)
+    import.meta.env.DEV && console.info('[share] url length:', url.length)
+  } catch (e) {
+    message.error('无法复制链接：' + (e instanceof Error ? e.message : '剪贴板不可用'))
+  }
+}
 
 function exportParams() {
   const ok = downloadTextFile({

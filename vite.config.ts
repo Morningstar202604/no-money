@@ -166,9 +166,16 @@ export default defineConfig({
           if (id.includes('node_modules/echarts')) {
             return 'echarts'
           }
-          // 4. 其余 node_modules
+          // 4. 其余 node_modules：按用途细分，避免一个 424K 的巨块在首屏同步加载。
+          //    拆分依据是"谁在什么时候需要"：
+          //    - 日期/数字格式化：几乎全局都要，留在 vendor-util
+          //    - 图标与 CSS-in-JS（vueuc/date-fns 等）：首屏需要，vendor-util
+          //    - 其余（含只在懒加载页用到的工具库）：vendor-misc，随页面按需拉取
           if (id.includes('node_modules')) {
-            return 'vendor-other'
+            if (/node_modules\/(date-fns|dayjs|vueuc|seemly|@css-render|css-render|evtd|@juggle|vdirs|vooks|async-validator|@vicons)/.test(id)) {
+              return 'vendor-util'
+            }
+            return 'vendor-misc'
           }
         },
       },

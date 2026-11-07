@@ -7,13 +7,15 @@
 面向中国灵活就业者（外卖骑手、网约车司机等）的收入 / 个税 / 社保 / 权益测算平台。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1063-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-88-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1088-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-100-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 [English](README.md) · **简体中文**
+
+<img src="docs/screenshots/demo.gif" alt="按 Ctrl+K 输入城市名回车，所有指标实时重算" width="720" />
 
 </div>
 
@@ -41,7 +43,7 @@ flowchart LR
 | 入口 | 命令 | 适合 |
 |---|---|---|
 | **Web** | `npm run dev` | 日常使用，全功能界面 |
-| **桌面** | 安装 `没钱 No Money_2.4.0_x64-setup.exe` | 离线使用，无需浏览器 |
+| **桌面** | 从 [Releases](https://github.com/badhope/no-money/releases) 下载 Windows 安装包 | 离线使用，无需浏览器 |
 | **CLI** | `npm run cli -- calc --city shenzhen` | 批量对比、脚本化 |
 | **API** | `npm run api` | 内部系统集成 |
 | **MCP** | `npm run mcp` | 让 AI 助手直接算 |
@@ -156,6 +158,12 @@ flowchart TD
 <td><b>移动端</b> — 390px 布局，触控目标 ≥ 24px</td>
 <td><b>深色主题</b> — 可选，刷新后保持</td>
 </tr>
+<tr>
+<td colspan="2"><img src="docs/screenshots/09-audit.png" alt="数据核验矩阵" /></td>
+</tr>
+<tr>
+<td colspan="2"><b>数据核验</b> — 34 城 × 5 类字段逐项标注。38% 已核到官方原文，页面如实说明而不是藏起来。</td>
+</tr>
 </table>
 
 ---
@@ -196,8 +204,8 @@ AI 助手是**可选**的：
 ```bash
 npm ci
 npm run dev            # Web 开发服务器
-npm test               # 1063 项单元测试
-npm run test:e2e       # 88 项浏览器测试（构建 + 跑）
+npm test               # 1088 项单元测试
+npm run test:e2e       # 100 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检
 npm run verify:reality # 数据现实性核查
@@ -234,7 +242,8 @@ npm run tauri:build    # Windows 安装包
 | [SECURITY.md](SECURITY.md) | 安全模型与漏洞上报 |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | 贡献指南 |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | 版本规范 |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署与缓存头配置 |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 部署、缓存头与 Docker |
+| [docs/RESEARCH.md](docs/RESEARCH.md) | 18 个同类项目调研与采纳记录 |
 | [PRIVACY.md](PRIVACY.md) | 隐私政策 |
 | [TERMS.md](TERMS.md) | 服务条款 |
 | [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | 第三方许可 |

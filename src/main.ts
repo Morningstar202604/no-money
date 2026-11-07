@@ -9,6 +9,9 @@ const app = createApp(App)
 // 这里给出用户可见的提示，并监听 router 的 chunk 失败事件。
 app.config.errorHandler = (err, _instance, info) => {
   console.error('[app] 运行时异常：', err, info)
+  // 已被视图级 ErrorBoundary（src/app/ViewOutlet.vue）捕获的错误不再整页替换：
+  // 边界 return false 阻止了向上冒泡，能走到这里说明边界没罩住
+  // （如 app 级初始化、MainLayout 自身），整页兜底卡才是正确降级。
   const detail = err instanceof Error ? err.message : String(err)
   showFatalError(`应用出现异常，请刷新页面重试（${info}: ${detail}）`)
 }

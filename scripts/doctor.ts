@@ -17,6 +17,7 @@
  * 退出码：0 全部通过，1 有失败项
  */
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs'
+import { gzipSync } from 'node:zlib'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { calculate } from '../src/kernel/calculate.js'
@@ -60,6 +61,13 @@ function checkFiles() {
     'THIRD-PARTY-NOTICES.md',
     'docs/DEPLOYMENT.md',
     'docs/VERSIONING.md',
+    'docs/RESEARCH.md',
+    'docs/SECURITY-EXCEPTIONS.md',
+    'Dockerfile',
+    'docker/Dockerfile.api',
+    'docker-compose.yml',
+    'docker/nginx.conf',
+    'scripts/rules-snapshot.mjs',
   ]
   const missing = required.filter((f) => !existsSync(join(ROOT, f)))
   if (missing.length) fail('关键文件齐全', `缺失：${missing.join('、')}`)
@@ -234,6 +242,13 @@ function checkSecurity() {
   if (notIgnored.length) fail('.gitignore', `未忽略：${notIgnored.join('、')}`)
   else pass('.gitignore', '构建产物与依赖均已忽略')
 
+  // 漏洞例外记录必须存在：没有记录的例外等于没处理
+  if (existsSync(join(ROOT, 'docs', 'SECURITY-EXCEPTIONS.md'))) {
+    pass('漏洞例外记录', 'docs/SECURITY-EXCEPTIONS.md 在位')
+  } else {
+    fail('漏洞例外记录', '缺少 docs/SECURITY-EXCEPTIONS.md（有依赖漏洞时必须记录影响评估）')
+  }
+
   // API 默认只监听本地
   const api = readFileSync(join(ROOT, 'server', 'api.ts'), 'utf8')
   if (api.includes("process.env.HOST ?? '127.0.0.1'")) pass('API 默认监听', '默认仅 127.0.0.1')
@@ -265,6 +280,18 @@ function checkBundleSize() {
   const totalMB = total / 1024 / 1024
   if (totalMB > 5) fail('打包体积', `总计 ${totalMB.toFixed(2)} MB，超过 5 MB 预算`)
   else pass('打包体积', `总计 ${totalMB.toFixed(2)} MB（最大单文件 ${(largest.size / 1024).toFixed(0)} KB）`)
+
+  // 首屏 JS 预算（gzip）：超过 500K 说明有库被同步引入
+  const html = readFileSync(join(distDir, 'index.html'), 'utf8')
+  const entryChunks = Array.from(new Set(html.match(/assets\/[a-zA-Z0-9_-]+\.js/g) ?? []))
+  let gzTotal = 0
+  for (const rel of entryChunks) {
+    const f = join(distDir, rel)
+    if (existsSync(f)) gzTotal += gzipSync(readFileSync(f)).length
+  }
+  const gzKb = Math.round(gzTotal / 1024)
+  if (gzKb > 500) fail('首屏 JS 预算', gzKb + 'K gzip，超过 500K（检查是否有库被同步引入）')
+  else pass('首屏 JS 预算', gzKb + 'K gzip（预算 500K）')
 
   // 首屏不该加载 echarts（它是懒加载块）
   const indexHtml = readFileSync(join(distDir, 'index.html'), 'utf8')
