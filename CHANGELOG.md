@@ -5,6 +5,26 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## 3.4.1 — 2026-11-08
+
+发布收尾：安装包上传到 Release，README 给出一键下载入口。
+
+### Added
+
+- **Windows 安装包已上传到三个 GitHub Release**（v3.4.0 标签）：
+  `NoMoney_3.4.0_x64-setup.exe`（NSIS，3.11MB）与
+  `NoMoney_3.4.0_x64_zh-CN.msi`（MSI，4.08MB）。
+  此前安装包只存在于本地 `src-tauri/target/`（被 gitignore 排除），
+  删掉工作区就永久丢失；现在任何人可从 Releases 下载。
+  文件大小与本地逐一核对一致（3184692 / 4177920 字节）。
+- README 双语版补上直接下载链接与两个格式的适用场景
+  （`setup.exe` 给普通用户，`.msi` 给企业批量部署）。
+
+### Notes
+
+- 安装包未做代码签名，Windows SmartScreen 首次运行会提示"未知发布者"。
+  这是预期行为（无签名证书），不影响安装与使用。
+
 ## 3.4.0 — 2026-11-07
 
 补齐对账文档里剩余的确定性项，并把数据缺口做成用户可见的页面。

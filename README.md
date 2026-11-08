@@ -43,7 +43,7 @@ flowchart LR
 | Entry | Command | Use when |
 |---|---|---|
 | **Web** | `npm run dev` | Everyday use, full interface |
-| **Desktop** | Install the Windows installer from [Releases](https://github.com/badhope/no-money/releases) | Offline, no browser |
+| **Desktop** | **[Download for Windows](https://github.com/badhope/no-money/releases/latest)** — `NoMoney_x.x.x_x64-setup.exe` (installer) or `.msi` (for managed environments) | Offline, no browser |
 | **CLI** | `npm run cli -- calc --city shenzhen` | Batch comparison, scripting |
 | **API** | `npm run api` | System integration |
 | **MCP** | `npm run mcp` | Let an AI assistant compute directly |
