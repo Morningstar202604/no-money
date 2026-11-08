@@ -43,7 +43,7 @@ flowchart LR
 | 入口 | 命令 | 适合 |
 |---|---|---|
 | **Web** | `npm run dev` | 日常使用，全功能界面 |
-| **桌面** | 从 [Releases](https://github.com/badhope/no-money/releases) 下载 Windows 安装包 | 离线使用，无需浏览器 |
+| **桌面** | **[Windows 下载](https://github.com/badhope/no-money/releases/latest)** — `NoMoney_x.x.x_x64-setup.exe`（安装版）或 `.msi`（企业部署） | 离线使用，无需浏览器 |
 | **CLI** | `npm run cli -- calc --city shenzhen` | 批量对比、脚本化 |
 | **API** | `npm run api` | 内部系统集成 |
 | **MCP** | `npm run mcp` | 让 AI 助手直接算 |
