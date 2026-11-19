@@ -8,15 +8,15 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/对拍/组件测试 | **54 文件 / 1,118 项全过**，耗时 343.84s |
-| E2E | **8 文件 / 106 项全过**（desktop-chromium + mobile-chromium） |
+| 单元/对拍/组件测试 | **55 文件 / 1,125 项全过**，耗时 351.17s |
+| E2E | **8 文件 / 108 项全过**（desktop-chromium + mobile-chromium） |
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
 | 知识库 | `kb:check` 375 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
-| 构建 | 26.52s；`dist` **3.30 MB**（assets 2.47 MB）；首屏 **407K gzip**（预算 500K） |
-| PWA | 45 条 precache / **2,708.35 KiB（约 2.65 MB）**（预算 3 MB） |
+| 构建 | 约 27s；`dist` **3.31 MB**（assets 2.48 MB）；首屏 **407K gzip**（预算 500K） |
+| PWA | 45 条 precache / **2,717.06 KiB（约 2.65 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（26 个关键文件、版本三处一致、34 城、PWA、体积、文档） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |
@@ -80,7 +80,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 | 指标 | 预算 | 当前 | 触发动作 |
 |---|---:|---:|---|
 | 首屏 JS（gzip） | 500K | 407K | 超 500K 阻断 |
-| `dist` 总量 | 5 MB | 3.30 MB（assets 2.47 MB） | 超 5 MB 阻断 |
+| `dist` 总量 | 5 MB | 3.31 MB（assets 2.48 MB） | 超 5 MB 阻断 |
 | PWA precache | 3 MB | 2.65 MB | 超 3 MB 警告，超 3.2 MB 阻断 |
 | 单 chunk | 1 MB | 864K（echarts） | 超 1 MB 检查是否同步引入 |
 | LCP（4G） | 2.5s | 未测 | P1 接 Lighthouse CI |
@@ -173,7 +173,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 | R4 | E2E 只有 Chromium | 高 | 中 | 后续加 WebKit/Firefox；mobile-chromium 不是真 iOS | 接受 |
 | R5 | 源码文本测试膨胀 | 中 | 中 | AGENTS 例外条款；视觉/布局必须挂载测试 | 监控 |
 | R6 | major 依赖长期不升 | 高 | 中 | 权益 P0 后逐个升级，完整门禁 | 延后 |
-| R7 | 权益内容深度不足 | 高 | 高 | 3.5.0 已建 32 条（23 迁移 + 9 新增）；3.6.0 补到 30 条 L2 | 已建目录，深度待补 |
+| R7 | 权益内容深度不足 | 高 | 高 | 3.5.1 已建 32 条（23 迁移 + 9 新增），其中 9 条 L2；3.6.0 补到 30 条 L2 | 已建目录，深度待补 |
 | R8 | 34 城平台单价全为 unverified | 确定 | 高 | 只做「算一算」，不当工资展示；用户自填单价 | 接受 |
 | R9 | 无视觉回归 | 高 | 中 | P1 加四入口/向导截图对比 | 待办 |
 | R10 | `rules:verify` 不在 CI | 中 | 低 | 本地快照 + 手动跑；或 CI 生成快照 | 接受 |
@@ -191,11 +191,11 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 指标
 
-- 测试：1,118 项（含 5 项架构门禁 + 11 项权益导航测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
-- 首屏：407K gzip；PWA：2.65 MB；`dist`：3.30 MB（assets 2.47 MB）。
+- 测试：1,125 项（含 5 项架构门禁 + 18 项权益导航测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
+- 首屏：407K gzip；PWA：2.65 MB；`dist`：3.31 MB（assets 2.48 MB）。
 - 数据：309 条来源，official 105（34.0%）；34 城；0 城四字段全 official。
-- 内容：`RightsItem` 32 条（23 条迁移 + 9 条新增）；目标首批 30 条 L2、60+ 条 L1。
-- 可用性：E2E 106 项；无 Crash-free 指标（无后端、无埋点，不做假指标）。
+- 内容：`RightsItem` 32 条（23 条迁移 + 9 条新增）；其中 9 条 L2、23 条 L1；目标首批 30 条 L2、60+ 条 L1。
+- 可用性：E2E 108 项；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 
 ## 6. 模块化与架构边界
 
@@ -219,7 +219,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 内容层
 
-权益内容应放在 `src/data/rights/`（3.5.0 建立），使用 `RightsItem` 类型；
+权益内容应放在 `src/data/rights/`（3.5.0 建立，3.5.1 增加清单 store），使用 `RightsItem` 类型；
 不要继续往 `src/utils/livingGuide.ts` 堆字符串。内容层不参与计算内核，
 不 import `domain` 的金额函数。
 

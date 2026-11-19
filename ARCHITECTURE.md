@@ -19,9 +19,9 @@ src/
 ├── kernel/          对外计算契约（calculate.ts），CLI / API / MCP / Web 共用
 ├── engine/          旧引擎（deprecated）：ScenarioEngine/IncomeEngine 仅对拍；
 │                    TaxEngine/BenefitEngine 仍被两个面板使用，见 engine/README.md
-├── stores/          Pinia：参数、持久化、规则加载（I/O 都在这一层）
+├── stores/          Pinia：参数、规则加载、我的清单本机持久化（I/O 都在这一层）
 ├── composables/     AI 对话（流式 SSE、离线知识库兜底）
-├── data/            城市 / 省级入口 / 权益内容目录（`rights/catalog.ts`）
+├── data/            城市 / 省级入口 / 权益内容目录（`rights/catalog.ts`，含 L1/L2 等级）
 ├── components/      UI 组件（含 RightsWizard / RightsItemCard / RightsEntryGrid）
 └── views/           九个页面：办事入口 / 总览 / 方案对比 / 税务与养老 / 权益护航 /
                     政策百科 / 数据核验 / 管理 / 404

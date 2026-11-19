@@ -55,4 +55,23 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByText('被欠薪：先留证据，再走监察/仲裁')).toBeVisible()
     await expect(page.getByRole('button', { name: /补偿计算/ })).toBeVisible()
   })
+
+  test('加入清单后刷新还在，标记已办后进度更新', async ({ page }) => {
+    await page.goto('/start')
+    await dismissOnboarding(page)
+
+    const firstCard = page.locator('.right-card').first()
+    await expect(firstCard).toBeVisible()
+    await firstCard.getByRole('button', { name: '加入清单' }).click()
+
+    await expect(page.getByText('我的清单')).toBeVisible()
+    await expect(page.getByText(/0 \/ 1 已办/)).toBeVisible()
+
+    await page.reload()
+    await dismissOnboarding(page)
+    await expect(page.getByText('我的清单')).toBeVisible()
+    const reloadedCard = page.locator('.right-card').first()
+    await reloadedCard.getByRole('button', { name: '标记已办' }).click()
+    await expect(page.getByText(/1 \/ 1 已办/)).toBeVisible()
+  })
 })

@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.5.0** is the current baseline. The product direction is settled — a rights-navigation and
+**3.5.1** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P0 slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -53,6 +53,17 @@ least one official link per item; no page says "月入过万"; all existing test
 debt: six-section nav, checklist persistence, identity-aware calculation. Those move to 3.6.0.
 
 ---
+
+## 3.5.1 — Checklist persistence + L2 detail (shipped 2026-11-19)
+
+**Goal: make the first rights list leave a trace, and let an item open into real steps.**
+
+- [x] 我的清单：加入/已办/清空已办，本机持久化，刷新后仍在
+- [x] 9 条高频权益标为 L2：步骤、材料、依据、官方入口、核验时间
+- [x] 其余 23 条明确标 L1，不把“有步骤”当成“材料齐全”
+- [ ] 30 条 L2 / 10 城深核仍留在 3.6.0
+
+**Status (3.5.1):** 55 files / 1,125 unit tests, 8 files / 108 E2E.
 
 ## 3.6.0 — 30 items at L2, 10 cities deep-verified
 

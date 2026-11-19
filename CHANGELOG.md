@@ -3,6 +3,26 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.5.1] — 2026-11-19
+
+P1 第一刀：清单能留下来，条目能从“知道”展开到“照着办”。版本按 PATCH 走，不占用 MINOR。
+
+### Added
+
+- **我的清单**：条目可「加入清单 / 标记已办 / 清空已办状态」，保存在本机 `nomoney_rights_checklist_v1`；不保存城市、身份、工资，不上传，不需要账号。
+- **清单进度**：`/start` 顶部显示已办/总数与进度条，刷新后仍在；空清单不显示。
+- **L2 条目详情**：条目卡可展开完整步骤、材料、还能拿什么、依据与核验时间；新增 9 条高频权益标为 **L2 可办**，其余 23 条明确标 **L1 知道**，不冒充“拿来就能办”。
+- **测试**：新增 `tests/rightsChecklist.spec.ts`（5 项）；`rightsCatalog.spec.ts` 增加 L1/L2 门禁；E2E 增加“加入清单→刷新→标记已办”跨刷新用例。
+
+### Changed
+
+- 版本三处同步到 **3.5.1**（`package.json` / `tauri.conf.json` / `Cargo.toml`）。
+- README / ROADMAP / POSITIONING / REALITY / ENGINEERING / AUDIT 同步清单与 L1/L2 进度；当前为 **55 文件 / 1,125 单测**、**8 文件 / 108 E2E**。
+
+### Not yet
+
+- 30 条 L2 与 10 城深核仍在 3.6.0；本轮只把 9 条可执行权益做到 L2，其余保持 L1，不把“有步骤”当成“材料齐全”。
+
 ## [3.5.0] — 2026-11-19
 
 权益导航 P0：平台从「收入测算工具」正式长出「办事入口」这一层。收入计算器保留，但不再占据首屏主线。

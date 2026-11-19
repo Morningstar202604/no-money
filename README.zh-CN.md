@@ -6,11 +6,11 @@
 
 面向中国劳动者的**权益导航与办事平台**。收入 / 个税 / 社保 / 补偿的测算只是其中一件工具，AI 只是辅助。
 
-> 当前版本（3.5.0）已上线权益导航首个入口 `/start`：四入口 + 3 步清单向导；内容深度（首批 30 条 L2 / 10 城深核）是下一步。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
+> 当前版本（3.5.1）已上线权益导航首个入口 `/start` 和本机「我的清单」：四入口 + 3 步清单向导 + 加入清单/标记已办；内容深度（首批 30 条 L2 / 10 城深核）是下一步。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1118-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-106-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1125-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-108-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -172,11 +172,11 @@ flowchart TD
 
 ## 当前版本的六个模块（权益导航 P0 已上线）
 
-> 3.5.0 的实现顺序：先办事，再算钱。目标四入口与后续内容深度见 [docs/POSITIONING.md](docs/POSITIONING.md) 与 [ROADMAP.md](ROADMAP.md)。
+> 3.5.1 的实现顺序：先办事，再算钱。目标四入口与后续内容深度见 [docs/POSITIONING.md](docs/POSITIONING.md) 与 [ROADMAP.md](ROADMAP.md)。
 
 | 模块 | 回答什么 |
 |---|---|
-| **办事入口** | 我该做什么、能拿什么、社保医保怎么办、遇到麻烦怎么办；3 步生成 3–7 条清单 |
+| **办事入口** | 我该做什么、能拿什么、社保医保怎么办、遇到麻烦怎么办；3 步生成 3–7 条清单；可加入我的清单、标记已办 |
 | **总览** | 月净收入、有效时薪、权益评分，最薄弱的一环是什么 |
 | **方案对比** | 换一套工作节奏能多赚多少，值不值 |
 | **税务与养老** | 劳务报酬 vs 个体户，哪套更省；社保缴多少年划算 |
@@ -209,8 +209,8 @@ AI 助手是**可选**的：
 ```bash
 npm ci
 npm run dev            # Web 开发服务器
-npm test               # 1118 项单元测试
-npm run test:e2e       # 106 项浏览器测试（构建 + 跑）
+npm test               # 1125 项单元测试
+npm run test:e2e       # 108 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检
 npm run verify:reality # 数据现实性核查

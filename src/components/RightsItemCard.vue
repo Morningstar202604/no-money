@@ -1,8 +1,11 @@
 <template>
-  <article class="right-card">
+  <article class="right-card" :class="{ 'is-done': done }">
     <div class="rc-top">
       <span class="rc-cat">{{ categoryLabel }}</span>
-      <span class="rc-conf" :class="`conf-${item.confidence}`">{{ confidenceLabel }}</span>
+      <div class="rc-badges">
+        <span class="rc-level" :class="`level-${item.level.toLowerCase()}`">{{ levelLabel }}</span>
+        <span class="rc-conf" :class="`conf-${item.confidence}`">{{ confidenceLabel }}</span>
+      </div>
     </div>
     <h3 class="rc-title">{{ item.title }}</h3>
     <p class="rc-one">{{ item.oneLiner }}</p>
@@ -21,6 +24,22 @@
     </div>
     <div v-if="item.caution" class="rc-caution">{{ item.caution }}</div>
 
+    <details v-if="hasDetail" class="rc-detail">
+      <summary>展开完整步骤 / 材料 / 依据</summary>
+      <ol class="rc-steps">
+        <li v-for="(step, i) in item.whatToDo" :key="i">{{ step }}</li>
+      </ol>
+      <div v-if="item.materials?.length" class="rc-sub">
+        <b>材料：</b>{{ item.materials.join('、') }}
+      </div>
+      <div v-if="item.whatToGet.length > 2" class="rc-sub">
+        <b>还能拿：</b>{{ item.whatToGet.slice(2).join('；') }}
+      </div>
+      <div v-if="item.sourceTitle" class="rc-sub">
+        <b>依据：</b>{{ item.sourceTitle }}
+      </div>
+    </details>
+
     <div class="rc-actions">
       <a
         v-if="item.officialUrl"
@@ -32,12 +51,35 @@
       <span v-else class="rc-no-link">暂无官方入口，先拨 12333 确认</span>
       <span class="rc-verify">核验：{{ item.lastVerified }}</span>
     </div>
+
+    <div class="rc-track">
+      <button
+        type="button"
+        class="rc-track-btn"
+        :class="{ on: saved }"
+        :aria-pressed="saved"
+        @click="checklist.toggleSaved(item.id)"
+      >
+        {{ saved ? '已加入清单' : '加入清单' }}
+      </button>
+      <button
+        type="button"
+        class="rc-track-btn rc-track-done"
+        :class="{ on: done }"
+        :aria-pressed="done"
+        @click="checklist.toggleDone(item.id)"
+      >
+        {{ done ? '已办 ✓' : '标记已办' }}
+      </button>
+      <span class="rc-track-hint">只存本机，不注册</span>
+    </div>
   </article>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { RightsCategory, RightsItem } from '../data/rights/catalog'
+import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const props = defineProps<{ item: RightsItem }>()
 
@@ -65,6 +107,18 @@ const CONFIDENCE_LABELS: Record<RightsItem['confidence'], string> = {
 
 const categoryLabel = computed(() => CATEGORY_LABELS[props.item.category])
 const confidenceLabel = computed(() => CONFIDENCE_LABELS[props.item.confidence])
+const levelLabel = computed(() => (props.item.level === 'L2' ? 'L2 可办' : 'L1 知道'))
+const hasDetail = computed(
+  () =>
+    props.item.whatToDo.length > 1 ||
+    Boolean(props.item.materials?.length) ||
+    props.item.whatToGet.length > 2 ||
+    Boolean(props.item.sourceTitle),
+)
+
+const checklist = useRightsChecklistStore()
+const saved = computed(() => checklist.isSaved(props.item.id))
+const done = computed(() => checklist.isDone(props.item.id))
 </script>
 
 <style scoped>
@@ -77,6 +131,7 @@ const confidenceLabel = computed(() => CONFIDENCE_LABELS[props.item.confidence])
   border: 1px solid var(--color-border-primary);
   border-radius: var(--radius-lg);
 }
+.right-card.is-done { border-color: var(--color-success-500); background: var(--color-success-50); }
 .rc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .rc-cat {
   font-size: var(--font-size-xs);
@@ -85,6 +140,16 @@ const confidenceLabel = computed(() => CONFIDENCE_LABELS[props.item.confidence])
   border-radius: var(--radius-full);
   padding: 2px 8px;
 }
+.rc-badges { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.rc-level {
+  font-size: 10px;
+  line-height: 1.4;
+  border-radius: var(--radius-full);
+  padding: 1px 7px;
+  border: 1px solid var(--color-border-primary);
+  color: var(--color-text-tertiary);
+}
+.rc-level.level-l2 { color: var(--color-success-700); border-color: var(--color-success-500); background: var(--color-success-50); }
 .rc-conf { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
 .rc-conf.conf-official { color: var(--color-success-600); }
 .rc-conf.conf-unverified { color: var(--color-warning-600); }
@@ -103,9 +168,50 @@ const confidenceLabel = computed(() => CONFIDENCE_LABELS[props.item.confidence])
   padding: 6px 8px;
   border-radius: var(--radius-sm);
 }
+.rc-detail {
+  border-top: 1px dashed var(--color-border-primary);
+  padding-top: 8px;
+  font-size: var(--font-size-xs);
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+.rc-detail summary {
+  cursor: pointer;
+  color: var(--color-text-brand);
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+.rc-steps { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+.rc-sub { margin-top: 6px; }
+.rc-sub b { color: var(--color-text-tertiary); font-weight: 600; }
 .rc-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px; }
 .rc-link { font-size: var(--font-size-sm); color: var(--color-text-brand); text-decoration: none; }
 .rc-link:hover { text-decoration: underline; }
 .rc-no-link { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
 .rc-verify { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
+.rc-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--color-border-primary);
+  padding-top: 8px;
+}
+.rc-track-btn {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+}
+.rc-track-btn.on { border-color: var(--color-primary-500); color: var(--color-text-brand); background: var(--color-primary-50); }
+.rc-track-done.on { border-color: var(--color-success-500); color: var(--color-success-700); background: var(--color-success-50); }
+.rc-track-hint { margin-left: auto; font-size: 10px; color: var(--color-text-tertiary); }
+@media (max-width: 480px) {
+  .rc-track-hint { margin-left: 0; }
+}
 </style>

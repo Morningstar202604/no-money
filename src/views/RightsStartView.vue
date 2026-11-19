@@ -14,6 +14,40 @@
       </p>
     </section>
 
+    <section v-if="myItems.length" class="start-mine" aria-label="我的清单">
+      <div class="start-mine-head">
+        <div>
+          <span class="start-mine-kicker">保存在本机 · 不注册</span>
+          <h3 class="start-mine-title">我的清单</h3>
+        </div>
+        <span class="start-mine-count">{{ myDone }} / {{ myItems.length }} 已办</span>
+      </div>
+      <div
+        class="start-mine-progress"
+        role="progressbar"
+        aria-label="我的清单完成进度"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        :aria-valuenow="myPct"
+      ><i :style="{ width: `${myPct}%` }"></i></div>
+      <p class="start-mine-desc">下次打开还在；不保存城市、身份、工资，也不上传。</p>
+      <div class="start-mine-list">
+        <span
+          v-for="item in myItems"
+          :key="item.id"
+          class="start-mine-chip"
+          :class="{ done: checklist.isDone(item.id) }"
+        >
+          <span class="start-mine-check">{{ checklist.isDone(item.id) ? '✓' : '○' }}</span>
+          {{ item.title }}
+        </span>
+      </div>
+      <div class="start-mine-actions">
+        <button v-if="myDone" type="button" class="start-mine-btn" @click="checklist.clearDone()">清空已办状态</button>
+        <button type="button" class="start-mine-btn" @click="scrollToList">继续看全部条目</button>
+      </div>
+    </section>
+
     <div class="start-tabs" role="tablist" aria-label="四个办事入口">
       <button
         v-for="tab in entryTabs"
@@ -105,7 +139,8 @@ import { NAlert } from 'naive-ui'
 import { createPageHeading } from '../components/PageHeading'
 import RightsWizard from '../components/RightsWizard.vue'
 import RightsItemCard from '../components/RightsItemCard.vue'
-import { rightsForEntry, type RightsItem } from '../data/rights/catalog'
+import { RIGHTS_CATALOG, rightsForEntry, type RightsItem } from '../data/rights/catalog'
+import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const PageHeading = createPageHeading('start')
 
@@ -126,9 +161,15 @@ function readEntry(): EntryKey {
   return q === 'benefits' || q === 'social' || q === 'trouble' ? q : 'tasks'
 }
 
+const checklist = useRightsChecklistStore()
 const entry = ref<EntryKey>(readEntry())
 const listEl = ref<HTMLElement | null>(null)
 const list = computed<RightsItem[]>(() => rightsForEntry(entry.value))
+const myItems = computed<RightsItem[]>(() =>
+  RIGHTS_CATALOG.filter((item) => checklist.isSaved(item.id) || checklist.isDone(item.id)),
+)
+const myDone = computed(() => myItems.value.filter((item) => checklist.isDone(item.id)).length)
+const myPct = computed(() => (myItems.value.length ? Math.round((myDone.value / myItems.value.length) * 100) : 0))
 
 watch(() => route.query.entry, () => { entry.value = readEntry() })
 
@@ -181,6 +222,51 @@ function scrollToList() {
 .start-quick-card b { font-size: var(--font-size-sm); color: var(--color-text-primary); }
 .start-quick-card span { font-size: var(--font-size-xs); line-height: 1.5; color: var(--color-text-tertiary); }
 .start-quick-card:hover { border-color: var(--color-primary-500); }
+.start-mine {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-success-500);
+  border-radius: var(--radius-lg);
+}
+.start-mine-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.start-mine-kicker { font-size: 10px; color: var(--color-text-tertiary); }
+.start-mine-title { margin: 0; font-size: var(--font-size-md); color: var(--color-text-primary); }
+.start-mine-count { font-size: var(--font-size-xs); color: var(--color-success-700); font-weight: 650; }
+.start-mine-progress { height: 6px; background: var(--color-bg-primary); border-radius: var(--radius-full); overflow: hidden; }
+.start-mine-progress i { display: block; height: 100%; background: var(--color-success-500); border-radius: inherit; transition: width .2s; }
+.start-mine-desc { margin: 0; font-size: var(--font-size-xs); color: var(--color-text-tertiary); line-height: 1.5; }
+.start-mine-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.start-mine-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+.start-mine-chip.done { border-color: var(--color-success-500); color: var(--color-success-700); }
+.start-mine-check { font-size: 10px; }
+.start-mine-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.start-mine-btn {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-full);
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+}
+.start-mine-btn:hover { border-color: var(--color-primary-500); color: var(--color-text-brand); }
+
 @media (max-width: 700px) {
   .start-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .start-quick { grid-template-columns: 1fr; }

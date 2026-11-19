@@ -53,6 +53,22 @@ describe('权益内容层', () => {
     }
   })
 
+  it('新增 9 条标为 L2：有步骤、材料、官方入口和依据', () => {
+    const l2 = RIGHTS_CATALOG.filter((i) => i.level === 'L2')
+    expect(l2.map((i) => i.id)).toEqual(NEW_IDS)
+    for (const item of l2) {
+      expect(item.whatToDo.length, item.id).toBeGreaterThanOrEqual(3)
+      expect(item.materials?.length, item.id).toBeGreaterThan(0)
+      expect(item.officialUrl, item.id).toMatch(/^https?:\/\//)
+      expect(item.sourceTitle, item.id).toBeTruthy()
+    }
+  })
+
+  it('其余条目明确标 L1，不冒充“拿来就能办”', () => {
+    const l1 = RIGHTS_CATALOG.filter((i) => i.level === 'L1')
+    expect(l1.length).toBe(GUIDE_ITEMS.length)
+  })
+
   it('向导按身份/情境返回 3–7 条，且不越出身份范围', () => {
     for (const situation of ['first-job', 'benefits', 'social', 'medical', 'housing', 'birth', 'injury', 'unemployment', 'retire', 'trouble', 'all'] as const) {
       const items = getRightsForSituation('guangzhou', 'new-grad', situation)

@@ -31,6 +31,7 @@ export type RightsCategory =
 
 export type RightsAudience = 'all' | 'new' | 'flex'
 export type RightsConfidence = 'official' | 'derived' | 'platform' | 'unverified'
+export type RightsLevel = 'L1' | 'L2'
 
 export interface RightsItem {
   id: string
@@ -47,6 +48,8 @@ export interface RightsItem {
   materials?: string[]
   caution?: string
   confidence: RightsConfidence
+  /** L1=知道有这件事；L2=有材料、编号步骤、坑与官方入口，能直接照着办 */
+  level: RightsLevel
   lastVerified: string
   sourceTitle?: string
   /** 若来自民生手册，保留原 id，便于旧页面继续引用 */
@@ -124,6 +127,7 @@ function fromGuide(item: GuideItem, index: number): RightsItem {
     officialUrl: firstLink?.url,
     caution: item.caution,
     confidence: 'official',
+    level: 'L1',
     lastVerified: '2026-10',
     sourceTitle: firstLink?.title,
     priority: index,
@@ -152,6 +156,7 @@ const NEW_RIGHTS: RightsItem[] = [
     materials: ['身份证', '银行卡', '租赁合同/发票（租房提取）', '装修/物业费票据（按当地）'],
     caution: '公积金提取没有“全国统一代办”，不要交给收费中介；先打 12329 或走官方 APP。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '住房公积金管理条例（2026 年修订）',
     priority: 100,
@@ -175,6 +180,7 @@ const NEW_RIGHTS: RightsItem[] = [
     materials: ['出生医学证明', '身份证', '银行卡', '生育服务证（按当地）'],
     caution: '各地对连续缴费月数、灵活就业是否享受生育津贴规定不同；不要用外省标准套本地。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '国家医保局关于生育保险待遇的政策文件',
     priority: 101,
@@ -194,9 +200,11 @@ const NEW_RIGHTS: RightsItem[] = [
     whatToGet: ['按月/按天高温津贴（各省标准不同）'],
     whereToGo: '省人社厅 / 12333 / 当地劳动监察',
     officialUrl: 'https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/ldgx_4234/ldyg/202507/t20250718_549757.html',
+    materials: ['考勤/排班记录', '工作场所温度记录或天气预警截图', '工资条', '高温作业岗位证明（按当地）'],
     deadline: '按本省规定发放月份，通常在 6–9 月',
     caution: '高温津贴是工资组成部分，不是福利；用绿豆汤、饮料代替发放不合规。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '高温天气劳动保护与高温津贴政策',
     priority: 102,
@@ -220,6 +228,7 @@ const NEW_RIGHTS: RightsItem[] = [
     materials: ['身份证', '灵活就业登记证明', '社保缴费凭证', '银行卡'],
     caution: '补贴是“先缴后补”，不是免缴；各地对年龄、收入、毕业年限有门槛，先问 12333。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '就业补助资金管理办法',
     priority: 103,
@@ -242,6 +251,7 @@ const NEW_RIGHTS: RightsItem[] = [
     materials: ['医保电子凭证/社保卡', '发票', '费用清单', '出院小结'],
     caution: '没备案直接去外地住院，报销比例可能下降；急诊留好急诊证明，回参保地补备案。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '国家医疗保障局',
     priority: 104,
@@ -265,6 +275,7 @@ const NEW_RIGHTS: RightsItem[] = [
     materials: ['身份证', '社保卡', '人事档案（按当地）', '养老金发放账户'],
     caution: '2030-01-01 起最低缴费年限逐步提高，每年 +6 个月；不要按“15 年就够了”的老口径规划。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '渐进式延迟法定退休年龄与最低缴费年限政策',
     priority: 105,
@@ -288,6 +299,7 @@ const NEW_RIGHTS: RightsItem[] = [
     materials: ['解除/终止劳动合同证明', '身份证', '社保卡/银行卡', '失业登记信息'],
     caution: '主动辞职通常不符合“非因本人意愿”；被辞退、合同到期不续签、单位倒闭等才在范围内。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '失业保险条例',
     priority: 106,
@@ -311,6 +323,7 @@ const NEW_RIGHTS: RightsItem[] = [
     materials: ['工伤认定申请表', '劳动关系证明', '医疗诊断证明', '事故经过与证人材料'],
     caution: '超过 1 年个人申请时限，工伤认定可能不被受理；不要只和单位“私了”而不做认定。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '工伤保险条例',
     priority: 107,
@@ -334,6 +347,7 @@ const NEW_RIGHTS: RightsItem[] = [
     materials: ['身份证', '劳动关系证明', '工资/考勤/聊天记录', '欠条或结算单'],
     caution: '不要签“已结清”字样再拿部分钱；不要暴力讨薪；先投诉/仲裁，保留受理回执。',
     confidence: 'official',
+    level: 'L2',
     lastVerified: '2026-11-19',
     sourceTitle: '人力资源和社会保障部',
     priority: 108,
