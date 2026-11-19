@@ -128,13 +128,18 @@ export interface ComparisonResult {
  * 对比「同样月缴额」下社保与自助两条路。
  * @param socialInput 社保侧参数（月养老金、缴费额、年限、退休年龄等）
  * @param selfInput 自助侧参数（月投入、年限、收益率）
+ *
+ * 领取年限必须与社保侧同一口径：旧实现让 calcSelfFunded 在未显式传入
+ * payoutYears 时固定按 60 岁（23 年）摊还，用户把退休年龄改成 50/65 时，
+ * 自助侧仍按 23 年算——两边比较的不是同一段人生，结论自然失真。
  */
 export function compareSocialVsSelf(
   socialInput: Parameters<typeof calcPensionActuarial>[0],
   selfInput: SelfFundedInput,
 ): ComparisonResult {
   const social = calcPensionActuarial(socialInput)
-  const selfFunded = calcSelfFunded(selfInput)
+  const payoutYears = selfInput.payoutYears ?? expectedPensionYears(socialInput.retireAge)
+  const selfFunded = calcSelfFunded({ ...selfInput, payoutYears })
 
   // 自助资金耗尽年龄：按领取额从退休起逐年扣减（领取期继续按 payoutReturn 增值）
   const payoutReturn = selfInput.payoutReturn ?? 0.02

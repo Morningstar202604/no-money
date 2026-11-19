@@ -11,6 +11,7 @@
 
 import { describe, it, expect } from 'vitest'
 import { calcSelfFunded, compareSocialVsSelf } from '../../../src/domain/benefit/selfFunded'
+import { expectedPensionYears } from '../../../src/domain/benefit/actuarial'
 
 describe('自助积累：年金终值', () => {
   it('月投 1500、20 年、3%：年金终值解析解', () => {
@@ -110,5 +111,52 @@ describe('社保 vs 自助：对比口径', () => {
     expect(Number.isFinite(r.social.presentValue)).toBe(true)
     expect(Number.isFinite(r.selfFunded.presentValue)).toBe(true)
     expect(Number.isFinite(r.presentValueGap)).toBe(true)
+  })
+})
+
+/**
+ * 回归：两侧领取年限必须同口径。
+ *
+ * 旧实现里 calcSelfFunded 未显式传 payoutYears 时固定按 60 岁 23 年摊还，
+ * 与社保侧按退休年龄估算的余命不一致：50 岁退休时社保按 30 年、自助按 23 年，
+ * 自助方案的年领取额被抬高、现值被高估，结论偏向「自己存更划算」。
+ */
+describe('社保 vs 自助：领取年限同口径', () => {
+  const baseSocial = {
+    monthlyPension: 3000,
+    retireAge: 60,
+    monthlyContribution: 1500,
+    contributionYears: 20,
+    adjustRate: 0.03,
+    discountRate: 0.03,
+  }
+  const baseSelf = {
+    monthlyAmount: 1500,
+    years: 20,
+    annualReturn: 0.04,
+    payoutReturn: 0.02,
+    discountRate: 0.03,
+  }
+
+  it('未显式传 payoutYears 时按社保侧退休年龄的预期余命', () => {
+    for (const age of [50, 55, 60, 65, 70]) {
+      const r = compareSocialVsSelf({ ...baseSocial, retireAge: age }, baseSelf)
+      expect(r.selfFunded.payoutYears, `退休 ${age} 岁`).toBeCloseTo(expectedPensionYears(age), 5)
+    }
+  })
+
+  it('显式传入 payoutYears 时优先使用，不被退休年龄覆盖', () => {
+    const r = compareSocialVsSelf({ ...baseSocial, retireAge: 50 }, { ...baseSelf, payoutYears: 15 })
+    expect(r.selfFunded.payoutYears).toBe(15)
+  })
+
+  it('coversLifeExpectancy 使用同一领取年限判定', () => {
+    // 退休越晚预期余命越短，自助资金应按更短的年限摊还；
+    // 若仍按 23 年算，年领取额偏低、耗尽判断也会偏差
+    const young = compareSocialVsSelf({ ...baseSocial, retireAge: 50 }, baseSelf)
+    const old = compareSocialVsSelf({ ...baseSocial, retireAge: 70 }, baseSelf)
+    expect(young.selfFunded.payoutYears).toBeGreaterThan(old.selfFunded.payoutYears)
+    expect(typeof young.selfFunded.coversLifeExpectancy).toBe('boolean')
+    expect(typeof old.selfFunded.coversLifeExpectancy).toBe('boolean')
   })
 })
