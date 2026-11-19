@@ -517,6 +517,10 @@ export const useMainStore = defineStore('main', () => {
     // 否则会生成按本工具自己的产能卡都超载的方案，并因单量虚高当选「最优」。
     const cap = capacityModel.value
     const hoursCap = Math.min(work.value.dailyHours + 2, 14)
+    // 工时已达 14 小时上限时，「多跑2小时」实际跑不到 2 小时（甚至一小时也不多），
+    // 名称必须如实说明这是「按上限产能校准」而不是「多跑」——否则方案卡片
+    // 会用同一个数字冒充一条更辛苦的路径，用户据此做决策就是被骗。
+    const moreHoursName = hoursCap > work.value.dailyHours ? '多跑2小时' : `按${hoursCap}小时产能校准`
     const moreHoursOrders = Math.floor(calcCapacity(hoursCap, 0, work.value.avgDistance, cap).maxOrdersPerDay)
     const targetOrders = work.value.dailyOrders + 5
     // 目标单量若在 16 小时产能内都跑不完，就不能再造这个方案：工时封顶后单量同步截断，
@@ -528,7 +532,7 @@ export const useMainStore = defineStore('main', () => {
     const moreOrdersHours = Math.min(Math.max(work.value.dailyHours, hoursNeeded), 16)
     const list: ScenarioInput[] = [
       { id: 'current', name: '当前方案', work: work.value, costs: costs.value, personal: personal.value },
-      { id: 'more_hours', name: '多跑2小时', work: { ...work.value, dailyHours: hoursCap, dailyOrders: moreHoursOrders }, costs: costs.value, personal: personal.value },
+      { id: 'more_hours', name: moreHoursName, work: { ...work.value, dailyHours: hoursCap, dailyOrders: moreHoursOrders }, costs: costs.value, personal: personal.value },
       { id: 'more_orders', name: feasibleOrders > work.value.dailyOrders ? '多接5单' : '跑满16小时', work: { ...work.value, dailyOrders: feasibleOrders, dailyHours: moreOrdersHours }, costs: costs.value, personal: personal.value },
     ]
     if (!personal.value.hasSocialInsurance) {

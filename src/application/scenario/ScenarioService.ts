@@ -215,9 +215,12 @@ export class ScenarioService {
         // ---- 有效时薪 vs 当地非全日制最低时薪 ----
         // 这是对劳动者最有信息量的一句话：月收入看似不低，但如果时薪低于最低标准，
         // 说明"多跑的那几个小时"实际上是在用低于法定标准的价格出售时间。
+        // 必须限定 workedHours > 0：本月 0 天时净收入是负数（成本照付），
+        // 用 max(1, …) 当分母会造出「有效时薪 ¥-1950.00 低于最低工资」这种
+        // 没有工作时长、也就不存在时薪的比较。
         const minHourly = this.effectiveMinHourly()
-        if (minHourly !== null) {
-          const netHourlyYuan = netMonthly / Math.max(1, work.dailyHours * work.workDaysMonth)
+        if (minHourly !== null && workedHours > 0) {
+          const netHourlyYuan = netMonthly / workedHours
           if (netHourlyYuan < minHourly) {
             const gap = ((minHourly - netHourlyYuan) / minHourly) * 100
             flags.push(

@@ -443,3 +443,29 @@ describe('跨省切换与参数完整往返（技术债审计发现）', () => {
     expect(store.volatilityCv, '波动率应回到默认 20%').toBe(0.2)
   })
 })
+
+/**
+ * 回归：方案名必须与它实际代表的工时一致。
+ * 左侧工时滑块上限就是 14h，「多跑2小时」在 14h 时最多只能跑到同一小时数，
+ * 旧实现仍叫「多跑2小时」，卡片上却是相同的工时、可能还更低的单量。
+ */
+describe('方案对比：工时封顶后的命名', () => {
+  it('未达上限时保留「多跑2小时」，且确实加 2 小时', () => {
+    const store = useMainStore()
+    store.rule = rule
+    store.work.dailyHours = 10
+    const more = store.scenarios.find(s => s.id === 'more_hours')!
+    expect(more.name).toBe('多跑2小时')
+    expect(more.work.dailyHours).toBe(12)
+  })
+
+  it('已达 14h 上限时不得声称「多跑2小时」', () => {
+    const store = useMainStore()
+    store.rule = rule
+    store.work.dailyHours = 14
+    const more = store.scenarios.find(s => s.id === 'more_hours')!
+    expect(more.name).not.toContain('多跑2小时')
+    expect(more.name).toContain('产能校准')
+    expect(more.work.dailyHours).toBe(14)
+  })
+})

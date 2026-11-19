@@ -89,6 +89,21 @@ describe('ScenarioService 集成测试', () => {
     expect(long.income.subsidyPay).toBeLessThan(short.income.subsidyPay);
   });
 
+  /**
+   * 回归：本月 0 天出勤时不存在「时薪」这一概念。
+   * 旧实现用 max(1, dailyHours × workDays) 当分母，把 -1950 元的净亏损
+   * 除成「有效时薪 ¥-1950.00」，再触发「低于当地最低时薪」的提示——
+   * 一个没有工作小时的人被拿去和最低工资比较，结论毫无意义。
+   */
+  it('runScenario: 0 天出勤不产生有效时薪比较', () => {
+    const zero = unwrap(service.runScenario({
+      id: 'zero', name: '本月未出勤', work: { ...work, workDaysMonth: 0 }, costs, personal,
+    }));
+    expect(zero.netHourly).toBe(0);
+    expect(zero.netMonthly).toBeLessThan(0); // 成本照付，净收入为负是正确结果
+    expect(zero.rightsFlags.join()).not.toContain('有效时薪');
+  });
+
   /** 评分始终落在0-100 */
   it('runScenario: 极端参数下评分在0-100区间', () => {
     const extreme = unwrap(service.runScenario({
