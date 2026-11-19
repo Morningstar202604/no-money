@@ -6,10 +6,10 @@
 
 面向中国劳动者的**权益导航与办事平台**。收入 / 个税 / 社保 / 补偿的测算只是其中一件工具，AI 只是辅助。
 
-> 当前版本（3.6.5）是省市入口解析补丁；内容基线仍是 3.6.0：43 条权益目录，其中 **30 条 L2 可办**（材料、步骤、官方入口、时限、坑），**10 城深核**（社保、医保、公积金、就业四类本地官方入口）。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
+> 当前版本（3.6.6）是内容与清单补丁：**60 条权益目录**，其中 **30 条 L2 可办**（材料、步骤、官方入口、时限、坑）、**30 条 L1 可知**（知道有这件事、去哪核验），**10 城深核**（社保、医保、公积金、就业四类本地官方入口）；「我的清单」支持本机时限置顶、txt 导出与打印/另存 PDF。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1141-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1146-3fb950)](https://github.com/badhope/no-money)
 [![e2e](https://img.shields.io/badge/e2e-114-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
@@ -172,7 +172,7 @@ flowchart TD
 
 ## 当前版本的六个模块（权益导航 P0 已上线）
 
-> 3.6.0 的实现顺序：先办事，再算钱；3.6.5 把省市办事入口收成一个解析器；未深核城市回退省级，不编市级链接。目标 60+ 条与可打印清单见 [docs/POSITIONING.md](docs/POSITIONING.md) 与 [ROADMAP.md](ROADMAP.md)。
+> 3.6.0 的实现顺序：先办事，再算钱；3.6.5 把省市办事入口收成一个解析器；未深核城市回退省级，不编市级链接。3.6.6 把目录补到 60 条，并给「我的清单」加本机时限置顶、txt 导出和打印/另存 PDF。下一阶段是六段导航和按身份分流的计算口径，见 [docs/POSITIONING.md](docs/POSITIONING.md) 与 [ROADMAP.md](ROADMAP.md)。
 
 | 模块 | 回答什么 |
 |---|---|
@@ -209,7 +209,7 @@ AI 助手是**可选**的：
 ```bash
 npm ci
 npm run dev            # Web 开发服务器
-npm test               # 1141 项单元测试
+npm test               # 1146 项单元测试
 npm run test:e2e       # 114 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检

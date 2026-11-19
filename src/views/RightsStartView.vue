@@ -34,6 +34,9 @@
         :aria-valuenow="myPct"
       ><i :style="{ width: `${myPct}%` }"></i></div>
       <p class="start-mine-desc">下次打开还在；不保存城市、身份、工资，也不上传。</p>
+      <p v-if="deadlineItems.length" class="start-mine-deadline">
+        <b>先看时限：</b>{{ deadlinePreview }}
+      </p>
       <div class="start-mine-list">
         <span
           v-for="item in myItems"
@@ -48,7 +51,10 @@
       <div class="start-mine-actions">
         <button v-if="myDone" type="button" class="start-mine-btn" @click="checklist.clearDone()">清空已办状态</button>
         <button type="button" class="start-mine-btn" @click="scrollToList">继续看全部条目</button>
+        <button type="button" class="start-mine-btn" @click="exportChecklist">导出清单</button>
+        <button type="button" class="start-mine-btn" @click="printChecklist">打印清单</button>
       </div>
+      <p v-if="actionNote" class="start-mine-note" role="status">{{ actionNote }}</p>
     </section>
 
     <div class="start-tabs" role="tablist" aria-label="四个办事入口">
@@ -148,6 +154,8 @@ import { RIGHTS_ENTRIES, type RightsEntryKey } from '../data/rights/entries'
 import { RIGHTS_CATALOG, rightsForEntry, type RightsItem } from '../data/rights/catalog'
 import { CITY_CHANNELS } from '../data/cityChannels'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
+import { downloadTextFile } from '../utils/download'
+import { buildChecklistHtml, buildChecklistText } from '../utils/checklistExport'
 
 const PageHeading = createPageHeading('start')
 
@@ -174,6 +182,12 @@ const myItems = computed<RightsItem[]>(() =>
 )
 const myDone = computed(() => myItems.value.filter((item) => checklist.isDone(item.id)).length)
 const myPct = computed(() => (myItems.value.length ? Math.round((myDone.value / myItems.value.length) * 100) : 0))
+const deadlineItems = computed(() => myItems.value.filter((item) => item.deadline && !checklist.isDone(item.id)))
+const deadlinePreview = computed(() => {
+  const shown = deadlineItems.value.slice(0, 3).map((item) => `${item.title}（${item.deadline}）`)
+  return deadlineItems.value.length > shown.length ? `${shown.join('；')} 等 ${deadlineItems.value.length} 条` : shown.join('；')
+})
+const actionNote = ref('')
 
 watch(() => route.query.entry, () => { entry.value = readEntry() })
 
@@ -184,6 +198,29 @@ function setEntry(key: EntryKey) {
 
 function scrollToList() {
   void nextTick(() => listEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+}
+
+function exportChecklist() {
+  const date = new Date().toISOString().slice(0, 10)
+  const ok = downloadTextFile({
+    filename: `没钱-我的清单-${date}.txt`,
+    content: buildChecklistText(myItems.value, checklist.isDone, date),
+  })
+  actionNote.value = ok ? '已导出 txt，可打印或发给家人；不含身份证/工资。' : '当前浏览器不支持下载，可改用「打印清单」。'
+}
+
+function printChecklist() {
+  const win = window.open('', '_blank')
+  if (!win) {
+    actionNote.value = '浏览器拦截了打印窗口，请允许弹窗，或先「导出清单」。'
+    return
+  }
+  win.document.write(buildChecklistHtml(myItems.value, checklist.isDone))
+  win.document.close()
+  win.opener = null
+  win.focus()
+  window.setTimeout(() => win.print(), 200)
+  actionNote.value = '已打开打印页；在打印窗口选「另存为 PDF」。'
 }
 </script>
 
@@ -244,6 +281,13 @@ function scrollToList() {
 .start-mine-progress { height: 6px; background: var(--color-bg-primary); border-radius: var(--radius-full); overflow: hidden; }
 .start-mine-progress i { display: block; height: 100%; background: var(--color-success-500); border-radius: inherit; transition: width .2s; }
 .start-mine-desc { margin: 0; font-size: var(--font-size-xs); color: var(--color-text-tertiary); line-height: 1.5; }
+.start-mine-deadline {
+  margin: 0; padding: 7px 9px; border: 1px solid var(--color-warning-500);
+  border-radius: var(--radius-md); background: var(--color-bg-primary);
+  font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-secondary);
+}
+.start-mine-deadline b { color: var(--color-warning-700); }
+.start-mine-note { margin: 0; font-size: var(--font-size-xs); color: var(--color-success-700); }
 .start-mine-list { display: flex; flex-wrap: wrap; gap: 6px; }
 .start-mine-chip {
   display: inline-flex;

@@ -118,6 +118,12 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByText('我的清单')).toBeVisible()
     await expect(page.getByText(/0 \/ 1 已办/)).toBeVisible()
 
+    const downloadPromise = page.waitForEvent('download')
+    await page.getByRole('button', { name: '导出清单' }).click()
+    const download = await downloadPromise
+    expect(download.suggestedFilename()).toMatch(/^没钱-我的清单-\d{4}-\d{2}-\d{2}\.txt$/)
+    await expect(page.getByText('已导出 txt')).toBeVisible()
+
     await page.reload()
     await dismissOnboarding(page)
     await expect(page.getByText('我的清单')).toBeVisible()

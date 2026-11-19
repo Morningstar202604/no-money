@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.6.5** is the current baseline. The product direction is settled — a rights-navigation and
+**3.6.6** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -19,13 +19,15 @@ public-service guide for workers — and the first P1 content slice is shipped:
   60+ rights inventory, L1/L2/L3 standard, four home entries, 3-step onboarding, nine-section
   content template, four-level confidence, assistant + 7 templates, policy anchors
 
-**What is shipped:** `/start` with four entries; a 3-step wizard; a 43-item `RightsItem` catalog
-(23 migrated + 20 new), **30 items at L2**; **10 cities with four local official entries**;
-local checklist persistence; `/start` four-entry tabs; content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver.
+**What is shipped:** `/start` with four entries; a 3-step wizard; a **60-item `RightsItem` catalog**
+(23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
+local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
+content tests. The calculator and all routes still work.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable.
 
-**What is not done yet:** 60+ items, export/print, deadline reminders, six-section nav reorder,
-identity-aware calculation. Those are 3.7.0 / 3.8.0.
+**What is not done yet:** six-section nav reorder and identity-aware calculation (3.7.0); assistant
+content operations and review cadence (3.8.0); real-user testing. Page-level deadline hints exist,
+but there is no push service or account.
 
 ---
 
@@ -150,22 +152,36 @@ social insurance, medical insurance, housing fund and employment services.
 
 ---
 
-## 3.7.0 — 60+ items and a usable checklist
+## 3.6.6 — 60 items and a usable checklist (shipped 2026-11-19)
 
 **Goal: a worker can keep a personal "what I still need to do" list across a job change.**
 
 - [x] 前端合并 P1：民生手册不再与 `/start` 双份维护，`GuideCard` 只做详情（3.6.4 已完成）
 - [x] 前端合并 P1：`/policy` 八个页签按问题压成四组（3.6.3 已上线，不减内容）
-- [ ] 60+ rights items across 12 categories, at least L1 for all
-- [ ] Checklist state persisted locally; export/print one-page summary for a dispute
-- [ ] Deadline reminders (probation, injury 30 days, unemployment registration) — local only,
-      no push service, no account
-- [ ] "遇到麻烦" path: evidence checklist, 4 document templates, nearest labor inspection /
-      arbitration entry
+- [x] 60 rights items, 30 L2 + 30 L1; 17 new L1 items cover contract, overtime, probation,
+      resignation, sick leave, maternity leave, records, inspection, arbitration, legal aid,
+      work hours, social card, public employment, new-grad subsidy, supplement, survivor benefits
+- [x] Checklist state persisted locally; TXT export and print/PDF summary for a dispute
+- [x] Deadline-first hint on `/start` when saved/done items have a `deadline`; no push service,
+      no account, no notification permission
+- [x] "遇到麻烦" path already links to the 5-step guide, 4 document templates, labor inspection /
+      arbitration / legal-aid entries (reused, not duplicated)
 - [ ] Accessibility and plain-language pass on the new IA
 
 **Acceptance:** a worker can move from "I don't know what to do" to a printed checklist without
-creating an account; every deadline is explained, not just displayed.
+creating an account; every deadline is explained, not just displayed. **3.6.6 meets the first half;
+the accessibility pass remains.**
+
+---
+
+## 3.7.0 — Six-section nav and identity-aware calculation
+
+**Goal: make the main journey obvious end to end, without turning the four entries into a maze.**
+
+- [ ] Six-section nav: 该做什么 → 能拿什么 → 怎么弄 → 算一算 → 问一问 → 政策与数据
+- [ ] Identity-aware calculator (employee / flexible / resident / new grad), preserving explicit
+      assumptions and unknown-value behavior
+- [ ] Real-user usability test with first-time workers; record where they get stuck
 
 ---
 

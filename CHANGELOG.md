@@ -3,6 +3,27 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.6] — 2026-11-19
+
+目录补到 60 条；「我的清单」不再只是屏幕上的勾选，能导出、打印，并在打开时先提醒时限。
+
+### Added
+
+- **17 条 L1 补位权益**：未签书面合同、加班费、试用期、辞职/被迫解除、病假/医疗期、产假/陪产假、社保缴费记录、医保个人账户、劳动监察、劳动仲裁、法律援助、工时/休息休假、社保卡、公共就业服务、高校毕业生补贴、社保补缴、遗属待遇。
+- **`src/utils/checklistExport.ts`**：纯文本与打印 HTML 的单一构建函数；HTML 对用户可见文本做转义，打印页自带 `@media print`。
+- **「我的清单」导出/打印**：`导出清单` 下载 `没钱-我的清单-YYYY-MM-DD.txt`；`打印清单` 打开可另存 PDF 的打印页。导出的文件不含身份证、工资、城市信息。
+- **截止项置顶**：清单顶部显示未办结、带 `deadline` 的条目；这是打开页面时的本机提示，不做系统推送、不申请通知权限。
+
+### Changed
+
+- `RIGHTS_CATALOG` 从 43 条扩到 60 条：23 条手册迁移 + 20 条既有新增 + 17 条 L1；仍保持 30 条 L2，不把 L1 冒充“拿来就能办”。
+- `/start` 首屏事实自动显示 60 条；`/start?entry=benefits` 等入口列表自动纳入新条目。
+- 版本三处同步到 **3.6.6**；不改政策数字、链接和计算口径。
+
+### Tests
+
+- 新增 `tests/checklistExport.spec.ts` 4 项；`tests/rightsCatalog.spec.ts` 增加 60 条/L1 补位契约；E2E 清单持久化用例增加 txt 下载断言。
+
 ## [3.6.5] — 2026-11-19
 
 省市办事入口只走一个解析器，前端不再各拼一套判断；视觉层只抽三个真正重复的小原子。

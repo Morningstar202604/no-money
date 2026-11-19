@@ -32,11 +32,40 @@ const NEW_IDS = [
 
 const L2_TARGET = 30
 
+const L1_IDS = [
+  'right-written-contract',
+  'right-overtime-pay',
+  'right-probation',
+  'right-resignation',
+  'right-sick-leave',
+  'right-maternity-leave',
+  'right-social-record',
+  'right-medical-balance',
+  'right-labor-inspection',
+  'right-arbitration',
+  'right-legal-aid',
+  'right-work-hours',
+  'right-social-card',
+  'right-public-employment',
+  'right-new-grad',
+  'right-social-supplement',
+  'right-survivor-benefits',
+]
+
 describe('权益内容层', () => {
   it('23 条民生手册全部迁移，原有 guideId 不丢', () => {
     const migrated = RIGHTS_CATALOG.filter((i) => i.guideId)
     expect(migrated).toHaveLength(GUIDE_ITEMS.length)
     expect(new Set(migrated.map((i) => i.guideId))).toEqual(new Set(GUIDE_ITEMS.map((i) => i.id)))
+  })
+
+  it('目录至少 60 条，补位条目全部是 L1', () => {
+    expect(RIGHTS_CATALOG.length).toBeGreaterThanOrEqual(60)
+    for (const id of L1_IDS) {
+      const item = RIGHTS_CATALOG.find((i) => i.id === id)
+      expect(item, id).toBeTruthy()
+      expect(item?.level, id).toBe('L1')
+    }
   })
 
   it('新增条目覆盖 P0 的高频场景', () => {
@@ -58,7 +87,7 @@ describe('权益内容层', () => {
   })
 
   it('新增的“能拿多少”只写政策框架，不写具体金额', () => {
-    for (const item of RIGHTS_CATALOG.filter((i) => NEW_IDS.includes(i.id))) {
+    for (const item of RIGHTS_CATALOG.filter((i) => NEW_IDS.includes(i.id) || L1_IDS.includes(i.id))) {
       for (const line of item.whatToGet) {
         expect(line, `${item.id} 不应出现具体金额`).not.toMatch(/[¥￥]\s?\d/)
         expect(line, `${item.id} 不应出现“每月补 X 元”式数字`).not.toMatch(/\d+\s*元/)
