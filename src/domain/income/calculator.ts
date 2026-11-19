@@ -7,11 +7,38 @@ import { clampNumber as clamp, safeDivide } from '../shared/number'
 // 安全除法：统一实现见 ../shared/number.ts（额外处理 NaN/Infinity）
 export const safeDiv = safeDivide
 
-/** 解析峰时时段字符串数组，返回总小时数 */
+/** 解析 "HH:MM" 为当天分钟数；格式非法（含 25:00、24:30、缺分钟）返回 null */
+function parseClock(text: string): number | null {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(text.trim())
+  if (!m) return null
+  const h = Number(m[1])
+  const min = Number(m[2])
+  if (!Number.isInteger(h) || !Number.isInteger(min) || h < 0 || h > 24 || min < 0 || min > 59) return null
+  if (h === 24 && min !== 0) return null
+  return h * 60 + min
+}
+
+/**
+ * 解析峰时时段字符串数组，返回总小时数。
+ *
+ * 支持两种真实会出现的写法：
+ *   - 分钟精度："07:30-09:30"（旧实现只取前两位，半小时被当成整点）
+ *   - 跨零点："22:00-02:00"（夜宵/凌晨峰时；旧实现 b < a 直接记 0，补贴被静默抹掉）
+ * 非法格式一律忽略，不编造时长。
+ */
 export function peakHoursTotal(peakHours: string[]): number {
-  return peakHours.reduce((sum, range) => {
-    const [a, b] = range.split('-').map(t => Number(t.slice(0, 2)))
-    return sum + (Number.isFinite(a) && Number.isFinite(b) && b > a ? b - a : 0)
+  return peakHours.reduce((total, range) => {
+    const parts = range.split('-')
+    if (parts.length !== 2) return total
+    const start = parseClock(parts[0])
+    const end = parseClock(parts[1])
+    if (start === null || end === null) return total
+    let minutes = end - start
+    // 终点早于起点 = 跨零点时段，视为次日同一时刻
+    if (minutes < 0) minutes += 24 * 60
+    // 0 分钟或整 24 小时都不构成有效的「峰时」区间
+    if (minutes <= 0 || minutes >= 24 * 60) return total
+    return total + minutes / 60
   }, 0)
 }
 

@@ -68,6 +68,22 @@ describe('domain/income - 纯函数', () => {
     it('格式异常时段不计入', () => {
       expect(peakHoursTotal(['invalid', '10:00-11:00'])).toBe(1)
     })
+    // 分钟精度：旧实现只取前两位，07:30-09:30 被当成 2 小时（正确），
+    // 但 07:45-09:15 会被当成 2 小时（错误，应为 1.5）
+    it('分钟精度不被丢弃', () => {
+      expect(peakHoursTotal(['07:45-09:15'])).toBe(1.5)
+      expect(peakHoursTotal(['07:30-09:30'])).toBe(2)
+    })
+    // 夜宵/凌晨峰时：终点早于起点必须按次日处理，
+    // 旧实现 b < a 直接记 0，补贴被静默抹掉
+    it('跨零点时段按次日计算', () => {
+      expect(peakHoursTotal(['22:00-02:00'])).toBe(4)
+      expect(peakHoursTotal(['22:00-24:00'])).toBe(2)
+      expect(peakHoursTotal(['23:30-00:30'])).toBe(1)
+    })
+    it('非法时刻与零长度区间不计入', () => {
+      expect(peakHoursTotal(['25:00-26:00', '10:00-10:00', '10:60-11:00'])).toBe(0)
+    })
   })
 
   describe('calcIncome - 手算基准对齐', () => {
