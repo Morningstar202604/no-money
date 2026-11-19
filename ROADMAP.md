@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.6.7** is the current baseline. The product direction is settled — a rights-navigation and
+**3.6.8** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,7 +23,7 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action.
 
 **What is not done yet:** six-section nav reorder and identity-aware calculation (3.7.0); assistant
 content operations and review cadence (3.8.0); real-user testing. Page-level deadline hints exist,
@@ -186,6 +186,19 @@ the accessibility pass remains.**
 - [x] Existing 3-step wizard remains unchanged
 
 **Status:** shipped — PATCH; no policy numbers, links or calculation changes.
+
+---
+
+## 3.6.8 — Ranked result list (shipped 2026-11-20)
+
+**Goal: after generating a checklist, a first-time user knows which one thing to do first.**
+
+- [x] `RightsItemCard` optional `rank`; wizard passes the original result order, no new sorting logic
+- [x] First card highlighted with「第 1 件 · 先办这个」; later cards numbered
+- [x] Result lead changed to "先办第 1 件，其余按顺序来"; other lists unchanged
+- [x] Mount/E2E assertions added; no policy, amount or calculation changes
+
+**Status:** shipped — PATCH.
 
 ---
 

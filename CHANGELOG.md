@@ -3,6 +3,21 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.8] — 2026-11-20
+
+结果页不再把 3–7 张卡平铺；第 1 件高亮并标「先办这个」，其余按顺序编号。
+
+### Changed
+
+- `RightsItemCard` 新增可选 `rank`；向导结果按 `result` 原顺序传入 `1…n`，不重新排序、不改推荐逻辑。
+- 第 1 件卡片使用品牌色边框并显示「第 1 件 · 先办这个」；后续卡片显示「第 2 件」「第 3 件」。
+- 结果页文案从「先做前 3 条」改为「先办第 1 件，其余按顺序来；不用一次全做完」，减少一次面对 7 条的压力。
+- 其他列表（`/start` 全部条目）不传 `rank`，视觉和契约不变。
+
+### Tests
+
+- `tests/rightsWizard.mount.spec.ts` 与 E2E 一键清单用例增加第 1 件/第 2 件断言。
+
 ## [3.6.7] — 2026-11-20
 
 三步向导首步加「常见情况一键清单」：不选城市、身份、情境，点一个常见处境就直接出 3–7 条。

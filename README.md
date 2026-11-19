@@ -6,7 +6,7 @@
 
 A **rights-navigation and public-service guide** for workers in China. Income, tax, social-insurance and compensation calculators are tools inside it; the AI is only an assistant.
 
-> Version 3.6.7 is a one-click shortcut patch: a **60-item rights catalog** with **30 L2 items** (materials, steps, official entry, deadline, pitfalls) and **30 L1 items** (know it exists, where to verify), **10 cities deep-verified** for social insurance, medical insurance, housing fund and employment services, plus a local-only checklist with deadline-first reminders, TXT export and print/PDF, and four one-click common situations. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
+> Version 3.6.8 is a result-ordering patch: a **60-item rights catalog** with **30 L2 items** (materials, steps, official entry, deadline, pitfalls) and **30 L1 items** (know it exists, where to verify), **10 cities deep-verified** for social insurance, medical insurance, housing fund and employment services, plus a local-only checklist with deadline-first reminders, TXT export and print/PDF, four one-click common situations, and a ranked result list that highlights the first thing to do. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-1147-3fb950)](https://github.com/badhope/no-money)
@@ -172,7 +172,7 @@ A delivery rider is told "up to ¥10,000 a month." That number hides four things
 
 ## The current six modules (rights navigation P0 shipped)
 
-> 3.6.0 shipped the content-depth layer: do the paperwork first, then run the numbers. 3.6.5 unified city/province service entries behind one resolver; unverified cities fall back to province without invented links. 3.6.6 reaches 60 items and adds a local checklist with deadline-first hints, TXT export and print/PDF; 3.6.7 adds one-click common situations (first job / just left / city change / unpaid wages). The next step is six-section navigation and identity-aware calculations; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
+> 3.6.0 shipped the content-depth layer: do the paperwork first, then run the numbers. 3.6.5 unified city/province service entries behind one resolver; unverified cities fall back to province without invented links. 3.6.6 reaches 60 items and adds a local checklist with deadline-first hints, TXT export and print/PDF; 3.6.7 adds one-click common situations (first job / just left / city change / unpaid wages); 3.6.8 ranks the result list so the first action stands out. The next step is six-section navigation and identity-aware calculations; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
 
 | Module | Answers |
 |---|---|

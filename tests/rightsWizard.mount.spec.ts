@@ -66,6 +66,7 @@ describe('三步办事向导', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.text()).toContain('你的清单')
+    expect(wrapper.text()).toContain('第 1 件 · 先办这个')
     expect(wrapper.findAll('.right-card').length).toBeGreaterThanOrEqual(3)
     expect(wrapper.findAll('.right-card').length).toBeLessThanOrEqual(7)
     wrapper.unmount()

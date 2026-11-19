@@ -1,7 +1,12 @@
 <template>
-  <article class="right-card surface-card" :class="{ 'is-done': done }">
+  <article class="right-card surface-card" :class="{ 'is-done': done, 'is-first': rank === 1 }">
     <div class="rc-top">
-      <span class="rc-cat">{{ categoryLabel }}</span>
+      <div class="rc-left">
+        <span v-if="rank" class="rc-order" :class="{ first: rank === 1 }">
+          {{ rank === 1 ? '第 1 件 · 先办这个' : `第 ${rank} 件` }}
+        </span>
+        <span class="rc-cat">{{ categoryLabel }}</span>
+      </div>
       <div class="rc-badges">
         <span class="rc-level" :class="`level-${item.level.toLowerCase()}`">{{ levelLabel }}</span>
         <span class="rc-conf" :class="`conf-${item.confidence}`">{{ confidenceLabel }}</span>
@@ -87,7 +92,7 @@ import GuideCard from './GuideCard.vue'
 import { GUIDE_ITEMS } from '../utils/livingGuide'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
-const props = defineProps<{ item: RightsItem }>()
+const props = defineProps<{ item: RightsItem; rank?: number }>()
 const GUIDE_BY_ID = new Map(GUIDE_ITEMS.map((guide) => [guide.id, guide]))
 const guideItem = computed(() => (props.item.guideId ? GUIDE_BY_ID.get(props.item.guideId) : undefined))
 
@@ -137,8 +142,12 @@ const done = computed(() => checklist.isDone(props.item.id))
   gap: 8px;
   padding: 14px 16px;
 }
+.right-card.is-first { border-color: var(--color-primary-500); box-shadow: 0 0 0 1px var(--color-primary-100) inset; }
 .right-card.is-done { border-color: var(--color-success-500); background: var(--color-success-50); }
 .rc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.rc-left { display: flex; align-items: center; gap: 6px; min-width: 0; flex-wrap: wrap; }
+.rc-order { font-size: 10px; line-height: 1.4; color: var(--color-text-tertiary); border: 1px solid var(--color-border-primary); border-radius: var(--radius-full); padding: 1px 7px; }
+.rc-order.first { color: var(--color-text-brand); border-color: var(--color-primary-500); background: var(--color-primary-50); font-weight: 650; }
 .rc-cat {
   font-size: var(--font-size-xs);
   color: var(--color-text-brand);

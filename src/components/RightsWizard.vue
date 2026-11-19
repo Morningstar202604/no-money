@@ -97,7 +97,7 @@
       </div>
 
       <p class="rw-result-lead">
-        共 {{ result.length }} 条。先做前 3 条；每条都写了第一步、时限和官方入口。具体金额/比例以你当地最新文件为准，本平台不代办、不代缴。
+        共 {{ result.length }} 条。先办第 1 件，其余按顺序来；不用一次全做完。每条都写了第一步、时限和官方入口。具体金额/比例以你当地最新文件为准，本平台不代办、不代缴。
       </p>
 
       <CityServiceLinks v-if="resolvedChannel" :city="city" />
@@ -107,7 +107,7 @@
       </p>
 
       <div class="rw-list">
-        <RightsItemCard v-for="item in result" :key="item.id" :item="item" />
+        <RightsItemCard v-for="(item, index) in result" :key="item.id" :item="item" :rank="index + 1" />
       </div>
 
       <div class="rw-actions rw-actions-end">

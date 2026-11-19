@@ -48,6 +48,7 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await page.getByRole('button', { name: /刚入职/ }).click()
     await expect(page.getByText('你的清单')).toBeVisible()
     await expect(page.locator('.rw-list .right-card').first()).toBeVisible()
+    await expect(page.getByText('第 1 件 · 先办这个')).toBeVisible()
     await expect(page.getByText('刚入职，先办什么')).toBeVisible()
   })
 
