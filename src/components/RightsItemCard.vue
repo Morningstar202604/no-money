@@ -26,18 +26,22 @@
 
     <details v-if="hasDetail" class="rc-detail">
       <summary>展开完整步骤 / 材料 / 依据</summary>
-      <ol class="rc-steps">
-        <li v-for="(step, i) in item.whatToDo" :key="i">{{ step }}</li>
-      </ol>
-      <div v-if="item.materials?.length" class="rc-sub">
-        <b>材料：</b>{{ item.materials.join('、') }}
-      </div>
-      <div v-if="item.whatToGet.length > 2" class="rc-sub">
-        <b>还能拿：</b>{{ item.whatToGet.slice(2).join('；') }}
-      </div>
-      <div v-if="item.sourceTitle" class="rc-sub">
-        <b>依据：</b>{{ item.sourceTitle }}
-      </div>
+      <!-- 手册迁移条目直接复用同一张 GuideCard：正文只在 livingGuide 维护一份 -->
+      <GuideCard v-if="guideItem" :item="guideItem" />
+      <template v-else>
+        <ol class="rc-steps">
+          <li v-for="(step, i) in item.whatToDo" :key="i">{{ step }}</li>
+        </ol>
+        <div v-if="item.materials?.length" class="rc-sub">
+          <b>材料：</b>{{ item.materials.join('、') }}
+        </div>
+        <div v-if="item.whatToGet.length > 2" class="rc-sub">
+          <b>还能拿：</b>{{ item.whatToGet.slice(2).join('；') }}
+        </div>
+        <div v-if="item.sourceTitle" class="rc-sub">
+          <b>依据：</b>{{ item.sourceTitle }}
+        </div>
+      </template>
     </details>
 
     <div class="rc-actions">
@@ -79,9 +83,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { RightsCategory, RightsItem } from '../data/rights/catalog'
+import GuideCard from './GuideCard.vue'
+import { GUIDE_ITEMS } from '../utils/livingGuide'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const props = defineProps<{ item: RightsItem }>()
+const GUIDE_BY_ID = new Map(GUIDE_ITEMS.map((guide) => [guide.id, guide]))
+const guideItem = computed(() => (props.item.guideId ? GUIDE_BY_ID.get(props.item.guideId) : undefined))
 
 const CATEGORY_LABELS: Record<RightsCategory, string> = {
   onboard: '入职',
@@ -110,6 +118,7 @@ const confidenceLabel = computed(() => CONFIDENCE_LABELS[props.item.confidence])
 const levelLabel = computed(() => (props.item.level === 'L2' ? 'L2 可办' : 'L1 知道'))
 const hasDetail = computed(
   () =>
+    Boolean(guideItem.value) ||
     props.item.whatToDo.length > 1 ||
     Boolean(props.item.materials?.length) ||
     props.item.whatToGet.length > 2 ||

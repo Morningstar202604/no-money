@@ -88,6 +88,13 @@ describe('民生手册接线', () => {
     expect(policy).toMatch(/GUIDE_GROUP_ORDER/)
   })
 
+  it('RightsItemCard 对指南条目复用 GuideCard，不再手写第二套详情', () => {
+    const card = read('src/components/RightsItemCard.vue')
+    expect(card, '必须 import GuideCard').toMatch(/import GuideCard from '\.\/GuideCard\.vue'/)
+    expect(card, '展开详情必须渲染 GuideCard').toMatch(/<GuideCard/)
+    expect(card, '必须按 guideId 找回手册正文').toMatch(/guideId/)
+  })
+
   it('跨页深链 ?tab=xxx 的值必须在 PolicyView 页签白名单里', () => {
     const policy = read('src/views/PolicyView.vue')
     const whitelistMatch = policy.match(/TAB_NAMES\s*=\s*\[([^\]]*)\]/)

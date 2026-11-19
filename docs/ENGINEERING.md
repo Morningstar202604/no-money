@@ -8,7 +8,7 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/对拍/组件测试 | **56 文件 / 1,136 项全过**，耗时 401.59s |
+| 单元/对拍/组件测试 | **56 文件 / 1,137 项全过**，耗时 392.84s |
 | E2E | **8 文件 / 112 项全过**（desktop-chromium + mobile-chromium） |
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
@@ -16,7 +16,7 @@
 | 知识库 | `kb:check` 375 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
 | 构建 | 约 27s；`dist` **3.33 MB**（assets 2.50 MB）；首屏 **407K gzip**（预算 500K） |
-| PWA | 46 条 precache / **2,741.30 KiB（约 2.68 MB）**（预算 3 MB） |
+| PWA | 48 条 precache / **2,741.77 KiB（约 2.68 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（26 个关键文件、版本三处一致、34 城、PWA、体积、文档） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |

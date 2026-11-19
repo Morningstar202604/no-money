@@ -3,6 +3,18 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.4] — 2026-11-19
+
+手册详情只维护一份：`/start` 的展开详情不再自己渲染一套步骤，直接复用 `/policy` 的手册卡。
+
+### Changed
+
+- **`RightsItemCard`**：迁移条目按 `guideId` 找回 `GuideItem`，展开详情渲染 `GuideCard`。
+- **`/policy`**：民生手册仍用同一张 `GuideCard`；正文只在 `livingGuide.ts`。
+- **非手册条目**：保留原有详情块，不强行套手册组件。
+- **契约**：新增测试，防止 `RightsItemCard` 再手写第二套手册正文。
+- 版本三处同步到 **3.6.4**；纯展示层去重，不改政策数字、链接和计算口径。
+
 ## [3.6.3] — 2026-11-19
 
 政策页从八个数据页签压成四个用户页签，内容一块都没删。
