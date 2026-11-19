@@ -3,6 +3,21 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.1] — 2026-11-19
+
+前端去重基线：不改页面行为，只把两处复制逻辑收成单一来源。
+
+### Changed
+
+- **四入口元数据**：`src/data/rights/entries.ts` 成为标题、序号、描述、CTA 的唯一来源；`RightsEntryGrid` 与 `/start` 不再各写一份。
+- **页签 URL 同步**：新增 `src/composables/useTabQuery.ts`，`/scenario`、`/planning`、`/policy` 共用同一套 `?tab=` 读写规则。
+- **计划**：新增 `docs/FRONTEND-CONSOLIDATION.md`，记录下一步 P1 合并顺序（首页归位、民生手册单一来源、`/policy` 八页签压成四组）、明确不合并清单与移动端约束。
+- 版本三处同步到 **3.6.1**；这是纯去重/小修，按 PATCH 走。
+
+### Not yet
+
+- `/start` 作为唯一办事首页、`/dashboard` 收窄、`/policy` 页签重排、省市入口统一解析仍在 3.7.0；本版不改变现有路由与首屏。
+
 ## [3.6.0] — 2026-11-19
 
 P1 内容深度：把「知道有这件事」推进到「拿着材料能去办」，并把 10 个城市的四类入口摊开。

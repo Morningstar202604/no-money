@@ -19,43 +19,12 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-
-type EntryKey = 'tasks' | 'benefits' | 'social' | 'trouble'
+import { RIGHTS_ENTRIES, type RightsEntryKey } from '../data/rights/entries'
 
 const router = useRouter()
+const entries = RIGHTS_ENTRIES
 
-const entries: { key: EntryKey; index: string; title: string; desc: string; cta: string }[] = [
-  {
-    key: 'tasks',
-    index: '01',
-    title: '我该做什么',
-    desc: '刚入职、换工作、参保前，先列一张该办的清单。',
-    cta: '3 步生成清单',
-  },
-  {
-    key: 'benefits',
-    index: '02',
-    title: '我能拿什么',
-    desc: '补贴、津贴、公积金、生育、失业金，一条条对照。',
-    cta: '看能领什么',
-  },
-  {
-    key: 'social',
-    index: '03',
-    title: '社保医保怎么办',
-    desc: '参保、断缴、转移、异地就医，给教程和官方入口。',
-    cta: '查怎么办',
-  },
-  {
-    key: 'trouble',
-    index: '04',
-    title: '遇到麻烦怎么办',
-    desc: '欠薪、辞退、工伤，先取证，再走监察/仲裁。',
-    cta: '去维权',
-  },
-]
-
-function go(key: EntryKey) {
+function go(key: RightsEntryKey) {
   // tasks 是默认入口，不带 query 让地址更干净
   router.push({ path: '/start', query: key === 'tasks' ? {} : { entry: key } })
 }

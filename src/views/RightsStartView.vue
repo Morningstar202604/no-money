@@ -142,27 +142,23 @@ import { NAlert } from 'naive-ui'
 import { createPageHeading } from '../components/PageHeading'
 import RightsWizard from '../components/RightsWizard.vue'
 import RightsItemCard from '../components/RightsItemCard.vue'
+import { RIGHTS_ENTRIES, type RightsEntryKey } from '../data/rights/entries'
 import { RIGHTS_CATALOG, rightsForEntry, type RightsItem } from '../data/rights/catalog'
 import { CITY_CHANNELS } from '../data/cityChannels'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const PageHeading = createPageHeading('start')
 
-type EntryKey = 'tasks' | 'benefits' | 'social' | 'trouble'
+type EntryKey = RightsEntryKey
 
 const router = useRouter()
 const route = useRoute()
 
-const entryTabs: { key: EntryKey; index: string; label: string }[] = [
-  { key: 'tasks', index: '01', label: '我该做什么' },
-  { key: 'benefits', index: '02', label: '我能拿什么' },
-  { key: 'social', index: '03', label: '社保医保怎么办' },
-  { key: 'trouble', index: '04', label: '遇到麻烦怎么办' },
-]
+const entryTabs = RIGHTS_ENTRIES.map(({ key, index, title }) => ({ key, index, label: title }))
 
 function readEntry(): EntryKey {
   const q = route.query.entry
-  return q === 'benefits' || q === 'social' || q === 'trouble' ? q : 'tasks'
+  return typeof q === 'string' && RIGHTS_ENTRIES.some((item) => item.key === q) ? (q as EntryKey) : 'tasks'
 }
 
 const checklist = useRightsChecklistStore()

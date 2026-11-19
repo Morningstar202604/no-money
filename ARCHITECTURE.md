@@ -71,6 +71,8 @@ Pinia store ──► ScenarioService ──► 领域纯函数
 components / views 渲染
 ```
 
+前端入口与页签：四入口的标题/序号/描述只在 `src/data/rights/entries.ts` 定义，`RightsEntryGrid` 与 `/start` 共用；`/scenario`、`/planning`、`/policy` 的 `?tab=` 同步统一走 `src/composables/useTabQuery.ts`。合并/去重边界见 `docs/FRONTEND-CONSOLIDATION.md`。
+
 权益内容（`docs/POSITIONING.md` 的 `RightsItem`）走另一条链路：
 `src/data/rights/catalog.ts`（23 条民生手册迁移 + 20 条新增，共 43 条；30 条 L2）→ 内容校验 → `/start` 四入口 / 3 步向导 / 条目卡；`src/data/cityChannels.ts`（10 城 × 4 类本地官方入口）→ 向导结果本地入口卡。均不参与计算内核。
 

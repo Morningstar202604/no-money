@@ -232,7 +232,7 @@ import FoldCard from '../components/FoldCard.vue'
 import RealityList from '../components/RealityList.vue'
 import GuideCard from '../components/GuideCard.vue'
 import KbResultCard from '../components/KbResultCard.vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useTabQuery } from '../composables/useTabQuery'
 import { REALITY_FACTS, REALITY_CATEGORY_ORDER, REALITY_CATEGORY_LABELS } from '../utils/reality'
 import { GUIDE_ITEMS, GUIDE_GROUP_ORDER, GUIDE_GROUP_LABELS } from '../utils/livingGuide'
 import { POLICIES, RELIEF_GUIDE, PROVINCE_POLICY_CHECKLIST, type PolicyStatus } from '../data/policies'
@@ -272,19 +272,10 @@ const provinceTabLabel = computed(() => {
 
 /**
  * 页签与 URL 双向同步：/policy?tab=manual 可深链进入，切换页签也会写回地址栏。
- * 只读一次 query 的话，同一路由内换页签不会更新 URL，
- * 用户复制地址或按返回键都会回到错误页签，深链分享也无法复现。
+ * 具体 getter/setter 规则统一在 useTabQuery，避免三个页面各写一份后漂移。
  */
-const TAB_NAMES = ['national', 'guangdong', 'province', 'sources', 'reality', 'manual', 'kb', 'relief']
-const route = useRoute()
-const router = useRouter()
-const tab = computed({
-  get: () => (typeof route.query.tab === 'string' && TAB_NAMES.includes(route.query.tab) ? route.query.tab : 'national'),
-  set: (v: string) => {
-    // 用 replace 避免每次点页签都往历史里压一条记录（返回键要退整页而不是逐页签退）
-    void router.replace({ query: { ...route.query, tab: v === 'national' ? undefined : v } })
-  },
-})
+const TAB_NAMES = ['national', 'guangdong', 'province', 'sources', 'reality', 'manual', 'kb', 'relief'] as const
+const tab = useTabQuery(TAB_NAMES, 'national')
 
 /* ---------- 知识库 ---------- */
 const STATIC_KB = buildStaticKbEntries()

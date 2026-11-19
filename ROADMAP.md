@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.6.0** is the current baseline. The product direction is settled — a rights-navigation and
+**3.6.1** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -22,6 +22,7 @@ public-service guide for workers — and the first P1 content slice is shipped:
 **What is shipped:** `/start` with four entries; a 3-step wizard; a 43-item `RightsItem` catalog
 (23 migrated + 20 new), **30 items at L2**; **10 cities with four local official entries**;
 local checklist persistence; home four-card block; content tests. The calculator and all routes still work.
+3.6.1 adds a single source for the four entries and a shared tab-query composable — no behavior change.
 
 **What is not done yet:** 60+ items, export/print, deadline reminders, six-section nav reorder,
 identity-aware calculation. Those are 3.7.0 / 3.8.0.
@@ -82,10 +83,25 @@ social insurance, medical insurance, housing fund and employment services.
 
 ---
 
+## 3.6.1 — Frontend dedupe baseline (shipped 2026-11-19)
+
+**Goal: remove duplicated frontend sources before the next IA move; no behavior change.**
+
+- [x] 四入口元数据统一到 `src/data/rights/entries.ts`，`RightsEntryGrid` 与 `/start` 共用
+- [x] `?tab=` 同步逻辑统一到 `src/composables/useTabQuery.ts`，`/scenario`、`/planning`、`/policy` 共用
+- [x] 合并/去重顺序、页面职责与“不合并清单”写入 `docs/FRONTEND-CONSOLIDATION.md`
+
+**Status (3.6.1):** shipped — 纯前端去重，不新增页面、不改计算口径。
+
+---
+
 ## 3.7.0 — 60+ items and a usable checklist
 
 **Goal: a worker can keep a personal "what I still need to do" list across a job change.**
 
+- [ ] 前端合并 P1：`/start` 作为唯一办事首页；`/dashboard` 收窄为「算一算总览」
+- [ ] 前端合并 P1：民生手册不再与 `/start` 双份维护，`GuideCard` 只做详情
+- [ ] 前端合并 P1：`/policy` 八个页签按问题压成四组（不减内容）
 - [ ] 60+ rights items across 12 categories, at least L1 for all
 - [ ] Checklist state persisted locally; export/print one-page summary for a dispute
 - [ ] Deadline reminders (probation, injury 30 days, unemployment registration) — local only,

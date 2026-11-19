@@ -33,21 +33,34 @@ describe('路由契约', () => {
 })
 
 describe('页签与 URL 双向同步', () => {
-  for (const [file, names] of [
-    ['src/views/PolicyView.vue', 'TAB_NAMES'],
-    ['src/views/PlanningView.vue', 'TAB_NAMES'],
+  for (const file of [
+    'src/views/PolicyView.vue',
+    'src/views/PlanningView.vue',
+    'src/views/ScenarioView.vue',
   ] as const) {
-    it(`${file} 读取 query 且切换时写回`, () => {
+    it(`${file} 复用统一的 useTabQuery，不复制同步逻辑`, () => {
       const src = read(file)
-      expect(src, '必须定义页签名白名单').toContain(names)
-      expect(src, '必须从 route.query 读初始页签').toMatch(/route\.query\.tab/)
-      expect(src, '切换页签必须写回 URL（replace 避免历史污染）').toMatch(/router\.replace\(/)
+      expect(src, '必须定义页签名白名单').toContain('TAB_NAMES')
+      expect(src, '必须使用统一 composable').toMatch(/useTabQuery\(/)
+      expect(src, '不得再各写一份 route.query.tab / router.replace').not.toMatch(/route\.query\.tab|router\.replace\(/)
     })
   }
 
-  it('PolicyView 的 tab 是 computed 双向绑定，不是一次性 ref', () => {
-    const src = read('src/views/PolicyView.vue')
-    expect(src, 'tab 必须是可写 computed，否则 URL 与页签会脱钩').toMatch(/const tab = computed\(\{[\s\S]{0,400}set:/)
+  it('useTabQuery 负责读写 query，且 setter 用 replace 避免历史污染', () => {
+    const src = read('src/composables/useTabQuery.ts')
+    expect(src).toMatch(/route\.query\.tab/)
+    expect(src).toMatch(/router\.replace\(/)
+    expect(src).toMatch(/computed<T>/)
+  })
+})
+
+describe('四入口文案单一来源', () => {
+  it('标题只在 entries.ts 定义，页面通过 RIGHTS_ENTRIES 取用', () => {
+    const entries = read('src/data/rights/entries.ts')
+    const start = read('src/views/RightsStartView.vue')
+    expect(entries).toContain("title: '我该做什么'")
+    expect(start, '页面不得内联入口标题').not.toContain("label: '我该做什么'")
+    expect(start).toMatch(/RIGHTS_ENTRIES/)
   })
 })
 
