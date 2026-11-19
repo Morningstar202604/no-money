@@ -32,7 +32,7 @@ npm run kb:check          # knowledge base sync check
 npm run verify:entrypoints# CLI / API / MCP / Web share one kernel
 npm run build             # typecheck + production build
 npm run doctor            # cross-cutting health check (bundle, docs, PWA, data)
-npm run test:e2e          # 100 Playwright tests (desktop + mobile)
+npm run test:e2e          # 106 Playwright tests (desktop + mobile)
 npm run cli -- --help     # CLI
 npm run mcp               # MCP server (stdio)
 npm run api               # HTTP API (port 8787)
@@ -50,7 +50,8 @@ src/
 ├── kernel/        Public calculation contract — used by CLI, MCP, API and Web.
 ├── stores/        Pinia. All browser I/O lives here.
 ├── components/    UI
-└── views/         Eight pages (dashboard, scenario, planning, rights, policy, audit, admin, 404)
+├── data/          City/province/rights catalog (src/data/rights/catalog.ts)
+└── views/         Nine pages (start, dashboard, scenario, planning, rights, policy, audit, admin, 404)
 
 cli/               Command line entry
 mcp/               MCP server (stdio transport)

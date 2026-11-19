@@ -280,6 +280,7 @@ const paletteCommands = computed<Command[]>(() => [
 // onNav 用 router.push({ name: key })，大小写不符会静默失败；
 // activeKey 直接比较 route.name，不一致则导航永远没有高亮。
 const navItems = [
+  { key: 'Start', label: '办事入口', path: '/start', icon: ShieldCheckIcon },
   { key: 'Dashboard', label: '总览', path: '/dashboard', icon: DashboardIcon },
   { key: 'Scenario', label: '方案对比', path: '/scenario', icon: GitCompareIcon },
   { key: 'Planning', label: '税务与养老', path: '/planning', icon: CalculatorIcon },
@@ -663,6 +664,7 @@ onUnmounted(() => {
   justify-content: center;
   width: 36px;
   height: 36px;
+  flex: 0 0 36px;
   border: none;
   background: transparent;
   border-radius: var(--radius-md);

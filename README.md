@@ -6,11 +6,11 @@
 
 A **rights-navigation and public-service guide** for workers in China. Income, tax, social-insurance and compensation calculators are tools inside it; the AI is only an assistant.
 
-> Version 3.4.1 still leads with the income calculator; the rights-navigation rebuild is in progress. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
+> Version 3.5.0 ships the first rights-navigation entry (`/start`): four entry cards and a 3-step checklist wizard. Content depth (30 L2 items / 10 deep-verified cities) is the next step. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1107-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-100-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1118-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-106-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -170,12 +170,13 @@ A delivery rider is told "up to ¥10,000 a month." That number hides four things
 
 ---
 
-## The current five modules (rights navigation in progress)
+## The current six modules (rights navigation P0 shipped)
 
-> This is the 3.4.1 implementation order, still led by the income calculator. The target four-entry IA and migration plan are in [docs/POSITIONING.md](docs/POSITIONING.md).
+> 3.5.0 ships the first rights-navigation layer: do the paperwork first, then run the numbers. The next step is content depth; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
 
 | Module | Answers |
 |---|---|
+| **Start here** | What to do, what to claim, how to handle social/medical insurance, and where to get help — a 3-step wizard returns 3–7 items |
 | **Overview** | Net monthly income, effective hourly wage, rights score — and the weakest link |
 | **Scenario lab** | What a different work pattern pays, and whether it is worth it |
 | **Tax and pension** | Labor remuneration vs sole proprietorship; how many years of contributions break even |
@@ -208,8 +209,8 @@ See [SECURITY.md](SECURITY.md).
 ```bash
 npm ci
 npm run dev            # web dev server
-npm test               # 1107 unit tests
-npm run test:e2e       # 100 browser tests (builds first)
+npm test               # 1118 unit tests
+npm run test:e2e       # 106 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check
 npm run verify:reality # data reality check

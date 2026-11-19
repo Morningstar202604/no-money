@@ -86,7 +86,7 @@ describe('导航接线：navItems 的 key 必须命中路由 name', () => {
 
   it('首页重定向目标存在，且 logo 跳转用的是合法路由名', () => {
     expect(ROUTE_PATHS).toContain('/dashboard')
-    expect(layout).not.toMatch(/router\.push\(\{\s*name:\s*'(?!Dashboard|Scenario|Planning|Rights|Policy)\w+'\s*\}\)/)
+    expect(layout).not.toMatch(/router\.push\(\{\s*name:\s*'(?!Start|Dashboard|Scenario|Planning|Rights|Policy)\w+'\s*\}\)/)
   })
 })
 
@@ -116,6 +116,8 @@ describe('AI 助手接线', () => {
     }
     walk('src/components')
     walk('src/layouts')
+    // 父组件也可能是 view：只扫 components/layouts 会把 RightsStartView 这类真实父级漏掉
+    walk('src/views')
     const allSources = dirFiles.map(f => ({ file: f, src: read(f) }))
 
     const unlistened: string[] = []

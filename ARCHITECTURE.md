@@ -21,8 +21,9 @@ src/
 │                    TaxEngine/BenefitEngine 仍被两个面板使用，见 engine/README.md
 ├── stores/          Pinia：参数、持久化、规则加载（I/O 都在这一层）
 ├── composables/     AI 对话（流式 SSE、离线知识库兜底）
-├── components/      UI 组件
-└── views/           八个页面：总览 / 方案对比 / 税务与养老 / 权益护航 /
+├── data/            城市 / 省级入口 / 权益内容目录（`rights/catalog.ts`）
+├── components/      UI 组件（含 RightsWizard / RightsItemCard / RightsEntryGrid）
+└── views/           九个页面：办事入口 / 总览 / 方案对比 / 税务与养老 / 权益护航 /
                     政策百科 / 数据核验 / 管理 / 404
 ```
 
@@ -71,7 +72,7 @@ components / views 渲染
 ```
 
 权益内容（`docs/POSITIONING.md` 的 `RightsItem`）走另一条链路：
-`src/data/rights/*` → 内容校验 → 清单/详情页，不参与计算内核。
+`src/data/rights/catalog.ts`（23 条民生手册迁移 + 9 条新增，共 32 条）→ 内容校验 → `/start` 四入口 / 3 步向导 / 条目卡，不参与计算内核。
 
 ## 数据可信度
 

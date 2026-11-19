@@ -15,6 +15,7 @@ import { defineComponent, h } from 'vue'
 
 /** 五个页面的标题文案，与 router meta.title 的正文部分保持一致 */
 export const PAGE_TITLES = {
+  start: '办事入口 — 该做什么、能拿什么、去哪办',
   dashboard: '总览 — 月净收入与权益评分',
   scenario: '方案对比与收支明细',
   planning: '税务优化与养老规划',

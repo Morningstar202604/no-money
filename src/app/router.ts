@@ -5,6 +5,7 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', redirect: '/dashboard' },
+    { path: '/start', name: 'Start', component: () => import('../views/RightsStartView.vue'), meta: { title: '办事入口 — 该做什么、能拿什么、去哪办' } },
     { path: '/dashboard', name: 'Dashboard', component: () => import('../views/DashboardView.vue'), meta: { title: '总览 — 月净收入与权益评分' } },
     { path: '/scenario', name: 'Scenario', component: () => import('../views/ScenarioView.vue'), meta: { title: '方案对比与收支明细' } },
     { path: '/planning', name: 'Planning', component: () => import('../views/PlanningView.vue'), meta: { title: '税务优化与养老规划' } },

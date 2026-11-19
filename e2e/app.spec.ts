@@ -28,7 +28,8 @@ async function openSidebar(page: import('@playwright/test').Page) {
   if (!inViewport) {
     // 移动端由顶部菜单按钮切换抽屉
     await page.getByRole('button', { name: '打开参数设置' }).click()
-    await expect(sidebar).toBeVisible()
+    // 抽屉有 250ms 滑入动画；只断言可见会在动画中途继续，后续点击被判为不稳定
+    await expect(sidebar).toHaveClass(/mobile-open/)
   }
 }
 
@@ -171,6 +172,11 @@ test.describe('应用可用性', () => {
     await dismissOnboarding(page)
     await openSidebar(page)
 
+    // 导出按钮在参数栏底部；移动端参数栏是独立滚动容器，先滚到底再点，
+    // 否则 Playwright 的自动滚动可能只滚页面、点不到按钮。
+    await page.locator('.sidebar-content').evaluate((el) => { el.scrollTop = el.scrollHeight })
+    // 滚动后等一帧：naive-ui 的按钮在布局稳定前会被父容器挡一下
+    await page.waitForTimeout(300)
     const downloadPromise = page.waitForEvent('download', { timeout: 10_000 })
     await page.getByRole('button', { name: '导出参数' }).click()
     const download = await downloadPromise

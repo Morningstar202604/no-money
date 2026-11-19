@@ -10,8 +10,8 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.4.1** is the current baseline. The product direction is settled — a rights-navigation and
-public-service guide for workers — and the positioning / scope documents are written:
+**3.5.0** is the current baseline. The product direction is settled — a rights-navigation and
+public-service guide for workers — and the first P0 slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -19,32 +19,38 @@ public-service guide for workers — and the positioning / scope documents are w
   60+ rights inventory, L1/L2/L3 standard, four home entries, 3-step onboarding, nine-section
   content template, four-level confidence, assistant + 7 templates, policy anchors
 
-**What is not done yet:** the UI still opens on income KPIs; the rights content is still 23 items
-inside the sixth tab of `PolicyView`; there is no identity/work-type routing; the four home entries
-exist only in docs. The next release is the first real IA migration.
+**What is shipped:** `/start` with four entries; a 3-step wizard; a 32-item `RightsItem` catalog
+(23 migrated + 9 new); home four-card block; nav entry; content tests. The calculator and all routes
+still work.
+
+**What is not done yet:** the full six-section nav reorder, checklist progress/favorites, identity-aware
+calculation, 30 L2 items and 10 deep-verified cities. Those are 3.6.0 / 3.7.0.
 
 ---
 
-## 3.5.0 — Rights navigation P0 (next)
+## 3.5.0 — Rights navigation P0 (shipped 2026-11-19)
 
 **Goal: a first-time worker can open the app, pick a city and a situation, and get a 3–7 item
 checklist with an official entry point for each item.**
 
-- [ ] Home: four large entries — 我该做什么 / 我能拿什么 / 社保医保怎么办 / 遇到麻烦怎么办;
+- [x] Home: four large entries — 我该做什么 / 我能拿什么 / 社保医保怎么办 / 遇到麻烦怎么办;
       "算一算" and "问一句" move below the four cards
-- [ ] First-visit 3-step wizard: city → identity/life stage → what you want to solve;
+- [x] First-visit 3-step wizard: city → identity/life stage → what you want to solve;
       no registration, no ID number, no salary required
-- [ ] Checklist model: `RightsItem` with `whatToDo`, `whatToGet`, `whereToGo`, `deadline`,
+- [x] Checklist model: `RightsItem` with `whatToDo`, `whatToGet`, `whereToGo`, `deadline`,
       `materials`, `confidence`, `lastVerified`, `officialUrl`
-- [ ] Migrate the 23 existing `livingGuide` entries into the new model; add the first 7 high-frequency
-      items (入职合同/试用期、社保参保状态、医保断缴、公积金开户、工伤 30 天、失业金、欠薪取证)
-- [ ] Keep the existing calculator and all 8 routes working; the four entries link into them rather
+- [x] Migrate the 23 existing `livingGuide` entries into the new model; add 9 high-frequency
+      items (公积金、生育津贴、高温津贴、灵活就业社保补贴、异地就医、退休办理、失业金、工伤认定、欠薪取证)
+- [x] Keep the existing calculator and all 8 routes working; the four entries link into them rather
       than replace them
-- [ ] Copy pass: remove "骑手/外卖" from global nav, onboarding and AI system prompt; keep it only
+- [x] Copy pass: remove "骑手/外卖" from global nav, onboarding and AI system prompt; keep it only
       where the content is genuinely about that work type
 
 **Acceptance:** a new user can complete the wizard on a 320px screen, get a checklist, and open at
 least one official link per item; no page says "月入过万"; all existing tests stay green.
+
+**Status (3.5.0):** shipped and green — 54 files / 1,118 unit tests, 8 files / 106 E2E. Remaining P0
+debt: six-section nav, checklist persistence, identity-aware calculation. Those move to 3.6.0.
 
 ---
 

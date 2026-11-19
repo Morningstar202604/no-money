@@ -3,7 +3,17 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [3.5.0] — 2026-11-19
+
+权益导航 P0：平台从「收入测算工具」正式长出「办事入口」这一层。收入计算器保留，但不再占据首屏主线。
+
+### Added
+
+- **`/start` 办事入口**：四个入口「我该做什么 / 我能拿什么 / 社保医保怎么办 / 遇到麻烦怎么办」，首页首屏同步放四卡；导航新增「办事入口」。
+- **3 步向导**：城市 → 身份/阶段 → 最近想解决的事，生成 3–7 条清单；不注册、不填身份证/工资，城市选择不改当前测算城市。
+- **`RightsItem` 内容层**：现有 23 条民生手册全部迁移（保留 `guideId` 与官方链接），新增 9 条高频权益（公积金、生育津贴、高温津贴、灵活就业补贴、异地就医、退休办理、失业金、工伤认定、欠薪取证），共 32 条；每条含第一步、能拿什么、去哪办、时限、坑与核验时间。
+- **内容纪律门禁**：`confidence=official` 必须有官方链接；新增条目不写具体金额；向导返回 3–7 条且不越出身份范围；四个入口各有内容。
+- **组件测试与 E2E**：新增 `tests/rightsCatalog.spec.ts`、`tests/rightsWizard.mount.spec.ts`、`e2e/rights-navigation.spec.ts`；测试数 **54 文件 / 1,118 项**，E2E **8 文件 / 106 项**。
 
 ### Changed
 
@@ -24,8 +34,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   `tests/architecture.spec.ts`（domain/application/kernel/入口/旧引擎边界）；
   `doctor` 增加对外定位一致性与 README 数据一致性检查。
 - **文档口径同步**：`ROADMAP.md` 从 2.x 重排到 3.4.1 → 3.5.0 权益导航 P0；
-  `ARCHITECTURE.md` 改为 8 个视图、kernel 规则、旧引擎 deprecation；
-  `docs/DEPLOYMENT.md` 更新为 dist 3.26 MB / assets 2.43 MB、API 示例版本 3.4.1；
+  `ARCHITECTURE.md` 改为 9 个视图、kernel 规则、旧引擎 deprecation；
+  `docs/DEPLOYMENT.md` 更新为 dist 3.30 MB / assets 2.47 MB、API 示例版本 3.5.0；
   `CONTRIBUTING.md` 与 `docs/VERSIONING.md` 发布门禁加入 `verify:entrypoints` 与
   `doctor`；`docs/RESEARCH.md` 标注历史调研范围。
 
@@ -57,7 +67,7 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Notes
 
-- 测试数 1,088 → 1,102（新增 14 项回归），再加 5 项架构门禁，当前 **52 文件 / 1,107 项**；
+- 测试数 1,088 → 1,102（新增 14 项回归），再加 5 项架构门禁，再加 P0 权益导航 11 项，当前 **54 文件 / 1,118 项**；E2E **8 文件 / 106 项**；
   `npm test`、`typecheck`、`verify`、`verify:reality`、`build`、`doctor` 全绿。
 
 ## 3.4.1 — 2026-11-08

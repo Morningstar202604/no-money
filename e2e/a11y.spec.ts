@@ -39,7 +39,7 @@ test.describe('语义结构', () => {
 
     const links = nav.getByRole('link')
     const count = await links.count()
-    expect(count).toBe(5)
+    expect(count).toBe(6)
 
     for (let i = 0; i < count; i++) {
       const name = await links.nth(i).innerText()

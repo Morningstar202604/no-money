@@ -4,7 +4,7 @@
     :show="visible"
     preset="card"
     class="onb-modal"
-    title="先看这里：这些数字是谁的？"
+    title="先看这里：你该办哪几件事？"
     :style="{ width: 'min(620px, 94vw)', maxHeight: 'calc(100dvh - 32px)', display: 'flex', flexDirection: 'column' }"
     :closable="true"
     content-style="overflow-y: auto; min-height: 0; flex: 1 1 auto;"
@@ -12,28 +12,28 @@
   >
     <div class="onb">
       <p class="onb-lead">
-        页面上的收入、成本、社保数字，全部来自左侧参数栏的假设值——<strong>不是你的真实数据</strong>。
-        先花两分钟把下面三项换成你自己的情况，结论才有意义。
+        这个平台先帮你搞清楚<strong>「该做什么、能拿什么、去哪办」</strong>。下面的收入数字只是工具，
+        默认值<strong>不是你的真实数据</strong>；先办事，再算钱。
       </p>
 
       <ol class="onb-steps">
         <li>
-          <b>日均工时 / 日均接单 / 月工作天</b>
-          <span>默认 {{ d.hours }}h、{{ d.orders }}单、{{ d.days }}天是常见全职强度。<strong>刚入行填低一些</strong>（新手期单量与效率都更低）。</span>
+          <b>选城市、身份、最近想解决的事</b>
+          <span>3 步生成 3–7 条清单；不注册、不填身份证、不填工资。</span>
         </li>
         <li>
-          <b>车辆与成本</b>
-          <span>默认月支出约 ¥{{ d.cost }}（电动车的充电、维护、保险、折旧等）。租车的话把租金加进「维护费」。</span>
+          <b>每条清单都有第一步、时限、官方入口</b>
+          <span>社保、医保、公积金、补贴、工伤、欠薪——按清单点进官方入口自己办。</span>
         </li>
         <li>
-          <b>税务与社保</b>
-          <span>默认<strong>未参保</strong>。参保会让净收入下降约 ¥{{ d.insurance }}，但医保断缴时住院费用要全额自付。</span>
+          <b>想算收入，再改左侧参数</b>
+          <span>默认 {{ d.hours }}h、{{ d.orders }}单、{{ d.days }}天只是示例；算出来的钱是<strong>假设</strong>，不是工资承诺。</span>
         </li>
       </ol>
 
       <n-alert type="info" :show-icon="true" style="margin-top: 4px">
-        <div><b>三步快速上手</b></div>
-        <div style="margin-top:4px">① 左侧把参数改成你的情况 → ② 看「总览」的净收入与<strong>有效时薪</strong>（和当地最低工资对比）→ ③ 去「方案对比 → 收支明细」看钱的去向。</div>
+        <div><b>平台不做什么</b></div>
+        <div style="margin-top:4px">不代办、不代缴、不承诺结果；没有官方依据的金额一律不写，具体标准以当地最新文件为准。</div>
       </n-alert>
 
       <n-alert type="warning" :show-icon="true" style="margin-top: 8px">
@@ -44,7 +44,7 @@
       </n-alert>
 
       <p class="onb-foot">
-        想先了解行业里的真实规则（押金、租车、合同、扣款），见「政策百科 → 民生手册 → 新人入门」。
+        想先看数字，点「开始调整参数」；想先办事，点「去生成办事清单」。
       </p>
     </div>
 
@@ -53,7 +53,10 @@
         <!-- 两个按钮行为必须区分：此前都写 seen=1，用户点「开始调整参数」
              也会被永久静默，想再看一次引导没有任何入口 -->
         <n-button text size="small" @click="dismissForever">不再提示</n-button>
-        <n-button type="primary" size="small" @click="closeOnce">开始调整参数</n-button>
+        <div class="onb-cta">
+          <n-button size="small" @click="closeOnce">开始调整参数</n-button>
+          <n-button type="primary" size="small" @click="goStart">去生成办事清单</n-button>
+        </div>
       </div>
     </template>
   </n-modal>
@@ -62,10 +65,12 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import { NModal, NButton, NAlert } from 'naive-ui'
+import { useRouter } from 'vue-router'
 import { useMainStore } from '../stores/main'
 
 const STORAGE_KEY = 'nomoney_onboarding_v1'
 const store = useMainStore()
+const router = useRouter()
 
 function readSeen(): boolean {
   // 存储不可用（隐私模式）时按「没看过」处理：宁可多提示一次，
@@ -75,23 +80,11 @@ function readSeen(): boolean {
 
 const visible = ref(!readSeen())
 
-const d = computed(() => {
-  const c = store.costs
-  const cost = c.electricityCostMonth + c.maintenanceMonth + c.insuranceMonth
-    + c.phoneCostMonth + c.foodCostMonth + c.trafficFineMonth
-    + c.vehicleDepreciationMonth + c.otherCostMonth + c.fuelCostMonth
-  // 参保成本的正确口径：未参保时 totalMonthly 为 0，不能直接取它——
-  // 否则会显示「参保让净收入下降约 ¥0」，把"每月要掏一两千"说成不花钱。
-  const s0 = store.scenarios[0]
-  const insurance = Math.round(s0?.benefit.totalMonthly || ((s0?.benefit.pensionMonthly ?? 0) + (s0?.benefit.medicalMonthly ?? 0)))
-  return {
-    hours: store.work.dailyHours,
-    orders: store.work.dailyOrders,
-    days: store.work.workDaysMonth,
-    cost,
-    insurance,
-  }
-})
+const d = computed(() => ({
+  hours: store.work.dailyHours,
+  orders: store.work.dailyOrders,
+  days: store.work.workDaysMonth,
+}))
 
 /** 「不再提示」：永久静默 */
 function dismissForever() {
@@ -102,6 +95,12 @@ function dismissForever() {
 /** 「开始调整参数」：只关本次，下次打开仍会提示 */
 function closeOnce() {
   visible.value = false
+}
+
+/** 首次用户的主路径：直接进办事入口，不再先教填参数 */
+function goStart() {
+  visible.value = false
+  void router.push('/start')
 }
 
 /** 供父组件调用：命令面板等全局浮层打开时，先收起引导，
@@ -130,7 +129,8 @@ onBeforeUnmount(() => window.removeEventListener('app:close-onboarding', onClose
 .onb-steps span strong { color: var(--color-text-brand); }
 
 .onb-foot { font-size: 12px; color: var(--color-text-tertiary); margin: 0; }
-.onb-actions { display: flex; justify-content: space-between; align-items: center; }
+.onb-actions { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.onb-cta { display: flex; gap: 8px; flex-wrap: wrap; }
 </style>
 
 <!-- 非 scoped：n-modal 被 Teleport 到 body，scoped 样式的作用域属性加不到那些节点上，

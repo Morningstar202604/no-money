@@ -3,6 +3,24 @@
     <PageHeading />
     <OnboardingHint />
 
+    <!-- 权益优先：首屏先回答“该办什么”，收入测算下沉为“算一算”。
+         四个入口不依赖规则加载，规则失败时也能用。 -->
+    <section class="rights-entry-section">
+      <div class="rights-entry-head">
+        <div>
+          <h2 class="rights-entry-title">先看这四件事</h2>
+          <p class="rights-entry-desc">刚出社会最容易漏掉的，不是工资算得准不准，而是社保、医保、公积金、补贴和维权时效。先选一个入口。</p>
+        </div>
+        <router-link class="rights-entry-all" to="/start">全部条目 →</router-link>
+      </div>
+      <RightsEntryGrid />
+    </section>
+
+    <div class="calc-divider">
+      <span class="calc-divider-label">下面是「算一算」</span>
+      <span class="calc-divider-desc">收入/社保/个税测算仍是工具，不是平台主线；先办完上面的事再看数字。</span>
+    </div>
+
     <!-- 规则未就绪（加载中/加载失败）时不得显示 0 值：¥0/0分 会被读成真实结论。
          加载中给骨架屏而不是空白页——空白会让人以为页面坏了。 -->
     <SkeletonLoader v-if="!store.rule && !store.loadError" />
@@ -204,6 +222,7 @@
 
 <script setup lang="ts">
 import { createPageHeading } from '../components/PageHeading'
+import RightsEntryGrid from '../components/RightsEntryGrid.vue'
 const PageHeading = createPageHeading('dashboard')
 
 import { computed } from 'vue'
@@ -407,4 +426,24 @@ const pieOption = computed<EChartsCoreOption>(() => {
 .vs-value.danger { color: var(--color-text-danger, #d03050); }
 .vs-foot { font-size: 11px; color: var(--color-text-tertiary); }
 .vol-boundary { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.6; margin: 8px 0 0; }
+/* 权益导航首屏：不依赖规则加载，规则失败时也能用 */
+.rights-entry-section {
+  margin-bottom: 12px;
+  padding: 16px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+}
+.rights-entry-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.rights-entry-title { margin: 0; font-size: var(--font-size-lg); color: var(--color-text-primary); }
+.rights-entry-desc { margin: 3px 0 0; max-width: 760px; font-size: var(--font-size-sm); line-height: 1.6; color: var(--color-text-secondary); }
+.rights-entry-all { flex: 0 0 auto; display: inline-flex; align-items: center; min-height: 24px; font-size: var(--font-size-xs); color: var(--color-text-brand); text-decoration: none; padding: 0 2px; }
+.rights-entry-all:hover { text-decoration: underline; }
+.calc-divider {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 10px;
+  margin: 4px 0 10px; padding-top: 10px; border-top: 1px dashed var(--color-border-primary);
+}
+.calc-divider-label { font-size: var(--font-size-sm); font-weight: 650; color: var(--color-text-primary); }
+.calc-divider-desc { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
+
 </style>
