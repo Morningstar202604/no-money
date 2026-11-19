@@ -3,13 +3,15 @@
   <div>
     <n-card title="政策百科 — 法规依据与维权指引" class="card">
       <p class="desc">
-        本页每条政策均标注文件名、文号、施行状态与原文链接。标注「待核实」的条目尚无权威出处，请勿对外引用。
-        社保、医保、养老与保险税优的办事速查见「<b>民生手册</b>」页；宣传口径与现实的差距见「<b>现实与口径</b>」页。
+        本页四组：<b>政策原文</b>、<b>数据溯源</b>、<b>现实与救济</b>、<b>手册与知识库</b>。
+        每条政策均标注文件名、文号、施行状态与原文链接；标注「待核实」的条目尚无权威出处，请勿对外引用。
+        办事清单、材料和教程先看「<router-link to="/start">办事入口</router-link>」页，这里只负责查依据。
       </p>
     </n-card>
 
-    <n-tabs type="line" v-model:value="tab" style="margin-top: 12px">
-      <n-tab-pane name="national" tab="国家级">
+    <n-tabs type="line" v-model:value="activeTab" style="margin-top: 12px">
+      <n-tab-pane name="policy" tab="政策原文">
+        <h2 class="group-title">国家级</h2>
         <div class="policy-list">
           <FoldCard v-for="p in policies.national" :key="p.id">
             <template #header>
@@ -25,15 +27,14 @@
             <p v-if="p.caveat" class="pi-caveat">注意：{{ p.caveat }}</p>
           </FoldCard>
         </div>
-      </n-tab-pane>
 
-      <n-tab-pane name="guangdong" :tab="provinceTabLabel">
+        <h2 class="group-title">{{ provinceTabLabel }}</h2>
         <!-- 当前城市不在广东时，本页内容与用户所在省份无关，必须说明而不是默默展示 -->
         <n-alert v-if="currentProvince && currentProvince !== '广东'" type="info" :show-icon="true" style="margin-bottom: 10px">
           你当前测算城市是<b>{{ store.rule?.cityName }}</b>（{{ currentProvince }}）。
           本页收录的是<b>广东省</b>的地方性政策原文，与你所在省份的地区性规定不同，
           不能直接套用——请以{{ currentProvince }}人社/医保部门的现行文件为准。
-          全国性政策见「国家级」页。
+          全国性政策见上方「国家级」。
         </n-alert>
         <div class="policy-list">
           <FoldCard v-for="p in policies.guangdong" :key="p.id">
@@ -50,9 +51,8 @@
             <p v-if="p.caveat" class="pi-caveat">注意：{{ p.caveat }}</p>
           </FoldCard>
         </div>
-      </n-tab-pane>
 
-      <n-tab-pane name="province" :tab="`${currentProvince || '本省'}政策核查清单`">
+        <h2 class="group-title">本省政策核查清单</h2>
         <n-card class="card" style="margin-top: 0" :title="`${currentProvince || '你所在省'}：该查哪几份文件`">
           <p class="desc" style="margin-bottom:10px">
             本产品逐条核验并收录了<b>广东省</b>的地方文件；其余省份不编造文号与数值，而是列出
@@ -83,7 +83,7 @@
         </n-card>
       </n-tab-pane>
 
-      <n-tab-pane name="sources" tab="本城数据溯源">
+      <n-tab-pane name="sources" tab="数据溯源">
         <n-card class="card" style="margin-top: 0" title="当前城市参数逐条溯源">
           <p class="desc" style="margin-bottom:10px">
             测算页的每个外部参数都来自左侧规则文件，此处展示其出处与置信度。
@@ -110,8 +110,9 @@
         </n-card>
       </n-tab-pane>
 
-      <n-tab-pane name="reality" tab="现实与口径">
-        <n-card class="card" style="margin-top: 0" title="口径提示：这些差距，比文件本身更影响你的到手金额">
+      <n-tab-pane name="reality" tab="现实与救济">
+        <h2 class="group-title">现实与口径</h2>
+        <n-card class="card" style="margin-top: 0" title="这些差距，比文件本身更影响你的到手金额">
           <p class="desc">
             以下条目按证据等级标注：<b>法律条文 / 官方文件</b> ＞ <b>媒体报道</b> ＞ <b>经验·待自验</b>（无权威统计，给出自行核实的方法）。
             本项目不把「感觉」当事实——凡无法回溯到出处的量化断言一律不写；标「经验·待自验」的，请按给出的方法核实后再引用。
@@ -126,9 +127,27 @@
         >
           <RealityList :facts="g.facts" />
         </n-card>
+
+        <h2 class="group-title">权益救济</h2>
+        <n-grid :x-gap="12" cols="1 s:2" responsive="screen" style="margin-top: 0">
+          <n-gi v-for="(item, i) in reliefGuide" :key="i">
+            <n-card class="card" style="height: 100%">
+              <template #header>
+                <span class="pi-title">{{ item.title }}</span>
+              </template>
+              <n-steps :current="item.steps.length" size="small" vertical>
+                <n-step v-for="(step, j) in item.steps" :key="j" :title="`步骤 ${j+1}`">
+                  <span class="step-text">{{ step }}</span>
+                </n-step>
+              </n-steps>
+              <p v-if="item.note" class="step-note">{{ item.note }}</p>
+            </n-card>
+          </n-gi>
+        </n-grid>
       </n-tab-pane>
 
-      <n-tab-pane name="manual" tab="民生手册">
+      <n-tab-pane name="manual-kb" tab="手册与知识库">
+        <h2 class="group-title">民生手册</h2>
         <n-card class="card" style="margin-top: 0" title="办事速查：社保 · 医保 · 养老 · 保险税优">
           <p class="desc">
             每条一个实际问题、一句人话结论、关键数字与办理步骤，并附
@@ -145,9 +164,8 @@
         >
           <GuideCard v-for="item in g.items" :key="item.id" :item="item" />
         </n-card>
-      </n-tab-pane>
 
-      <n-tab-pane name="kb" tab="知识库">
+        <h2 class="group-title">知识库</h2>
         <n-card class="card" style="margin-top: 0" title="统一知识库 — 本地检索，AI 可直接摄取">
           <p class="desc">
             当前城市视图聚合成 <b>{{ kbTotal }} 条</b>结构化条目（政策 {{ kbCounts.policy }} / 手册 {{ kbCounts.guide }} / 现实 {{ kbCounts.reality }} / 本城溯源 {{ kbCounts.source }}）。
@@ -192,31 +210,14 @@
             <div class="kb-results">
               <KbResultCard v-for="h in kbHits" :key="h.entry.id" :hit="h" />
             </div>
-            <n-empty v-if="!kbHits.length" description="没有命中：换个关键词，或去「民生手册」页按分类浏览" style="padding: 16px 0" />
+            <n-empty v-if="!kbHits.length" description="没有命中：换个关键词，或看上方「民生手册」按分类浏览" style="padding: 16px 0" />
           </template>
         </n-card>
-      </n-tab-pane>
-
-      <n-tab-pane name="relief" tab="权益救济">
-        <n-grid :x-gap="12" cols="1 s:2" responsive="screen" style="margin-top: 0">
-          <n-gi v-for="(item, i) in reliefGuide" :key="i">
-            <n-card class="card" style="height: 100%">
-              <template #header>
-                <span class="pi-title">{{ item.title }}</span>
-              </template>
-              <n-steps :current="item.steps.length" size="small" vertical>
-                <n-step v-for="(step, j) in item.steps" :key="j" :title="`步骤 ${j+1}`">
-                  <span class="step-text">{{ step }}</span>
-                </n-step>
-              </n-steps>
-              <p v-if="item.note" class="step-note">{{ item.note }}</p>
-            </n-card>
-          </n-gi>
-        </n-grid>
       </n-tab-pane>
     </n-tabs>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { createPageHeading } from '../components/PageHeading'
@@ -274,8 +275,24 @@ const provinceTabLabel = computed(() => {
  * 页签与 URL 双向同步：/policy?tab=manual 可深链进入，切换页签也会写回地址栏。
  * 具体 getter/setter 规则统一在 useTabQuery，避免三个页面各写一份后漂移。
  */
-const TAB_NAMES = ['national', 'guangdong', 'province', 'sources', 'reality', 'manual', 'kb', 'relief'] as const
-const tab = useTabQuery(TAB_NAMES, 'national')
+const TAB_NAMES = [
+  'policy', 'sources', 'reality', 'manual-kb',
+  // 旧深链别名：仍能打开，归到对应的四组，不破坏已发出去的链接
+  'national', 'guangdong', 'province', 'manual', 'kb', 'relief',
+] as const
+type TabName = typeof TAB_NAMES[number]
+type TabGroup = 'policy' | 'sources' | 'reality' | 'manual-kb'
+const TAB_GROUP: Record<TabName, TabGroup> = {
+  policy: 'policy', sources: 'sources', reality: 'reality', 'manual-kb': 'manual-kb',
+  national: 'policy', guangdong: 'policy', province: 'policy',
+  manual: 'manual-kb', kb: 'manual-kb', relief: 'reality',
+}
+const tab = useTabQuery(TAB_NAMES, 'policy')
+/** 四个外层页签；旧 ?tab=manual / national 等深链归到对应组。 */
+const activeTab = computed<TabGroup>({
+  get: () => TAB_GROUP[tab.value] ?? 'policy',
+  set: (value) => { tab.value = value },
+})
 
 /* ---------- 知识库 ---------- */
 const STATIC_KB = buildStaticKbEntries()
@@ -325,6 +342,8 @@ const reliefGuide = RELIEF_GUIDE
 <style scoped>
 
 .policy-list { display: flex; flex-direction: column; gap: 8px; }
+.group-title { margin: 18px 0 8px; font-size: var(--font-size-lg); color: var(--color-text-primary); }
+.group-title:first-child { margin-top: 0; }
 .pi-title { font-size: 14px; color: var(--color-text-primary); font-weight: 600; }
 .pi-doc-end { margin-left: auto; }
 .pi-summary { color: var(--color-text-secondary); font-size: 13px; line-height: 1.6; margin-bottom: 4px; }

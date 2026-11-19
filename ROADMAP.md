@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.6.2** is the current baseline. The product direction is settled — a rights-navigation and
+**3.6.3** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -22,7 +22,7 @@ public-service guide for workers — and the first P1 content slice is shipped:
 **What is shipped:** `/start` with four entries; a 3-step wizard; a 43-item `RightsItem` catalog
 (23 migrated + 20 new), **30 items at L2**; **10 cities with four local official entries**;
 local checklist persistence; `/start` four-entry tabs; content tests. The calculator and all routes still work.
-3.6.1 adds a single source for the four entries and a shared tab-query composable — no behavior change.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four user-facing tabs while keeping old deep links.
 
 **What is not done yet:** 60+ items, export/print, deadline reminders, six-section nav reorder,
 identity-aware calculation. Those are 3.7.0 / 3.8.0.
@@ -108,12 +108,27 @@ social insurance, medical insurance, housing fund and employment services.
 
 ---
 
+## 3.6.3 — Policy page four-group IA (shipped 2026-11-19)
+
+**Goal: four first-level tabs that map to user questions, not eight data tables.**
+
+- [x] `政策原文` = 国家级 + 地方政策 + 本省核查清单
+- [x] `数据溯源` = 当前城市参数逐条出处
+- [x] `现实与救济` = 现实口径 + 权益救济
+- [x] `手册与知识库` = 民生手册 + 本地知识库/导出
+- [x] Old `?tab=national|guangdong|province|manual|kb|relief` deep links still resolve to the matching group
+- [x] Manual body is still present; true single-source dedupe remains P1-2
+
+**Status (3.6.3):** shipped — UI grouping only; no policy number, link, calculation or content removed.
+
+---
+
 ## 3.7.0 — 60+ items and a usable checklist
 
 **Goal: a worker can keep a personal "what I still need to do" list across a job change.**
 
 - [ ] 前端合并 P1：民生手册不再与 `/start` 双份维护，`GuideCard` 只做详情
-- [ ] 前端合并 P1：`/policy` 八个页签按问题压成四组（不减内容）
+- [x] 前端合并 P1：`/policy` 八个页签按问题压成四组（3.6.3 已上线，不减内容）
 - [ ] 60+ rights items across 12 categories, at least L1 for all
 - [ ] Checklist state persisted locally; export/print one-page summary for a dispute
 - [ ] Deadline reminders (probation, injury 30 days, unemployment registration) — local only,

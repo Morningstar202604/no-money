@@ -25,6 +25,21 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByText('你在哪个城市工作 / 参保')).toBeVisible()
   })
 
+  test('政策页首屏只有四组，民生手册收进「手册与知识库」', async ({ page }) => {
+    await page.goto('/policy')
+    await dismissOnboarding(page)
+
+    await expect(page.locator('.n-tabs-tab')).toHaveCount(4)
+    for (const label of ['政策原文', '数据溯源', '现实与救济', '手册与知识库']) {
+      await expect(page.locator('.n-tabs-tab').filter({ hasText: label })).toBeVisible()
+    }
+    await expect(page.getByText('民生手册', { exact: true })).toBeHidden()
+
+    await page.locator('.n-tabs-tab').filter({ hasText: '手册与知识库' }).click()
+    await expect(page.getByText('民生手册', { exact: true })).toBeVisible()
+    await expect(page.getByText('知识库', { exact: true })).toBeVisible()
+  })
+
   test('三步向导生成 3–7 条，每条都有官方入口或明确说没有', async ({ page }) => {
     await page.goto('/start')
     await dismissOnboarding(page)

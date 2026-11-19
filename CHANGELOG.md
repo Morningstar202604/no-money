@@ -3,6 +3,19 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.3] — 2026-11-19
+
+政策页从八个数据页签压成四个用户页签，内容一块都没删。
+
+### Changed
+
+- **政策原文**：国家级、地方政策、本省核查清单三块合到一组。
+- **数据溯源**：本城参数逐条出处保持独立。
+- **现实与救济**：现实口径与权益救济合到一组。
+- **手册与知识库**：民生手册与本地知识库/导出合到一组。
+- **旧深链**：`?tab=national`、`guangdong`、`province`、`manual`、`kb`、`relief` 仍能打开对应组。
+- 版本三处同步到 **3.6.3**；只调信息架构，不改政策数字、链接和计算口径。
+
 ## [3.6.2] — 2026-11-19
 
 首页归位：办事入口只留一个默认首页，总览页不再复制第二套四入口。

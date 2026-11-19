@@ -37,6 +37,20 @@ describe('路由契约', () => {
     expect(layout).toContain('href="/start"')
     expect(layout, '品牌点击不得再回总览').not.toMatch(/goDashboard|name: 'Dashboard'/)
   })
+
+  it('政策页只保留四组外层页签，旧深链仍能解析', () => {
+    const policy = read('src/views/PolicyView.vue')
+    for (const [name, label] of [
+      ['policy', '政策原文'],
+      ['sources', '数据溯源'],
+      ['reality', '现实与救济'],
+      ['manual-kb', '手册与知识库'],
+    ] as const) {
+      expect(policy).toContain(`name="${name}" tab="${label}"`)
+    }
+    expect(policy, '民生手册已收进手册与知识库组，不再单独占外层页签').not.toMatch(/<n-tab-pane name="manual"/)
+    expect(policy, '旧 ?tab=manual 仍要能被白名单接住').toMatch(/'manual'/)
+  })
 })
 
 describe('页签与 URL 双向同步', () => {
