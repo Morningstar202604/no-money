@@ -3,17 +3,15 @@
     <PageHeading />
     <OnboardingHint />
 
-    <!-- 权益优先：首屏先回答“该办什么”，收入测算下沉为“算一算”。
-         四个入口不依赖规则加载，规则失败时也能用。 -->
+    <!-- 办事入口已在 /start 作为唯一首页；这里不再重复四张卡，只留一句指路。 -->
     <section class="rights-entry-section">
       <div class="rights-entry-head">
         <div>
-          <h2 class="rights-entry-title">先看这四件事</h2>
-          <p class="rights-entry-desc">刚出社会最容易漏掉的，不是工资算得准不准，而是社保、医保、公积金、补贴和维权时效。先选一个入口。</p>
+          <h2 class="rights-entry-title">先办事，再算钱</h2>
+          <p class="rights-entry-desc">我该做什么、我能拿什么、社保医保怎么办、遇到麻烦怎么办，四件事都在那里一次摊开。这一页只负责算钱，不再重复一套入口。</p>
         </div>
-        <router-link class="rights-entry-all" to="/start">全部条目 →</router-link>
+        <router-link class="rights-entry-all" to="/start">打开四入口 →</router-link>
       </div>
-      <RightsEntryGrid />
     </section>
 
     <div class="calc-divider">
@@ -222,7 +220,6 @@
 
 <script setup lang="ts">
 import { createPageHeading } from '../components/PageHeading'
-import RightsEntryGrid from '../components/RightsEntryGrid.vue'
 const PageHeading = createPageHeading('dashboard')
 
 import { computed } from 'vue'

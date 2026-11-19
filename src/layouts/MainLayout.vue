@@ -4,7 +4,7 @@
     <header class="header" :class="{ 'header-scrolled': scrolled }">
       <div class="header-container">
         <!-- Brand -->
-        <a class="header-brand" href="/dashboard" @click.prevent="goDashboard" aria-label="没钱 No Money 首页">
+        <a class="header-brand" href="/start" @click.prevent="goStart" aria-label="没钱 No Money 首页">
           <div class="brand-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" width="24" height="24">
               <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/>
@@ -293,8 +293,8 @@ function onNav(key: string) {
   if (isMobile.value) mobileSidebarOpen.value = false
 }
 
-function goDashboard() {
-  router.push({ name: 'Dashboard' })
+function goStart() {
+  router.push({ name: 'Start' })
 }
 
 function toggleTheme() {

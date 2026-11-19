@@ -34,8 +34,8 @@ async function openSidebar(page: import('@playwright/test').Page) {
 }
 
 test.describe('应用可用性', () => {
-  test('首页能打开并完成首次计算', async ({ page }) => {
-    await page.goto('/')
+  test('总览页能打开并完成首次计算', async ({ page }) => {
+    await page.goto('/dashboard')
     await expect(page).toHaveTitle(/没钱 No Money/)
     // 规则加载完成：侧边栏显示城市名
     await expect(page.getByRole('complementary', { name: '参数设置' })).toBeVisible()

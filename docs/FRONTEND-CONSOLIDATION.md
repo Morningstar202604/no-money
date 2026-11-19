@@ -7,27 +7,33 @@
 
 | 重复点 | 原来 | 现在 |
 |---|---|---|
-| 四入口标题/描述 | `RightsEntryGrid.vue` 与 `RightsStartView.vue` 各写一份 | 统一到 `src/data/rights/entries.ts` 的 `RIGHTS_ENTRIES` |
+| 四入口标题/描述 | `RightsEntryGrid.vue` 与 `RightsStartView.vue` 各写一份 | 统一到 `src/data/rights/entries.ts` 的 `RIGHTS_ENTRIES`；3.6.2 删除重复组件 |
 | `?tab=` 双向同步 | `ScenarioView` / `PlanningView` / `PolicyView` 各复制一段 getter/setter | 统一到 `src/composables/useTabQuery.ts` |
 
 这两处是纯前端复用，不改变页面功能；后续新增入口或页签只改一处。
 
+## 已完成（3.6.2）
+
+- `/` 与品牌链接统一到 `/start`；`/dashboard` 继续可用，但只承担「算一算总览」。
+- Dashboard 删除重复四入口卡，只保留一句指路；已无引用的 `RightsEntryGrid` 组件删除。
+- `/start` 四入口仍是默认首屏；选中入口后显示一句说明，避免四个标签只有标题、没有引导。
+
 ## 下一步：按这个顺序合，不要一次重排
 
-### P1-1 首页归位：`/start` 是唯一的“办事首页”
+### P1-1 首页归位：`/start` 是唯一的“办事首页”（已在 3.6.2 完成）
 
-**现状**
+**原现状**
 
 - `/` 重定向到 `/dashboard`；品牌点回 `/dashboard`。
 - `/dashboard` 顶部有四入口卡，下面才是收入测算；`/start` 又有一套四页签 + 向导。
 - 用户会问“到底从哪进”，两个页面都在抢“首页”。
 
-**建议**
+**已落地**
 
 - `/` 和品牌链接统一到 `/start`。
-- `/dashboard` 改名或语义收窄为「算一算总览」，不再重复四入口卡；最多保留一句“去办事入口”。
-- `/start` 一屏保持四个入口可见（桌面四卡/移动端四行或四页签），点选后下方只展示该入口的清单，不弹二级首页。
-- E2E 根路径用例改到 `/start`，`/dashboard` 保留原有 KPI 用例。
+- `/dashboard` 语义收窄为「算一算总览」，已删除重复四入口卡，只保留一句“去办事入口”。
+- `/start` 一屏保持四个入口可见（四页签），点选后下方只展示该入口的清单，不弹二级首页。
+- E2E 根路径用例已改到 `/start`，`/dashboard` 保留原有 KPI 用例。
 
 **不合并**：`/start` 不吞掉 `/dashboard` 的计算功能；计算仍是工具，只是不再抢首屏。
 

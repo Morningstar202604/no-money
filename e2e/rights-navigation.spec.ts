@@ -9,16 +9,17 @@ async function dismissOnboarding(page: import('@playwright/test').Page) {
 }
 
 test.describe('权益导航 P0：四入口与三步向导', () => {
-  test('首页首屏四个入口可点，进入办事页', async ({ page }) => {
-    await page.goto('/dashboard')
+  test('根路径默认进入办事页，四个入口可见可点', async ({ page }) => {
+    await page.goto('/')
+    await expect(page).toHaveURL(/\/start/)
     await dismissOnboarding(page)
 
-    await expect(page.getByText('先看这四件事')).toBeVisible()
+    await expect(page.getByRole('tablist', { name: '四个办事入口' })).toBeVisible()
     for (const label of ['我该做什么', '我能拿什么', '社保医保怎么办', '遇到麻烦怎么办']) {
-      await expect(page.getByRole('button', { name: new RegExp(label) })).toBeVisible()
+      await expect(page.getByRole('tab', { name: new RegExp(label) })).toBeVisible()
     }
 
-    await page.getByRole('button', { name: /我该做什么/ }).click()
+    await page.getByRole('tab', { name: /我该做什么/ }).click()
     await expect(page).toHaveURL(/\/start/)
     await expect(page.getByText('3 步向导 · 不注册')).toBeVisible()
     await expect(page.getByText('你在哪个城市工作 / 参保')).toBeVisible()

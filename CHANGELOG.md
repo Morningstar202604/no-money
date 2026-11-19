@@ -3,13 +3,29 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.2] — 2026-11-19
+
+首页归位：办事入口只留一个默认首页，总览页不再复制第二套四入口。
+
+### Changed
+
+- **根路径**：`/` 从 `/dashboard` 改为 `/start`；品牌点击也回到 `/start`。
+- **总览页**：删除重复的四入口卡，只保留一句“办事入口在另一页”，页面职责收窄为「算一算总览」。
+- **办事页**：四个页签保持一屏可见；选中入口后显示一句说明，避免只有标题没有引导。
+- **清理**：删除已无引用的 `RightsEntryGrid.vue`。
+- 版本三处同步到 **3.6.2**；纯首页/UI 调整，按 PATCH 走。
+
+### Not yet
+
+- `/policy` 八页签压缩、民生手册单一来源、省市入口统一解析仍在 3.7.0。
+
 ## [3.6.1] — 2026-11-19
 
 前端去重基线：不改页面行为，只把两处复制逻辑收成单一来源。
 
 ### Changed
 
-- **四入口元数据**：`src/data/rights/entries.ts` 成为标题、序号、描述、CTA 的唯一来源；`RightsEntryGrid` 与 `/start` 不再各写一份。
+- **四入口元数据**：`src/data/rights/entries.ts` 成为标题、序号、描述的唯一来源；`/start` 不再内联一份。
 - **页签 URL 同步**：新增 `src/composables/useTabQuery.ts`，`/scenario`、`/planning`、`/policy` 共用同一套 `?tab=` 读写规则。
 - **计划**：新增 `docs/FRONTEND-CONSOLIDATION.md`，记录下一步 P1 合并顺序（首页归位、民生手册单一来源、`/policy` 八页签压成四组）、明确不合并清单与移动端约束。
 - 版本三处同步到 **3.6.1**；这是纯去重/小修，按 PATCH 走。

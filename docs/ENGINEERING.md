@@ -8,7 +8,7 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/对拍/组件测试 | **56 文件 / 1,134 项全过**，耗时 351.50s |
+| 单元/对拍/组件测试 | **56 文件 / 1,135 项全过**，耗时 389.60s |
 | E2E | **8 文件 / 110 项全过**（desktop-chromium + mobile-chromium） |
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
@@ -16,7 +16,7 @@
 | 知识库 | `kb:check` 375 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
 | 构建 | 约 27s；`dist` **3.33 MB**（assets 2.50 MB）；首屏 **407K gzip**（预算 500K） |
-| PWA | 47 条 precache / **2,742.26 KiB（约 2.68 MB）**（预算 3 MB） |
+| PWA | 46 条 precache / **2,740.43 KiB（约 2.68 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（26 个关键文件、版本三处一致、34 城、PWA、体积、文档） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |
@@ -191,7 +191,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 指标
 
-- 测试：1,134 项（含 5 项架构门禁 + 24 项权益导航/城市入口测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
+- 测试：1,135 项（含 5 项架构门禁 + 24 项权益导航/城市入口测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
 - 首屏：407K gzip；PWA：2.68 MB；`dist`：3.33 MB（assets 2.50 MB）。
 - 数据：309 条来源，official 105（34.0%）；34 城；0 城四字段全 official。
 - 内容：`RightsItem` 43 条（23 条迁移 + 20 条新增）；其中 30 条 L2、13 条 L1；目标 60+ 条 L1。

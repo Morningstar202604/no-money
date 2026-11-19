@@ -4,7 +4,7 @@ export const router = createRouter({
   // 用构建期 base：部署到 /app/ 时路由前缀与资源前缀一致，否则深链全部 404
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', redirect: '/dashboard' },
+    { path: '/', redirect: '/start' },
     { path: '/start', name: 'Start', component: () => import('../views/RightsStartView.vue'), meta: { title: '办事入口 — 该做什么、能拿什么、去哪办' } },
     { path: '/dashboard', name: 'Dashboard', component: () => import('../views/DashboardView.vue'), meta: { title: '总览 — 月净收入与权益评分' } },
     { path: '/scenario', name: 'Scenario', component: () => import('../views/ScenarioView.vue'), meta: { title: '方案对比与收支明细' } },

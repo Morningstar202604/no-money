@@ -22,7 +22,7 @@ src/
 ├── stores/          Pinia：参数、规则加载、我的清单本机持久化（I/O 都在这一层）
 ├── composables/     AI 对话（流式 SSE、离线知识库兜底）
 ├── data/            城市 / 省级入口 / 权益内容目录（`rights/catalog.ts`，含 L1/L2 等级）
-├── components/      UI 组件（含 RightsWizard / RightsItemCard / RightsEntryGrid）
+├── components/      UI 组件（含 RightsWizard / RightsItemCard / CityServiceLinks）
 └── views/           九个页面：办事入口 / 总览 / 方案对比 / 税务与养老 / 权益护航 /
                     政策百科 / 数据核验 / 管理 / 404
 ```
@@ -71,7 +71,7 @@ Pinia store ──► ScenarioService ──► 领域纯函数
 components / views 渲染
 ```
 
-前端入口与页签：四入口的标题/序号/描述只在 `src/data/rights/entries.ts` 定义，`RightsEntryGrid` 与 `/start` 共用；`/scenario`、`/planning`、`/policy` 的 `?tab=` 同步统一走 `src/composables/useTabQuery.ts`。合并/去重边界见 `docs/FRONTEND-CONSOLIDATION.md`。
+前端入口与页签：四入口的标题/序号/描述只在 `src/data/rights/entries.ts` 定义，`/start` 页签使用；`/scenario`、`/planning`、`/policy` 的 `?tab=` 同步统一走 `src/composables/useTabQuery.ts`。合并/去重边界见 `docs/FRONTEND-CONSOLIDATION.md`。
 
 权益内容（`docs/POSITIONING.md` 的 `RightsItem`）走另一条链路：
 `src/data/rights/catalog.ts`（23 条民生手册迁移 + 20 条新增，共 43 条；30 条 L2）→ 内容校验 → `/start` 四入口 / 3 步向导 / 条目卡；`src/data/cityChannels.ts`（10 城 × 4 类本地官方入口）→ 向导结果本地入口卡。均不参与计算内核。

@@ -30,6 +30,13 @@ describe('路由契约', () => {
     expect(view).toMatch(/status="404"/)
     expect(view, '404 页必须能回到总览').toMatch(/push\('\/dashboard'\)/)
   })
+
+  it('根路径与品牌入口都指向 /start，不再把总览当首页', () => {
+    expect(router, '默认首页必须是办事入口').toMatch(/path: '\/', redirect: '\/start'/)
+    const layout = read('src/layouts/MainLayout.vue')
+    expect(layout).toContain('href="/start"')
+    expect(layout, '品牌点击不得再回总览').not.toMatch(/goDashboard|name: 'Dashboard'/)
+  })
 })
 
 describe('页签与 URL 双向同步', () => {

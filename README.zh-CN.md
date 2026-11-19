@@ -6,10 +6,10 @@
 
 面向中国劳动者的**权益导航与办事平台**。收入 / 个税 / 社保 / 补偿的测算只是其中一件工具，AI 只是辅助。
 
-> 当前版本（3.6.1）是前端去重补丁；内容基线仍是 3.6.0：43 条权益目录，其中 **30 条 L2 可办**（材料、步骤、官方入口、时限、坑），**10 城深核**（社保、医保、公积金、就业四类本地官方入口）。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
+> 当前版本（3.6.2）是首页归位补丁；内容基线仍是 3.6.0：43 条权益目录，其中 **30 条 L2 可办**（材料、步骤、官方入口、时限、坑），**10 城深核**（社保、医保、公积金、就业四类本地官方入口）。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1134-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1135-3fb950)](https://github.com/badhope/no-money)
 [![e2e](https://img.shields.io/badge/e2e-110-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
@@ -172,7 +172,7 @@ flowchart TD
 
 ## 当前版本的六个模块（权益导航 P0 已上线）
 
-> 3.6.0 的实现顺序：先办事，再算钱；3.6.1 只做前端去重，不改变页面行为。目标 60+ 条与可打印清单见 [docs/POSITIONING.md](docs/POSITIONING.md) 与 [ROADMAP.md](ROADMAP.md)。
+> 3.6.0 的实现顺序：先办事，再算钱；3.6.2 把 `/start` 设为默认首页，并删除总览页重复入口。目标 60+ 条与可打印清单见 [docs/POSITIONING.md](docs/POSITIONING.md) 与 [ROADMAP.md](ROADMAP.md)。
 
 | 模块 | 回答什么 |
 |---|---|
@@ -209,7 +209,7 @@ AI 助手是**可选**的：
 ```bash
 npm ci
 npm run dev            # Web 开发服务器
-npm test               # 1134 项单元测试
+npm test               # 1135 项单元测试
 npm run test:e2e       # 110 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检

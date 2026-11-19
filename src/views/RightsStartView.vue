@@ -60,12 +60,14 @@
         class="start-tab"
         :class="{ active: entry === tab.key }"
         :aria-selected="entry === tab.key"
+        :title="tab.desc"
         @click="setEntry(tab.key)"
       >
         <span class="start-tab-index">{{ tab.index }}</span>
         <span>{{ tab.label }}</span>
       </button>
     </div>
+    <p class="start-entry-hint">{{ activeEntry.desc }}</p>
 
     <section v-if="entry === 'tasks'" class="start-section">
       <RightsWizard @browse="scrollToList" />
@@ -154,7 +156,7 @@ type EntryKey = RightsEntryKey
 const router = useRouter()
 const route = useRoute()
 
-const entryTabs = RIGHTS_ENTRIES.map(({ key, index, title }) => ({ key, index, label: title }))
+const entryTabs = RIGHTS_ENTRIES.map(({ key, index, title, desc }) => ({ key, index, label: title, desc }))
 
 function readEntry(): EntryKey {
   const q = route.query.entry
@@ -163,6 +165,7 @@ function readEntry(): EntryKey {
 
 const checklist = useRightsChecklistStore()
 const entry = ref<EntryKey>(readEntry())
+const activeEntry = computed(() => RIGHTS_ENTRIES.find((item) => item.key === entry.value) ?? RIGHTS_ENTRIES[0])
 const listEl = ref<HTMLElement | null>(null)
 const list = computed<RightsItem[]>(() => rightsForEntry(entry.value))
 const l2Count = computed(() => RIGHTS_CATALOG.filter((item) => item.level === 'L2').length)
@@ -202,6 +205,7 @@ function scrollToList() {
   border-top: 1px dashed var(--color-border-primary); padding-top: 8px;
 }
 .start-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.start-entry-hint { margin: -2px 0 0; font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-tertiary); }
 .start-tab {
   display: flex; align-items: center; gap: 8px; padding: 10px 12px; cursor: pointer;
   background: var(--color-bg-primary); border: 1px solid var(--color-border-primary);
