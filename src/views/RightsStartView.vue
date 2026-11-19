@@ -76,7 +76,7 @@
     <p class="start-entry-hint">{{ activeEntry.desc }}</p>
 
     <section v-if="entry === 'tasks'" class="start-section">
-      <RightsWizard @browse="scrollToList" />
+      <RightsWizard @browse="scrollToList" @calc="router.push('/dashboard')" @policy="router.push('/policy')" @ask-ai="openAi" />
       <div ref="listEl" class="start-list-head">
         <h3 class="start-section-title">全部待办条目</h3>
         <p class="start-section-desc">按高频优先列；不是让你一次全办，先挑和你现在最相关的 1–2 条。</p>
@@ -198,6 +198,10 @@ function setEntry(key: EntryKey) {
 
 function scrollToList() {
   void nextTick(() => listEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+}
+
+function openAi() {
+  window.dispatchEvent(new CustomEvent('app:open-ai'))
 }
 
 function exportChecklist() {

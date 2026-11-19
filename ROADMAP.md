@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.6.8** is the current baseline. The product direction is settled — a rights-navigation and
+**3.6.9** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,7 +23,7 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy.
 
 **What is not done yet:** six-section nav reorder and identity-aware calculation (3.7.0); assistant
 content operations and review cadence (3.8.0); real-user testing. Page-level deadline hints exist,
@@ -199,6 +199,19 @@ the accessibility pass remains.**
 - [x] Mount/E2E assertions added; no policy, amount or calculation changes
 
 **Status:** shipped — PATCH.
+
+---
+
+## 3.6.9 — Checklist handoff (shipped 2026-11-20)
+
+**Goal: after the checklist, the user knows where to go next without a sixth top-level menu.**
+
+- [x] Result-page row: 算一算到手多少 → `/dashboard`; 问 AI 材料/流程 → existing AI panel; 查政策原文 → `/policy`
+- [x] `ChatAssistant` listens for `app:open-ai`; one panel, one state, no duplicate trigger
+- [x] Parent view owns routing; wizard emits only, no router dependency
+- [x] Four entries and 3–7 item result list unchanged
+
+**Status:** shipped — PATCH. The literal six-section top nav remains not done; this closes the journey in the result page instead.
 
 ---
 

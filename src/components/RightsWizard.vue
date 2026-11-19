@@ -110,6 +110,13 @@
         <RightsItemCard v-for="(item, index) in result" :key="item.id" :item="item" :rank="index + 1" />
       </div>
 
+      <div class="rw-next" aria-label="清单之后的下一步">
+        <span class="rw-next-label">接下来：</span>
+        <button type="button" class="rw-next-link" @click="emit('calc')">算一算到手多少</button>
+        <button type="button" class="rw-next-link" @click="emit('ask-ai')">问 AI 材料/流程</button>
+        <button type="button" class="rw-next-link" @click="emit('policy')">查政策原文</button>
+      </div>
+
       <div class="rw-actions rw-actions-end">
         <n-button @click="reset">重新选</n-button>
         <n-button type="primary" ghost @click="browse">看全部条目</n-button>
@@ -135,7 +142,7 @@ import {
 } from '../data/rights/catalog'
 import { resolveServiceChannel } from '../data/cityChannels'
 
-const emit = defineEmits<{ browse: [] }>()
+const emit = defineEmits<{ browse: []; calc: []; 'ask-ai': []; policy: [] }>()
 const store = useMainStore()
 
 const step = ref<1 | 2 | 3>(1)
@@ -250,6 +257,11 @@ function browse() {
 }
 .rw-local b { color: var(--color-text-primary); }
 .rw-list { display: flex; flex-direction: column; gap: 10px; }
+.rw-next { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding-top: 2px; }
+.rw-next-label { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
+.rw-next-link { min-height: 36px; padding: 0 12px; border: 1px solid var(--color-border-primary); border-radius: var(--radius-full); background: var(--color-bg-primary); color: var(--color-text-brand); font-family: inherit; font-size: var(--font-size-xs); cursor: pointer; }
+.rw-next-link:focus-visible { outline: 2px solid var(--color-primary-500); outline-offset: 2px; }
+.rw-next-link:hover { border-color: var(--color-primary-500); background: var(--color-primary-50); }
 @media (max-width: 700px) {
   .rw-quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rw-choices-wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }

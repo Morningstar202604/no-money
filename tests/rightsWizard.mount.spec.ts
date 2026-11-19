@@ -72,6 +72,22 @@ describe('三步办事向导', () => {
     wrapper.unmount()
   })
 
+  it('清单末尾给出算一算、问 AI、查政策三个下一步', async () => {
+    const wrapper = mountWizard()
+    await wrapper.vm.$nextTick()
+    await clickButton(wrapper, '刚入职')
+    await wrapper.vm.$nextTick()
+
+    await clickButton(wrapper, '算一算到手多少')
+    await clickButton(wrapper, '问 AI 材料/流程')
+    await clickButton(wrapper, '查政策原文')
+
+    expect(wrapper.emitted('calc')).toHaveLength(1)
+    expect(wrapper.emitted('ask-ai')).toHaveLength(1)
+    expect(wrapper.emitted('policy')).toHaveLength(1)
+    wrapper.unmount()
+  })
+
   it('重新选能回到第一步，不把上次城市/身份锁死', async () => {
     const wrapper = mountWizard()
     await wrapper.vm.$nextTick()

@@ -50,6 +50,9 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.locator('.rw-list .right-card').first()).toBeVisible()
     await expect(page.getByText('第 1 件 · 先办这个')).toBeVisible()
     await expect(page.getByText('刚入职，先办什么')).toBeVisible()
+
+    await page.getByRole('button', { name: '问 AI 材料/流程' }).click()
+    await expect(page.locator('.chat-panel')).toBeVisible()
   })
 
   test('三步向导生成 3–7 条，每条都有官方入口或明确说没有', async ({ page }) => {

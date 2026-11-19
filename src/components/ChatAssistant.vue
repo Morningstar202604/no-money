@@ -130,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, watch, computed } from 'vue'
+import { ref, nextTick, watch, computed, onMounted, onUnmounted } from 'vue'
 import { NButton, NInput, NTag, NDivider, NModal, NSpace, NFormItem, NSelect, NSwitch, NAlert, NCheckbox, NCollapse, NCollapseItem, useMessage } from 'naive-ui'
 import { useAIChat } from '../composables/useAIChat'
 import { useMainStore } from '../stores/main'
@@ -226,6 +226,13 @@ function scrollToBottom() {
 }
 
 watch(messages, scrollToBottom, { deep: true })
+
+/** 从办事结果页的“问 AI”动作打开面板，不复制一套触发器 */
+function openFromEvent() {
+  open.value = true
+}
+onMounted(() => window.addEventListener('app:open-ai', openFromEvent))
+onUnmounted(() => window.removeEventListener('app:open-ai', openFromEvent))
 
 async function testConnection() {
   if (!config.value.apiKey) { message.warning('请先填入 API Key'); return }

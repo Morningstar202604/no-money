@@ -3,6 +3,25 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.9] — 2026-11-20
+
+清单结果页补上“接下来”三个动作：算一算、问 AI、查政策原文。
+
+### Added
+
+- `RightsWizard` 结果页新增 `接下来：` 一行：`算一算到手多少` → `/dashboard`、`问 AI 材料/流程` → 打开现有 AI 面板、`查政策原文` → `/policy`。
+- `ChatAssistant` 监听 `app:open-ai` 事件；办事页通过事件打开同一个面板，不复制悬浮按钮或第二套对话状态。
+- 父页面 `RightsStartView` 只负责路由和事件转发，向导不直接依赖 router。
+
+### Changed
+
+- 保留四入口和 3–7 条结果清单；三个动作只在结果页出现，生成前不占位。
+- 版本 3.6.9，PATCH；不改政策金额、文号、官方链接和计算口径。
+
+### Tests
+
+- 向导挂载测试新增 `calc` / `ask-ai` / `policy` 三个 emit 断言；E2E 一键清单用例新增打开 AI 面板断言。
+
 ## [3.6.8] — 2026-11-20
 
 结果页不再把 3–7 张卡平铺；第 1 件高亮并标「先办这个」，其余按顺序编号。
