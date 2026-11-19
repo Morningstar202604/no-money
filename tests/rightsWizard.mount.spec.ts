@@ -85,6 +85,10 @@ describe('三步办事向导', () => {
     expect(wrapper.emitted('calc')).toHaveLength(1)
     expect(wrapper.emitted('ask-ai')).toHaveLength(1)
     expect(wrapper.emitted('policy')).toHaveLength(1)
+    const prompt = wrapper.emitted('ask-ai')![0][0] as string
+    expect(prompt).toContain('广州')
+    expect(prompt).toContain('我的清单第 1 件')
+    expect(prompt).toContain('不要编')
     wrapper.unmount()
   })
 

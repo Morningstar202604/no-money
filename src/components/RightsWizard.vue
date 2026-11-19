@@ -113,7 +113,7 @@
       <div class="rw-next" aria-label="清单之后的下一步">
         <span class="rw-next-label">接下来：</span>
         <button type="button" class="rw-next-link" @click="emit('calc')">算一算到手多少</button>
-        <button type="button" class="rw-next-link" @click="emit('ask-ai')">问 AI 材料/流程</button>
+        <button type="button" class="rw-next-link" @click="askAi">问 AI 材料/流程</button>
         <button type="button" class="rw-next-link" @click="emit('policy')">查政策原文</button>
       </div>
 
@@ -141,8 +141,9 @@ import {
   type RightsSituation,
 } from '../data/rights/catalog'
 import { resolveServiceChannel } from '../data/cityChannels'
+import { buildRightsAiPrompt } from '../utils/rightsAiPrompt'
 
-const emit = defineEmits<{ browse: []; calc: []; 'ask-ai': []; policy: [] }>()
+const emit = defineEmits<{ browse: []; calc: []; 'ask-ai': [prompt: string]; policy: [] }>()
 const store = useMainStore()
 
 const step = ref<1 | 2 | 3>(1)
@@ -168,6 +169,7 @@ const progress = [
 const resolvedChannel = computed(() => resolveServiceChannel(city.value))
 
 const identityLabel = computed(() => IDENTITY_OPTIONS.find((o) => o.value === identity.value)?.label ?? '')
+const cityLabel = computed(() => CITY_OPTIONS.find((o) => o.value === city.value)?.label ?? '当地')
 const situationLabel = computed(() => SITUATION_OPTIONS.find((o) => o.value === situation.value)?.label ?? '')
 const resultTitle = computed(() =>
   identity.value === 'unsure' ? situationLabel.value : `${identityLabel.value} · ${situationLabel.value}`,
@@ -193,6 +195,18 @@ function reset() {
 
 function browse() {
   emit('browse')
+}
+
+function askAi() {
+  const first = result.value[0]
+  if (!first) return
+  emit('ask-ai', buildRightsAiPrompt({
+    cityName: cityLabel.value,
+    itemTitle: first.title,
+    identityLabel: identityLabel.value,
+    situationLabel: situationLabel.value,
+    itemDeadline: first.deadline,
+  }))
 }
 </script>
 

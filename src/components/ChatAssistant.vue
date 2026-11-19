@@ -23,6 +23,7 @@
           <n-tag v-else size="small" :bordered="false">离线模式</n-tag>
         </div>
 
+        <p v-if="prefilled" class="chat-context" role="status">已带入当前清单，确认后点发送；可先改。</p>
         <n-divider style="margin:6px 0" />
 
         <div class="chat-body" ref="bodyRef" aria-live="polite" aria-label="对话消息">
@@ -42,9 +43,9 @@
         </div>
 
         <div class="chat-input">
-          <n-input v-model:value="input" type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" placeholder="输入问题，Shift+Enter 换行…" :disabled="isStreaming" @keydown.enter="onEnter" />
+          <n-input ref="inputRef" v-model:value="input" type="textarea" :autosize="{ minRows: 1, maxRows: 3 }" placeholder="输入问题，Shift+Enter 换行…" :disabled="isStreaming" @keydown.enter="onEnter" />
           <n-button v-if="isStreaming" size="small" @click="stopStreaming">停止</n-button>
-          <n-button v-else type="primary" size="small" @click="sendChat">
+          <n-button v-else type="primary" size="small" aria-label="发送问题" @click="sendChat">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </n-button>
         </div>
@@ -131,7 +132,7 @@
 
 <script setup lang="ts">
 import { ref, nextTick, watch, computed, onMounted, onUnmounted } from 'vue'
-import { NButton, NInput, NTag, NDivider, NModal, NSpace, NFormItem, NSelect, NSwitch, NAlert, NCheckbox, NCollapse, NCollapseItem, useMessage } from 'naive-ui'
+import { NButton, NInput, NTag, NDivider, NModal, NSpace, NFormItem, NSelect, NSwitch, NAlert, NCheckbox, NCollapse, NCollapseItem, useMessage, type InputInst } from 'naive-ui'
 import { useAIChat } from '../composables/useAIChat'
 import { useMainStore } from '../stores/main'
 import { validateEndpoint, deriveModelsUrl } from '../utils/endpoint'
@@ -145,6 +146,8 @@ const { config, messages, isStreaming, isOnline, showSettings, storageWarning, s
 
 const open = ref(false)
 const input = ref('')
+const prefilled = ref(false)
+const inputRef = ref<InputInst | null>(null)
 const bodyRef = ref<HTMLElement>()
 const testing = ref(false)
 
@@ -201,6 +204,7 @@ const quickQuestions = [
 function ask(q: string) { input.value = q; sendChat() }
 
 function onClearHistory() {
+  prefilled.value = false
   const ok = clearHistory()
   if (ok) message.success('对话历史已清除')
   else message.warning('当前对话已清除，但本机历史未能完全删除')
@@ -217,6 +221,7 @@ async function sendChat() {
   const q = input.value.trim()
   if (!q || isStreaming.value) return
   input.value = ''
+  prefilled.value = false
   await sendMessage(q, props.scenarios, store.rule?.minimumWage.monthly, store.rule)
   scrollToBottom()
 }
@@ -226,10 +231,19 @@ function scrollToBottom() {
 }
 
 watch(messages, scrollToBottom, { deep: true })
+watch(input, (value) => { if (!value) prefilled.value = false })
 
-/** 从办事结果页的“问 AI”动作打开面板，不复制一套触发器 */
-function openFromEvent() {
+/**
+ * 从办事结果页的“问 AI”动作打开面板，不复制一套触发器。
+ * 事件可带一条清单问题：打开后直接预填并聚焦，用户只需确认发送。
+ */
+function openFromEvent(event: Event) {
   open.value = true
+  const prompt = (event as CustomEvent<{ prompt?: string }>).detail?.prompt?.trim()
+  if (!prompt) return
+  input.value = prompt
+  prefilled.value = true
+  void nextTick(() => inputRef.value?.focus())
 }
 onMounted(() => window.addEventListener('app:open-ai', openFromEvent))
 onUnmounted(() => window.removeEventListener('app:open-ai', openFromEvent))
@@ -313,6 +327,10 @@ function saveAndClose() {
 .chat-body::-webkit-scrollbar { width: 4px; }
 .chat-body::-webkit-scrollbar-track { background: transparent; }
 .chat-body::-webkit-scrollbar-thumb { background: var(--color-border-primary); border-radius: 2px; }
+
+.chat-context {
+  margin: 0; padding: 5px 16px 0; font-size: 11px; line-height: 1.5; color: var(--color-text-brand);
+}
 
 .chat-empty {
   color: var(--color-text-tertiary); font-size: 13px; text-align: center;

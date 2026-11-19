@@ -3,6 +3,25 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.10] — 2026-11-20
+
+点「问 AI 材料/流程」不再弹出空面板：自动带入当前城市、第 1 件事和时限，预填一条可发送的问题。
+
+### Added
+
+- `src/utils/rightsAiPrompt.ts`：把城市、身份、情境、第 1 件标题与条目时限拼成一条问题；只负责措辞，不补政策事实。
+- 问题明确要求 AI 写材料、线上/线下入口、时限、常见坑，并注明“金额、文号、电话或链接不确定就以当地最新公布为准，不要编”。
+- `ChatAssistant` 打开面板后把问题写进输入框并聚焦；面板顶部显示“已带入当前清单，确认后点发送；可先改”，发送按钮补 `aria-label`。
+
+### Changed
+
+- `RightsWizard` 的 `ask-ai` 事件从无参数改为携带一条 prompt；`RightsStartView` 只做事件转发。
+- 仍只有一个 AI 面板、一个悬浮入口；没有自动发送、没有新增第二个对话状态。
+
+### Tests
+
+- 向导挂载测试断言 prompt 含城市与第 1 件；AI 面板测试断言预填、聚焦；E2E 一键清单用例断言问题已带入。
+
 ## [3.6.9] — 2026-11-20
 
 清单结果页补上“接下来”三个动作：算一算、问 AI、查政策原文。

@@ -200,8 +200,8 @@ function scrollToList() {
   void nextTick(() => listEl.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
 }
 
-function openAi() {
-  window.dispatchEvent(new CustomEvent('app:open-ai'))
+function openAi(prompt: string) {
+  window.dispatchEvent(new CustomEvent('app:open-ai', { detail: { prompt } }))
 }
 
 function exportChecklist() {

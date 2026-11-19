@@ -42,6 +42,25 @@ describe('AI 助手面板', () => {
     wrapper.unmount()
   })
 
+  it('办事页打开 AI 时预填当前清单问题并聚焦输入框', async () => {
+    const wrapper = mountWithProviders({ scenarios: [] })
+    await nextTick()
+
+    window.dispatchEvent(new CustomEvent('app:open-ai', {
+      detail: { prompt: '我在广州。我的清单第 1 件是「签劳动合同」。' },
+    }))
+    await nextTick()
+    await nextTick()
+
+    const panel = wrapper.find('.chat-panel')
+    expect(panel.exists()).toBe(true)
+    const textarea = panel.find('textarea').element as HTMLTextAreaElement
+    expect(textarea.value).toContain('我的清单第 1 件')
+    expect(wrapper.text()).toContain('已带入当前清单')
+    expect(document.activeElement).toBe(textarea)
+    wrapper.unmount()
+  })
+
   it('打开面板后宽度不超过视口（320px 不得越界）', async () => {
     const wrapper = mountWithProviders({ scenarios: [] })
     await nextTick()
