@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.6.6** is the current baseline. The product direction is settled — a rights-navigation and
+**3.6.7** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,7 +23,7 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations.
 
 **What is not done yet:** six-section nav reorder and identity-aware calculation (3.7.0); assistant
 content operations and review cadence (3.8.0); real-user testing. Page-level deadline hints exist,
@@ -154,6 +154,8 @@ social insurance, medical insurance, housing fund and employment services.
 
 ## 3.6.6 — 60 items and a usable checklist (shipped 2026-11-19)
 
+**Status:** shipped — 60 items, TXT export, print/PDF, deadline-first hints. See `CHANGELOG.md` 3.6.6.
+
 **Goal: a worker can keep a personal "what I still need to do" list across a job change.**
 
 - [x] 前端合并 P1：民生手册不再与 `/start` 双份维护，`GuideCard` 只做详情（3.6.4 已完成）
@@ -171,6 +173,19 @@ social insurance, medical insurance, housing fund and employment services.
 **Acceptance:** a worker can move from "I don't know what to do" to a printed checklist without
 creating an account; every deadline is explained, not just displayed. **3.6.6 meets the first half;
 the accessibility pass remains.**
+
+---
+
+## 3.6.7 — One-click common situations (shipped 2026-11-20)
+
+**Goal: a first-time user can get a useful checklist with one click, without learning the wizard.**
+
+- [x] Four one-click entrances: first job / just left a job / moving city / unpaid wages or dismissal
+- [x] Reuses `getRightsForSituation`; no second recommendation engine
+- [x] Quick row only on step 1, so it does not duplicate the normal situation choices
+- [x] Existing 3-step wizard remains unchanged
+
+**Status:** shipped — PATCH; no policy numbers, links or calculation changes.
 
 ---
 

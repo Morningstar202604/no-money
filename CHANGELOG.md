@@ -3,6 +3,25 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.7] — 2026-11-20
+
+三步向导首步加「常见情况一键清单」：不选城市、身份、情境，点一个常见处境就直接出 3–7 条。
+
+### Added
+
+- **4 个一键入口**：刚入职 / 刚离职 / 换城市 / 被欠薪辞退；用当前测算城市作为参保地，直接生成清单。
+- **`quickStart()`**：复用原有 `getRightsForSituation`，不另造一套推荐逻辑；「刚入职」按新毕业生身份过滤，其余按「不确定」给全量框架。
+- **结果标题**：身份为「不确定」时不再显示「不确定 · …」，只显示情境，减少噪音。
+
+### Changed
+
+- 一键入口只在向导第 1 步显示；用户已经进入第 2/3 步时自动隐藏，避免和情境选项重名。
+- 三步向导全部保留；一键只是快捷方式，不放宽身份/城市选择，也不改计算口径。
+
+### Tests
+
+- `tests/rightsWizard.mount.spec.ts` 增加“一键直达”挂载测试；E2E 增加一键出清单断言。
+
 ## [3.6.6] — 2026-11-19
 
 目录补到 60 条；「我的清单」不再只是屏幕上的勾选，能导出、打印，并在打开时先提醒时限。

@@ -58,6 +58,19 @@ describe('三步办事向导', () => {
     wrapper.unmount()
   })
 
+  it('常见情况一键直达，不用再走三步', async () => {
+    const wrapper = mountWizard()
+    await wrapper.vm.$nextTick()
+
+    await clickButton(wrapper, '刚入职')
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.text()).toContain('你的清单')
+    expect(wrapper.findAll('.right-card').length).toBeGreaterThanOrEqual(3)
+    expect(wrapper.findAll('.right-card').length).toBeLessThanOrEqual(7)
+    wrapper.unmount()
+  })
+
   it('重新选能回到第一步，不把上次城市/身份锁死', async () => {
     const wrapper = mountWizard()
     await wrapper.vm.$nextTick()

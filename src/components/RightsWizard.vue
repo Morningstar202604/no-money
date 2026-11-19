@@ -4,6 +4,21 @@
       <span class="rw-kicker">3 步向导 · 不注册</span>
       <h2 class="rw-title">先搞清楚你该办哪几件事</h2>
       <p class="rw-lead">只选城市、身份、想解决的事；不填身份证、不填工资。清单 3–7 条，第一条先告诉你第一步做什么。</p>
+      <div v-if="!generated && step === 1" class="rw-quick" role="group" aria-label="常见情况一键清单">
+        <span class="rw-quick-label">不知道怎么选？点一个，直接出清单（城市用当前测算城市）：</span>
+        <div class="rw-quick-grid">
+          <button
+            v-for="o in QUICK_OPTIONS"
+            :key="o.value"
+            type="button"
+            class="rw-quick-card"
+            @click="quickStart(o.value)"
+          >
+            <b>{{ o.label }}</b>
+            <span>{{ o.hint }}</span>
+          </button>
+        </div>
+      </div>
     </header>
 
     <div class="rw-progress" aria-hidden="true">
@@ -130,6 +145,13 @@ const identity = ref<RightsIdentity>('unsure')
 const situation = ref<RightsSituation>('first-job')
 const result = ref<RightsItem[]>([])
 
+const QUICK_OPTIONS: { value: RightsSituation; label: string; hint: string }[] = [
+  { value: 'first-job', label: '刚入职', hint: '合同、社保、社保卡' },
+  { value: 'unemployment', label: '刚离职', hint: '失业登记、失业金、接续' },
+  { value: 'social', label: '换城市', hint: '转移、异地就医、公积金' },
+  { value: 'trouble', label: '被欠薪/辞退', hint: '取证、监察、仲裁' },
+]
+
 const progress = [
   { n: 1, label: '城市' },
   { n: 2, label: '身份' },
@@ -140,7 +162,15 @@ const resolvedChannel = computed(() => resolveServiceChannel(city.value))
 
 const identityLabel = computed(() => IDENTITY_OPTIONS.find((o) => o.value === identity.value)?.label ?? '')
 const situationLabel = computed(() => SITUATION_OPTIONS.find((o) => o.value === situation.value)?.label ?? '')
-const resultTitle = computed(() => `${identityLabel.value} · ${situationLabel.value}`)
+const resultTitle = computed(() =>
+  identity.value === 'unsure' ? situationLabel.value : `${identityLabel.value} · ${situationLabel.value}`,
+)
+
+function quickStart(value: RightsSituation) {
+  situation.value = value
+  identity.value = value === 'first-job' ? 'new-grad' : 'unsure'
+  generate()
+}
 
 function generate() {
   result.value = getRightsForSituation(city.value, identity.value, situation.value)
@@ -170,6 +200,18 @@ function browse() {
 .rw-kicker { font-size: var(--font-size-xs); color: var(--color-text-brand); letter-spacing: .04em; }
 .rw-title { margin: 0; font-size: var(--font-size-xl); line-height: 1.3; color: var(--color-text-primary); }
 .rw-lead { margin: 2px 0 0; font-size: var(--font-size-sm); line-height: 1.65; color: var(--color-text-secondary); }
+.rw-quick { margin-top: 10px; padding: 10px 12px; border: 1px dashed var(--color-border-primary); border-radius: var(--radius-md); background: var(--color-bg-secondary); }
+.rw-quick-label { display: block; margin-bottom: 7px; font-size: var(--font-size-xs); line-height: 1.5; color: var(--color-text-tertiary); }
+.rw-quick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.rw-quick-card {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  padding: 8px 9px; text-align: left; cursor: pointer;
+  background: var(--color-bg-primary); border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm); color: var(--color-text-primary);
+}
+.rw-quick-card b { font-size: var(--font-size-xs); font-weight: 650; }
+.rw-quick-card span { font-size: 10px; line-height: 1.45; color: var(--color-text-tertiary); }
+.rw-quick-card:hover { border-color: var(--color-primary-500); background: var(--color-primary-50); }
 .rw-progress { display: flex; gap: 8px; margin: 14px 0 4px; flex-wrap: wrap; }
 .rw-dot {
   display: inline-flex; align-items: center; gap: 5px;
@@ -209,6 +251,7 @@ function browse() {
 .rw-local b { color: var(--color-text-primary); }
 .rw-list { display: flex; flex-direction: column; gap: 10px; }
 @media (max-width: 700px) {
+  .rw-quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rw-choices-wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   /* 移动端右下角有 AI 悬浮按钮：主操作按钮靠右会被它压住。
      留出 64px 安全区，按钮仍然可见可点。 */

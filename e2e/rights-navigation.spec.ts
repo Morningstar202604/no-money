@@ -40,6 +40,17 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByText('知识库', { exact: true })).toBeVisible()
   })
 
+  test('常见情况一键出清单，不用走完三步', async ({ page }) => {
+    await page.goto('/start')
+    await dismissOnboarding(page)
+
+    await expect(page.getByRole('group', { name: '常见情况一键清单' })).toBeVisible()
+    await page.getByRole('button', { name: /刚入职/ }).click()
+    await expect(page.getByText('你的清单')).toBeVisible()
+    await expect(page.locator('.rw-list .right-card').first()).toBeVisible()
+    await expect(page.getByText('刚入职，先办什么')).toBeVisible()
+  })
+
   test('三步向导生成 3–7 条，每条都有官方入口或明确说没有', async ({ page }) => {
     await page.goto('/start')
     await dismissOnboarding(page)
