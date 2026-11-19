@@ -459,6 +459,21 @@ const importError = ref<string | null>(null)
 const message = useMessage()
 const shared = ref(false)
 let sharedTimer: ReturnType<typeof setTimeout> | undefined
+
+/**
+ * 分享链接的字段白名单故意不含「我的计价 / 自选缴费基数 / 法定参数覆盖」，
+ * 但那些字段恰恰决定用户看到的数字。若存在这些本地输入，必须明确告诉
+ * 用户：对方打开的是本城占位口径，数字会不一样——否则一条「原样发给你」
+ * 的链接会静默变成另一个结论。
+ */
+function hasLocalPricingInputs(): boolean {
+  const p = store.personal
+  const override = p.incomeOverrides
+  const hasOverride = !!override && Object.values(override).some(v => typeof v === 'number' && Number.isFinite(v))
+  const hasStatutory = !!p.statutoryOverrides && Object.keys(p.statutoryOverrides).length > 0
+  return hasOverride || hasStatutory || p.pensionBase !== undefined || p.medicalBase !== undefined || p.medicalTierId !== undefined
+}
+
 async function shareLink() {
   try {
     const { encodeShare } = await import('../utils/share')
@@ -473,6 +488,9 @@ async function shareLink() {
     shared.value = true
     clearTimeout(sharedTimer)
     sharedTimer = setTimeout(() => (shared.value = false), 2500)
+    if (hasLocalPricingInputs()) {
+      message.warning('已复制。注意：链接不含你在本机填写的计价/缴费基数，对方打开后按本城占位参数计算，数字会与你看到的不同。')
+    }
     import.meta.env.DEV && console.info('[share] url length:', url.length)
   } catch (e) {
     message.error('无法复制链接：' + (e instanceof Error ? e.message : '剪贴板不可用'))
