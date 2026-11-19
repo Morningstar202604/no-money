@@ -2,9 +2,11 @@
 
 # 没钱 No Money
 
-**别人说「月入过万」，这个工具告诉你这笔钱是怎么算出来的、哪一部分还没核实。**
+**刚出社会，没人告诉你社保怎么交、医保断了怎么办、哪些钱本来可以领。这个平台把「该做什么、能拿什么、去哪办」一条条摊开，每一条都指到官方入口。**
 
-面向中国灵活就业者（外卖骑手、网约车司机等）的收入 / 个税 / 社保 / 权益测算平台。
+面向中国劳动者的**权益导航与办事平台**。收入 / 个税 / 社保 / 补偿的测算只是其中一件工具，AI 只是辅助。
+
+> 当前版本（3.4.1）仍以收入测算为主入口，权益导航改造进行中。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-1102-3fb950)](https://github.com/badhope/no-money)

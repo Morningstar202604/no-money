@@ -29,7 +29,7 @@ export const router = createRouter({
 const APP_NAME = '没钱 No Money'
 router.afterEach((to) => {
   const pageTitle = typeof to.meta?.title === 'string' ? to.meta.title : ''
-  document.title = pageTitle ? `${pageTitle} — ${APP_NAME}` : `${APP_NAME} — 灵活就业者收入精算与权益决策平台`
+  document.title = pageTitle ? `${pageTitle} — ${APP_NAME}` : `${APP_NAME} — 劳动者权益导航与办事平台`
 })
 
 // 懒加载 chunk 失败（发版后旧 HTML 指向已删除的 hash）时 vue-router 只会往 console 打印，

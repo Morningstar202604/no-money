@@ -2,9 +2,11 @@
 
 # No Money
 
-**A gig job says "up to ¥10,000 a month." This tells you how that number is built — and which parts of it are unverified.**
+**When you start working, nobody tells you how to register for social insurance, what happens if medical insurance lapses, or which benefits you are entitled to. This platform lays out what to do, what you can claim, and where to do it — with a direct link to the official channel for each item.**
 
-Income, tax, social insurance and labor-rights calculator for China's gig workers.
+A **rights-navigation and public-service guide** for workers in China. Income, tax, social-insurance and compensation calculators are tools inside it; the AI is only an assistant.
+
+> Version 3.4.1 still leads with the income calculator; the rights-navigation rebuild is in progress. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
 [![tests](https://img.shields.io/badge/tests-1102-3fb950)](https://github.com/badhope/no-money)
