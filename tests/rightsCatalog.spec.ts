@@ -17,7 +17,20 @@ const NEW_IDS = [
   'right-unemployment-claim',
   'right-injury-report',
   'right-wage-arrears',
+  'right-social-transfer',
+  'right-medical-reimburse',
+  'right-housing-fund-loan',
+  'right-vocational-subsidy',
+  'right-contract-renewal',
+  'right-occupational-disease',
+  'right-unemployment-registration',
+  'right-maternity-medical',
+  'right-tax-annual',
+  'right-flex-registration',
+  'right-pension-certification',
 ]
+
+const L2_TARGET = 30
 
 describe('权益内容层', () => {
   it('23 条民生手册全部迁移，原有 guideId 不丢', () => {
@@ -53,20 +66,31 @@ describe('权益内容层', () => {
     }
   })
 
-  it('新增 9 条标为 L2：有步骤、材料、官方入口和依据', () => {
+  it('30 条标为 L2：有步骤、材料、时限、官方入口和依据', () => {
     const l2 = RIGHTS_CATALOG.filter((i) => i.level === 'L2')
-    expect(l2.map((i) => i.id)).toEqual(NEW_IDS)
+    expect(l2).toHaveLength(L2_TARGET)
+    expect(new Set(NEW_IDS).size).toBe(20)
+    for (const id of NEW_IDS) expect(l2.map((i) => i.id), id).toContain(id)
     for (const item of l2) {
       expect(item.whatToDo.length, item.id).toBeGreaterThanOrEqual(3)
       expect(item.materials?.length, item.id).toBeGreaterThan(0)
+      expect(item.deadline, item.id).toBeTruthy()
       expect(item.officialUrl, item.id).toMatch(/^https?:\/\//)
       expect(item.sourceTitle, item.id).toBeTruthy()
     }
   })
 
+  it('23 条手册中 10 条有步骤的条目升级为 L2，其余仍 L1', () => {
+    const guideL2 = RIGHTS_CATALOG.filter((i) => i.guideId && i.level === 'L2')
+    expect(guideL2).toHaveLength(10)
+    expect(guideL2.map((i) => i.guideId)).toContain('rookie-first-day')
+    expect(guideL2.map((i) => i.guideId)).toContain('how-to-pay')
+  })
+
   it('其余条目明确标 L1，不冒充“拿来就能办”', () => {
     const l1 = RIGHTS_CATALOG.filter((i) => i.level === 'L1')
-    expect(l1.length).toBe(GUIDE_ITEMS.length)
+    expect(l1.length).toBe(RIGHTS_CATALOG.length - L2_TARGET)
+    expect(l1.length).toBeGreaterThan(0)
   })
 
   it('向导按身份/情境返回 3–7 条，且不越出身份范围', () => {

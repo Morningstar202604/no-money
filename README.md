@@ -6,11 +6,11 @@
 
 A **rights-navigation and public-service guide** for workers in China. Income, tax, social-insurance and compensation calculators are tools inside it; the AI is only an assistant.
 
-> Version 3.5.1 ships the first rights-navigation entry (`/start`) plus a local “My checklist”: four entry cards, a 3-step wizard, and items you can save or mark done. Content depth (30 L2 items / 10 deep-verified cities) is the next step. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
+> Version 3.6.0 ships the first content-depth milestone: a 43-item rights catalog with **30 L2 items** (materials, steps, official entry, deadline, pitfalls) and **10 cities deep-verified** for social insurance, medical insurance, housing fund and employment services. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1125-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-108-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1132-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-110-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -172,7 +172,7 @@ A delivery rider is told "up to ¥10,000 a month." That number hides four things
 
 ## The current six modules (rights navigation P0 shipped)
 
-> 3.5.1 ships the first rights-navigation layer: do the paperwork first, then run the numbers. The next step is content depth; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
+> 3.6.0 ships the content-depth layer: do the paperwork first, then run the numbers. The next step is 60+ items and a printable checklist; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
 
 | Module | Answers |
 |---|---|
@@ -209,8 +209,8 @@ See [SECURITY.md](SECURITY.md).
 ```bash
 npm ci
 npm run dev            # web dev server
-npm test               # 1125 unit tests
-npm run test:e2e       # 108 browser tests (builds first)
+npm test               # 1132 unit tests
+npm run test:e2e       # 110 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check
 npm run verify:reality # data reality check

@@ -9,6 +9,9 @@
         这个平台把「该做什么、能拿什么、去哪办」一条条摊开。先选一个入口，3 步给你 3–7 条清单；
         每条都写第一步、时限和官方入口。算收入只是下面的工具，不是主线。
       </p>
+      <p class="start-facts">
+        {{ RIGHTS_CATALOG.length }} 条权益 · {{ l2Count }} 条可办清单 · {{ CITY_CHANNELS.length }} 城本地入口已核验
+      </p>
       <p class="start-disclaimer">
         不注册、不填身份证/工资；不代办、不代缴。具体金额、比例、截止日期以当地最新文件为准。
       </p>
@@ -95,7 +98,7 @@
       </div>
       <div class="start-quick">
         <button type="button" class="start-quick-card" @click="router.push('/policy?tab=manual')">
-          <b>民生手册</b><span>23 条办事速查 + 官方原文</span>
+          <b>权益速查</b><span>{{ RIGHTS_CATALOG.length }} 条权益 + 官方原文</span>
         </button>
         <button type="button" class="start-quick-card" @click="router.push('/planning')">
           <b>养老测算</b><span>职工/灵活就业缴费与养老金对比</span>
@@ -140,6 +143,7 @@ import { createPageHeading } from '../components/PageHeading'
 import RightsWizard from '../components/RightsWizard.vue'
 import RightsItemCard from '../components/RightsItemCard.vue'
 import { RIGHTS_CATALOG, rightsForEntry, type RightsItem } from '../data/rights/catalog'
+import { CITY_CHANNELS } from '../data/cityChannels'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const PageHeading = createPageHeading('start')
@@ -165,6 +169,7 @@ const checklist = useRightsChecklistStore()
 const entry = ref<EntryKey>(readEntry())
 const listEl = ref<HTMLElement | null>(null)
 const list = computed<RightsItem[]>(() => rightsForEntry(entry.value))
+const l2Count = computed(() => RIGHTS_CATALOG.filter((item) => item.level === 'L2').length)
 const myItems = computed<RightsItem[]>(() =>
   RIGHTS_CATALOG.filter((item) => checklist.isSaved(item.id) || checklist.isDone(item.id)),
 )
@@ -195,6 +200,7 @@ function scrollToList() {
 .start-kicker { font-size: var(--font-size-xs); color: var(--color-text-brand); letter-spacing: .08em; }
 .start-title { margin: 0; font-size: calc(var(--font-size-xl) + 4px); line-height: 1.35; color: var(--color-text-primary); }
 .start-lead { margin: 0; max-width: 760px; font-size: var(--font-size-md); line-height: 1.75; color: var(--color-text-secondary); }
+.start-facts { margin: 6px 0 0; font-size: var(--font-size-xs); color: var(--color-text-brand); }
 .start-disclaimer {
   margin: 2px 0 0; font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-tertiary);
   border-top: 1px dashed var(--color-border-primary); padding-top: 8px;

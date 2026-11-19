@@ -11,7 +11,7 @@
 npm run build      # 输出到 dist/
 ```
 
-`dist/` 是完整可部署目录，约 3.31 MB（其中 `assets/` 约 2.48 MB，gzip 后约 1.2 MB）。
+`dist/` 是完整可部署目录，约 3.33 MB（其中 `assets/` 约 2.50 MB，gzip 后约 1.2 MB）。
 
 ---
 
@@ -148,7 +148,7 @@ Web 版没有后端，无需健康检查。
 
 ```bash
 curl http://127.0.0.1:8787/health
-# {"status":"ok","version":"3.5.1","cities":34,"uptime":12}
+# {"status":"ok","version":"3.6.0","cities":34,"uptime":12}
 ```
 
 ## 环境变量

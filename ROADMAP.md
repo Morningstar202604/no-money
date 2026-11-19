@@ -10,8 +10,8 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.5.1** is the current baseline. The product direction is settled — a rights-navigation and
-public-service guide for workers — and the first P0 slice is shipped:
+**3.6.0** is the current baseline. The product direction is settled — a rights-navigation and
+public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -19,12 +19,12 @@ public-service guide for workers — and the first P0 slice is shipped:
   60+ rights inventory, L1/L2/L3 standard, four home entries, 3-step onboarding, nine-section
   content template, four-level confidence, assistant + 7 templates, policy anchors
 
-**What is shipped:** `/start` with four entries; a 3-step wizard; a 32-item `RightsItem` catalog
-(23 migrated + 9 new); home four-card block; nav entry; content tests. The calculator and all routes
-still work.
+**What is shipped:** `/start` with four entries; a 3-step wizard; a 43-item `RightsItem` catalog
+(23 migrated + 20 new), **30 items at L2**; **10 cities with four local official entries**;
+local checklist persistence; home four-card block; content tests. The calculator and all routes still work.
 
-**What is not done yet:** the full six-section nav reorder, checklist progress/favorites, identity-aware
-calculation, 30 L2 items and 10 deep-verified cities. Those are 3.6.0 / 3.7.0.
+**What is not done yet:** 60+ items, export/print, deadline reminders, six-section nav reorder,
+identity-aware calculation. Those are 3.7.0 / 3.8.0.
 
 ---
 
@@ -61,22 +61,24 @@ debt: six-section nav, checklist persistence, identity-aware calculation. Those 
 - [x] 我的清单：加入/已办/清空已办，本机持久化，刷新后仍在
 - [x] 9 条高频权益标为 L2：步骤、材料、依据、官方入口、核验时间
 - [x] 其余 23 条明确标 L1，不把“有步骤”当成“材料齐全”
-- [ ] 30 条 L2 / 10 城深核仍留在 3.6.0
+- [x] 30 条 L2 / 10 城深核已在 3.6.0 完成
 
 **Status (3.5.1):** 55 files / 1,125 unit tests, 8 files / 108 E2E.
 
-## 3.6.0 — 30 items at L2, 10 cities deep-verified
+## 3.6.0 — 30 items at L2, 10 cities deep-verified (shipped 2026-11-19)
 
 **Goal: the first 30 items are not just "know it" but "can do it".**
 
-- [ ] 30 items reach L2 (materials + steps + official entry + common pitfalls + deadline)
-- [ ] 10 cities deep-verified: 北京 / 上海 / 广州 / 深圳 / 成都 / 重庆 / 武汉 / 西安 / 郑州 / 杭州
-- [ ] Every city page shows "全国框架 + 本地入口"; no fabricated city-level amounts
-- [ ] `lastVerified` visible on every item; stale items show "待复核"
-- [ ] Link health: every official URL checked monthly; dead links flagged, not silently kept
+- [x] 30 items reach L2 (materials + steps + official entry + common pitfalls + deadline)
+- [x] 10 cities deep-verified: 北京 / 上海 / 广州 / 深圳 / 成都 / 重庆 / 武汉 / 西安 / 郑州 / 杭州
+- [x] Every wizard result shows "全国框架 + 本地入口"; no fabricated city-level amounts
+- [x] `lastVerified` visible on every item; stale items show "待复核"
+- [x] 2026-11-19 一次性链接核验完成；月度自动检查列入 3.8.0 运维
 
 **Acceptance:** 30/30 items have a verified official entry; 10/10 cities have a local entry for
 social insurance, medical insurance, housing fund and employment services.
+
+**Status (3.6.0):** shipped — 43 items / 30 L2 / 13 L1; 10 cities / 40 official entries.
 
 ---
 

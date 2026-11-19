@@ -72,7 +72,7 @@ components / views 渲染
 ```
 
 权益内容（`docs/POSITIONING.md` 的 `RightsItem`）走另一条链路：
-`src/data/rights/catalog.ts`（23 条民生手册迁移 + 9 条新增，共 32 条）→ 内容校验 → `/start` 四入口 / 3 步向导 / 条目卡，不参与计算内核。
+`src/data/rights/catalog.ts`（23 条民生手册迁移 + 20 条新增，共 43 条；30 条 L2）→ 内容校验 → `/start` 四入口 / 3 步向导 / 条目卡；`src/data/cityChannels.ts`（10 城 × 4 类本地官方入口）→ 向导结果本地入口卡。均不参与计算内核。
 
 ## 数据可信度
 
