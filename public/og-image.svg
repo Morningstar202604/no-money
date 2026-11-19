@@ -17,65 +17,62 @@
   <rect width="1200" height="630" fill="url(#bg)"/>
   <rect width="1200" height="630" fill="url(#grid)"/>
 
-  <!-- 品牌标记 -->
-  <rect x="88" y="96" width="76" height="76" rx="18" fill="#2dd4bf"/>
-  <path d="M126 114 L110 138 H124 L120 154 L140 126 H126 Z" fill="#0b1120"/>
+  <rect x="88" y="82" width="72" height="72" rx="16" fill="#2dd4bf"/>
+  <path d="M124 100 L108 124 H122 L118 140 L138 112 H124 Z" fill="#0b1120"/>
 
-  <text x="184" y="128" font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif"
+  <text x="180" y="114" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
         font-size="34" font-weight="700" fill="#e8eef6">没钱 No Money</text>
-  <text x="184" y="158" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
-        font-size="17" fill="#7d8ea6">灵活就业收入精算与权益决策</text>
+  <text x="180" y="144" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
+        font-size="17" fill="#7d8ea6">劳动者权益导航与办事平台</text>
 
-  <!-- 主标题 -->
-  <text x="88" y="268" font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="46" font-weight="700" fill="#e8eef6">别人说「月入过万」</text>
-  <text x="88" y="330" font-family="system-ui,-apple-system,'PingFang SC','Microsoft YaHei',sans-serif"
-        font-size="46" font-weight="700" fill="#2dd4bf">这笔钱是怎么算出来的？</text>
+  <text x="88" y="252" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
+        font-size="42" font-weight="700" fill="#e8eef6">该做什么</text>
+  <text x="88" y="310" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
+        font-size="42" font-weight="700" fill="#2dd4bf">能拿什么</text>
+  <text x="88" y="368" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
+        font-size="42" font-weight="700" fill="#f5b301">去哪办</text>
 
-  <rect x="88" y="386" width="164" height="4" rx="2" fill="url(#accent)"/>
+  <rect x="88" y="396" width="164" height="4" rx="2" fill="url(#accent)"/>
 
-  <!-- 三个卖点 -->
-  <g font-family="system-ui,-apple-system,'PingFang SC',sans-serif" font-size="21" fill="#94a3b8">
-    <circle cx="96" cy="446" r="5" fill="#2dd4bf"/>
-    <text x="116" y="453">34 城政策参数，逐条溯源到政府文号</text>
+  <text x="88" y="440" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
+        font-size="20" fill="#94a3b8">社保医保、公积金、工伤、失业、生育、退休，一条条摊开。</text>
 
-    <circle cx="96" cy="494" r="5" fill="#f5b301"/>
-    <text x="116" y="501">未核实的数据，界面上显著标注「待核实」</text>
+  <g font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif" font-size="18" fill="#94a3b8">
+    <circle cx="96" cy="486" r="5" fill="#2dd4bf"/>
+    <text x="116" y="493">每条都指到官方入口，不代办、不代缴</text>
 
-    <circle cx="96" cy="542" r="5" fill="#38bdf8"/>
-    <text x="116" y="549">纯本地计算 · 无后端 · 数据不出设备 · 离线可用</text>
+    <circle cx="96" cy="526" r="5" fill="#f5b301"/>
+    <text x="116" y="533">不知道就标「待核实」，不编数字</text>
+
+    <circle cx="96" cy="566" r="5" fill="#38bdf8"/>
+    <text x="116" y="573">纯本地 · 无后端 · 数据不出设备 · 离线可用</text>
   </g>
 
-  <!-- 右侧数据卡 -->
-  <g transform="translate(820, 240)">
-    <rect width="292" height="300" rx="20" fill="#ffffff" fill-opacity="0.04"
+  <g transform="translate(820, 214)">
+    <rect width="300" height="310" rx="20" fill="#ffffff" fill-opacity="0.04"
           stroke="#ffffff" stroke-opacity="0.12"/>
-    <text x="28" y="48" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
-          font-size="15" fill="#7d8ea6">广州 · 当前方案</text>
-    <text x="28" y="104" font-family="'JetBrains Mono',ui-monospace,Consolas,monospace"
-          font-size="42" font-weight="700" fill="#e8eef6">¥8,969</text>
-    <text x="28" y="134" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
-          font-size="14" fill="#7d8ea6">月净收入（含成本扣除）</text>
+    <text x="28" y="48" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
+          font-size="20" font-weight="600" fill="#e8eef6">本周待办</text>
+    <text x="28" y="72" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
+          font-size="13" fill="#5f738c">按你的城市与身份生成</text>
 
-    <line x1="28" y1="160" x2="264" y2="160" stroke="#ffffff" stroke-opacity="0.1"/>
+    <line x1="28" y1="92" x2="272" y2="92" stroke="#ffffff" stroke-opacity="0.1"/>
 
-    <text x="28" y="196" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
-          font-size="14" fill="#7d8ea6">有效时薪</text>
-    <text x="264" y="196" text-anchor="end" font-family="'JetBrains Mono',ui-monospace,monospace"
-          font-size="20" font-weight="600" fill="#e8eef6">¥28.8</text>
+    <g font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif" font-size="14" fill="#c8d4e3">
+      <rect x="28" y="116" width="16" height="16" rx="4" fill="none" stroke="#2dd4bf" stroke-opacity="0.7"/>
+      <text x="56" y="129">确认劳动合同与试用期</text>
 
-    <text x="28" y="232" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
-          font-size="14" fill="#7d8ea6">权益评分</text>
-    <text x="264" y="232" text-anchor="end" font-family="'JetBrains Mono',ui-monospace,monospace"
-          font-size="20" font-weight="600" fill="#f5b301">50/100</text>
+      <rect x="28" y="162" width="16" height="16" rx="4" fill="none" stroke="#2dd4bf" stroke-opacity="0.7"/>
+      <text x="56" y="175">查社保是否已缴</text>
 
-    <rect x="28" y="252" width="236" height="6" rx="3" fill="#ffffff" fill-opacity="0.1"/>
-    <rect x="28" y="252" width="118" height="6" rx="3" fill="#f5b301"/>
-    <text x="28" y="285" font-family="system-ui,-apple-system,'PingFang SC',sans-serif"
-          font-size="12" fill="#5f738c">保障不足</text>
+      <rect x="28" y="208" width="16" height="16" rx="4" fill="none" stroke="#2dd4bf" stroke-opacity="0.7"/>
+      <text x="56" y="221">公积金开户 / 租房提取</text>
+    </g>
+
+    <text x="28" y="266" font-family="'Noto Sans CJK SC',system-ui,-apple-system,sans-serif"
+          font-size="12" fill="#5f738c">示例清单，实际按你的情况生成</text>
   </g>
 
-  <!-- 底部 -->
-  <text x="88" y="596" font-family="'JetBrains Mono',ui-monospace,Consolas,monospace"
-        font-size="15" fill="#5f738c">github.com/badhope/no-money  ·  MIT License</text>
+  <text x="88" y="600" font-family="'Noto Sans CJK SC',ui-monospace,Consolas,monospace"
+        font-size="14" fill="#5f738c">gitcode.com/badhope/no-money  ·  MIT License</text>
 </svg>

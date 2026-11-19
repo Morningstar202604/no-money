@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest a capability that helps gig workers decide
+about: Suggest a capability that helps workers know what to do, what to claim, and where to do it
 title: "[feat] "
 labels: ["enhancement"]
 assignees: []
@@ -12,7 +12,7 @@ assignees: []
 
 ## Who needs it
 
-<!-- Which group of gig workers, in which situation. -->
+<!-- Which group of workers, in which situation. -->
 
 ## What you'd expect to see
 

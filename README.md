@@ -9,7 +9,7 @@ A **rights-navigation and public-service guide** for workers in China. Income, t
 > Version 3.4.1 still leads with the income calculator; the rights-navigation rebuild is in progress. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1102-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1107-3fb950)](https://github.com/badhope/no-money)
 [![e2e](https://img.shields.io/badge/e2e-100-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
@@ -164,13 +164,15 @@ A delivery rider is told "up to ¥10,000 a month." That number hides four things
 <td colspan="2"><img src="docs/screenshots/09-audit.png" alt="Data audit matrix" /></td>
 </tr>
 <tr>
-<td colspan="2"><b>Data audit</b> — every city × every policy field. 38% traced to an official document, and the page says so instead of hiding it.</td>
+<td colspan="2"><b>Data audit</b> — every city × every policy field. 34% traced to an official document, and the page says so instead of hiding it.</td>
 </tr>
 </table>
 
 ---
 
-## The five modules
+## The current five modules (rights navigation in progress)
+
+> This is the 3.4.1 implementation order, still led by the income calculator. The target four-entry IA and migration plan are in [docs/POSITIONING.md](docs/POSITIONING.md).
 
 | Module | Answers |
 |---|---|
@@ -206,7 +208,7 @@ See [SECURITY.md](SECURITY.md).
 ```bash
 npm ci
 npm run dev            # web dev server
-npm test               # 1102 unit tests
+npm test               # 1107 unit tests
 npm run test:e2e       # 100 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check

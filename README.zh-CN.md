@@ -9,7 +9,7 @@
 > 当前版本（3.4.1）仍以收入测算为主入口，权益导航改造进行中。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1102-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1107-3fb950)](https://github.com/badhope/no-money)
 [![e2e](https://img.shields.io/badge/e2e-100-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
@@ -164,13 +164,15 @@ flowchart TD
 <td colspan="2"><img src="docs/screenshots/09-audit.png" alt="数据核验矩阵" /></td>
 </tr>
 <tr>
-<td colspan="2"><b>数据核验</b> — 34 城 × 5 类字段逐项标注。38% 已核到官方原文，页面如实说明而不是藏起来。</td>
+<td colspan="2"><b>数据核验</b> — 34 城 × 5 类字段逐项标注。34% 已核到官方原文，页面如实说明而不是藏起来。</td>
 </tr>
 </table>
 
 ---
 
-## 五个模块
+## 当前版本的五个模块（权益导航改造中）
+
+> 这是当前版本（3.4.1）的实现顺序，仍以收入测算为主入口；目标四入口与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
 
 | 模块 | 回答什么 |
 |---|---|
@@ -206,7 +208,7 @@ AI 助手是**可选**的：
 ```bash
 npm ci
 npm run dev            # Web 开发服务器
-npm test               # 1102 项单元测试
+npm test               # 1107 项单元测试
 npm run test:e2e       # 100 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检

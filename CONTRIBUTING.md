@@ -34,10 +34,12 @@ npm test
 npm run verify
 npm run verify:reality
 npm run kb:check
+npm run verify:entrypoints
 npm run build
+npm run doctor
 ```
 
-All seven must pass. CI runs the same commands on Ubuntu with Node 22.
+All nine must pass. CI runs the same commands on Ubuntu with Node 22.
 
 ## Code layout
 

@@ -14,9 +14,13 @@ const APP_VERSION = JSON.parse(readFileSync(new URL('./package.json', import.met
 // 生产环境启用压缩与分析
 const isProd = process.env.NODE_ENV === 'production'
 
+// 子路径部署的唯一来源：VITE_BASE=/app/。HTML、PWA manifest 与 SW 回退都用它，
+// 否则会出现「页面能开、图标/分享图/manifest 还指向根目录」的半套子路径支持。
+const BASE = process.env.VITE_BASE || '/'
+
 export default defineConfig({
   // 部署到子路径时设 VITE_BASE=/app/（构建期注入，运行时资源统一走 assetUrl）
-  base: process.env.VITE_BASE || '/',
+  base: BASE,
   // 默认 node 环境（domain 纯函数最快）；组件挂载测试在文件头用
   // `// @vitest-environment happy-dom` 单独切环境，避免全部用例付 DOM 启动成本
   test: {
@@ -45,12 +49,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'robots.txt'],
       manifest: {
-        name: '没钱 No Money — 灵活就业收入精算',
+        name: '没钱 No Money — 劳动者权益导航',
         short_name: '没钱',
-        description: '收入 / 个税 / 社保 / 权益测算，离线可用，数据不出设备',
+        description: '该做什么、能拿什么、去哪办；社保医保教程与官方入口。离线可用，数据不出设备。',
         lang: 'zh-CN',
-        start_url: '/',
-        scope: '/',
+        start_url: BASE,
+        scope: BASE,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#f8fafc',
@@ -92,8 +96,8 @@ export default defineConfig({
           },
         ],
         // 用户手动切换主题后刷新，不该被缓存挡住
-        navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/rules\//, /^\/knowledge\//],
+        navigateFallback: `${BASE}index.html`,
+        navigateFallbackDenylist: [/\/rules\//, /\/knowledge\//],
       },
       devOptions: { enabled: false },
     }),

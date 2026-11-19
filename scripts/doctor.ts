@@ -58,6 +58,11 @@ function checkFiles() {
     'AGENTS.md',
     'ARCHITECTURE.md',
     'ROADMAP.md',
+    'docs/POSITIONING.md',
+    'docs/REALITY-AND-SCOPE.md',
+    'docs/ENGINEERING.md',
+    'src/engine/README.md',
+    'tests/architecture.spec.ts',
     'THIRD-PARTY-NOTICES.md',
     'docs/DEPLOYMENT.md',
     'docs/VERSIONING.md',
@@ -256,6 +261,31 @@ function checkSecurity() {
 }
 
 // ---------- 7. 打包体积 ----------
+function dirSize(dir: string): number {
+  let total = 0
+  for (const f of readdirSync(dir)) {
+    const full = join(dir, f)
+    const st = statSync(full)
+    total += st.isDirectory() ? dirSize(full) : st.size
+  }
+  return total
+}
+
+function largestFile(dir: string): { name: string; size: number } {
+  let largest = { name: '', size: 0 }
+  for (const f of readdirSync(dir)) {
+    const full = join(dir, f)
+    const st = statSync(full)
+    if (st.isDirectory()) {
+      const child = largestFile(full)
+      if (child.size > largest.size) largest = { name: join(f, child.name), size: child.size }
+    } else if (st.size > largest.size) {
+      largest = { name: f, size: st.size }
+    }
+  }
+  return largest
+}
+
 function checkBundleSize() {
   const distDir = join(ROOT, 'dist')
   if (!existsSync(distDir)) {
@@ -269,17 +299,19 @@ function checkBundleSize() {
     return
   }
 
-  let total = 0
-  let largest = { name: '', size: 0 }
-  for (const f of readdirSync(assetsDir)) {
-    const size = statSync(join(assetsDir, f)).size
-    total += size
-    if (size > largest.size) largest = { name: f, size }
-  }
+  const assetsTotal = dirSize(assetsDir)
+  const largest = largestFile(assetsDir)
 
-  const totalMB = total / 1024 / 1024
-  if (totalMB > 5) fail('打包体积', `总计 ${totalMB.toFixed(2)} MB，超过 5 MB 预算`)
-  else pass('打包体积', `总计 ${totalMB.toFixed(2)} MB（最大单文件 ${(largest.size / 1024).toFixed(0)} KB）`)
+  const distTotal = dirSize(distDir)
+  const distMB = distTotal / 1024 / 1024
+  const assetsMB = assetsTotal / 1024 / 1024
+  if (distMB > 5) fail('打包体积', `dist 总计 ${distMB.toFixed(2)} MB，超过 5 MB 预算`)
+  else {
+    pass(
+      '打包体积',
+      `dist ${distMB.toFixed(2)} MB（assets ${assetsMB.toFixed(2)} MB，最大单文件 ${(largest.size / 1024).toFixed(0)} KB）`,
+    )
+  }
 
   // 首屏 JS 预算（gzip）：超过 500K 说明有库被同步引入
   const html = readFileSync(join(distDir, 'index.html'), 'utf8')
@@ -299,7 +331,7 @@ function checkBundleSize() {
   else pass('首屏依赖', 'echarts 未进首屏（懒加载生效）')
 }
 
-// ---------- 8. 文档一致性 ----------
+// ---------- 8. 文档与对外口径 ----------
 function checkDocs() {
   const readme = readFileSync(join(ROOT, 'README.md'), 'utf8')
 
@@ -318,6 +350,80 @@ function checkDocs() {
   else pass('README 链接', `${links.length} 个文档链接全部有效`)
 }
 
+function checkDataClaims() {
+  const rulesDir = join(ROOT, 'public', 'rules')
+  const files = readdirSync(rulesDir).filter((f) => f.endsWith('.json') && f !== 'index.json')
+  let total = 0
+  let official = 0
+  for (const f of files) {
+    const rule = JSON.parse(readFileSync(join(rulesDir, f), 'utf8')) as CityRule
+    for (const v of Object.values(rule.sources ?? {})) {
+      const src = v as { confidence?: string }
+      if (!src || typeof src !== 'object') continue
+      total += 1
+      if (src.confidence === 'official') official += 1
+    }
+  }
+  const pct = total ? Math.round((official / total) * 100) : 0
+
+  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8')
+  const readmeZh = readFileSync(join(ROOT, 'README.zh-CN.md'), 'utf8')
+  const en = readme.match(/(\d+)\s+items\s+\((\d+)%\)/)
+  const zh = readmeZh.match(/(\d+)\s+项\s+\((\d+)%\)/)
+  const problems: string[] = []
+
+  if (!en) problems.push('README.md 找不到「N items (N%)」数据声明')
+  else if (Number(en[1]) !== official || Number(en[2]) !== pct) {
+    problems.push(`README.md 声称 ${en[1]} / ${en[2]}%，实际 ${official} / ${pct}%`)
+  }
+  if (!zh) problems.push('README.zh-CN.md 找不到「N 项 (N%)」数据声明')
+  else if (Number(zh[1]) !== official || Number(zh[2]) !== pct) {
+    problems.push(`README.zh-CN.md 声称 ${zh[1]} / ${zh[2]}%，实际 ${official} / ${pct}%`)
+  }
+  if (readme.includes('38%') || readmeZh.includes('38%')) {
+    problems.push('README 仍有 38% 旧口径')
+  }
+
+  if (problems.length) fail('README 数据一致', problems.join('；'))
+  else pass('README 数据一致', `${files.length} 城 / ${total} 条来源，official ${official}（${pct}%）与 README 一致`)
+}
+
+function checkPositioning() {
+  const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { description?: string }
+  const index = readFileSync(join(ROOT, 'index.html'), 'utf8')
+  const vite = readFileSync(join(ROOT, 'vite.config.ts'), 'utf8')
+  const og = readFileSync(join(ROOT, 'public', 'og-image.svg'), 'utf8')
+  const agents = readFileSync(join(ROOT, 'AGENTS.md'), 'utf8')
+  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8')
+  const problems: string[] = []
+
+  if (!pkg.description?.includes('权益导航')) problems.push('package.json description 缺「权益导航」')
+  if (pkg.description?.includes('灵活就业者收入精算')) problems.push('package.json 仍是旧定位')
+  for (const token of ['劳动者权益导航', '该做什么', '能拿什么', '去哪办']) {
+    if (!index.includes(token)) problems.push(`index.html 缺「${token}」`)
+  }
+  if (index.includes('外卖骑手、网约车司机')) problems.push('index.html 仍用旧受众措辞')
+  if (!index.includes('%BASE_URL%')) problems.push('index.html 未使用 %BASE_URL%（子路径会指错）')
+
+  if (!vite.includes("name: '没钱 No Money — 劳动者权益导航'")) problems.push('PWA manifest 名称未更新')
+  if (!vite.includes('start_url: BASE') || !vite.includes('scope: BASE')) {
+    problems.push('PWA start_url/scope 未跟随 BASE')
+  }
+  if (!vite.includes('navigateFallback: `${BASE}index.html`')) {
+    problems.push('PWA navigateFallback 未跟随 BASE')
+  }
+
+  if (og.includes('8,969') || og.includes('¥')) problems.push('OG 图仍有金额演示数字')
+  if (!og.includes('劳动者权益导航') || !og.includes('该做什么')) problems.push('OG 图未改成权益导航版')
+
+  if (agents.includes('A calculator for China')) problems.push('AGENTS.md 仍是旧定位')
+  if (!agents.includes('rights-navigation')) problems.push('AGENTS.md 未描述权益导航定位')
+  if (!readme.includes('rights navigation')) problems.push('README 首屏未描述权益导航定位')
+
+  if (problems.length) fail('对外定位一致', problems.join('；'))
+  else pass('对外定位一致', 'package / index / PWA / OG / AGENTS / README 均为权益导航口径')
+}
+
 // ---------- 9. PWA ----------
 function checkPwa() {
   const distDir = join(ROOT, 'dist')
@@ -329,6 +435,50 @@ function checkPwa() {
   const hasManifest = existsSync(join(distDir, 'manifest.webmanifest'))
   if (hasSw && hasManifest) pass('PWA 产物', 'sw.js 与 manifest 均已生成')
   else fail('PWA 产物', `sw.js=${hasSw} manifest=${hasManifest}`)
+
+  if (hasManifest) {
+    const manifest = JSON.parse(readFileSync(join(distDir, 'manifest.webmanifest'), 'utf8')) as {
+      name?: string
+      description?: string
+      start_url?: string
+      scope?: string
+    }
+    if (manifest.start_url !== manifest.scope) {
+      fail('PWA 子路径', `start_url=${manifest.start_url} 与 scope=${manifest.scope} 不一致`)
+    } else if (!manifest.start_url?.endsWith('/')) {
+      fail('PWA 子路径', `start_url=${manifest.start_url} 必须以 / 结尾`)
+    } else {
+      pass('PWA 子路径', `start_url = scope = ${manifest.start_url}`)
+    }
+    if (!manifest.name?.includes('劳动者')) {
+      fail('PWA 定位', `manifest name 仍是「${manifest.name ?? '(空)'}」`)
+    } else {
+      pass('PWA 定位', manifest.name)
+    }
+    if (!manifest.description?.includes('社保')) {
+      warn('PWA 描述', 'manifest description 未提到社保/权益内容')
+    }
+  }
+
+  if (hasSw) {
+    const sw = readFileSync(join(distDir, 'sw.js'), 'utf8')
+    const entries = (sw.match(/url:/g) ?? []).length
+    if (entries > 60) warn('PWA 预缓存', `${entries} 条，接近/超过 60 条，检查是否把大文件 precache`)
+    else pass('PWA 预缓存', `${entries} 条`)
+
+    // PWA 预缓存体积：sw.js 的 precacheAndRoute 清单里逐条 url，累加 dist 内实际文件。
+    // 清单里图标可能重复出现（includeAssets + manifest icons），体积按去重后的文件算。
+    const urls = [...new Set([...sw.matchAll(/url:"([^"]+)"/g)].map((m) => m[1]))]
+    let bytes = 0
+    for (const u of urls) {
+      const f = join(distDir, u)
+      if (existsSync(f)) bytes += statSync(f).size
+    }
+    const mb = bytes / 1024 / 1024
+    if (mb > 3.2) fail('PWA 体积', `${mb.toFixed(2)} MB / ${urls.length} 条，超过 3.2 MB 阻断线`)
+    else if (mb > 3) warn('PWA 体积', `${mb.toFixed(2)} MB / ${urls.length} 条，超过 3 MB 预算`)
+    else pass('PWA 体积', `${mb.toFixed(2)} MB / ${urls.length} 条（预算 3 MB）`)
+  }
 
   const iconsDir = join(ROOT, 'public', 'icons')
   if (!existsSync(iconsDir)) {
@@ -352,6 +502,8 @@ async function main() {
   checkA11y()
   checkSecurity()
   checkDocs()
+  checkDataClaims()
+  checkPositioning()
   checkPwa()
   if (!quick) checkBundleSize()
 

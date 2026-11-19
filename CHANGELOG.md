@@ -5,6 +5,30 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+
+- **对外定位统一为「中国劳动者权益导航与办事平台」**。`package.json` description、
+  `index.html` 标题/描述/OG/Twitter、PWA manifest、`public/og-image.svg|png`、
+  `README` 首屏、`AGENTS.md`、`ROADMAP.md`、`ARCHITECTURE.md`、MCP 工具描述与
+  issue 模板全部改为权益导航口径；算钱明确为平台里的一个工具。OG 图不再出现
+  演示金额或「权益评分」。
+- **AI system prompt 改为权益导航办事助手**。旧版写死「面向灵活就业者（外卖骑手、网约车司机等）的决策助手」；新版先问城市/身份/要办的事，回答 1–3 条动作 + 第一步 + 官方入口 + 「以当地为准」，明确不编金额/文号/链接、不代办、不推荐贷款理财保险。
+- **README 数据占比修正：38% → 34%**。309 条来源中 official 105 条（34.0%），
+  与 `public/rules/*.json` 逐条统计一致；两处旧口径都已改。
+- **子路径部署补齐 PWA/HTML 链路**。`VITE_BASE` 现在同时作用于 `base`、
+  manifest `start_url`/`scope`、`navigateFallback`；`index.html` 的
+  `canonical`/`apple-touch-icon`/`og:image` 改用 `%BASE_URL%`；
+  `navigateFallbackDenylist` 去掉根路径锚定。
+- **工程管理文档与门禁**：新增 `docs/ENGINEERING.md`（性能预算、加载策略、
+  模块边界、发布清单、风险登记）、`src/engine/README.md`（旧引擎允许清单）、
+  `tests/architecture.spec.ts`（domain/application/kernel/入口/旧引擎边界）；
+  `doctor` 增加对外定位一致性与 README 数据一致性检查。
+- **文档口径同步**：`ROADMAP.md` 从 2.x 重排到 3.4.1 → 3.5.0 权益导航 P0；
+  `ARCHITECTURE.md` 改为 8 个视图、kernel 规则、旧引擎 deprecation；
+  `docs/DEPLOYMENT.md` 更新为 dist 3.26 MB / assets 2.43 MB、API 示例版本 3.4.1；
+  `CONTRIBUTING.md` 与 `docs/VERSIONING.md` 发布门禁加入 `verify:entrypoints` 与
+  `doctor`；`docs/RESEARCH.md` 标注历史调研范围。
+
 ### Fixed
 
 - **收入波动模型口径重构：以毛收入建模、输出净收入分位**。
@@ -33,8 +57,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Notes
 
-- 测试数 1,088 → 1,102（新增 14 项回归），`npm test`、`typecheck`、
-  `verify`、`verify:reality`、`build` 全绿。
+- 测试数 1,088 → 1,102（新增 14 项回归），再加 5 项架构门禁，当前 **52 文件 / 1,107 项**；
+  `npm test`、`typecheck`、`verify`、`verify:reality`、`build`、`doctor` 全绿。
 
 ## 3.4.1 — 2026-11-08
 
