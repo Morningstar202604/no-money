@@ -35,6 +35,10 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     }
     await expect(page.getByText('民生手册', { exact: true })).toBeHidden()
 
+    await page.locator('.n-tabs-tab').filter({ hasText: '数据溯源' }).click()
+    await expect(page.getByText('本城数据状态：')).toBeVisible()
+    await expect(page.getByText(/项参数/)).toBeVisible()
+
     await page.locator('.n-tabs-tab').filter({ hasText: '手册与知识库' }).click()
     await expect(page.getByText('民生手册', { exact: true })).toBeVisible()
     await expect(page.getByText('知识库', { exact: true })).toBeVisible()

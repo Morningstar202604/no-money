@@ -3,6 +3,25 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.11] — 2026-11-20
+
+算一算页先说明口径，政策溯源页先说明数据新不新。
+
+### Added
+
+- `/dashboard` 增加常驻口径声明：当前只支持灵活就业 / 平台按单计价；企业职工、城乡居民的工资条和单位缴费口径不同，不能直接套用。
+- `/policy?tab=sources` 增加本城数据新鲜度摘要：参数总数、已核官方 / 推算口径 / 待核验数量、最早登记/核对日期、超过 12 个月未复核数量，以及待核验字段名。
+- `src/utils/sourceFreshness.ts`：只读 `rule.sources` 计算摘要；非法日期不算过期，空规则返回零值。
+
+### Changed
+
+- 待核验字段仍按原样显示，不在 UI 里补数值、不改置信度，也不把推算口径说成官方。
+- 口径声明和数据摘要都只陈述边界，不新增第七个入口或独立页面。
+
+### Tests
+
+- 新增 `tests/sourceFreshness.spec.ts` 2 条；E2E 在总览断言口径声明、在政策页断言本城数据状态，用例数不变。
+
 ## [3.6.10] — 2026-11-20
 
 点「问 AI 材料/流程」不再弹出空面板：自动带入当前城市、第 1 件事和时限，预填一条可发送的问题。

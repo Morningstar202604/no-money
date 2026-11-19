@@ -14,6 +14,15 @@
       </div>
     </section>
 
+    <section class="calc-scope" aria-label="算一算当前口径">
+      <span class="calc-scope-tag">口径</span>
+      <p>
+        <b>当前只支持灵活就业 / 平台按单计价。</b>
+        企业职工、城乡居民的工资条和单位缴费口径不同，别直接把这里的净收入当工资；
+        先去 <router-link class="link-brand calc-scope-link" to="/start">办事入口</router-link> 看入职、合同和社保清单。
+      </p>
+    </section>
+
     <div class="calc-divider">
       <span class="calc-divider-label">下面是「算一算」</span>
       <span class="calc-divider-desc">收入/社保/个税测算仍是工具，不是平台主线；先办完上面的事再看数字。</span>
@@ -348,6 +357,28 @@ const pieOption = computed<EChartsCoreOption>(() => {
 </script>
 
 <style scoped>
+.calc-scope {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  margin: 0 0 10px;
+  background: var(--color-bg-secondary);
+  border-left: 3px solid var(--color-primary-500);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+}
+.calc-scope-tag {
+  flex: none;
+  color: var(--color-text-brand);
+  font-weight: 600;
+}
+.calc-scope p { margin: 0; }
+.calc-scope b { color: var(--color-text-primary); }
+.calc-scope-link { display: inline-flex; align-items: center; min-height: 24px; vertical-align: middle; }
+
 .kpi-scope {
   display: flex;
   align-items: baseline;

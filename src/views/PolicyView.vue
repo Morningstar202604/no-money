@@ -89,6 +89,20 @@
             测算页的每个外部参数都来自左侧规则文件，此处展示其出处与置信度。
             <strong>official</strong>=已回溯官方原文；<strong>derived</strong>=据官方口径推算；<strong>unverified</strong>=无权威来源，仅作占位。
           </p>
+          <n-alert
+            v-if="rule"
+            :type="sourceFreshness.unverified > 0 || sourceFreshness.staleCount > 0 ? 'warning' : 'success'"
+            :show-icon="true"
+            style="margin-bottom: 10px"
+          >
+            <div><b>本城数据状态：</b>共 {{ sourceFreshness.total }} 项参数，已核官方 {{ sourceFreshness.official }} / 推算口径 {{ sourceFreshness.derived }} / 待核验 {{ sourceFreshness.unverified }}。</div>
+            <div v-if="sourceFreshness.oldestRetrievedAt" style="margin-top:3px">
+              最早登记/核对日期：{{ sourceFreshness.oldestRetrievedAt }}<span v-if="sourceFreshness.staleCount">；{{ sourceFreshness.staleCount }} 项超过 12 个月未复核</span><span v-else>；暂无超过 12 个月的来源</span>。
+            </div>
+            <div v-if="unverifiedSourceLabels.length" style="margin-top:3px">
+              待核验：{{ unverifiedSourceLabels.join('、') }}。这些只作占位，不能当官方口径引用。
+            </div>
+          </n-alert>
           <n-empty v-if="!rule" description="规则文件未加载" />
           <div v-else class="policy-list">
             <FoldCard v-for="(s, key) in rule.sources" :key="key">
@@ -227,7 +241,7 @@ import { computed, ref } from 'vue'
 import { NCard, NTabs, NTabPane, NGrid, NGi, NTag, NSteps, NStep, NEmpty, NInput, NRadioGroup, NRadioButton, NAlert } from 'naive-ui'
 import { useMainStore } from '../stores/main'
 import { CITY_REGISTRY } from '../data/cities'
-import { SOURCE_LABELS } from '../utils/sources'
+import { SOURCE_LABELS, sourceLabel } from '../utils/sources'
 import { assetUrl } from '../utils/asset'
 import FoldCard from '../components/FoldCard.vue'
 import RealityList from '../components/RealityList.vue'
@@ -238,6 +252,7 @@ import { REALITY_FACTS, REALITY_CATEGORY_ORDER, REALITY_CATEGORY_LABELS } from '
 import { GUIDE_ITEMS, GUIDE_GROUP_ORDER, GUIDE_GROUP_LABELS } from '../utils/livingGuide'
 import { POLICIES, RELIEF_GUIDE, PROVINCE_POLICY_CHECKLIST, type PolicyStatus } from '../data/policies'
 import { resolveServiceChannel } from '../data/cityChannels'
+import { summarizeSourceFreshness } from '../utils/sourceFreshness'
 import {
   buildStaticKbEntries,
   citySourceEntries,
@@ -248,6 +263,8 @@ import {
 
 const store = useMainStore()
 const rule = computed(() => store.rule)
+const sourceFreshness = computed(() => summarizeSourceFreshness(rule.value?.sources))
+const unverifiedSourceLabels = computed(() => sourceFreshness.value.unverifiedKeys.map(sourceLabel))
 const kbJsonUrl = assetUrl('knowledge/kb.json')
 const kbReadmeUrl = assetUrl('knowledge/README.md')
 

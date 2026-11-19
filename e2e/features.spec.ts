@@ -26,6 +26,7 @@ test.describe('核心功能', () => {
     await page.goto('/dashboard')
     await dismissOnboarding(page)
 
+    await expect(page.getByText('当前只支持灵活就业 / 平台按单计价')).toBeVisible()
     await page.getByRole('button', { name: 'AI 助手' }).click()
     const panel = page.locator('.chat-panel')
     await expect(panel).toBeVisible()
