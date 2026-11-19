@@ -9,52 +9,61 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { cityChannelOf, cityServiceEntries } from '../data/cityChannels'
+import { cityServiceEntries, resolveServiceChannel } from '../data/cityChannels'
 
 const props = defineProps<{ city: string | null | undefined }>()
 
-const channel = computed(() => cityChannelOf(props.city))
-const entries = computed(() => (channel.value ? cityServiceEntries(channel.value) : []))
+const resolved = computed(() => resolveServiceChannel(props.city))
+const entries = computed(() => (resolved.value ? cityServiceEntries(resolved.value) : []))
 </script>
 
 <template>
-  <section v-if="channel" class="csl" aria-label="本地官方办事入口">
+  <section v-if="resolved" class="csl stack-sm" aria-label="官方办事入口">
     <header class="csl-head">
       <div>
-        <span class="csl-kicker">本地官方入口 · {{ channel.label }}</span>
-        <h4 class="csl-title">社保、医保、公积金、就业，各去各的官网</h4>
+        <span class="csl-kicker">
+          {{ resolved.level === 'city' ? '本地官方入口' : '省级官方入口' }} ·
+          {{ resolved.level === 'city' ? resolved.city : resolved.province }}
+        </span>
+        <h4 class="csl-title">
+          {{ resolved.level === 'city' ? '社保、医保、公积金、就业，各去各的官网' : '你所在城市暂未深核，先用省级入口' }}
+        </h4>
       </div>
-      <span class="csl-verified">{{ channel.lastVerified }} 核验</span>
+      <span v-if="resolved.lastVerified" class="csl-verified">{{ resolved.lastVerified }} 核验</span>
     </header>
 
     <div class="csl-grid">
-      <a
+      <component
+        :is="entry.link.url ? 'a' : 'div'"
         v-for="entry in entries"
         :key="entry.key"
-        class="csl-card"
-        :href="entry.link.url"
-        target="_blank"
-        rel="noopener noreferrer"
+        class="csl-card surface-card"
+        :class="{ 'is-text-only': !entry.link.url }"
+        :href="entry.link.url || undefined"
+        :target="entry.link.url ? '_blank' : undefined"
+        :rel="entry.link.url ? 'noopener noreferrer' : undefined"
       >
         <span class="csl-key">{{ entry.label }}</span>
         <strong class="csl-name">{{ entry.link.name }}</strong>
         <span v-if="entry.link.note" class="csl-note">{{ entry.link.note }}</span>
-        <span class="csl-go">打开官网 ↗</span>
-      </a>
+        <span class="csl-go">{{ entry.link.url ? '打开官网 ↗' : '暂无直达链接，按说明找' }}</span>
+      </component>
     </div>
 
     <p class="csl-foot">
-      只放官网首页/栏目页，不放容易失效的办件深链；具体入口以站内「个人服务」为准。
-      热线 {{ channel.hotlines }}。金额、比例、缴费基数以当地最新文件为准，本平台不代办。
+      <template v-if="resolved.level === 'city'">
+        只放官网首页/栏目页，不放容易失效的办件深链；具体入口以站内「个人服务」为准。
+      </template>
+      <template v-else>
+        省级入口只给政务/人社官网；市级具体经办地址以站内说明或 12333 为准，本平台不代办。
+      </template>
+      热线 {{ resolved.hotlines }}。金额、比例、缴费基数以当地最新文件为准。
     </p>
   </section>
 </template>
 
 <style scoped>
 .csl {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
   padding: 10px 12px;
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border-primary);
@@ -69,10 +78,10 @@ const entries = computed(() => (channel.value ? cityServiceEntries(channel.value
 .csl-card {
   display: flex; flex-direction: column; gap: 2px; min-width: 0;
   padding: 8px 9px; text-decoration: none;
-  background: var(--color-bg-primary); border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-sm); color: var(--color-text-primary);
+  color: var(--color-text-primary);
 }
 .csl-card:hover { border-color: var(--color-primary-500); background: var(--color-primary-50); }
+.csl-card.is-text-only { background: var(--color-bg-secondary); }
 .csl-key { font-size: var(--font-size-xs); color: var(--color-text-brand); }
 .csl-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-sm); font-weight: 600; }
 .csl-note { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--font-size-xs); color: var(--color-text-tertiary); }

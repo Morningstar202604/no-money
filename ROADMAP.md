@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.6.4** is the current baseline. The product direction is settled — a rights-navigation and
+**3.6.5** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -22,7 +22,7 @@ public-service guide for workers — and the first P1 content slice is shipped:
 **What is shipped:** `/start` with four entries; a 3-step wizard; a 43-item `RightsItem` catalog
 (23 migrated + 20 new), **30 items at L2**; **10 cities with four local official entries**;
 local checklist persistence; `/start` four-entry tabs; content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver.
 
 **What is not done yet:** 60+ items, export/print, deadline reminders, six-section nav reorder,
 identity-aware calculation. Those are 3.7.0 / 3.8.0.
@@ -133,6 +133,20 @@ social insurance, medical insurance, housing fund and employment services.
 - [x] Contract test prevents `RightsItemCard` from hand-writing a second guide body
 
 **Status (3.6.4):** shipped — presentation-layer dedupe; content, links and calculations unchanged.
+
+---
+
+## 3.6.5 — Service channel resolver and visual atoms (shipped 2026-11-19)
+
+**Goal: one city/province entry resolver; three repeated visual atoms, no new framework.**
+
+- [x] `resolveServiceChannel(city)` returns city-level or province-level four services
+- [x] Wizard, `CityServiceLinks` and the policy province block use the same result
+- [x] No invented city links for unverified cities; missing province links become text + hotline
+- [x] `.surface-card` / `.stack-sm` / `.link-brand` added and used
+- [x] Unknown city returns `null`; no default to Guangdong
+
+**Status (3.6.5):** shipped — data/UI plumbing and CSS atoms; policy numbers, links and calculations unchanged.
 
 ---
 

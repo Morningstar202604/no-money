@@ -6,11 +6,11 @@
 
 A **rights-navigation and public-service guide** for workers in China. Income, tax, social-insurance and compensation calculators are tools inside it; the AI is only an assistant.
 
-> Version 3.6.4 is a manual-detail dedupe patch; the current content baseline is 3.6.0: a 43-item rights catalog with **30 L2 items** (materials, steps, official entry, deadline, pitfalls) and **10 cities deep-verified** for social insurance, medical insurance, housing fund and employment services. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
+> Version 3.6.5 is a service-channel resolver patch; the current content baseline is 3.6.0: a 43-item rights catalog with **30 L2 items** (materials, steps, official entry, deadline, pitfalls) and **10 cities deep-verified** for social insurance, medical insurance, housing fund and employment services. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1137-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-112-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1141-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-114-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -172,7 +172,7 @@ A delivery rider is told "up to ¥10,000 a month." That number hides four things
 
 ## The current six modules (rights navigation P0 shipped)
 
-> 3.6.0 shipped the content-depth layer: do the paperwork first, then run the numbers. 3.6.4 makes `/start` reuse the same manual detail card as `/policy`, so the guide body lives in one place. The next step is 60+ items and a printable checklist; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
+> 3.6.0 shipped the content-depth layer: do the paperwork first, then run the numbers. 3.6.5 unifies city/province service entries behind one resolver; unverified cities fall back to province without invented links. The next step is 60+ items and a printable checklist; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
 
 | Module | Answers |
 |---|---|
@@ -209,8 +209,8 @@ See [SECURITY.md](SECURITY.md).
 ```bash
 npm ci
 npm run dev            # web dev server
-npm test               # 1137 unit tests
-npm run test:e2e       # 112 browser tests (builds first)
+npm test               # 1141 unit tests
+npm run test:e2e       # 114 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check
 npm run verify:reality # data reality check

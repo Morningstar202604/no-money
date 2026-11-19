@@ -85,14 +85,11 @@
         共 {{ result.length }} 条。先做前 3 条；每条都写了第一步、时限和官方入口。具体金额/比例以你当地最新文件为准，本平台不代办、不代缴。
       </p>
 
-      <CityServiceLinks v-if="cityChannel" :city="city" />
-      <div v-else-if="provinceChannel" class="rw-local">
-        <b>省级入口：</b>
-        <span>{{ provinceChannel.portalName }} · {{ provinceChannel.hrssName }}</span>
-        <span class="rw-local-medical">医保：{{ provinceChannel.medicalChannel }}</span>
-        <a v-if="provinceChannel.portalUrl" :href="provinceChannel.portalUrl" target="_blank" rel="noopener noreferrer">打开政务入口 ↗</a>
-        <span class="rw-local-more">你所在城市暂未做市级深核；可先用省级入口，或拨 12333 问市级经办地址。</span>
-      </div>
+      <CityServiceLinks v-if="resolvedChannel" :city="city" />
+      <p v-else class="rw-local">
+        还没收录这个城市的省级入口。先拨 <b>12333</b> 问当地社保/医保经办地址，
+        或打开「国家社会保险公共服务平台」查全国入口；本平台不代办。
+      </p>
 
       <div class="rw-list">
         <RightsItemCard v-for="item in result" :key="item.id" :item="item" />
@@ -116,13 +113,12 @@ import CityServiceLinks from './CityServiceLinks.vue'
 import {
   IDENTITY_OPTIONS,
   SITUATION_OPTIONS,
-  getProvinceChannel,
   getRightsForSituation,
   type RightsIdentity,
   type RightsItem,
   type RightsSituation,
 } from '../data/rights/catalog'
-import { cityChannelOf } from '../data/cityChannels'
+import { resolveServiceChannel } from '../data/cityChannels'
 
 const emit = defineEmits<{ browse: [] }>()
 const store = useMainStore()
@@ -140,8 +136,7 @@ const progress = [
   { n: 3, label: '要办的事' },
 ]
 
-const cityChannel = computed(() => cityChannelOf(city.value))
-const provinceChannel = computed(() => getProvinceChannel(city.value))
+const resolvedChannel = computed(() => resolveServiceChannel(city.value))
 
 const identityLabel = computed(() => IDENTITY_OPTIONS.find((o) => o.value === identity.value)?.label ?? '')
 const situationLabel = computed(() => SITUATION_OPTIONS.find((o) => o.value === situation.value)?.label ?? '')
@@ -212,8 +207,6 @@ function browse() {
   color: var(--color-text-secondary);
 }
 .rw-local b { color: var(--color-text-primary); }
-.rw-local a { color: var(--color-text-brand); }
-.rw-local-more { color: var(--color-text-tertiary); }
 .rw-list { display: flex; flex-direction: column; gap: 10px; }
 @media (max-width: 700px) {
   .rw-choices-wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }

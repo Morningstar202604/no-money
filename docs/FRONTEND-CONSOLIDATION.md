@@ -30,6 +30,13 @@
 - `/policy` 的手册页仍用同一张 `GuideCard`；正文只存在于 `src/utils/livingGuide.ts`。
 - 非手册条目保留原有详情块；没有为了统一而把计算类条目塞进手册组件。
 
+## 已完成（3.6.5）
+
+- 新增 `resolveServiceChannel(city)`：市级深核优先；未深核但已知省份时回退省级；完全未知返回 `null`，不默认当成广东。
+- `RightsWizard`、`CityServiceLinks`、`PolicyView` 的省级入口块都改为只认这一种解析结果；不再各拼一套 `cityChannelOf` / `channelOf` 判断。
+- 只回退到有官方 URL 的入口；公积金等没有省级直达链接的类别给说明和 `12329`，不编死链。
+- 只抽 3 个视觉原子：`.surface-card` / `.stack-sm` / `.link-brand`，在 `CityServiceLinks`、`RightsItemCard`、`PolicyView` 落地；没有引入新 UI 框架。
+
 ## 下一步：按这个顺序合，不要一次重排
 
 ### P1-1 首页归位：`/start` 是唯一的“办事首页”（已在 3.6.2 完成）
@@ -81,7 +88,7 @@
 
 **已落地（3.6.3）**：四组已上线；`manual-kb` 组同时承载民生手册与知识库。旧深链通过 `TAB_GROUP` 映射到四组，不改变已发出去的链接。
 
-### P2-1 省级/市级入口：数据分层，解析合并
+### P2-1 省级/市级入口：数据分层，解析合并（3.6.5 已完成）
 
 **现状**
 
@@ -96,7 +103,9 @@
 - `PolicyView` 的省级入口块与 `CityServiceLinks` 共用同一个链接卡组件；只保留“名称 + 官网 + 站内怎么找 + 核验时间”四个字段。
 - 未深核城市继续回退省级，不补猜的市级链接。
 
-### P2-2 视觉层：只抽真正重复的原子
+**已落地（3.6.5）**：`resolveServiceChannel` 是唯一解析入口；`CityServiceLinks` 同时渲染市级/省级四类卡，省级公积金无直达链接时显示说明而非死链；`PolicyView` 的省级官网入口也走同一结果。
+
+### P2-2 视觉层：只抽真正重复的原子（3.6.5 已抽 3 个）
 
 **已重复**：`card` 背景/边框/圆角、链接色、`@media (max-width: 700px)` 单列规则。
 
@@ -105,6 +114,8 @@
 - 只抽 `src/styles/` 里的 3–5 个 CSS 变量或工具类（`.surface-card`、`.link-brand`、`.stack-sm`），不引入新的 UI 框架。
 - 不把 `RightsItemCard` 和 `GuideCard` 强行合成一个万能卡；它们的职责不同（办事清单 vs 原文详情）。
 - 移动端优先：一屏一个主任务，四个入口不折叠进下拉；按钮最小 36px；正文不出现横向滚动。
+
+**已落地（3.6.5）**：只新增 `.surface-card`、`.stack-sm`、`.link-brand` 三个全局原子；卡片背景/边框/圆角、纵向小间距、品牌链接色不再各写一份。
 
 ## 明确不合并的地方
 

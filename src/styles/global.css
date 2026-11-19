@@ -151,6 +151,25 @@ code, pre {
 .text-safe { color: var(--color-success-600) !important; }
 .text-warn { color: var(--color-warning-600) !important; }
 
+/* ---------- Shared visual atoms ----------
+   只抽稳定复用的小原子；不引入新框架，也不把业务卡合成万能卡。 */
+.surface-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+}
+
+.stack-sm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.link-brand {
+  color: var(--color-text-brand);
+  text-decoration: none;
+}
+
 /* ---------- KPI 行（仪表盘 / 退休规划共用） ---------- */
 .kpi-row {
   display: grid;

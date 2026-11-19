@@ -12,6 +12,9 @@
  * - 成都等站点对机房 IP 可能返回 412，手机浏览器可正常访问；不因此改成非官方链接。
  */
 
+import { provinceOf } from './provinces'
+import { channelOf } from './provinceChannels'
+
 export type CityServiceKey = 'social' | 'medical' | 'housing' | 'employment'
 
 export const CITY_SERVICE_LABELS: Record<CityServiceKey, string> = {
@@ -30,6 +33,24 @@ export interface CityServiceLink {
   url: string
   /** 站内怎么找，减少用户在官网里迷路 */
   note?: string
+}
+
+export type ServiceChannelLevel = 'city' | 'province'
+
+/** 统一后的办事入口：市级深核优先，未收录城市回退省级；UI 只认这一种结构。 */
+export interface ResolvedServiceChannel {
+  level: ServiceChannelLevel
+  /** 城市名（未收录时仍保留用户所选城市，便于说明） */
+  city: string | null
+  /** 展示名：城市名或「广东省省级入口」 */
+  label: string
+  province: string
+  lastVerified?: string
+  hotlines: string
+  /** 省级政务平台名称/地址（仅省级回退时有，市级入口不硬造） */
+  portalName?: string
+  portalUrl?: string
+  services: Record<CityServiceKey, CityServiceLink>
 }
 
 export interface CityChannel {
@@ -198,11 +219,75 @@ export function cityChannelOf(city?: string | null): CityChannel | null {
   return BY_CITY.get(key) ?? BY_CITY.get(key.replace(/市$/, '')) ?? null
 }
 
-/** 按固定顺序返回四类入口，方便 UI 遍历。 */
-export function cityServiceEntries(channel: CityChannel): Array<{ key: CityServiceKey; label: string; link: CityServiceLink }> {
+/** 按固定顺序返回四类入口，方便 UI 遍历。市级/省级统一结构都可传。 */
+export function cityServiceEntries(channel: { services: Record<CityServiceKey, CityServiceLink> }): Array<{ key: CityServiceKey; label: string; link: CityServiceLink }> {
   return CITY_SERVICE_ORDER.map((key) => ({
     key,
     label: CITY_SERVICE_LABELS[key],
     link: channel.services[key],
   }))
+}
+
+/**
+ * 统一解析用户城市的四类办事入口。
+ *
+ * - 10 个深核城市：返回市级四类官网；
+ * - 其余已收录省份的城市：回退省级人社/政务入口，医保给站内路径，公积金/就业不编链接；
+ * - 完全未知城市：返回 null，由页面提示拨 12333，不猜。
+ */
+export function resolveServiceChannel(city?: string | null): ResolvedServiceChannel | null {
+  const key = city?.trim()
+  if (!key) return null
+
+  const cityChannel = cityChannelOf(key)
+  if (cityChannel) {
+    return {
+      level: 'city',
+      city: cityChannel.label,
+      label: `${cityChannel.label}本地入口`,
+      province: cityChannel.province,
+      lastVerified: cityChannel.lastVerified,
+      hotlines: cityChannel.hotlines,
+      services: cityChannel.services,
+    }
+  }
+
+  // 允许直接传省级行政区名（政策页按省查入口），也允许传城市名
+  const province = provinceOf(key) ?? key
+  const provinceChannel = channelOf(province)
+  if (!provinceChannel) return null
+
+  const portalUrl = provinceChannel.portalUrl ?? provinceChannel.hrssUrl ?? ''
+  return {
+    level: 'province',
+    city: key,
+    label: `${provinceChannel.province}省级入口`,
+    province: provinceChannel.province,
+    lastVerified: undefined,
+    hotlines: '12333 / 12393 / 12329',
+    portalName: provinceChannel.portalName,
+    portalUrl: provinceChannel.portalUrl,
+    services: {
+      social: {
+        name: provinceChannel.hrssName,
+        url: provinceChannel.hrssUrl ?? '',
+        note: '站内「个人服务 / 社会保险」',
+      },
+      medical: {
+        name: `${provinceChannel.province}医保经办入口`,
+        url: portalUrl,
+        note: provinceChannel.medicalChannel,
+      },
+      housing: {
+        name: '当地住房公积金管理中心',
+        url: '',
+        note: '省级入口未收录，拨 12329 问当地中心',
+      },
+      employment: {
+        name: `${provinceChannel.hrssName} · 就业服务`,
+        url: provinceChannel.hrssUrl ?? '',
+        note: '站内「就业创业 / 公共就业」',
+      },
+    },
+  }
 }

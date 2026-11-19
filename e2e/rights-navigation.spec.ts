@@ -90,6 +90,23 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.locator('.csl-card').first()).toHaveAttribute('href', /^https:\/\/rsj\.beijing\.gov\.cn/)
   })
 
+  test('非深核城市自动回退省级入口，公积金没直达链接就不给死链', async ({ page }) => {
+    await page.goto('/start')
+    await dismissOnboarding(page)
+
+    await page.locator('#rw-city').click()
+    await page.getByText('东莞', { exact: true }).last().click()
+    await page.getByRole('button', { name: '下一步' }).click()
+    await page.getByRole('button', { name: '下一步' }).click()
+    await page.getByRole('button', { name: '生成我的清单' }).click()
+
+    await expect(page.getByText('省级官方入口 · 广东')).toBeVisible()
+    await expect(page.locator('.csl-card')).toHaveCount(4)
+    const housing = page.locator('.csl-card').filter({ hasText: '住房公积金' })
+    await expect(housing).toHaveClass(/is-text-only/)
+    expect(await housing.getAttribute('href')).toBeNull()
+  })
+
   test('加入清单后刷新还在，标记已办后进度更新', async ({ page }) => {
     await page.goto('/start')
     await dismissOnboarding(page)

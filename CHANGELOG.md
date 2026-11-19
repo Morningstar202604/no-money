@@ -3,6 +3,18 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.6.5] — 2026-11-19
+
+省市办事入口只走一个解析器，前端不再各拼一套判断；视觉层只抽三个真正重复的小原子。
+
+### Changed
+
+- **新增 `resolveServiceChannel(city)`**：10 个深核城市返回市级四类官网；其余已知省份回退省级；未知城市返回 `null`，不默认当成广东。
+- **向导 / 城市入口卡 / 政策页**：统一使用这一解析结果；省级公积金没有直达链接时显示说明和 `12329`，不编死链。
+- **省级回退**：`CityServiceLinks` 现在也展示省级四类卡，非深核城市不再只有一段文字。
+- **视觉原子**：`.surface-card`、`.stack-sm`、`.link-brand` 三个全局工具类落地，不引入新 UI 框架。
+- 版本三处同步到 **3.6.5**；不改政策数字、链接和计算口径。
+
 ## [3.6.4] — 2026-11-19
 
 手册详情只维护一份：`/start` 的展开详情不再自己渲染一套步骤，直接复用 `/policy` 的手册卡。

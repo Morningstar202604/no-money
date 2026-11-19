@@ -1,5 +1,5 @@
 <template>
-  <article class="right-card" :class="{ 'is-done': done }">
+  <article class="right-card surface-card" :class="{ 'is-done': done }">
     <div class="rc-top">
       <span class="rc-cat">{{ categoryLabel }}</span>
       <div class="rc-badges">
@@ -136,9 +136,6 @@ const done = computed(() => checklist.isDone(props.item.id))
   flex-direction: column;
   gap: 8px;
   padding: 14px 16px;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-lg);
 }
 .right-card.is-done { border-color: var(--color-success-500); background: var(--color-success-50); }
 .rc-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }

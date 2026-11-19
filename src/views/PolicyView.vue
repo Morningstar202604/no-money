@@ -5,7 +5,7 @@
       <p class="desc">
         本页四组：<b>政策原文</b>、<b>数据溯源</b>、<b>现实与救济</b>、<b>手册与知识库</b>。
         每条政策均标注文件名、文号、施行状态与原文链接；标注「待核实」的条目尚无权威出处，请勿对外引用。
-        办事清单、材料和教程先看「<router-link to="/start">办事入口</router-link>」页，这里只负责查依据。
+        办事清单、材料和教程先看「<router-link class="link-brand" to="/start">办事入口</router-link>」页，这里只负责查依据。
       </p>
     </n-card>
 
@@ -69,15 +69,15 @@
           <n-alert type="info" :show-icon="true" style="margin-top: 10px">
             <div><b>检索路径（任选其一）</b></div>
             <div style="margin-top:4px">
-              ① <b>{{ channel?.hrssName ?? '本省人社厅' }}</b>官网「政策文件/规范性文件」栏目；
-              ② 本省政务服务网（{{ channel?.portalName ?? '省级政务服务平台' }}）搜索文件名；
+              ① <b>{{ resolvedChannel?.services.social.name ?? '本省人社厅' }}</b>官网「政策文件/规范性文件」栏目；
+              ② 本省政务服务网（{{ resolvedChannel?.portalName ?? '省级政务服务平台' }}）搜索文件名；
               ③ 拨 <b>12333</b> 直接问「本省今年灵活就业养老/医保缴费基数上下限是多少」。
             </div>
-            <div v-if="channel?.hrssUrl || channel?.portalUrl" style="margin-top:6px">
+            <div v-if="resolvedChannel?.services.social.url || resolvedChannel?.portalUrl" style="margin-top:6px">
               官网入口：
-              <a v-if="channel?.hrssUrl" :href="channel.hrssUrl" target="_blank" rel="noopener noreferrer" class="pi-link">{{ channel.hrssName }}</a>
-              <span v-if="channel?.hrssUrl && channel?.portalUrl"> · </span>
-              <a v-if="channel?.portalUrl" :href="channel.portalUrl" target="_blank" rel="noopener noreferrer" class="pi-link">{{ channel.portalName }}</a>
+              <a v-if="resolvedChannel?.services.social.url" :href="resolvedChannel.services.social.url" target="_blank" rel="noopener noreferrer" class="pi-link">{{ resolvedChannel.services.social.name }}</a>
+              <span v-if="resolvedChannel?.services.social.url && resolvedChannel?.portalUrl"> · </span>
+              <a v-if="resolvedChannel?.portalUrl" :href="resolvedChannel.portalUrl" target="_blank" rel="noopener noreferrer" class="pi-link">{{ resolvedChannel.portalName }}</a>
             </div>
           </n-alert>
         </n-card>
@@ -237,7 +237,7 @@ import { useTabQuery } from '../composables/useTabQuery'
 import { REALITY_FACTS, REALITY_CATEGORY_ORDER, REALITY_CATEGORY_LABELS } from '../utils/reality'
 import { GUIDE_ITEMS, GUIDE_GROUP_ORDER, GUIDE_GROUP_LABELS } from '../utils/livingGuide'
 import { POLICIES, RELIEF_GUIDE, PROVINCE_POLICY_CHECKLIST, type PolicyStatus } from '../data/policies'
-import { channelOf } from '../data/provinceChannels'
+import { resolveServiceChannel } from '../data/cityChannels'
 import {
   buildStaticKbEntries,
   citySourceEntries,
@@ -259,7 +259,7 @@ const currentProvince = computed(() => {
   const city = store.work.city
   return CITY_REGISTRY.find(c => c.value === city)?.province ?? ''
 })
-const channel = computed(() => channelOf(currentProvince.value))
+const resolvedChannel = computed(() => resolveServiceChannel(currentProvince.value))
 const provinceChecklist = computed(() => PROVINCE_POLICY_CHECKLIST)
 const provinceTabLabel = computed(() => {
   // 规则文件未加载时退回中性标题，避免用 work.city 猜出错误的省份
