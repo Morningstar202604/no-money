@@ -140,9 +140,9 @@
     <n-card v-if="volatility" title="这个收入有多稳？—— 收入波动与应急储备" class="card" style="margin-top: 12px">
       <n-alert type="info" :show-icon="true" style="margin-bottom: 10px">
         上面的 ¥{{ bestNetMonthly.toLocaleString() }} 是<strong>点估计</strong>。灵活就业的真实特征是波动，
-        所以更该看「最差的月份能有多少」。下方按 {{ (volatilityCv * 100).toFixed(0) }}% 的月度波动率
-        模拟 {{ volatility.sampleSize }} 个月（固定种子，可复现），模拟均值
-        ¥{{ Math.round(volatility.mean).toLocaleString() }} 与点估计的微小差异来自抽样误差。
+        所以更该看「最差的月份能有多少」。下方以月毛收入为均值、按 {{ (volatilityCv * 100).toFixed(0) }}% 的月度波动率
+        模拟 {{ volatility.sampleSize }} 个月，逐月扣除固定成本后得到净收入分布（固定种子，可复现），
+        模拟净收入均值 ¥{{ Math.round(volatility.mean).toLocaleString() }} 与点估计的微小差异来自抽样误差。
       </n-alert>
 
       <div class="vol-controls">
@@ -233,14 +233,17 @@ const overriddenFields = computed(() => store.comparison?.best?.dataQuality?.ove
 const missingOverrideFields = computed(() => store.comparison?.best?.dataQuality?.missingOverrideFields ?? [])
 
 /**
- * 收入波动：用当前方案的月净收入做乘性波动模拟。
+ * 收入波动：以当前方案的**月毛收入**为均值做乘性波动模拟，
+ * 再逐月扣除固定支出得到净收入分布。
+ * 为什么不用净收入当均值：净收入永远为正，会导致「收入不够覆盖成本」的
+ * 月份统计恒为 0（生存线指标失效），储备建议也会把成本重复计入。
  * 固定种子保证同一参数下结果稳定（不是每次刷新都跳）。
  */
 const volatilityCv = computed(() => store.volatilityCv)
 const volatility = computed(() => {
   const best = store.comparison?.best
   if (!best) return null
-  return simulateIncomeDistribution(best.netMonthly, { cv: volatilityCv.value, months: 600, seed: 20260101 }, best.costBreakdown.total)
+  return simulateIncomeDistribution(best.income.grossIncome, { cv: volatilityCv.value, months: 600, seed: 20260101 }, best.costBreakdown.total)
 })
 const buffer = computed(() => {
   const best = store.comparison?.best

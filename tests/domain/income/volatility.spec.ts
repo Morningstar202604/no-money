@@ -98,7 +98,6 @@ describe('应急储备建议', () => {
     expect(low.recommendedBuffer).toBeGreaterThan(0)
     expect(high.recommendedBuffer).toBeGreaterThan(low.recommendedBuffer)
   })
-
   it('使用分布尾部（P10）而非均值来估算缺口', () => {
     const dist = simulateIncomeDistribution(8000, { cv: 0.4, months: 2000, seed: 13 })
     const withDist = recommendBuffer(8000, 3000, dist)
@@ -117,5 +116,55 @@ describe('应急储备建议', () => {
   it('非法输入不产生 NaN', () => {
     const r = recommendBuffer(NaN, NaN)
     expect(Number.isFinite(r.recommendedBuffer)).toBe(true)
+  })
+})
+
+/**
+ * 回归：输入是毛收入、输出是净收入。
+ *
+ * 旧实现把总览页的「净收入」当作分布均值再与固定成本比较，
+ * 导致两个后果：
+ *   1) 净收入恒为正 → 「收入不够覆盖成本」的月份占比永远是 0，指标失效；
+ *   2) 储备建议把固定成本重复计入（3 个月支出 + 缺口里再含一份支出），系统性偏高。
+ */
+describe('毛收入 → 净收入的分位口径', () => {
+  it('分位数整体平移固定支出：净 P50 = 毛 P50 - 成本，标准差不变', () => {
+    const gross = simulateIncomeDistribution(8000, { cv: 0.2, months: 600, seed: 5 })
+    const net = simulateIncomeDistribution(8000, { cv: 0.2, months: 600, seed: 5 }, 1950)
+    expect(net.p50).toBeCloseTo(gross.p50 - 1950, 2)
+    expect(net.mean).toBeCloseTo(gross.mean - 1950, 2)
+    expect(net.stdDev).toBeCloseTo(gross.stdDev, 1)
+    // 样本是同一批随机数，极值也应同步平移
+    expect(net.min).toBeCloseTo(gross.min - 1950, 2)
+    expect(net.max).toBeCloseTo(gross.max - 1950, 2)
+  })
+
+  it('生存线按毛收入判定：均值 6000、成本 5000、波动 40% 时统计出亏损月份', () => {
+    const d = simulateIncomeDistribution(6000, { cv: 0.4, months: 600, seed: 9 }, 5000)
+    expect(d.belowCostMonthRatio).toBeGreaterThan(0)
+    expect(d.belowCostMonthRatio).toBeLessThan(1)
+    // 最差 10% 月份净收入应为负——这正是需要储备兜底的场景
+    expect(d.p10).toBeLessThan(0)
+  })
+
+  it('最差月份净收入为正时，储备只含 3 个月固定支出（不重复计成本）', () => {
+    const d = simulateIncomeDistribution(8000, { cv: 0.2, months: 600, seed: 3 }, 2000)
+    expect(d.p10).toBeGreaterThan(0)
+    const b = recommendBuffer(6000, 2000, d)
+    expect(b.recommendedBuffer).toBe(2000 * 3)
+  })
+
+  it('最差月份净收入为负时，储备 = 3 个月固定支出 + 3 个月亏损补足', () => {
+    const d = simulateIncomeDistribution(3000, { cv: 0.3, months: 2000, seed: 11 }, 2500)
+    expect(d.p10).toBeLessThan(0)
+    const b = recommendBuffer(500, 2500, d)
+    expect(b.recommendedBuffer).toBeCloseTo(2500 * 3 + Math.max(0, -d.p10) * 3, 2)
+  })
+
+  it('毛收入为 0 时净收入为 -成本（固定支出照付），不是 0', () => {
+    const d = simulateIncomeDistribution(0, { cv: 0.2, months: 12, seed: 1 }, 1950)
+    expect(d.mean).toBe(-1950)
+    expect(d.p50).toBe(-1950)
+    expect(d.belowCostMonthRatio).toBe(1)
   })
 })

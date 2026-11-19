@@ -27,24 +27,26 @@ export interface IncomeVolatilityModel {
 }
 
 export interface IncomeDistribution {
+  /** 月净收入均值（已扣除月度固定支出） */
   mean: number
-  /** 标准差 */
+  /** 标准差（与毛收入标准差相同：固定支出是常数，不改变离散程度） */
   stdDev: number
-  /** 变异系数（实际算出的） */
+  /** 变异系数（实际算出的，按净收入均值计） */
   cv: number
-  /** 分位数 */
+  /** 净收入分位数（已扣除固定支出；可能为负，表示该月入不敷出） */
   p10: number
   p25: number
   p50: number
   p75: number
   p90: number
-  /** 最低与最高（模拟样本极值） */
+  /** 最低与最高（模拟样本极值，已扣除固定支出） */
   min: number
   max: number
   /**
    * 低于「生存线」的月份占比（0-1）。
-   * 乘性波动下收入恒为正，「负收入月份」没有意义；真正有意义的是
-   * 「收入不够覆盖固定支出」的月份——那才是要动用储备的时刻。
+   * 乘性波动下毛收入恒为正，「负收入月份」只可能来自固定支出超过收入；
+   * 这里统计的是「毛收入不够覆盖固定支出」的月份——即净收入为负的月份，
+   * 那才是要动用储备的时刻。
    */
   belowCostMonthRatio: number
   /** 样本月数 */
@@ -52,15 +54,24 @@ export interface IncomeDistribution {
 }
 
 /**
- * 乘性波动模拟：每月收入 = 均值 × exp(σ·Z − σ²/2)，其中 Z 为标准正态。
- * 该形式保证 E[收入] = 均值（对数正态的均值修正），且收入恒为正。
+ * 乘性波动模拟：每月**毛收入** = 均值 × exp(σ·Z − σ²/2)，其中 Z 为标准正态。
+ * 该形式保证 E[毛收入] = 均值（对数正态的均值修正），且毛收入恒为正。
+ *
+ * 为什么输入是毛收入而不是净收入：波动发生在「接单流水」这一层，
+ * 月度固定支出（车租/电费/餐费）不随单量波动。把净收入当均值再做乘性放大，
+ * 会让「收入不够覆盖成本」的月份永远统计不出来（净收入永远大于 0），
+ * 应急储备也会因为成本被重复计入而系统性偏高。
+ *
+ * 输出统一为**净收入**：每个样本减去 monthlyCost，分位数/均值/极值都是净额，
+ * 可能为负；belowCostMonthRatio 统计毛收入低于固定支出的月份占比。
  *
  * σ 由变异系数反推：对对数正态，CV = sqrt(exp(σ²) − 1) ⇒ σ = sqrt(ln(1 + CV²))。
  */
 export function simulateIncomeDistribution(
+  /** 月毛收入均值（元） */
   meanIncome: number,
   model: IncomeVolatilityModel = {},
-  /** 月度固定支出（元）：用于统计「收入不够花」的月份占比 */
+  /** 月度固定支出（元）：从每个模拟样本中扣除，并用于统计「收入不够花」的月份占比 */
   monthlyCost = 0,
 ): IncomeDistribution {
   const mean = Number.isFinite(meanIncome) ? Math.max(0, meanIncome) : 0
@@ -70,9 +81,11 @@ export function simulateIncomeDistribution(
 
   const cost = Number.isFinite(monthlyCost) ? Math.max(0, monthlyCost) : 0
   if (mean === 0) {
+    // 毛收入为 0：每个月净收入都是 -cost（固定支出照付），不是 0
+    const net = round2(-cost)
     return {
-      mean: 0, stdDev: 0, cv: 0, p10: 0, p25: 0, p50: 0, p75: 0, p90: 0,
-      min: 0, max: 0, belowCostMonthRatio: cost > 0 ? 1 : 0, sampleSize: months,
+      mean: net, stdDev: 0, cv: 0, p10: net, p25: net, p50: net, p75: net, p90: net,
+      min: net, max: net, belowCostMonthRatio: cost > 0 ? 1 : 0, sampleSize: months,
     }
   }
 
@@ -84,28 +97,31 @@ export function simulateIncomeDistribution(
 
   for (let i = 0; i < months; i++) {
     const z = gaussian(rng)
-    // 乘性冲击 + 均值修正项，保证期望仍为 mean
-    const value = mean * Math.exp(sigma * z - (sigma * sigma) / 2)
-    samples.push(value)
-    if (value < cost) belowCost++
+    // 乘性冲击 + 均值修正项，保证 E[毛收入] = mean
+    const gross = mean * Math.exp(sigma * z - (sigma * sigma) / 2)
+    samples.push(gross)
+    // 生存线按毛收入判定：固定支出是每月都要付的现金
+    if (gross < cost) belowCost++
   }
 
   samples.sort((a, b) => a - b)
-  const sampleMean = samples.reduce((s, v) => s + v, 0) / samples.length
-  const variance = samples.reduce((s, v) => s + (v - sampleMean) ** 2, 0) / samples.length
+  const grossMean = samples.reduce((s, v) => s + v, 0) / samples.length
+  const variance = samples.reduce((s, v) => s + (v - grossMean) ** 2, 0) / samples.length
   const stdDev = Math.sqrt(variance)
+  // 固定支出是常数：标准差不变，均值与分位数整体平移 -cost
+  const netMean = grossMean - cost
 
   return {
-    mean: round2(sampleMean),
+    mean: round2(netMean),
     stdDev: round2(stdDev),
-    cv: round4(sampleMean > 0 ? stdDev / sampleMean : 0),
-    p10: round2(quantile(samples, 0.1)),
-    p25: round2(quantile(samples, 0.25)),
-    p50: round2(quantile(samples, 0.5)),
-    p75: round2(quantile(samples, 0.75)),
-    p90: round2(quantile(samples, 0.9)),
-    min: round2(samples[0]),
-    max: round2(samples[samples.length - 1]),
+    cv: round4(Math.abs(netMean) > 0 ? stdDev / Math.abs(netMean) : 0),
+    p10: round2(quantile(samples, 0.1) - cost),
+    p25: round2(quantile(samples, 0.25) - cost),
+    p50: round2(quantile(samples, 0.5) - cost),
+    p75: round2(quantile(samples, 0.75) - cost),
+    p90: round2(quantile(samples, 0.9) - cost),
+    min: round2(samples[0] - cost),
+    max: round2(samples[samples.length - 1] - cost),
     belowCostMonthRatio: round4(belowCost / samples.length),
     sampleSize: months,
   }
@@ -121,10 +137,16 @@ export interface BufferAdvice {
 }
 
 /**
- * 应急储备建议：按收入的尾部风险（P10）而非均值来定。
+ * 应急储备建议：按「固定支出 + 尾部亏损」而不是「平均收入」来定。
  * 依据：骑手收入的下行风险主要来自伤病/封号/淡季，储备应覆盖「最差月份」
  * 而非「平均月份」。行业通行的 3-6 个月支出的储蓄目标来自个人理财顾问实践，
- * 这里按 P10 收入与固定支出口径给出更贴合本场景的建议。
+ * 这里按 P10 净收入与固定支出口径给出更贴合本场景的建议。
+ *
+ * 口径（与 simulateIncomeDistribution 的输出一致）：
+ *   - distribution.p10 是**净收入**分位（已扣固定支出），可能为负；
+ *   - 最差月份仍为正时，不需要动用储备补收入，只需覆盖固定支出；
+ *   - 最差月份为负时，额外补足「亏损」——负多少补多少，不把固定支出重复计一遍。
+ * 此前把固定支出同时放进「3 个月支出」和「最差月份缺口」，储备被系统性高估。
  */
 export function recommendBuffer(
   monthlyNet: number,
@@ -133,16 +155,17 @@ export function recommendBuffer(
 ): BufferAdvice {
   const net = Number.isFinite(monthlyNet) ? Math.max(0, monthlyNet) : 0
   const cost = Number.isFinite(fixedMonthlyCost) ? Math.max(0, fixedMonthlyCost) : 0
-  // 用 P10 收入估算最差月份的净现金流缺口
+  // 用 P10 净收入估算最差月份的现金流缺口；缺分布时按 60% 净收入保守替代
   const worstIncome = distribution ? distribution.p10 : net * 0.6
-  const monthlyGap = Math.max(0, cost + (net - worstIncome))
-  // 基础储备 3 个月固定支出，叠加按最差月缺口计的 3 个月
+  // 最差月份净流入为负时才需要补足；为正说明固定支出已被覆盖，不重复计入
+  const monthlyGap = Math.max(0, -worstIncome)
+  // 基础储备 3 个月固定支出，叠加按最差月亏损计的 3 个月
   const months = 3
   const recommendedBuffer = round2(cost * months + monthlyGap * months)
   return {
     recommendedBuffer,
     months,
-    rationale: `按 3 个月固定支出（¥${cost.toLocaleString()}×3）+ 3 个月最差月份缺口（P10 收入 ¥${worstIncome.toFixed(0)}）估算；行情差或刚入行时建议提高到 6 个月。`,
+    rationale: `按 3 个月固定支出（¥${cost.toLocaleString()}×3）+ 3 个月最差月份亏损补足（P10 净收入 ¥${worstIncome.toFixed(0)}）估算；行情差或刚入行时建议提高到 6 个月。`,
   }
 }
 
