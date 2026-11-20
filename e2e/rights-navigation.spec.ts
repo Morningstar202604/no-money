@@ -206,4 +206,24 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     expect(categories.length).toBeGreaterThan(0)
     expect(categories.every((text) => text.includes('公积金'))).toBe(true)
   })
+
+  test('怎么弄支持大白话搜索，无结果时给常见说法', async ({ page }) => {
+    await page.goto('/guides')
+    await dismissOnboarding(page)
+
+    const search = page.locator('.guides-search input')
+    await search.fill('被辞退能领失业金吗')
+    await expect(page.getByText('找到 1 条相关教程')).toBeVisible()
+    const results = page.locator('.right-card')
+    await expect(results).toHaveCount(1)
+    await expect(results.first()).toContainText('失业金')
+
+    await search.fill('这句话肯定搜不到')
+    await expect(page.getByText('没有匹配的教程，换个说法再试')).toBeVisible()
+    await expect(page.locator('.guides-empty')).toBeVisible()
+
+    await page.getByRole('button', { name: '异地看病怎么报销' }).click()
+    await expect(results).toHaveCount(1)
+    await expect(results.first()).toContainText('异地就医')
+  })
 })

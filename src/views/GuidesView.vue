@@ -10,7 +10,7 @@
         没写金额的，一律以当地经办机构核定为准。
       </p>
       <div class="guides-facts">
-        <span>{{ items.length }} 条可办教程</span>
+        <span>{{ totalCount }} 条可办教程</span>
         <span>{{ filters.length - 1 }} 个分类</span>
         <span>{{ officialCount }} 条带官方入口</span>
       </div>
@@ -31,9 +31,37 @@
       </button>
     </section>
 
-    <n-alert v-if="!items.length" type="info" :show-icon="true">
+    <section class="guides-search">
+      <n-input
+        v-model:value="query"
+        size="large"
+        clearable
+        placeholder="用大白话说：被辞退能领失业金吗、异地看病怎么报销…"
+        :input-props="{ 'aria-label': '按问题搜教程' }"
+      />
+      <p v-if="query.trim()" class="guides-search-count" role="status">
+        {{ items.length ? `找到 ${items.length} 条相关教程` : '没有匹配的教程，换个说法再试' }}
+      </p>
+    </section>
+
+    <n-alert v-if="!items.length && !query.trim()" type="info" :show-icon="true">
       这个分类还没有 L2 教程。先回「该做什么」看清单，或到「政策与数据」查官方原文。
     </n-alert>
+
+    <div v-else-if="!items.length" class="guides-empty">
+      <p>没搜到。试试大家常问的说法：</p>
+      <div class="guides-empty-samples">
+        <button
+          v-for="example in SEARCH_EXAMPLES"
+          :key="example"
+          type="button"
+          class="guides-empty-sample"
+          @click="query = example"
+        >
+          {{ example }}
+        </button>
+      </div>
+    </div>
 
     <section v-else class="guides-list" aria-label="可办教程列表">
       <RightsItemCard v-for="item in items" :key="item.id" :item="item" />
@@ -53,13 +81,22 @@ const PageHeading = createPageHeading('guides')
 
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { NAlert } from 'naive-ui'
+import { NAlert, NInput } from 'naive-ui'
 import RightsItemCard from '../components/RightsItemCard.vue'
-import { guideFilters, guidesForCategory, type GuideFilterKey } from '../data/rights/guides'
+import {
+  guideFilters,
+  guidesForCategory,
+  searchGuides,
+  type GuideFilterKey,
+} from '../data/rights/guides'
 
 const router = useRouter()
 const route = useRoute()
 const filters = guideFilters()
+const allGuides = guidesForCategory('all')
+const totalCount = allGuides.length
+const officialCount = allGuides.filter((item) => item.officialUrl).length
+const SEARCH_EXAMPLES = ['被辞退能领失业金吗', '异地看病怎么报销', '租房提取公积金']
 
 function readCategory(): GuideFilterKey {
   const q = route.query.cat
@@ -69,8 +106,8 @@ function readCategory(): GuideFilterKey {
 }
 
 const category = ref<GuideFilterKey>(readCategory())
-const items = computed(() => guidesForCategory(category.value))
-const officialCount = computed(() => items.value.filter((item) => item.officialUrl).length)
+const query = ref('')
+const items = computed(() => searchGuides(query.value, category.value))
 
 watch(() => route.query.cat, () => { category.value = readCategory() })
 
@@ -94,6 +131,22 @@ function setCategory(next: GuideFilterKey) {
 .guides-lead { margin: 0; max-width: 780px; font-size: var(--font-size-md); line-height: 1.75; color: var(--color-text-secondary); }
 .guides-facts { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 4px; font-size: var(--font-size-xs); color: var(--color-text-brand); }
 .guides-filter { display: flex; flex-wrap: wrap; gap: 8px; }
+.guides-search { display: flex; flex-direction: column; gap: 6px; }
+.guides-search :deep(.n-input) { max-width: 760px; }
+.guides-search-count { margin: 0; font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
+.guides-empty {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 18px 20px; border: 1px dashed var(--color-border-primary);
+  border-radius: var(--radius-lg); background: var(--color-bg-primary);
+}
+.guides-empty p { margin: 0; font-size: var(--font-size-sm); color: var(--color-text-secondary); }
+.guides-empty-samples { display: flex; flex-wrap: wrap; gap: 8px; }
+.guides-empty-sample {
+  padding: 7px 11px; border: 1px solid var(--color-border-primary); border-radius: 999px;
+  background: var(--color-bg-brand-light); color: var(--color-text-brand);
+  font-size: var(--font-size-xs); cursor: pointer;
+}
+.guides-empty-sample:hover { border-color: var(--color-primary-400); }
 .guides-chip {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 12px; border: 1px solid var(--color-border-primary); border-radius: 999px;

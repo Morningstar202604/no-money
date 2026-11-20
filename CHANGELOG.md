@@ -3,6 +3,36 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.10.1] — 2026-11-21
+
+`/guides` 支持按用户原话搜索：输入“被辞退能领失业金吗”“异地看病怎么报销”这类说法，直接落到能照着办的 L2 教程；不新增政策内容，也不动任何数值或置信度。
+
+### Added
+
+- `/guides` 增加大白话搜索框，按用户原话匹配标题、一句话说明、步骤、材料与官方入口；无结果时给出三条常见说法，可直接点选再搜。
+- 新增 `GUIDE_SEARCH_PHRASES`：为 18 条可办 L2 各维护至少一条口语别名，搜索只负责定位，教程正文仍只维护在 `RIGHTS_CATALOG`。
+- 新增 `searchGuides`：排序为原话完全命中 > 原话包含 > 标题 > 一句话说明 > 正文关键词；空查询仍返回分类列表，分类筛选与搜索可叠加。
+
+### Changed
+
+- 教程页顶部计数改为全量可办教程数，不随搜索词变化；搜索时单独显示“找到 N 条相关教程”。
+- 搜索无结果与“该分类没有内容”分开提示，不再用分类空状态误导用户。
+
+### Data
+
+- 政策数据零改动：343 条来源仍为 official 225（65.6%）/ derived 50 / unverified 68；养老金计发基数 official 27 / derived 7 / unverified 0；34 城 `verified` 仍全部 `false`。
+- 不新增权益条目、不改官方入口、不改 `lastVerified`，只补搜索别名。
+
+### Tests
+
+- `tests/guides.spec.ts` 从 3 条扩到 **23 条**：18 条一条原话对应一条教程，另有每条教程必须有别名、无多余映射、空查询/无匹配/分类叠加 3 条。
+- `e2e/rights-navigation.spec.ts` 新增 1 条（桌面 + 移动各跑一次）：搜“被辞退能领失业金吗”只剩失业金卡；搜不到时出现常见说法，点“异地看病怎么报销”回到异地就医卡。
+- 全量：**62 文件 / 1,221 单测通过**；E2E **8 文件 / 126 条通过**。
+
+### Docs
+
+- README 中英文「怎么弄」行补大白话搜索；CHANGELOG / ROADMAP / POSITIONING / ENGINEERING / AUDIT 同步测试与体积基线。
+
 ## [3.10.0] — 2026-11-20
 
 `/employee` 增加「新毕业生第一年」模式：把试用期和转正两段工资展开为 12 个月，按年度综合所得算第一年个税与到手。只改计算入口，不碰任何政策数值、费率或置信度。
