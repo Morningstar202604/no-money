@@ -8,6 +8,16 @@ import type { RightsItem } from '../data/rights/catalog'
 
 export type RightsShareMode = 'shared' | 'copied'
 
+/** 系统分享被用户取消时返回 null；其它失败给一句能照做的中文。 */
+export function shareErrorMessage(error: unknown): string | null {
+  if (typeof DOMException !== 'undefined' && error instanceof DOMException && error.name === 'AbortError') {
+    return null
+  }
+  return error instanceof Error && error.message.includes('不支持')
+    ? error.message
+    : '分享失败，请手动复制'
+}
+
 /** 生成可直接发微信/短信的纯文本，不包含内部 id、埋点或本机状态。 */
 export function buildRightsShareText(item: RightsItem): string {
   const lines = [item.title, item.oneLiner, '']

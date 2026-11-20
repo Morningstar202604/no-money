@@ -45,6 +45,62 @@ export function buildChecklistText(
   return lines.join('\n')
 }
 
+
+export interface ChecklistShareOptions {
+  /** 哪些条目已办；缺省全部按待办 */
+  done?: (id: string) => boolean
+  /** 清单标题，如「被辞退后要办的事」 */
+  title?: string
+  /** 整理日期，测试可固定 */
+  date?: string
+  /** 一条消息最多带几件，默认 8 件，避免微信里刷屏 */
+  maxItems?: number
+}
+
+/**
+ * 整张清单分享文案：给工友看的版本，不是导出文件。
+ *
+ * 与 `buildChecklistText` 分开：导出文件保留待办/已办状态和导出日期，
+ * 分享文案只带第一步行、时限、去哪办、官方入口和核验日期，避免把
+ * 本机状态、城市、身份证、工资带出去。
+ */
+export function buildChecklistShareText(
+  items: readonly RightsItem[],
+  options: ChecklistShareOptions = {},
+): string {
+  const done = options.done ?? (() => false)
+  const date = options.date ?? exportedAt()
+  const maxItems = options.maxItems ?? 8
+  const doneCount = items.filter((item) => done(item.id)).length
+  const lines = [
+    listHeading(options.title),
+    `整理日期：${date}｜共 ${items.length} 件${doneCount ? `，已办 ${doneCount} 件` : ''}`,
+    '',
+  ]
+
+  if (!items.length) {
+    lines.push('清单还是空的：先到「该做什么」勾选要办的事。')
+  }
+
+  items.slice(0, maxItems).forEach((item, index) => {
+    lines.push(`${index + 1}. [${status(item, done)}] ${item.title}`)
+    const firstStep = item.whatToDo[0]
+    if (firstStep) lines.push(`   第一步：${firstStep}`)
+    if (item.deadline) lines.push(`   时限：${item.deadline}`)
+    lines.push(`   去哪办：${item.whereToGo}`)
+    if (item.officialUrl) lines.push(`   官方入口：${item.officialUrl}`)
+    lines.push(`   核验：${item.lastVerified}`)
+    lines.push('')
+  })
+
+  if (items.length > maxItems) {
+    lines.push(`还有 ${items.length - maxItems} 件没放进这条消息；打开 App 看全清单。`, '')
+  }
+
+  lines.push('提醒：金额、比例、截止日期以当地最新文件为准；本平台不代办、不代缴。', '来自「没钱 No Money」')
+  return lines.join('\n')
+}
+
 function escapeHtml(value: string): string {
   return value
     .replaceAll('&', '&amp;')

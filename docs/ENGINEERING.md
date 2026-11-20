@@ -8,15 +8,15 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/对拍/组件测试 | **63 文件 / 1,228 项全过**，耗时 356.57s |
-| E2E | **8 文件 / 128 项全过**（desktop-chromium + mobile-chromium，5.8m） |
+| 单元/对拍/组件测试 | **63 文件 / 1,234 项全过**，耗时 356.38s |
+| E2E | **8 文件 / 130 项全过**（desktop-chromium + mobile-chromium，5.9m） |
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
 | 知识库 | `kb:check` 409 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
-| 构建 | 23.76s；`dist` **3.47 MB**（assets 2.58 MB）；首屏 **409K gzip**（预算 500K） |
-| PWA | 55 条 precache / **2,820.63 KiB（约 2.76 MB）**（预算 3 MB） |
+| 构建 | 23.52s；`dist` **3.47 MB**（assets 2.58 MB）；首屏 **409K gzip**（预算 500K） |
+| PWA | 55 条 precache / **2,822.62 KiB（约 2.76 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（26 个关键文件、版本三处一致、34 城、PWA、体积、文档） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |
@@ -25,13 +25,14 @@
 
 | chunk | 大小 | 说明 |
 |---|---:|---|
-| `index` | 74.68K | 应用入口 + 布局 + 首屏组件 |
+| `index` | 74.67K | 应用入口 + 布局 + 首屏组件 |
 | `naive-ui` | 176.19K | 首屏最大依赖 |
 | `vendor-misc` | 117.65K | 其余运行时依赖 |
 | `vendor-util` | 29.89K | 工具库 |
 | `vendor-vue` | 20.01K | Vue 运行时 |
 | `RightsView` | 26.99K | 路由懒加载 |
-| `RightsItemCard` | 17.56K | 权益卡（含清单、已办与分享），路由懒加载 |
+| `RightsItemCard` | 17.60K | 权益卡（含清单、已办与分享），路由懒加载 |
+| `RightsStartView` | 11.49K | 办事首页与我的清单，含整张清单分享 |
 | `EmployeeView` | 5.28K | 企业职工工资条页，路由懒加载 |
 | `PolicyView` | 8.35K | 政策页，34 城总览按页签懒加载 |
 | `echarts` | 294.44K | 仅图表页加载，未进首屏 |
@@ -197,13 +198,13 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 指标
 
-- 测试：1,228 项（63 个文件；含 5 项架构门禁 + 权益导航/城市入口/教程筛选/大白话搜索/权益分享/新毕业生变额工资测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
+- 测试：1,234 项（63 个文件；含 5 项架构门禁 + 权益导航/城市入口/教程筛选/大白话搜索/权益与清单分享/新毕业生变额工资测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
 - 首屏：409K gzip；PWA：2.76 MB（55 条 precache）；`dist`：3.47 MB（assets 2.58 MB）。
 - 数据：343 条来源，official 225（65.6%）、derived 50、unverified 68；34 城；0 城全部字段 official。34 城医保基数 official 33 / derived 1（郑州按社平 80% 派生）；医保费率 official 27 / derived 7 / unverified 0（西安 2026 已升 official，石家庄到期降 derived）；34 城最低工资全部 official；养老基数 official 31 / derived 3；养老金计发基数 official 27 / derived 7 / unverified 0（西安 7881 凭陕人社函〔2025〕425号扫描件升 official；2026 已公布 10 城，其余 24 城按 2025 年预发）。
 - 内容：`RightsItem` 60 条（23 条迁移 + 20 条新增 L2 + 17 条 L1）；其中 30 条 L2、30 条 L1；已到 60+ 目标。
-- 教程：`/guides` 只列 8 类 18 条 L2（social / medical / housing / unemployment / birth / injury / retire / subsidy）；每条有至少一条用户原话别名，支持大白话搜索；权益卡可系统分享或复制文案给工友；L1 留在「该做什么」，高温/税优/维权不进首屏。
+- 教程：`/guides` 只列 8 类 18 条 L2（social / medical / housing / unemployment / birth / injury / retire / subsidy）；每条有至少一条用户原话别名，支持大白话搜索；权益卡可系统分享或复制文案给工友，我的清单/向导结果可整张分享；L1 留在「该做什么」，高温/税优/维权不进首屏。
 - 新毕业生：`/employee` 支持试用期 + 转正两段工资；12 个月变额求和算年度个税，两段月到手按年度平均税负折算并标注；居民模式仍缺城市级缴费数据。
-- 可用性：E2E 128 项（8 个文件，桌面 + 移动）；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、新毕业生双段工资有 E2E；清单导出/打印有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
+- 可用性：E2E 130 项（8 个文件，桌面 + 移动）；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、新毕业生双段工资有 E2E；清单导出/打印有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 
 ## 6. 模块化与架构边界
 

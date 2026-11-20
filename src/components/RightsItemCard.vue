@@ -99,7 +99,7 @@ import { computed, ref } from 'vue'
 import { RIGHTS_CATEGORY_LABELS, type RightsItem } from '../data/rights/catalog'
 import GuideCard from './GuideCard.vue'
 import { GUIDE_ITEMS } from '../utils/livingGuide'
-import { buildRightsShareText, shareRightsText } from '../utils/rightsShare'
+import { buildRightsShareText, shareErrorMessage, shareRightsText } from '../utils/rightsShare'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const props = defineProps<{ item: RightsItem; rank?: number }>()
@@ -141,10 +141,8 @@ async function onShare() {
     if (feedbackTimer) clearTimeout(feedbackTimer)
     feedbackTimer = setTimeout(() => { shareFeedback.value = '' }, 3000)
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') return
-    shareFeedback.value = error instanceof Error && error.message.includes('不支持')
-      ? error.message
-      : '分享失败，请手动复制'
+    const message = shareErrorMessage(error)
+    if (message) shareFeedback.value = message
   } finally {
     sharing.value = false
   }

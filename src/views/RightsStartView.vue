@@ -52,6 +52,9 @@
         <button v-if="myDone" type="button" class="start-mine-btn" @click="checklist.clearDone()">清空已办状态</button>
         <button type="button" class="start-mine-btn" @click="scrollToList">继续看全部条目</button>
         <button type="button" class="start-mine-btn" @click="exportChecklist">导出清单</button>
+        <button type="button" class="start-mine-btn" :disabled="sharingChecklist" @click="shareChecklist">
+          {{ sharingChecklist ? '分享中…' : '分享清单' }}
+        </button>
         <button type="button" class="start-mine-btn" @click="printChecklist">打印清单</button>
       </div>
       <p v-if="actionNote" class="start-mine-note" role="status">{{ actionNote }}</p>
@@ -155,7 +158,8 @@ import { RIGHTS_CATALOG, rightsForEntry, type RightsItem } from '../data/rights/
 import { CITY_CHANNELS } from '../data/cityChannels'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 import { downloadTextFile } from '../utils/download'
-import { buildChecklistHtml, buildChecklistText } from '../utils/checklistExport'
+import { buildChecklistHtml, buildChecklistShareText, buildChecklistText } from '../utils/checklistExport'
+import { shareErrorMessage, shareRightsText } from '../utils/rightsShare'
 
 const PageHeading = createPageHeading('start')
 
@@ -188,6 +192,7 @@ const deadlinePreview = computed(() => {
   return deadlineItems.value.length > shown.length ? `${shown.join('；')} 等 ${deadlineItems.value.length} 条` : shown.join('；')
 })
 const actionNote = ref('')
+const sharingChecklist = ref(false)
 
 watch(() => route.query.entry, () => { entry.value = readEntry() })
 
@@ -202,6 +207,26 @@ function scrollToList() {
 
 function openAi(prompt: string) {
   window.dispatchEvent(new CustomEvent('app:open-ai', { detail: { prompt } }))
+}
+
+async function shareChecklist() {
+  if (!myItems.value.length || sharingChecklist.value) return
+  sharingChecklist.value = true
+  try {
+    const mode = await shareRightsText(
+      '我的办事清单',
+      buildChecklistShareText(myItems.value, {
+        done: checklist.isDone,
+        date: new Date().toISOString().slice(0, 10),
+      }),
+    )
+    actionNote.value = mode === 'shared' ? '已打开系统分享，可直接发给工友。' : '已复制整张清单，可直接发给工友。'
+  } catch (error) {
+    const message = shareErrorMessage(error)
+    if (message) actionNote.value = message
+  } finally {
+    sharingChecklist.value = false
+  }
 }
 
 function exportChecklist() {
@@ -320,6 +345,7 @@ function printChecklist() {
   cursor: pointer;
 }
 .start-mine-btn:hover { border-color: var(--color-primary-500); color: var(--color-text-brand); }
+.start-mine-btn:disabled { opacity: .55; cursor: wait; }
 
 @media (max-width: 700px) {
   .start-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }

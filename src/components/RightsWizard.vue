@@ -117,6 +117,7 @@
         <n-button size="small" @click="saveAll">全部加入我的清单</n-button>
         <n-button size="small" @click="exportCurrent">导出这张清单</n-button>
         <n-button size="small" @click="printCurrent">打印</n-button>
+        <n-button size="small" :loading="sharingCurrent" @click="shareCurrent">分享这张清单</n-button>
         <span v-if="actionNote" class="rw-action-note" role="status">{{ actionNote }}</span>
       </div>
 
@@ -158,7 +159,8 @@ import { RIGHTS_TEMPLATES, getRightsForTemplate, type RightsTemplate } from '../
 import { resolveServiceChannel } from '../data/cityChannels'
 import { buildRightsAiPrompt } from '../utils/rightsAiPrompt'
 import { downloadTextFile } from '../utils/download'
-import { buildChecklistHtml, buildChecklistText } from '../utils/checklistExport'
+import { buildChecklistHtml, buildChecklistShareText, buildChecklistText } from '../utils/checklistExport'
+import { shareErrorMessage, shareRightsText } from '../utils/rightsShare'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const emit = defineEmits<{ browse: []; calc: []; 'ask-ai': [prompt: string]; policy: [] }>()
@@ -173,6 +175,7 @@ const situation = ref<RightsSituation>('first-job')
 const result = ref<RightsItem[]>([])
 const activeTemplate = ref<RightsTemplate | null>(null)
 const actionNote = ref('')
+const sharingCurrent = ref(false)
 
 const progress = [
   { n: 1, label: '城市' },
@@ -246,6 +249,27 @@ function printCurrent() {
   win.focus()
   window.setTimeout(() => win.print(), 200)
   actionNote.value = '已打开打印页；在打印窗口选「另存为 PDF」。'
+}
+
+async function shareCurrent() {
+  if (!result.value.length || sharingCurrent.value) return
+  sharingCurrent.value = true
+  try {
+    const mode = await shareRightsText(
+      currentTitle.value,
+      buildChecklistShareText(result.value, {
+        done: checklist.isDone,
+        title: currentTitle.value,
+        date: new Date().toISOString().slice(0, 10),
+      }),
+    )
+    actionNote.value = mode === 'shared' ? '已打开系统分享，可直接发给工友。' : '已复制整张清单，可直接发给工友。'
+  } catch (error) {
+    const message = shareErrorMessage(error)
+    if (message) actionNote.value = message
+  } finally {
+    sharingCurrent.value = false
+  }
 }
 
 function browse() {

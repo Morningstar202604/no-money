@@ -1,6 +1,7 @@
 import { afterEach, describe, it, expect, vi } from 'vitest'
 import { RIGHTS_CATALOG } from '../src/data/rights/catalog'
-import { buildRightsShareText, shareRightsText } from '../src/utils/rightsShare'
+import { buildChecklistShareText } from '../src/utils/checklistExport'
+import { buildRightsShareText, shareErrorMessage, shareRightsText } from '../src/utils/rightsShare'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -74,5 +75,66 @@ describe('分享通道', () => {
     vi.stubGlobal('navigator', {})
 
     await expect(shareRightsText('标题', '正文')).rejects.toThrow('请手动复制')
+  })
+})
+
+
+describe('整张清单分享文案', () => {
+  const items = [
+    RIGHTS_CATALOG.find((entry) => entry.id === 'right-unemployment-claim')!,
+    RIGHTS_CATALOG.find((entry) => entry.id === 'right-housing-fund')!,
+    RIGHTS_CATALOG.find((entry) => entry.id === 'right-injury-report')!,
+  ]
+
+  it('按顺序列出清单，带待办/已办、第一步、时限、去哪办、入口和核验日期', () => {
+    const text = buildChecklistShareText(items, {
+      title: '被辞退后要办的事',
+      date: '2026-11-21',
+      done: (id) => id === 'right-unemployment-claim',
+    })
+
+    expect(text).toContain('没钱 No Money · 被辞退后要办的事')
+    expect(text).toContain('整理日期：2026-11-21｜共 3 件，已办 1 件')
+    expect(text).toContain('1. [已办] ')
+    expect(text).toContain('2. [待办] ')
+    expect(text.indexOf(items[0].title)).toBeLessThan(text.indexOf(items[1].title))
+    expect(text).toContain('第一步：')
+    expect(text).toContain('去哪办：')
+    expect(text).toContain('官方入口：')
+    expect(text).toContain(`核验：${items[1].lastVerified}`)
+    expect(text).toContain('来自「没钱 No Money」')
+  })
+
+  it('超过 8 件时截断并说明还剩多少件', () => {
+    const text = buildChecklistShareText(RIGHTS_CATALOG.slice(0, 10), { date: '2026-11-21' })
+    const itemLines = text.split('\n').filter((line) => /^\d+\. \[/.test(line))
+
+    expect(itemLines).toHaveLength(8)
+    expect(text).toContain('还有 2 件没放进这条消息')
+  })
+
+  it('空清单给出下一步，不输出 null/undefined', () => {
+    const text = buildChecklistShareText([], { date: '2026-11-21' })
+
+    expect(text).toContain('清单还是空的')
+    expect(text).not.toContain('null')
+    expect(text).not.toContain('undefined')
+  })
+
+  it('不泄露内部 id', () => {
+    const text = buildChecklistShareText(items, { date: '2026-11-21' })
+
+    items.forEach((item) => expect(text).not.toContain(item.id))
+  })
+})
+
+describe('分享错误文案', () => {
+  it('用户取消返回 null，不冒充成功', () => {
+    expect(shareErrorMessage(new DOMException('取消', 'AbortError'))).toBeNull()
+  })
+
+  it('不支持时保留可操作的中文说明，其它失败给通用提示', () => {
+    expect(shareErrorMessage(new Error('当前浏览器不支持系统分享或复制，请手动复制'))).toContain('请手动复制')
+    expect(shareErrorMessage(new Error('Failed to execute writeText'))).toBe('分享失败，请手动复制')
   })
 })

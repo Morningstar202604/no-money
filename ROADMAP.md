@@ -10,14 +10,14 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ## Where we are now
 
-**0.0.35** is the current baseline. The product direction is settled — a rights-navigation and
+**0.0.36** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
-new-grad first-year mode, plain-language guide search and one-tap guide sharing are shipped:
+new-grad first-year mode, plain-language guide search, guide sharing and whole-checklist sharing are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
 - Six-section nav: 该做什么 / 能拿什么 / 怎么弄 / 算一算 / 问一问 / 政策与数据; `/guides` lists 18
-  L2 how-to entries in 8 categories, with `?cat=` deep links, plain-language search and sharing
+  L2 how-to entries in 8 categories, with `?cat=` deep links, plain-language search and one-card sharing; saved/generated checklists can be shared as one message
 - `/employee` now has a new-grad first-year mode: probation + regular months, annual tax and
   take-home; resident mode still blocked on city-level contribution data
 - [docs/REALITY-AND-SCOPE.md](docs/REALITY-AND-SCOPE.md) — 12 real-world blockers, 8 paths,
@@ -35,6 +35,21 @@ content tests. The calculator and all routes still work.
 six-section nav, standalone guide page and new-grad first-year mode are shipped; 3.8.0 also ships the rights guide, the freshness gate, failure-to-issue automation,
 repository automation, the employee wage-slip slice, seven ready-made checklists and the
 content-review loop. Page-level deadline hints exist, but there is no push service or account.
+
+---
+
+## 0.0.36 — Whole-checklist sharing (shipped 2026-11-21)
+
+**Goal: a worker can send the whole plan, not just one card, to a co-worker or family member.**
+
+- [x] `分享清单` on 我的清单; `分享这张清单` on wizard results
+- [x] Web Share on mobile, clipboard fallback on desktop; user cancel stays silent
+- [x] Share text: up to 8 items, each with 待办/已办, first step, deadline, where-to-go,
+      official link and verification date; remaining count when truncated
+- [x] No internal id, city, identity, ID number, salary or checklist storage key in the message
+- [x] Centralized `shareErrorMessage` for single-card and checklist sharing
+- [x] 6 new unit tests (13 in `rightsShare.spec.ts`); desktop + mobile E2E for checklist copy
+- [x] No policy data or confidence changes
 
 ---
 

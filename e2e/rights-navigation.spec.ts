@@ -183,6 +183,28 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByText(/1 \/ 1 已办/)).toBeVisible()
   })
 
+  test('我的清单可以整张复制给工友', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'share', { value: undefined, configurable: true })
+    })
+    await page.goto('/start')
+    await dismissOnboarding(page)
+
+    await page.getByRole('button', { name: /工伤/ }).click()
+    await page.getByRole('button', { name: '全部加入我的清单' }).click()
+    await page.getByRole('button', { name: '分享清单' }).click()
+    await expect(page.locator('.start-mine-note')).toContainText('已复制整张清单')
+
+    const text = await page.evaluate(() => navigator.clipboard.readText())
+    expect(text).toContain('没钱 No Money')
+    expect(text).toContain('整理日期：')
+    expect(text).toContain('第一步：')
+    expect(text).toContain('去哪办：')
+    expect(text).toContain('来自「没钱 No Money」')
+    expect(text).not.toContain('undefined')
+  })
+
   test('六段导航：怎么弄进入独立教程页，可按公积金筛选', async ({ page }) => {
     await page.goto('/start')
     await dismissOnboarding(page)
