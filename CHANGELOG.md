@@ -1,9 +1,40 @@
 # 更新日志
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
+
+## [0.0.35] — 2026-11-21
+
+版本口径从 `3.10.1` 切到 `0.0.35`，后续只增末段；同时把单条权益卡变成可转发的办事文案。政策数值、官方入口和置信度零改动。
+
+### Added
+
+- 权益卡新增「分享这条」：手机优先调用系统分享，可直发微信；桌面或不支持系统分享时复制纯文本文案。
+- 新增 `src/utils/rightsShare.ts`：分享文案只读 `RightsItem`，包含标题、一句话说明、能拿什么、最多 4 步、材料、时限、去哪办、官方入口、注意项、核验日期与来源。
+- 分享文案末尾固定带「来自『没钱 No Money』」，转发后仍能看出出处与核验时间。
+
+### Changed
+
+- 版本号统一为 `0.0.x`：`package.json`、`package-lock.json`、`tauri.conf.json`、`Cargo.toml`、`Cargo.lock` 全部为 **0.0.35**；`docs/VERSIONING.md` 改为固定前两段、只增末段的发布规则。
+- 历史 `v3.x` 标签保留，不重写、不删除；新 tag 从 `v0.0.35` 继续。
+
+### Data
+
+- 政策数据零改动：343 条来源仍为 official 225（65.6%）/ derived 50 / unverified 68；养老金计发基数 official 27 / derived 7 / unverified 0；34 城 `verified` 仍全部 `false`。
+- 不新增权益条目、不改官方入口、不改 `lastVerified`。
+
+### Tests
+
+- 新增 `tests/rightsShare.spec.ts` 7 条：文案含步骤/入口/核验日期与来源、L2 带材料时限注意项、不含内部 id 或 null；系统分享成功、取消不降级、失败退剪贴板、两者不支持给人话错误。
+- `e2e/rights-navigation.spec.ts` 新增 1 条（桌面 + 移动各跑一次）：点击「分享这条」后剪贴板拿到完整文案，含「来自『没钱 No Money』」「核验日期」「官方入口」。
+- 全量：**63 文件 / 1,228 单测通过**；E2E **8 文件 / 128 条通过**。
+
+### Docs
+
+- `docs/VERSIONING.md` 重写为 `0.0.x` 规则；README 中英文「怎么弄」行补“可分享给工友”；CHANGELOG / ROADMAP / POSITIONING / ENGINEERING / AUDIT 同步。
 
 ## [3.10.1] — 2026-11-21
+
 
 `/guides` 支持按用户原话搜索：输入“被辞退能领失业金吗”“异地看病怎么报销”这类说法，直接落到能照着办的 L2 教程；不新增政策内容，也不动任何数值或置信度。
 

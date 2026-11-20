@@ -1,32 +1,37 @@
 # Versioning Policy
 
-This project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html), with a project-specific interpretation of what each segment means.
+本项目从 **0.0.35** 起统一使用 `0.0.x` 三段式版本号，不再使用 `3.x`。历史 `3.x` 标签保留不动，仅作为归档。
 
 ## Format
 
 ```
-MAJOR.MINOR.PATCH
+0.0.PATCH
 ```
 
-Three numeric segments, no leading zeros, no pre-release suffix in released versions.
+第一、二段固定为 `0`；第三段每次对外发布递增。数字不带前导零，已发布版本不带预发布后缀。
 
-## What each segment means here
+## 为什么这样定
 
-| Segment | Bump when | Example |
-|---|---|---|
-| **MAJOR** | A stored data format changes incompatibly (localStorage keys, exported parameter files), or a calculation basis changes such that the same input now yields a materially different number | Changing from annual settlement to withholding basis |
-| **MINOR** | New capability, new city, new module, or new knowledge-base section — existing data and behavior stay valid | Adding a city, adding a tax module |
-| **PATCH** | Bug fix, copy correction, dependency patch, or data value correction that does not change the calculation method | Correcting a minimum-wage figure, fixing a contrast ratio |
+这是个人项目，版本号首先服务于“这次推送改了第几版”，而不是对外营销。固定前两段、只加最后一段，能避免小迭代反复占用 MAJOR/MINOR 的解释成本，也让 tag 一眼看出发布顺序。
 
-### The special case: data corrections
+## 各段含义
 
-A wrong policy number is a defect, so correcting one is a **PATCH** bump — even though it changes the number a user sees. The rule is that the *method* is unchanged; only an input was wrong.
+| 段 | 规则 |
+|---|---|
+| 第一段 `0` | 固定；只有未来出现不兼容的数据格式变更时，才单独讨论是否打破 `0.0.x` |
+| 第二段 `0` | 固定；不因新功能、新模块、新城市而上调 |
+| 第三段 `PATCH` | 每次对外发布 +1；新功能、修复、数据修正、文案与交互调整都算一次发布 |
 
-If a correction changes which method is applied (for example, discovering that a city uses a different tax table), that is a **MAJOR** bump, because the output for identical input changes meaning.
+小迭代、小推送只增最后一段；README、注释、CI 配置、纯测试补充不单独发版。
+
+## 历史切换
+
+- 2026-11-21：`3.10.1` → **`0.0.35`**。`0.0.35` 是 CHANGELOG 第 35 个版本段；后续为 `0.0.36`、`0.0.37`。
+- `v3.x` 的 tag 与提交不删除、不改写；新版本从当前 `main` 继续。
 
 ## Version locations
 
-The version appears in exactly three places and must be kept in sync:
+版本号只出现在三处，必须同步：
 
 | File | Field |
 |---|---|
@@ -34,44 +39,36 @@ The version appears in exactly three places and must be kept in sync:
 | `src-tauri/tauri.conf.json` | `version` |
 | `src-tauri/Cargo.toml` | `package.version` |
 
-A mismatch fails the release checklist. `scripts/bump-version.mjs` updates all three at once.
+`package-lock.json` 与 `src-tauri/Cargo.lock` 的根版本也要同步。任一处不一致都会让 `doctor` 的“版本三处一致”检查失败。
 
 ## Release process
 
-1. **Decide the segment** using the table above.
-2. **Bump all three files**:
+1. 取下一个 `0.0.x` 号；只改第三段。
+2. 同步版本：
    ```bash
-   node scripts/bump-version.mjs 3.8.0
+   node scripts/bump-version.mjs 0.0.36
    ```
-3. **Update `CHANGELOG.md`** — move `[Unreleased]` entries into the new version with today's date. Follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) categories: Added, Changed, Deprecated, Removed, Fixed, Security.
-4. **Run the full gate**:
+   再同步 `package-lock.json` 与 `src-tauri/Cargo.lock` 的根版本。
+3. 更新 `CHANGELOG.md`：新增 `[0.0.x] — 日期` 段，按 Added / Changed / Data / Tests / Docs 归类。
+4. 跑完整门禁：
    ```bash
-   npm run typecheck && npm run typecheck:test
-   npm test && npm run verify && npm run verify:reality && npm run kb:check && npm run verify:entrypoints && npm run freshness:check
-   npm run build && npm run doctor
-   npm run test:e2e
+   npm run check
+   npm run build
+   npm run doctor
+   npm run test:e2e:only
+   npm run kb:check && npm run verify:entrypoints && npm run verify:reality
    ```
-5. **Commit** with `chore(release): X.Y.Z`.
-6. **Tag** with an annotated tag:
+5. 提交 `feat(...)` / `fix(...)` / `chore(release): 0.0.x`。
+6. 打 annotated tag：
    ```bash
-   git tag -a v3.8.0 -m "v3.8.0"
+   git tag -a v0.0.36 -m "0.0.36"
    ```
-7. **Push** branch and tag to all mirrors:
-   ```bash
-   git push --all && git push --tags
-   ```
-8. **Publish the GitHub release** with notes copied from the CHANGELOG section.
+7. 推送 `main` 与 tag 到五个远端。
 
-## Pre-release versions
+## Pre-release
 
-For work in progress, use `X.Y.Z-alpha.N` or `X.Y.Z-beta.N`. These are never tagged on `main` — only on a short-lived branch, and never published as a release.
-
-## What does not get a version bump
-
-- Documentation-only changes (README, comments) — still a normal commit, no version change
-- CI configuration changes
-- Test additions that do not change production behavior
+需要试跑时用 `0.0.36-alpha.1`；只放在短分支，不打到 `main`，不作为正式发布。
 
 ## Changelog discipline
 
-Every user-visible change gets a line. The test is: *would a user notice this?* If yes, it belongs in the changelog. If it is purely internal (refactor, test, CI), it does not.
+用户能感知的改动都要写一行：新功能、交互变化、数据修正、文案口径。纯内部重构、测试、CI 不单独发版，但可以在对应版本段里说明。

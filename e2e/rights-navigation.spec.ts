@@ -226,4 +226,23 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(results).toHaveCount(1)
     await expect(results.first()).toContainText('异地就医')
   })
+
+  test('权益卡可以把办事文案复制给工友', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'share', { value: undefined, configurable: true })
+    })
+    await page.goto('/guides')
+    await dismissOnboarding(page)
+
+    const card = page.locator('.right-card').first()
+    await card.getByRole('button', { name: '分享这条' }).click()
+    await expect(page.getByText('已复制分享文案，可发给工友')).toBeVisible()
+
+    const text = await page.evaluate(() => navigator.clipboard.readText())
+    expect(text).toContain('来自「没钱 No Money」')
+    expect(text).toContain('核验日期：')
+    expect(text).toContain('官方入口：')
+    expect(text).not.toContain('undefined')
+  })
 })

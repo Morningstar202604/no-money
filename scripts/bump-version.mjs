@@ -7,8 +7,8 @@
  * package.json 只影响 npm 元数据，两者不一致时安装包版本与 npm 版本会对不上。
  *
  * 用法：
- *   node scripts/bump-version.mjs 2.3.0
- *   node scripts/bump-version.mjs 2.3.0 --dry-run
+ *   node scripts/bump-version.mjs 0.0.36
+ *   node scripts/bump-version.mjs 0.0.36 --dry-run
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -62,7 +62,7 @@ function main() {
 
   if (!version || !SEMVER.test(version)) {
     console.error('用法: node scripts/bump-version.mjs <MAJOR.MINOR.PATCH> [--dry-run]')
-    console.error('示例: node scripts/bump-version.mjs 2.3.0')
+    console.error('示例: node scripts/bump-version.mjs 0.0.36')
     process.exit(1)
   }
 

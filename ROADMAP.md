@@ -3,21 +3,21 @@
 This is a working roadmap, not a promise. Priorities shift when real user feedback arrives —
 especially data corrections, because a wrong policy number is worse than a missing feature.
 
-Version format: `MAJOR.MINOR.PATCH` ([SemVer 2.0.0](https://semver.org/)).
-See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
+Version format: `0.0.x`，前两段固定、末段每次发布递增；历史 `3.x` 标签保留。
+See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ---
 
 ## Where we are now
 
-**3.10.1** is the current baseline. The product direction is settled — a rights-navigation and
-public-service guide for workers — and the six-section navigation, standalone guide page and
-new-grad first-year mode plus plain-language guide search are shipped:
+**0.0.35** is the current baseline. The product direction is settled — a rights-navigation and
+public-service guide for workers — and the six-section navigation, standalone guide page,
+new-grad first-year mode, plain-language guide search and one-tap guide sharing are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
 - Six-section nav: 该做什么 / 能拿什么 / 怎么弄 / 算一算 / 问一问 / 政策与数据; `/guides` lists 18
-  L2 how-to entries in 8 categories, with `?cat=` deep links and plain-language search
+  L2 how-to entries in 8 categories, with `?cat=` deep links, plain-language search and sharing
 - `/employee` now has a new-grad first-year mode: probation + regular months, annual tax and
   take-home; resident mode still blocked on city-level contribution data
 - [docs/REALITY-AND-SCOPE.md](docs/REALITY-AND-SCOPE.md) — 12 real-world blockers, 8 paths,
@@ -35,6 +35,21 @@ content tests. The calculator and all routes still work.
 six-section nav, standalone guide page and new-grad first-year mode are shipped; 3.8.0 also ships the rights guide, the freshness gate, failure-to-issue automation,
 repository automation, the employee wage-slip slice, seven ready-made checklists and the
 content-review loop. Page-level deadline hints exist, but there is no push service or account.
+
+---
+
+## 0.0.35 — Guide sharing + 0.0.x version convention (shipped 2026-11-21)
+
+**Goal: a worker can send one actionable guide to a co-worker, and every future release has a
+single, predictable version slot.**
+
+- [x] `分享这条` on every rights card: Web Share on mobile, clipboard fallback on desktop
+- [x] Share text carries title, one-liner, first four steps, materials, deadline, where-to-go,
+      official link, caution, verification date and source
+- [x] Version convention moves from `3.10.1` to `0.0.35`; `v3.x` tags stay untouched
+- [x] `docs/VERSIONING.md` documents fixed first two segments and a +1 last segment per release
+- [x] 7 unit tests (3 share text + 4 share channel); desktop + mobile E2E for clipboard fallback
+- [x] No policy data or confidence changes
 
 ---
 

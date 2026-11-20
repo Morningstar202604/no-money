@@ -27,7 +27,7 @@ No Money turns those questions into a short, ordered list. It tells you what to 
 |---|---|
 | **What to do** | A 3-step wizard and seven ready-made checklists, first action highlighted |
 | **What to claim** | Benefits and rights, each with its legal basis and deadline |
-| **How to do it** | 18 step-by-step L2 guides in 8 categories, with materials and official entry; plain-language search such as “can I get unemployment benefits after being laid off?” |
+| **How to do it** | 18 step-by-step L2 guides in 8 categories, with materials and official entry; plain-language search such as “can I get unemployment benefits after being laid off?”, and a one-tap share to a co-worker |
 | **Run the numbers** | Take-home pay, effective hourly wage, tax and pension, plus a new-grad probation-to-regular first year |
 | **Ask** | Opens the assistant with your city and first checklist item prefilled |
 | **Policy & data** | Local insurance bases, minimum wage, tax rates, and every value's provenance |

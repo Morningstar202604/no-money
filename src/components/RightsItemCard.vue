@@ -80,16 +80,26 @@
       >
         {{ done ? '已办 ✓' : '标记已办' }}
       </button>
+      <button
+        type="button"
+        class="rc-track-btn rc-track-share"
+        :disabled="sharing"
+        @click="onShare"
+      >
+        {{ sharing ? '分享中…' : '分享这条' }}
+      </button>
       <span class="rc-track-hint">只存本机，不注册</span>
+      <span v-if="shareFeedback" class="rc-share-feedback" role="status">{{ shareFeedback }}</span>
     </div>
   </article>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { RIGHTS_CATEGORY_LABELS, type RightsItem } from '../data/rights/catalog'
 import GuideCard from './GuideCard.vue'
 import { GUIDE_ITEMS } from '../utils/livingGuide'
+import { buildRightsShareText, shareRightsText } from '../utils/rightsShare'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const props = defineProps<{ item: RightsItem; rank?: number }>()
@@ -118,6 +128,27 @@ const hasDetail = computed(
 const checklist = useRightsChecklistStore()
 const saved = computed(() => checklist.isSaved(props.item.id))
 const done = computed(() => checklist.isDone(props.item.id))
+
+const sharing = ref(false)
+const shareFeedback = ref('')
+let feedbackTimer: ReturnType<typeof setTimeout> | undefined
+async function onShare() {
+  if (sharing.value) return
+  sharing.value = true
+  try {
+    const mode = await shareRightsText(props.item.title, buildRightsShareText(props.item))
+    shareFeedback.value = mode === 'shared' ? '已打开系统分享' : '已复制分享文案，可发给工友'
+    if (feedbackTimer) clearTimeout(feedbackTimer)
+    feedbackTimer = setTimeout(() => { shareFeedback.value = '' }, 3000)
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') return
+    shareFeedback.value = error instanceof Error && error.message.includes('不支持')
+      ? error.message
+      : '分享失败，请手动复制'
+  } finally {
+    sharing.value = false
+  }
+}
 </script>
 
 <style scoped>
@@ -208,9 +239,12 @@ const done = computed(() => checklist.isDone(props.item.id))
   font-size: var(--font-size-xs);
   cursor: pointer;
 }
+.rc-track-btn:disabled { cursor: wait; opacity: .65; }
+.rc-track-share { color: var(--color-text-brand); }
 .rc-track-btn.on { border-color: var(--color-primary-500); color: var(--color-text-brand); background: var(--color-primary-50); }
 .rc-track-done.on { border-color: var(--color-success-500); color: var(--color-success-700); background: var(--color-success-50); }
 .rc-track-hint { margin-left: auto; font-size: 10px; color: var(--color-text-tertiary); }
+.rc-share-feedback { flex-basis: 100%; font-size: var(--font-size-xs); color: var(--color-success-700); }
 @media (max-width: 480px) {
   .rc-track-hint { margin-left: 0; }
 }
