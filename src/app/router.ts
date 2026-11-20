@@ -9,6 +9,7 @@ export const router = createRouter({
     { path: '/dashboard', name: 'Dashboard', component: () => import('../views/DashboardView.vue'), meta: { title: '总览 — 月净收入与权益评分' } },
     // 企业职工工资条口径：不套骑手按单模型，独立一页，不占主导航
     { path: '/employee', name: 'Employee', component: () => import('../views/EmployeeView.vue'), meta: { title: '企业职工 — 工资条算到手' } },
+    { path: '/guides', name: 'Guides', component: () => import('../views/GuidesView.vue'), meta: { title: '怎么弄 — 办事教程、材料与官方入口' } },
     { path: '/scenario', name: 'Scenario', component: () => import('../views/ScenarioView.vue'), meta: { title: '方案对比与收支明细' } },
     { path: '/planning', name: 'Planning', component: () => import('../views/PlanningView.vue'), meta: { title: '税务优化与养老规划' } },
     { path: '/rights', name: 'Rights', component: () => import('../views/RightsView.vue'), meta: { title: '权益护航 — 补偿计算与文书' } },

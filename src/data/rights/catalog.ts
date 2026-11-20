@@ -29,6 +29,22 @@ export type RightsCategory =
   | 'retire'
   | 'trouble'
 
+/** 权益分类的唯一中文标签：列表页、教程页与卡片共用，避免多处各写一份。 */
+export const RIGHTS_CATEGORY_LABELS: Record<RightsCategory, string> = {
+  onboard: '入职',
+  social: '社保',
+  medical: '医保',
+  housing: '公积金',
+  injury: '工伤',
+  unemployment: '失业',
+  birth: '生育',
+  heat: '高温',
+  subsidy: '补贴',
+  tax: '税优',
+  retire: '退休',
+  trouble: '维权',
+}
+
 export type RightsAudience = 'all' | 'new' | 'flex'
 export type RightsConfidence = 'official' | 'derived' | 'platform' | 'unverified'
 export type RightsLevel = 'L1' | 'L2'

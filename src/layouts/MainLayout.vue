@@ -31,10 +31,10 @@
           <a
             v-for="item in navItems"
             :key="item.key"
-            :href="item.path"
+            :href="item.path ?? '#'"
             class="nav-link"
             :class="{ active: activeKey === item.key }"
-            @click.prevent="onNav(item.key)"
+            @click.prevent="onNav(item)"
           >
             <span class="nav-icon" aria-hidden="true">
               <component :is="item.icon" />
@@ -85,6 +85,19 @@
         </div>
       </div>
     </header>
+
+    <!-- 移动端六段导航：桌面 header 放不下六个中文标签，单独一行文字导航；
+         与 header-nav 共用 navItems/onNav，避免两套路由逻辑分叉 -->
+    <nav v-if="isMobile" class="mobile-nav" aria-label="主导航">
+      <a
+        v-for="item in navItems"
+        :key="`mobile-${item.key}`"
+        :href="item.path ?? '#'"
+        class="mobile-nav-link"
+        :class="{ active: activeKey === item.key }"
+        @click.prevent="onNav(item)"
+      >{{ item.label }}</a>
+    </nav>
 
     <CommandPalette v-model:open="paletteOpen" :commands="paletteCommands" />
     <FeedbackButton />
@@ -168,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, type Component } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { NButton } from 'naive-ui'
 import { useMainStore } from '../stores/main'
@@ -183,11 +196,12 @@ import { downloadTextFile } from '../utils/download'
 
 // Icons
 import {
-  DashboardIcon,
-  GitCompareIcon,
   CalculatorIcon,
   ShieldCheckIcon,
   BookOpenIcon,
+  WalletIcon,
+  ChatIcon,
+  DatabaseIcon,
   SunIcon,
   MoonIcon,
   ChevronLeftIcon,
@@ -200,14 +214,19 @@ const router = useRouter()
 const route = useRoute()
 const store = useMainStore()
 
-const activeKey = computed(() => route.name as string || 'dashboard')
+const activeKey = computed(() => {
+  if (route.name === 'Start') return route.query.entry === 'benefits' ? 'Benefits' : 'Start'
+  if (['Dashboard', 'Scenario', 'Planning'].includes(String(route.name))) return 'Dashboard'
+  if (['Policy', 'Audit'].includes(String(route.name))) return 'Policy'
+  return route.name as string || 'Dashboard'
+})
 const scrolled = ref(false)
 const sidebarCollapsed = ref(false)
 const mobileSidebarOpen = ref(false)
 const isDark = computed(() => store.isDark)
 const isMobile = ref(false)
-/** 企业职工工资条页不显示骑手参数栏，避免把按单参数带进工资口径 */
-const showSidebar = computed(() => route.name !== 'Employee')
+/** 企业职工工资条与办事教程页不显示骑手参数栏，避免把按单参数带进无关场景 */
+const showSidebar = computed(() => !['Employee', 'Guides'].includes(String(route.name)))
 
 /** 命令面板开关：⌘K / Ctrl+K 唤起 */
 const paletteOpen = ref(false)
@@ -221,13 +240,13 @@ const paletteCommands = computed<Command[]>(() => [
   ...navItems.map((item) => ({
     id: `nav-${item.key}`,
     label: item.label,
-    hint: item.path,
-    kind: 'navigate' as const,
-    group: '页面',
+    hint: item.path ?? '打开 AI 助手',
+    kind: item.action === 'ask' ? 'action' as const : 'navigate' as const,
+    group: item.action === 'ask' ? '操作' : '页面',
     keywords: [item.key.toLowerCase()],
-    run: () => onNav(item.key),
+    run: () => onNav(item),
   })),
-  // 次要页不进主导航（避免五个主项被稀释），但要从命令面板可达：
+  // 次要页不进主导航（避免六个主项被稀释），但要从命令面板可达：
   // 数据核验对账是"这个数能不能信"的入口，用户想查时找不到会很挫败。
   {
     id: 'nav-audit', label: '数据核验对账', hint: '/audit', kind: 'navigate' as const,
@@ -280,20 +299,31 @@ const paletteCommands = computed<Command[]>(() => [
   },
 ] as Command[])
 
-// key 必须与 src/app/router.ts 中的路由 name 完全一致：
-// onNav 用 router.push({ name: key })，大小写不符会静默失败；
-// activeKey 直接比较 route.name，不一致则导航永远没有高亮。
-const navItems = [
-  { key: 'Start', label: '办事入口', path: '/start', icon: ShieldCheckIcon },
-  { key: 'Dashboard', label: '总览', path: '/dashboard', icon: DashboardIcon },
-  { key: 'Scenario', label: '方案对比', path: '/scenario', icon: GitCompareIcon },
-  { key: 'Planning', label: '税务与养老', path: '/planning', icon: CalculatorIcon },
-  { key: 'Rights', label: '权益护航', path: '/rights', icon: ShieldCheckIcon },
-  { key: 'Policy', label: '政策百科', path: '/policy', icon: BookOpenIcon },
+interface NavItem {
+  key: string
+  label: string
+  icon: Component
+  path?: string
+  action?: 'ask'
+}
+
+// 六段导航：该做什么 / 能拿什么 / 怎么弄 / 算一算 / 问一问 / 政策与数据。
+// key 与 route.name 或 query 语义对应；activeKey 做映射，不要求 key 等于 route.name。
+const navItems: NavItem[] = [
+  { key: 'Start', label: '该做什么', path: '/start', icon: ShieldCheckIcon },
+  { key: 'Benefits', label: '能拿什么', path: '/start?entry=benefits', icon: WalletIcon },
+  { key: 'Guides', label: '怎么弄', path: '/guides', icon: BookOpenIcon },
+  { key: 'Dashboard', label: '算一算', path: '/dashboard', icon: CalculatorIcon },
+  { key: 'Ask', label: '问一问', action: 'ask', icon: ChatIcon },
+  { key: 'Policy', label: '政策与数据', path: '/policy', icon: DatabaseIcon },
 ]
 
-function onNav(key: string) {
-  router.push({ name: key })
+function onNav(item: NavItem) {
+  if (item.action === 'ask') {
+    window.dispatchEvent(new CustomEvent('app:open-ai', { detail: { prompt: '' } }))
+    return
+  }
+  if (item.path) void router.push(item.path)
   if (isMobile.value) mobileSidebarOpen.value = false
 }
 
@@ -911,6 +941,51 @@ onUnmounted(() => {
   display: block;
   opacity: 1;
   pointer-events: auto;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  /* header 内导航让位给独立的文字导航条，六个标签才看得全 */
+  .header-nav {
+    display: none;
+  }
+
+  .mobile-nav {
+    position: sticky;
+    top: var(--header-height);
+    z-index: 190;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 8px;
+    overflow-x: auto;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border-primary);
+    scrollbar-width: none;
+  }
+
+  .mobile-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-nav-link {
+    flex: 0 0 auto;
+    padding: 7px 6px;
+    border-radius: var(--radius-md);
+    color: var(--color-text-secondary);
+    font-size: 12px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  .mobile-nav-link.active {
+    color: var(--color-primary-600);
+    background: var(--color-primary-50);
+  }
 }
 
 @media (max-width: 767px) {

@@ -48,40 +48,55 @@ describe('启动加载：App.vue 必须挂载时加载本城规则', () => {
   })
 })
 
-describe('导航接线：navItems 的 key 必须命中路由 name', () => {
+describe('导航接线：六段导航的 key / path / 高亮映射', () => {
   const layout = read('src/layouts/MainLayout.vue')
 
-  // 提取 navItems 中的 { key: 'X', label: 'Y', path: '/Z' ... }
+  // 提取 navItems 中带 path 的 { key: 'X', label: 'Y', path: '/Z' ... }；
+  // 「问一问」是动作没有 path，单独断言。
   const entries = [...layout.matchAll(/key:\s*'([^']+)'[^}]*?path:\s*'([^']+)'/g)].map(m => ({
     key: m[1],
     path: m[2],
   }))
 
+  // Benefits 是 Start 页 ?entry=benefits 的导航别名，不是独立路由
+  const KEY_ALIASES = new Set(['Benefits'])
+
   it('能从 MainLayout 中解析出 navItems', () => {
-    expect(entries.length).toBeGreaterThan(0)
+    expect(entries.length).toBeGreaterThanOrEqual(5)
   })
 
-  it('每个 navItem 的 key 都是已注册的路由 name', () => {
+  it('每个 navItem 的 key 要么是路由 name，要么是显式别名', () => {
     const names = ROUTE_NAMES
-    // onNav 用 router.push({ name: key })，key 不存在会静默失败
     for (const e of entries) {
-      expect(names, `navItem key "${e.key}" 不是已注册路由名`).toContain(e.key)
+      expect(
+        names.includes(e.key) || KEY_ALIASES.has(e.key),
+        `navItem key "${e.key}" 既不是路由 name 也未登记为别名`,
+      ).toBe(true)
     }
   })
 
-  it('每个 navItem 的 path 都是已注册的路径', () => {
+  it('每个 navItem 的 path 基础路径都已注册', () => {
     const paths = ROUTE_PATHS
     for (const e of entries) {
-      expect(paths, `navItem path "${e.path}" 不是已注册路径`).toContain(e.path)
+      const base = e.path.split('?')[0]
+      expect(paths, `navItem path "${e.path}" 的基础路径不是已注册路径`).toContain(base)
     }
   })
 
-  it('导航高亮可用：activeKey 比较的 route.name 能命中某个 key', () => {
-    // activeKey = route.name as string，大小写不符会导致导航永远无高亮
-    expect(layout).toMatch(/activeKey\s*=\s*computed\(\s*\(\)\s*=>\s*route\.name/)
+  it('问一问是动作项：不占路由，点击派发 app:open-ai', () => {
+    expect(layout).toMatch(/key:\s*'Ask'[^}]*action:\s*'ask'/)
+    expect(layout).toMatch(/action\s*===\s*'ask'[\s\S]*?app:open-ai/)
+  })
+
+  it('导航高亮可用：activeKey 由 route.name 映射，且新六段都有落点', () => {
+    expect(layout).toMatch(/activeKey\s*=\s*computed\(/)
+    expect(layout).toMatch(/route\.name/)
+    expect(layout).toMatch(/query\.entry\s*===\s*'benefits'/i)
     const keys = new Set(entries.map(e => e.key))
-    const dashboard = ROUTES.find(r => r.path === '/dashboard')?.name
-    expect(typeof dashboard === 'string' && keys.has(dashboard)).toBe(true)
+    for (const path of ['/dashboard', '/guides', '/policy']) {
+      const name = ROUTES.find(r => r.path === path)?.name
+      expect(typeof name === 'string' && keys.has(name), `${path} 的 nav key 缺失`).toBe(true)
+    }
   })
 
   it('首页重定向目标存在，且 logo 跳转用的是合法路由名', () => {

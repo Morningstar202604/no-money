@@ -25,12 +25,12 @@ No Money turns those questions into a short, ordered list. It tells you what to 
 
 | Area | What it answers |
 |---|---|
-| **Start here** | What to do, what to claim, and where to get help |
-| **Overview** | Take-home pay and effective hourly wage, with the weakest assumption named |
-| **Scenario lab** | What a different work pattern would actually pay |
-| **Tax and pension** | Labor income vs sole proprietorship; when contributions break even |
-| **Rights** | What you can claim, and under which rule |
-| **Policy sources** | Local insurance bases, minimum wage, tax rates, and where each value came from |
+| **What to do** | A 3-step wizard and seven ready-made checklists, first action highlighted |
+| **What to claim** | Benefits and rights, each with its legal basis and deadline |
+| **How to do it** | 18 step-by-step L2 guides in 8 categories, with materials and official entry |
+| **Run the numbers** | Take-home pay, effective hourly wage, tax and pension, with assumptions exposed |
+| **Ask** | Opens the assistant with your city and first checklist item prefilled |
+| **Policy & data** | Local insurance bases, minimum wage, tax rates, and every value's provenance |
 
 ## Run it
 

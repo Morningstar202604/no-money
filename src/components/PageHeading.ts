@@ -21,6 +21,7 @@ export const PAGE_TITLES = {
   scenario: '方案对比与收支明细',
   planning: '税务优化与养老规划',
   rights: '权益护航 — 补偿计算与文书',
+  guides: '怎么弄 — 办事教程、材料与官方入口',
   policy: '政策百科与民生手册',
   admin: '数据管理后台',
   audit: '数据核验对账',

@@ -87,7 +87,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { RightsCategory, RightsItem } from '../data/rights/catalog'
+import { RIGHTS_CATEGORY_LABELS, type RightsItem } from '../data/rights/catalog'
 import GuideCard from './GuideCard.vue'
 import { GUIDE_ITEMS } from '../utils/livingGuide'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
@@ -96,21 +96,6 @@ const props = defineProps<{ item: RightsItem; rank?: number }>()
 const GUIDE_BY_ID = new Map(GUIDE_ITEMS.map((guide) => [guide.id, guide]))
 const guideItem = computed(() => (props.item.guideId ? GUIDE_BY_ID.get(props.item.guideId) : undefined))
 
-const CATEGORY_LABELS: Record<RightsCategory, string> = {
-  onboard: '入职',
-  social: '社保',
-  medical: '医保',
-  housing: '公积金',
-  injury: '工伤',
-  unemployment: '失业',
-  birth: '生育',
-  heat: '高温',
-  subsidy: '补贴',
-  tax: '税优',
-  retire: '退休',
-  trouble: '维权',
-}
-
 const CONFIDENCE_LABELS: Record<RightsItem['confidence'], string> = {
   official: '官方原文',
   derived: '按规则推算',
@@ -118,7 +103,7 @@ const CONFIDENCE_LABELS: Record<RightsItem['confidence'], string> = {
   unverified: '待核实',
 }
 
-const categoryLabel = computed(() => CATEGORY_LABELS[props.item.category])
+const categoryLabel = computed(() => RIGHTS_CATEGORY_LABELS[props.item.category])
 const confidenceLabel = computed(() => CONFIDENCE_LABELS[props.item.confidence])
 const levelLabel = computed(() => (props.item.level === 'L2' ? 'L2 可办' : 'L1 知道'))
 const hasDetail = computed(

@@ -3,6 +3,40 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.9.0] — 2026-11-20
+
+主导航从六组平铺入口重排为一条劳动者路径，并把「怎么弄」拆成独立教程页；只改信息架构，不碰任何政策数值和置信度。
+
+### Added
+
+- 新增 `/guides`「怎么弄」独立页：只列 8 类（社保 / 医保 / 公积金 / 失业 / 生育 / 工伤 / 退休 / 补贴）范围内可直接照办的 18 条 L2 教程，按 `priority` 升序、同优先级按中文标题排序。
+- 新增 `src/data/rights/guides.ts`：`guidesForCategory`、`guideFilters` 与 `GUIDE_CATEGORY_KEYS` 作为教程筛选唯一入口；高温、税优、维权不进入首屏，避免范围膨胀。
+- 新增 `WalletIcon`、`ChatIcon`、`DatabaseIcon`，补齐「能拿什么 / 问一问 / 政策与数据」的导航图标。
+
+### Changed
+
+- 六段主导航：该做什么（`/start`）/ 能拿什么（`/start?entry=benefits`）/ 怎么弄（`/guides`）/ 算一算（`/dashboard`）/ 问一问（动作）/ 政策与数据（`/policy`）。
+- `activeKey` 从直接取 `route.name` 改为映射：`Dashboard/Scenario/Planning` 统一高亮「算一算」；`Policy/Audit` 统一高亮「政策与数据」；`Start?entry=benefits` 高亮「能拿什么」。
+- 「问一问」不新增路由，点击派发 `app:open-ai`，由 `ChatAssistant` 打开面板；命令面板复用同一组 `navItems` 和 `onNav`。
+- 移动端新增独立文字导航条，六个标签在 390px 宽度内完整可见；教程页隐藏骑手参数栏。
+- 分类中文标签从 `RightsItemCard` 本地常量抽到 `RIGHTS_CATEGORY_LABELS`，卡片与教程页共用一份。
+
+### Data
+
+- 政策数据零改动：343 条来源仍为 official 225（65.6%）/ derived 50 / unverified 68；养老金计发基数 official 27 / derived 7 / unverified 0；34 城 `verified` 仍全部 `false`。
+- 七个 `derived` 计发基数保持原样：成都 8462、海口 8188、呼和浩特 8430、兰州 7746、乌鲁木齐 8744、武汉 9112、郑州 6738。没有为了导航改版顺手“升 official”。
+
+### Tests
+
+- 新增 `tests/guides.spec.ts` 3 条：只收 8 类内 L2 且排序稳定、每个分类只返回本类、筛选项计数与列表一致。
+- `tests/wiring/app-wiring.spec.ts` 15→16 条：改为校验六段 key/path/高亮映射，并单独断言「问一问」派发 `app:open-ai`。
+- `e2e/rights-navigation.spec.ts` 新增 1 条：桌面与移动都数到 6 个导航链接，点「怎么弄」进入 `/guides`，再按公积金筛出同类卡片。
+- 全量：**62 文件 / 1,195 单测通过**；E2E **8 文件 / 122 条通过**（4.8m）。
+
+### Docs
+
+- CHANGELOG / ROADMAP / POSITIONING / ENGINEERING / AUDIT / README 同步六段导航、`/guides`、测试与体积基线。
+
 ## [3.8.9] — 2026-11-20
 
 八城计发基数最后一轮原文复核：西安凭红头文件扫描件升 `official`，其余七城不为凑数硬升；郑州、武汉的来源与误引写清。

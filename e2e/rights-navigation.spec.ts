@@ -182,4 +182,28 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await reloadedCard.getByRole('button', { name: '标记已办' }).click()
     await expect(page.getByText(/1 \/ 1 已办/)).toBeVisible()
   })
+
+  test('六段导航：怎么弄进入独立教程页，可按公积金筛选', async ({ page }) => {
+    await page.goto('/start')
+    await dismissOnboarding(page)
+
+    const nav = page.getByRole('navigation', { name: '主导航' })
+    await expect(nav.getByRole('link')).toHaveCount(6)
+    await nav.getByRole('link', { name: /怎么弄/ }).click()
+
+    await expect(page).toHaveURL(/\/guides/)
+    await expect(page.getByRole('heading', { name: /怎么弄/ })).toBeVisible()
+    await expect(page.locator('.right-card').first()).toBeVisible()
+    const before = await page.locator('.right-card').count()
+    expect(before).toBeGreaterThan(0)
+
+    await page.getByRole('button', { name: /公积金/ }).click()
+    await expect(page).toHaveURL(/cat=housing/)
+    const cards = page.locator('.right-card')
+    await expect(cards.first()).toBeVisible()
+    expect(await cards.count()).toBeLessThanOrEqual(before)
+    const categories = await cards.locator('.rc-cat').allTextContents()
+    expect(categories.length).toBeGreaterThan(0)
+    expect(categories.every((text) => text.includes('公积金'))).toBe(true)
+  })
 })
