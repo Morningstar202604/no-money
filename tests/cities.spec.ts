@@ -287,3 +287,59 @@ describe('3.8.8 医保遗留口径回归', () => {
     expect(rule.sources.medicalRate.note).toContain('养老缴费基数')
   })
 })
+
+describe('3.8.9 八城计发基数复核回归', () => {
+  const ruleOf = (city: string) => {
+    const hit = RULES.find(r => r.rule.city === city)
+    if (!hit) throw new Error(`缺少规则文件 ${city}.json`)
+    return hit.rule
+  }
+
+  it('西安 7881/2025 已凭 陕人社函〔2025〕425号 原文扫描升 official', () => {
+    const rule = ruleOf('xian')
+    expect(rule.retirement.benefitBaseMonthly).toBe(7881)
+    expect(rule.retirement.benefitBaseYear).toBe(2025)
+    expect(rule.sources.retirement.confidence).toBe('official')
+    expect(rule.sources.retirement.docNo).toContain('陕人社函〔2025〕425号')
+    expect(rule.sources.retirement.note).toContain('7881')
+  })
+
+  it('其余七城仍保留 derived，不因本轮复核硬升 official', () => {
+    const expected = {
+      chengdu: [8462, 2025],
+      haikou: [8188, 2025],
+      huhehaote: [8430, 2026],
+      lanzhou: [7746, 2025],
+      wulumuqi: [8744, 2026],
+      wuhan: [9112, 2025],
+      zhengzhou: [6738, 2025],
+    } as const
+    for (const [city, [base, year]] of Object.entries(expected)) {
+      const rule = ruleOf(city)
+      expect(rule.retirement.benefitBaseMonthly, `${city} 基数`).toBe(base)
+      expect(rule.retirement.benefitBaseYear, `${city} 年度`).toBe(year)
+      expect(rule.sources.retirement.confidence, `${city} 置信度`).toBe('derived')
+    }
+  })
+
+  it('34 城计发基数置信度为 27 official / 7 derived / 0 unverified', () => {
+    const counts = { official: 0, derived: 0, unverified: 0 }
+    for (const { rule } of RULES) counts[rule.sources.retirement.confidence]++
+    expect(counts).toEqual({ official: 27, derived: 7, unverified: 0 })
+  })
+
+  it('郑州已把 73 号文号页换上，但附件错配仍不足以升 official', () => {
+    const rule = ruleOf('zhengzhou')
+    expect(rule.sources.retirement.docNo).toContain('豫人社办〔2025〕73号')
+    expect(rule.sources.retirement.url).toContain('shangcai.gov.cn')
+    expect(rule.sources.retirement.note).toContain('附件扫描件错配')
+    expect(rule.sources.retirement.confidence).toBe('derived')
+  })
+
+  it('武汉 note 记录 7510 报道误引，主口径仍是 9112', () => {
+    const rule = ruleOf('wuhan')
+    expect(rule.sources.retirement.note).toContain('7510')
+    expect(rule.sources.retirement.note).toContain('报道误引')
+    expect(rule.retirement.benefitBaseMonthly).toBe(9112)
+  })
+})
