@@ -148,7 +148,7 @@ Web 版没有后端，无需健康检查。
 
 ```bash
 curl http://127.0.0.1:8787/health
-# {"status":"ok","version":"3.7.3","cities":34,"uptime":12}
+# {"status":"ok","version":"3.7.4","cities":34,"uptime":12}
 ```
 
 ## 环境变量

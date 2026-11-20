@@ -2,256 +2,96 @@
 
 # No Money
 
-**When you start working, nobody tells you how to register for social insurance, what happens if medical insurance lapses, or which benefits you are entitled to. This platform lays out what to do, what you can claim, and where to do it — with a direct link to the official channel for each item.**
+A plain-language guide to rights navigation and benefits for workers in China.
 
-A **rights-navigation and public-service guide** for workers in China. Income, tax, social-insurance and compensation calculators are tools inside it; the AI is only an assistant.
+[**English**](README.md) · [简体中文](README.zh-CN.md)
 
-> Version 3.7.3 adds failure-to-issue automation on top of the 3.7.2 data-freshness gate: a failed monthly check opens or updates an issue with the report and run link. 3.7.2 adds a repeatable gate: `npm run freshness:check` validates all 34 city rule files and fails when any source is older than 365 days, with a monthly CI workflow. 3.7.1 expands the policy data-source tab into a 34-city freshness overview: official / derived / unverified counts, oldest date and stale count per city, with a switch-to-city action. 3.7.0 also adds an employee wage-slip page at `/employee`: enter pre-tax monthly salary, personal social-insurance + housing-fund contributions and monthly special deductions to get annual income tax and monthly take-home, without guessing employer contribution rates. The rest is the 3.6.11 scope-and-provenance patch: a **60-item rights catalog** with **30 L2 items** (materials, steps, official entry, deadline, pitfalls) and **30 L1 items** (know it exists, where to verify), **10 cities deep-verified** for social insurance, medical insurance, housing fund and employment services, plus a local-only checklist with deadline-first reminders, TXT export and print/PDF, four one-click common situations, a ranked result list that highlights the first thing to do, and a three-action handoff to calculate / ask AI / read policy, an AI prompt pre-filled with the city and first checklist item, an explicit "flexible-work calculation only" scope note, and a per-city data-freshness summary. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
-
-[![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1159-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-118-3fb950)](https://github.com/badhope/no-money)
-[![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
-[![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-
-[简体中文](README.zh-CN.md) · **English**
-
-<img src="docs/screenshots/demo.gif" alt="Press Ctrl+K, type a city name, press Enter — every KPI recalculates live" width="720" />
+<img src="docs/screenshots/demo.gif" alt="Type a city name, press Enter, and the numbers update" width="720" />
 
 </div>
 
----
+Work starts with questions nobody explains: how to register for social insurance, what happens when medical insurance lapses, which benefits you can claim, and where to go when an employer stops paying.
 
-## Four ways to run it
+No Money turns those questions into a short, ordered list. It tells you what to do first, what you may be owed, and which official channel to use. A calculator sits inside the guide as a tool, not the other way around. The assistant is optional and never invents an amount, document number, or link.
 
-One calculation kernel, four entry points.
+## What it helps with
 
-```mermaid
-flowchart LR
-    K["src/kernel<br/>calculate.ts"]
-    W["Web<br/>browser"]
-    D["Desktop<br/>Windows EXE"]
-    C["CLI<br/>terminal"]
-    A["HTTP API<br/>:8787"]
-    M["MCP<br/>AI tool protocol"]
-    W --> K
-    D --> K
-    C --> K
-    A --> K
-    M --> K
-```
+- **Find the next step.** Pick your city, identity, and situation; get a short checklist with the first action highlighted.
+- **Check what you may be owed.** Unpaid wages, injury, dismissal, unused leave, and other common disputes, with the legal basis shown.
+- **Understand the numbers.** Net income, effective hourly pay, income tax, and pension contributions, with every assumption visible.
+- **Verify the source.** Each policy value is marked official, derived, or unverified. When a value is unverified, the result says so instead of pretending.
 
-| Entry | Command | Use when |
-|---|---|---|
-| **Web** | `npm run dev` | Everyday use, full interface |
-| **Desktop** | **[Download for Windows](https://github.com/badhope/no-money/releases/latest)** — `NoMoney_x.x.x_x64-setup.exe` (installer) or `.msi` (for managed environments) | Offline, no browser |
-| **CLI** | `npm run cli -- calc --city shenzhen` | Batch comparison, scripting |
-| **API** | `npm run api` | System integration |
-| **MCP** | `npm run mcp` | Let an AI assistant compute directly |
-| **PWA** | "Install" in the address bar | Install to desktop, works offline |
+## Inside
 
-### Quick start
+| Area | What it answers |
+|---|---|
+| **Start here** | What to do, what to claim, and where to get help |
+| **Overview** | Take-home pay and effective hourly wage, with the weakest assumption named |
+| **Scenario lab** | What a different work pattern would actually pay |
+| **Tax and pension** | Labor income vs sole proprietorship; when contributions break even |
+| **Rights** | What you can claim, and under which rule |
+| **Policy sources** | Local insurance bases, minimum wage, tax rates, and where each value came from |
+
+## Run it
 
 ```bash
 npm ci
-npm run dev        # http://localhost:3000
+npm run dev        # web app
 ```
 
 ```bash
-# What does delivery work actually pay in Guangzhou?
 npm run cli -- calc --city guangzhou
-
-# Compare three cities
 npm run cli -- compare --cities guangzhou,shenzhen,dongguan
-
-# Verify all 34 city rule files
 npm run cli -- check
 ```
 
----
+Also available as a Windows desktop app, an HTTP API, and an MCP tool for AI assistants. The same calculation kernel powers all of them. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-## How the number is built
+## Data, in plain terms
 
-```mermaid
-flowchart TD
-    A["Gross monthly<br/>rate × orders × distance + subsidies"] --> B["minus vehicle and living costs<br/>charging / upkeep / meals / depreciation"]
-    B --> C["minus income tax<br/>annual settlement basis"]
-    C --> D["minus social insurance<br/>pension + medical"]
-    D --> E["Net monthly income"]
-    E --> F["divided by effective hours"]
-    F --> G["Effective hourly wage"]
-    E --> H["Rights score<br/>insurance / hours / income diversity"]
-```
+Policy data is not presented as a finished truth. Every field carries a confidence level:
 
-**Every step expands to line items in the UI.** No black box.
+- `official` — traced to a government document and source link
+- `derived` — calculated from official figures, not directly published
+- `unverified` — no authoritative source yet; shown as an assumption, never as a fact
 
----
+Platform per-order pay is always unverified because it is a commercial rate, not a published policy. Enter your own rate to get a useful result.
 
-## Data coverage
-
-```
-34 cities · all 31 provincial-level regions
-
-official   ███████████████░░░░░░░░░░░░░░░░░░░░░░░   105 items (34%)
-derived    ██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░    37 items (12%)
-unverified ████████████████████████░░░░░░░░░░░░░░   167 items (54%)
-```
-
-Every parameter carries a confidence level:
-
-| Level | Meaning | Shown as |
-|---|---|---|
-| `official` | Traced to a government document number and source link | verified |
-| `derived` | Computed from official figures, not directly published | derived |
-| `unverified` | No authoritative source; placeholder only | unverified |
-
-**When a result depends on an unverified field, the UI downgrades "best option" to "assumed best" and names exactly which fields are missing.**
-
-Platform per-order pricing is always `unverified` — it is a commercial term with no public authority. The only honest path is the user entering their own real rate.
-
----
-
-## Why this exists
-
-A delivery rider is told "up to ¥10,000 a month." That number hides four things:
-
-- The per-order rate is a placeholder, not their real rate
-- Social insurance is unpaid, so a hospital stay is 100% out of pocket
-- Working 12h/day is the only way the number works — and that carries real injury risk
-- Tax depends on whether they register as a sole proprietor, and most calculators get the rate wrong
-
-**This tool makes all four assumptions visible, and refuses to print a confident number when the input isn't verified.**
-
----
-
-## Screenshots
-
-<table>
-<tr>
-<td width="50%"><img src="docs/screenshots/01-dashboard.png" alt="Overview" /></td>
-<td width="50%"><img src="docs/screenshots/02-scenario.png" alt="Scenario lab" /></td>
-</tr>
-<tr>
-<td><b>Overview</b> — net income, effective hourly wage, rights score, with the weakest link named</td>
-<td><b>Scenario lab</b> — compare work patterns, ranked by sustainable income</td>
-</tr>
-<tr>
-<td><img src="docs/screenshots/03-planning.png" alt="Tax and pension" /></td>
-<td><img src="docs/screenshots/04-rights.png" alt="Rights" /></td>
-</tr>
-<tr>
-<td><b>Tax and pension</b> — labor remuneration and sole proprietorship computed separately</td>
-<td><b>Rights</b> — compensation amounts with legal basis for five dispute types</td>
-</tr>
-<tr>
-<td><img src="docs/screenshots/05-policy.png" alt="Policy wiki" /></td>
-<td><img src="docs/screenshots/06-admin.png" alt="Data admin" /></td>
-</tr>
-<tr>
-<td><b>Policy wiki</b> — every parameter traced to its source</td>
-<td><b>Data admin</b> — coverage statistics and consistency checks</td>
-</tr>
-<tr>
-<td><img src="docs/screenshots/07-mobile.png" alt="Mobile" /></td>
-<td><img src="docs/screenshots/08-dark.png" alt="Dark theme" /></td>
-</tr>
-<tr>
-<td><b>Mobile</b> — 390px layout, touch targets ≥ 24px</td>
-<td><b>Dark theme</b> — opt-in, persisted across reloads</td>
-</tr>
-<tr>
-<td colspan="2"><img src="docs/screenshots/09-audit.png" alt="Data audit matrix" /></td>
-</tr>
-<tr>
-<td colspan="2"><b>Data audit</b> — every city × every policy field. 34% traced to an official document, and the page says so instead of hiding it.</td>
-</tr>
-</table>
-
----
-
-## The current six modules (rights navigation P0 shipped)
-
-> 3.6.0 shipped the content-depth layer: do the paperwork first, then run the numbers. 3.6.5 unified city/province service entries behind one resolver; unverified cities fall back to province without invented links. 3.6.6 reaches 60 items and adds a local checklist with deadline-first hints, TXT export and print/PDF; 3.6.7 adds one-click common situations (first job / just left / city change / unpaid wages); 3.6.8 ranks the result list so the first action stands out; 3.6.9 adds a handoff from the checklist to calculate, ask the AI assistant and read policy; 3.6.10 pre-fills the AI prompt with the current city and first checklist item, so the user only confirms and sends; 3.6.11 states the calculator scope and summarizes how many city parameters are official, derived or still unverified; 3.7.0 adds an employee wage-slip page at `/employee` using annual comprehensive-income tax, and removes the rider parameter sidebar from that page; 3.7.1 expands the policy data-source tab into a 34-city freshness overview and never fills failed cities with zero. Six-section navigation is still open, and resident/new-grad modes are not wired yet; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
-
-| Module | Answers |
-|---|---|
-| **Start here** | What to do, what to claim, how to handle social/medical insurance, and where to get help — a 3-step wizard returns 3–7 items; items can be saved to My checklist and marked done |
-| **Overview** | Net monthly income, effective hourly wage, rights score — and the weakest link |
-| **Scenario lab** | What a different work pattern pays, and whether it is worth it |
-| **Tax and pension** | Labor remuneration vs sole proprietorship; how many years of contributions break even |
-| **Rights** | What you can claim for unpaid wages, injury or wrongful dismissal, and under which article |
-| **Policy wiki** | This city's insurance bases, minimum wage and tax rates — with sources |
-
----
+The monthly freshness check fails when a source is older than a year, and opens an issue with the failing cities and fields. It is a maintenance alarm, not a claim that the policy is still current.
 
 ## Privacy
 
-```
-No backend        No account        No telemetry
-No third-party JS Data stays local  Fully offline
-```
-
-**Works offline**: once installed as a PWA, the app opens and computes with no network. Verified by a real offline E2E test.
-
-The AI assistant is **opt-in**:
-- API key lives in memory unless you tick "remember"
-- Chat history stays in the tab unless you tick "remember history"
-- Only the calculation context and your question are sent, to the endpoint **you** configure
-- Non-local endpoints must be HTTPS; credentials embedded in URLs are rejected
-
-See [SECURITY.md](SECURITY.md).
-
----
+No backend, no account, no telemetry, and no third-party JavaScript. The web app works offline once installed. Chat history and API keys stay in the browser unless you explicitly choose to remember them. The assistant only sends the question and calculation context to the endpoint you configure.
 
 ## Development
 
 ```bash
-npm ci
-npm run dev            # web dev server
-npm test               # 1159 unit tests
-npm run test:e2e       # 114 browser tests (builds first)
-npm run typecheck      # type check
-npm run verify         # engine identity self-check
-npm run verify:reality # data reality check
-npm run kb:check       # knowledge base sync
-npm run build          # production build
-npm run tauri:build    # Windows installer
+npm test
+npm run test:e2e
+npm run typecheck
+npm run verify
+npm run verify:reality
+npm run kb:check
+npm run freshness:check
+npm run build
+npm run doctor
 ```
 
-**Architecture**: `views → components → stores → application → domain`, one-way.
-Every entry point calls `src/kernel/calculate.ts`. No entry point re-implements a formula.
+Architecture is one-way: `views → components → stores → application → domain`. Every entry point calls the same calculation kernel. See [ARCHITECTURE.md](ARCHITECTURE.md) and [AGENTS.md](AGENTS.md).
 
-Full conventions in [AGENTS.md](AGENTS.md) and [ARCHITECTURE.md](ARCHITECTURE.md).
-
----
-
-## Known limits
-
-| Limit | Detail |
-|---|---|
-| Tax basis | **Annual settlement**, not platform withholding. If a platform withholds, the real amount uses a different rate table |
-| Volatility | Multiplicative model; bans and injury are not modeled |
-| Provincial values | 19 provincial capitals use national-magnitude placeholders, labeled `unverified` |
-| Scope | A decision aid, not tax or legal advice |
-
----
-
-## Documentation
+## Docs
 
 | Document | Contents |
 |---|---|
-| [AGENTS.md](AGENTS.md) | Conventions for AI coding agents |
-| [ARCHITECTURE.md](ARCHITECTURE.md) | Layers and data flow |
-| [ROADMAP.md](ROADMAP.md) | Roadmap and priorities |
+| [docs/POSITIONING.md](docs/POSITIONING.md) | Product direction and information architecture |
+| [docs/REALITY-AND-SCOPE.md](docs/REALITY-AND-SCOPE.md) | Real-world constraints and scope |
+| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Web, Docker, desktop, API, and cache setup |
+| [docs/ENGINEERING.md](docs/ENGINEERING.md) | Local checks, CI, and release gates |
+| [docs/VERSIONING.md](docs/VERSIONING.md) | Version and release policy |
+| [ROADMAP.md](ROADMAP.md) | What is shipped and what comes next |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
 | [SECURITY.md](SECURITY.md) | Security model and reporting |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Contribution guide |
-| [docs/VERSIONING.md](docs/VERSIONING.md) | Version policy |
-| [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Deployment, cache headers, Docker |
-| [docs/RESEARCH.md](docs/RESEARCH.md) | Survey of 18 similar projects and what we adopted |
-| [PRIVACY.md](PRIVACY.md) | Privacy policy |
-| [TERMS.md](TERMS.md) | Terms of service |
-| [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) | Third-party licenses |
+| [PRIVACY.md](PRIVACY.md) · [TERMS.md](TERMS.md) | Privacy and terms |
 
 ## License
 

@@ -64,6 +64,7 @@ npm run doctor
 | `verify` | Node 22 / `npm ci` / typecheck / typecheck:test / test / verify / verify:entrypoints / build:entries / doctor / verify:reality / kb:check / **freshness:check** / build / 无 sourcemap 检查 / `npm audit --audit-level=high` |
 | `e2e` | 安装 Chromium / `npm run test:e2e` / 失败上传 `playwright-report` 与 `test-results` |
 | `freshness` | 月度/手动 `npm run freshness:check`；失败时列出超期城市 + 字段，并自动开/更新 issue（GitHub Actions） |
+| `dependabot-auto-merge` | 仅开发依赖 minor/patch 自动合并；生产依赖、Cargo 和 major 仍人工 |
 
 已知缺口：CI 未缓存 Playwright 浏览器；`rules:verify` 依赖本地 `.rules-snapshots`，
 CI 没有快照，因此不跑（本地需要时手动跑）。这两项是 P1，不是当前故障。

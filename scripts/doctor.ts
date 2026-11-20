@@ -335,13 +335,9 @@ function checkBundleSize() {
 function checkDocs() {
   const readme = readFileSync(join(ROOT, 'README.md'), 'utf8')
 
-  // README 里的测试数字必须与 package.json 的实际能力匹配（不做精确比对，只防严重漂移）
-  const testMatch = readme.match(/tests-(\d+)/)
-  if (testMatch) {
-    const claimed = Number(testMatch[1])
-    if (claimed < 1000) warn('README 测试数字', `声称 ${claimed} 项，看起来过时`)
-    else pass('README 测试数字', `声称 ${claimed} 项`)
-  }
+  // README 不再写死测试数量，避免每次加测试都要改文案；这里只确认开发者能找到命令。
+  if (!readme.includes('npm test')) warn('README 测试入口', '未说明 npm test')
+  else pass('README 测试入口', '已说明 npm test，不写死测试数量')
 
   // 引用的文档必须存在
   const links = [...readme.matchAll(/\]\(([A-Za-z0-9_\-./]+\.md)\)/g)].map((m) => m[1])
@@ -354,38 +350,30 @@ function checkDataClaims() {
   const rulesDir = join(ROOT, 'public', 'rules')
   const files = readdirSync(rulesDir).filter((f) => f.endsWith('.json') && f !== 'index.json')
   let total = 0
-  let official = 0
   for (const f of files) {
     const rule = JSON.parse(readFileSync(join(rulesDir, f), 'utf8')) as CityRule
     for (const v of Object.values(rule.sources ?? {})) {
       const src = v as { confidence?: string }
       if (!src || typeof src !== 'object') continue
       total += 1
-      if (src.confidence === 'official') official += 1
     }
   }
-  const pct = total ? Math.round((official / total) * 100) : 0
 
   const readme = readFileSync(join(ROOT, 'README.md'), 'utf8')
   const readmeZh = readFileSync(join(ROOT, 'README.zh-CN.md'), 'utf8')
-  const en = readme.match(/(\d+)\s+items\s+\((\d+)%\)/)
-  const zh = readmeZh.match(/(\d+)\s+项\s+\((\d+)%\)/)
   const problems: string[] = []
 
-  if (!en) problems.push('README.md 找不到「N items (N%)」数据声明')
-  else if (Number(en[1]) !== official || Number(en[2]) !== pct) {
-    problems.push(`README.md 声称 ${en[1]} / ${en[2]}%，实际 ${official} / ${pct}%`)
-  }
-  if (!zh) problems.push('README.zh-CN.md 找不到「N 项 (N%)」数据声明')
-  else if (Number(zh[1]) !== official || Number(zh[2]) !== pct) {
-    problems.push(`README.zh-CN.md 声称 ${zh[1]} / ${zh[2]}%，实际 ${official} / ${pct}%`)
+  // README 只解释置信度分级，不再展示硬编码覆盖率；避免数据变化后文案漂移。
+  for (const level of ['official', 'derived', 'unverified']) {
+    if (!readme.includes(level)) problems.push(`README.md 未说明 ${level}`)
+    if (!readmeZh.includes(level)) problems.push(`README.zh-CN.md 未说明 ${level}`)
   }
   if (readme.includes('38%') || readmeZh.includes('38%')) {
     problems.push('README 仍有 38% 旧口径')
   }
 
-  if (problems.length) fail('README 数据一致', problems.join('；'))
-  else pass('README 数据一致', `${files.length} 城 / ${total} 条来源，official ${official}（${pct}%）与 README 一致`)
+  if (problems.length) fail('README 数据口径', problems.join('；'))
+  else pass('README 数据口径', `${files.length} 城 / ${total} 条来源；两版都说明置信度分级，不写死覆盖率`)
 }
 
 function checkPositioning() {

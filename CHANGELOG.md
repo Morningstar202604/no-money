@@ -3,6 +3,22 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.4] — 2026-11-20
+
+把仓库的对外展示和日常维护收干净：README 重写，五个托管平台统一同步。
+
+### Changed
+
+- `README.md` / `README.zh-CN.md` 改为英文主文档 + 中文可切换链接；删掉版本流水账、测试数量徽章和重复宣传，只保留用途、入口、数据口径、隐私、开发与文档索引。
+- `package.json` 描述改成一句话办事平台口径，不再强调“收入精算工具”。
+- 五个平台统一为同一条 `main` 历史、同一套 README、同一份仓库介绍与标签；旧分支清理，旧 main 用归档 tag 保留。
+- GitHub 仓库开启 auto-merge、合并后删源分支、更新分支；新增 `dependabot-auto-merge.yml`，只自动合并开发依赖的 minor/patch。
+
+### Tests
+
+- `npm run doctor` 已适配精简 README：不再要求写死测试数量或覆盖率百分比，改为检查两版都说明 `official` / `derived` / `unverified`。
+- 应用与政策数据未变；沿用 3.7.3 的 60 文件 / 1,159 单测、8 文件 / 118 E2E 基线。
+
 ## [3.7.3] — 2026-11-20
 
 月度新鲜度失败不再只在 Actions 里红着：自动开 issue，已有 issue 就追加评论。
