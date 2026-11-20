@@ -3,6 +3,28 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.2] — 2026-11-20
+
+数据新鲜度从页面提示升级成可执行门禁：超过 365 天未复核就失败。
+
+### Added
+
+- `npm run freshness:check`：读 34 城规则文件，检查城市是否齐全、JSON 是否可读、`confidence` 是否合法、`retrievedAt` 是否可解析，以及是否有来源超过 365 天。
+- 支持 `--now=YYYY-MM-DD`，用于本地复现和 CI 定时检查；输出按城市 + 字段列出超期来源，最多打印 20 条。
+- `.github/workflows/freshness.yml`：每月 1 日 09:00（北京）自动跑一次，也可手动触发。
+- `npm run check` 和主 CI 都加入 `freshness:check`；现有 `doctor`、测试和构建不重复扫描。
+
+### Changed
+
+- 检查只读 `public/rules/*.json`，不改金额、文号、置信度或日期；缺规则、坏日期和超期都直接失败，不把“没读到”当 0。
+- 页面上的 34 城总览仍是查看视图；CI 是门禁视图，两者共用同一套 `summarizeSourceFreshness` / `summarizeCityFreshness` 规则。
+
+### Tests
+
+- 当前 34 / 34 城、309 项参数：官方 105 / 推算 37 / 待核验 167 / 超 365 天 0，检查通过。
+- 用 `--now=2027-11-20` 复现：309 项全部判为超期，退出码 1，确认失败路径生效。
+- 全量单测 60 文件 / 1,159 条、E2E 8 文件 / 118 条保持全绿；没有新增页面或政策数据。
+
 ## [3.7.1] — 2026-11-20
 
 数据溯源页从「本城摘要」扩成「34 城总览」：先看哪里缺来源，再切到具体城市。

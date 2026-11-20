@@ -1,0 +1,29 @@
+name: Data freshness
+
+on:
+  schedule:
+    # 每月 1 日 01:00 UTC（北京 09:00）检查 34 城来源是否超过 365 天。
+    - cron: '0 1 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  freshness:
+    name: 34-city rule freshness
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Check 34-city source freshness
+        run: npm run freshness:check

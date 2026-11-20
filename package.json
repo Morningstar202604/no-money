@@ -1,6 +1,6 @@
 {
   "name": "no-money",
-  "version": "3.7.1",
+  "version": "3.7.2",
   "private": true,
   "type": "module",
   "description": "没钱 No Money — 中国劳动者权益导航与办事平台（收入/社保/维权工具）",
@@ -20,7 +20,7 @@
     "verify:reality": "tsx scripts/reality-check.ts",
     "kb:check": "tsx scripts/export-kb.ts --check",
     "lint": "vue-tsc --noEmit",
-    "check": "npm run lint && npm test && npm run verify",
+    "check": "npm run lint && npm test && npm run verify && npm run freshness:check",
     "test:e2e": "npm run build && playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install --with-deps chromium",
@@ -35,7 +35,8 @@
     "doctor": "tsx scripts/doctor.ts",
     "rules:snapshot": "node scripts/rules-snapshot.mjs snapshot",
     "rules:verify": "node scripts/rules-snapshot.mjs verify",
-    "rules:rollback": "node scripts/rules-snapshot.mjs rollback"
+    "rules:rollback": "node scripts/rules-snapshot.mjs rollback",
+    "freshness:check": "tsx scripts/freshness-check.ts"
   },
   "dependencies": {
     "echarts": "^6.1.0",

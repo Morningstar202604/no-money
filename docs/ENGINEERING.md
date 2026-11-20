@@ -46,6 +46,7 @@ npm test
 npm run verify
 npm run verify:reality
 npm run kb:check
+npm run freshness:check
 npm run verify:entrypoints
 npm run build
 npm run doctor
@@ -56,12 +57,13 @@ npm run doctor
 
 ### CI
 
-`.github/workflows/ci.yml` 两个 job：
+`.github/workflows/ci.yml` 两个 job；另有 `.github/workflows/freshness.yml` 每月 1 日检查 34 城来源是否超过 365 天：
 
 | job | 内容 |
 |---|---|
-| `verify` | Node 22 / `npm ci` / typecheck / typecheck:test / test / verify / verify:entrypoints / build:entries / doctor / verify:reality / kb:check / build / 无 sourcemap 检查 / `npm audit --audit-level=high` |
+| `verify` | Node 22 / `npm ci` / typecheck / typecheck:test / test / verify / verify:entrypoints / build:entries / doctor / verify:reality / kb:check / **freshness:check** / build / 无 sourcemap 检查 / `npm audit --audit-level=high` |
 | `e2e` | 安装 Chromium / `npm run test:e2e` / 失败上传 `playwright-report` 与 `test-results` |
+| `freshness` | 月度/手动 `npm run freshness:check`；失败时列出超期城市 + 字段 |
 
 已知缺口：CI 未缓存 Playwright 浏览器；`rules:verify` 依赖本地 `.rules-snapshots`，
 CI 没有快照，因此不跑（本地需要时手动跑）。这两项是 P1，不是当前故障。
@@ -83,7 +85,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 |---|---:|---:|---|
 | 首屏 JS（gzip） | 500K | 408K | 超 500K 阻断 |
 | `dist` 总量 | 5 MB | 3.38 MB（assets 2.55 MB） | 超 5 MB 阻断 |
-| PWA precache | 3 MB | 2.70 MB | 超 3 MB 警告，超 3.2 MB 阻断 |
+| PWA precache | 3 MB | 2.72 MB | 超 3 MB 警告，超 3.2 MB 阻断 |
 | 单 chunk | 1 MB | 864K（echarts） | 超 1 MB 检查是否同步引入 |
 | LCP（4G） | 2.5s | 未测 | P1 接 Lighthouse CI |
 | CLS | 0.1 | 未测 | P1 |

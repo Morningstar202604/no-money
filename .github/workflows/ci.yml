@@ -59,6 +59,10 @@ jobs:
       - name: Knowledge base in sync
         run: npm run kb:check
 
+      # 34 城规则文件：城市齐全、日期合法、没有超过 365 天未复核的来源。
+      - name: Data freshness
+        run: npm run freshness:check
+
       - name: Build
         run: npm run build
 
