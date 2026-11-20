@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   freshness:
@@ -26,4 +27,54 @@ jobs:
         run: npm ci
 
       - name: Check 34-city source freshness
-        run: npm run freshness:check
+        id: freshness
+        run: |
+          set -o pipefail
+          npm run freshness:check 2>&1 | tee freshness-report.txt
+
+      # 失败才开 issue；已有同名 open issue 时追加评论，避免每月刷一条新 issue。
+      - name: Open or update freshness issue
+        if: steps.freshness.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const report = fs.existsSync('freshness-report.txt')
+              ? fs.readFileSync('freshness-report.txt', 'utf8').trim()
+              : '检查失败，但没有生成 freshness-report.txt，请查看本 job 日志。';
+            const title = '[数据新鲜度] 34 城有来源超过 365 天';
+            const body = [
+              '月度新鲜度检查未通过。需要复核对应规则文件的 `sources[].retrievedAt`，不要为了变绿直接改日期。',
+              '',
+              '```text',
+              report.slice(-50000),
+              '```',
+              '',
+              `运行：${process.env.GITHUB_SERVER_URL}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            const { owner, repo } = context.repo;
+            const open = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              per_page: 30,
+            });
+            const existing = open.data.find(issue => issue.title === title);
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body: `再次失败（${new Date().toISOString()}）\n\n${body}`,
+              });
+              core.info(`Updated issue #${existing.number}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+              });
+              core.info(`Created issue #${created.data.number}`);
+            }

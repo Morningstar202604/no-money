@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.7.2** is the current baseline. The product direction is settled — a rights-navigation and
+**3.7.3** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,10 +23,10 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow; 3.7.3 makes a failed month open or update an issue instead of only showing a red run.
 
 **What is not done yet:** six-section nav reorder; resident and new-grad calculation modes; real-user
-testing. 3.7.2 ships the source-freshness gate, its monthly workflow and the employee wage-slip slice only; assistant content operations and review
+testing. 3.7.3 ships the source-freshness gate, its monthly workflow, failure-to-issue automation and the employee wage-slip slice only; assistant content operations and review
 cadence remain 3.8.0. Page-level deadline hints exist, but there is no push service or account.
 
 ---
@@ -301,6 +301,20 @@ to open the policy page.**
 
 ---
 
+## 3.7.3 — Freshness failures open an issue (shipped 2026-11-20)
+
+**Goal: a failed monthly check should leave a work item, not just a red run nobody watches.**
+
+- [x] `freshness.yml` captures the check output with `tee`, keeps the job red via `pipefail`
+- [x] On failure, create `[数据新鲜度] 34 城有来源超过 365 天` with the report tail and run link
+- [x] If the same open issue exists, append a comment instead of opening a duplicate
+- [ ] GitCode / Gitee CI integration — the workflow is GitHub Actions; those remotes do not run it yet
+
+**Status:** shipped — PATCH. No application or rule-data change; 60 files / 1,159 unit tests,
+8 files / 118 E2E remain the baseline. Data summary: 34 cities / 309 sources, stale 0 at 2026-11-20.
+
+---
+
 ## 3.8.0 — Assistant and content operations
 
 - [ ] AI assistant answers only with city + identity + situation, returns 1–3 actions, the first step,
@@ -350,7 +364,7 @@ to open the policy page.**
       document number and URL
 - [x] Add per-field `lastVerified` date (done via `SourceTag`: 「核对于/登记于」+ `retrievedAt`)
 - [x] "Data freshness" panel listing every parameter older than 12 months (per-city summary shipped in 3.6.11; global 34-city view shipped in 3.7.1)
-- [x] Monthly freshness workflow (3.7.2); failure is visible in Actions but does not auto-open an issue yet
+- [x] Monthly freshness workflow opens or updates an issue on failure (3.7.3, GitHub Actions); GitCode / Gitee CI still not wired
 
 **Acceptance:** the `unverified` count for social-insurance base drops below 10, and every remaining
 one has an explicit note explaining what is missing.

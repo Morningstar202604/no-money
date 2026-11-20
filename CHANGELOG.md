@@ -3,6 +3,24 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.3] — 2026-11-20
+
+月度新鲜度失败不再只在 Actions 里红着：自动开 issue，已有 issue 就追加评论。
+
+### Added
+
+- `.github/workflows/freshness.yml` 增加 `issues: write`；检查失败时把输出写入 `freshness-report.txt`，用 `actions/github-script@v7` 创建标题为「[数据新鲜度] 34 城有来源超过 365 天」的 issue。
+- 已有同名 open issue 时追加评论，不重复开新 issue；正文带报告尾部 50k 和本次 run 链接，读不到报告时明确提示查看 job 日志。
+
+### Changed
+
+- 检查步骤改用 `set -o pipefail` + `tee`：失败仍然让 job 失败，同时留下完整报告，不会为了拿输出把失败吞掉。
+
+### Tests
+
+- workflow YAML 解析通过，内联 JS `node --check` 通过；`npm run freshness:check` 通过。
+- 未改应用代码或政策数据；60 文件 / 1,159 单测、8 文件 / 118 E2E 沿用 3.7.2 全绿基线。
+
 ## [3.7.2] — 2026-11-20
 
 数据新鲜度从页面提示升级成可执行门禁：超过 365 天未复核就失败。
