@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.6.11** is the current baseline. The product direction is settled — a rights-navigation and
+**3.7.0** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,11 +23,11 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout.
 
-**What is not done yet:** six-section nav reorder and identity-aware calculation (3.7.0); assistant
-content operations and review cadence (3.8.0); real-user testing. Page-level deadline hints exist,
-but there is no push service or account.
+**What is not done yet:** six-section nav reorder; resident and new-grad calculation modes; real-user
+testing. 3.7.0 ships the employee wage-slip slice only; assistant content operations and review
+cadence remain 3.8.0. Page-level deadline hints exist, but there is no push service or account.
 
 ---
 
@@ -241,14 +241,27 @@ the accessibility pass remains.**
 
 ---
 
-## 3.7.0 — Six-section nav and identity-aware calculation
+## 3.7.0 — Employee wage-slip calculator (shipped 2026-11-20)
 
-**Goal: make the main journey obvious end to end, without turning the four entries into a maze.**
+**Goal: stop making enterprise employees use the rider per-order model. If they have a payslip,
+they can calculate take-home from it.**
 
-- [ ] Six-section nav: 该做什么 → 能拿什么 → 怎么弄 → 算一算 → 问一问 → 政策与数据
-- [ ] Identity-aware calculator (employee / flexible / resident / new grad), preserving explicit
-      assumptions and unknown-value behavior
+- [x] `/employee`: pre-tax monthly salary, personal social-insurance + housing-fund total, and
+      monthly special additional deductions; annual comprehensive-income tax, monthly take-home,
+      annual tax, annual take-home, taxable income and effective rate
+- [x] `calcWageAnnual` works in cents and never infers employer contribution rates or local
+      social-insurance rates; the employee enters the personal deduction from the payslip
+- [x] `/employee` hides the rider parameter sidebar and mobile menu button; the four entries and
+      six-item nav stay unchanged
+- [x] Dashboard scope note links to the employee page; result card states annual-settlement basis,
+      monthly withholding may be lower earlier in the year, and excludes bonus/overtime/reimbursement
+- [ ] Six-section nav reorder — deliberately deferred; it conflicts with the four-entry home until
+      real-user navigation data says otherwise
+- [ ] Resident and new-grad modes — 3.7.x / 3.8.0
 - [ ] Real-user usability test with first-time workers; record where they get stuck
+
+**Status:** shipped — MINOR. 60 files / 1,157 unit tests, 8 files / 118 E2E. No policy amount,
+document number or official link was added.
 
 ---
 

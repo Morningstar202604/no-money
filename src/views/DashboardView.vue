@@ -19,7 +19,7 @@
       <p>
         <b>当前只支持灵活就业 / 平台按单计价。</b>
         企业职工、城乡居民的工资条和单位缴费口径不同，别直接把这里的净收入当工资；
-        先去 <router-link class="link-brand calc-scope-link" to="/start">办事入口</router-link> 看入职、合同和社保清单。
+        先去 <router-link class="link-brand calc-scope-link" to="/start">办事入口</router-link> 看入职、合同和社保清单；有工资条的，直接 <router-link class="link-brand calc-scope-link" to="/employee">按工资条算到手</router-link>。
       </p>
     </section>
 

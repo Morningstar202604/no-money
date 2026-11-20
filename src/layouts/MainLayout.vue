@@ -17,6 +17,7 @@
 
         <!-- Mobile menu button -->
         <button
+          v-if="showSidebar"
           class="icon-btn mobile-menu-btn"
           @click="toggleMobileSidebar"
           :aria-label="mobileSidebarOpen ? '关闭参数设置' : '打开参数设置'"
@@ -92,6 +93,7 @@
     <div class="layout-main">
       <!-- Sidebar -->
       <aside
+        v-if="showSidebar"
         id="params-sidebar"
         class="sidebar"
         :class="{ collapsed: sidebarCollapsed, 'mobile-open': mobileSidebarOpen }"
@@ -120,7 +122,7 @@
       </aside>
 
       <!-- Content -->
-      <main class="content" :class="{ 'content-full': sidebarCollapsed }">
+      <main class="content" :class="{ 'content-full': sidebarCollapsed || !showSidebar, 'content-no-sidebar': !showSidebar }">
         <!-- 提示容器由 App.vue 的 n-message-provider 统一提供，
              此处再嵌套一层会导致 useMessage() 归属不确定 -->
 
@@ -204,6 +206,8 @@ const sidebarCollapsed = ref(false)
 const mobileSidebarOpen = ref(false)
 const isDark = computed(() => store.isDark)
 const isMobile = ref(false)
+/** 企业职工工资条页不显示骑手参数栏，避免把按单参数带进工资口径 */
+const showSidebar = computed(() => route.name !== 'Employee')
 
 /** 命令面板开关：⌘K / Ctrl+K 唤起 */
 const paletteOpen = ref(false)
@@ -800,6 +804,10 @@ onUnmounted(() => {
 
 .content-full {
   margin-left: var(--sider-collapsed-width);
+}
+
+.content-no-sidebar {
+  margin-left: 0;
 }
 
 .page-container {

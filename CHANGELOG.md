@@ -3,6 +3,30 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.0] — 2026-11-20
+
+企业职工不再套用骑手按单模型：有工资条的，直接按工资条算到手。
+
+### Added
+
+- `/employee` 企业职工工资条页：填税前月薪、个人五险一金合计、专项附加扣除/月，按年度综合所得口径算月到手、月均个税、年度个税、年度到手、年应纳税所得额和有效税率。
+- `src/domain/tax/wage.ts` 的 `calcWageAnnual`：只做年度工资薪金个税，输入全部为分；年度应纳税所得额先扣个人五险一金、专项附加扣除和 6 万元基本减除，再套税率表。
+- `src/application/employee/EmployeePayService.ts`：负责元/分边界、输入校验和“个人五险一金超过税前工资”标记；不推断企业缴费比例，不补地方社保费率。
+- `/dashboard` 口径声明增加“有工资条的，直接按工资条算到手”入口。
+
+### Changed
+
+- `/employee` 隐藏骑手参数侧栏和移动端菜单按钮，页面只保留工资条三项输入；不新增顶级导航，四入口不变。
+- 结果卡明确“月到手 = 年度税后 ÷ 12，公司每月实际预扣可能前低后高”，并声明不含年终奖、加班费、报销、补贴和单位缴费。
+- 个人五险一金填 0 时提示结果会偏高；超过税前工资时提示核对工资条，不输出“正常月份”的假结论。
+
+### Tests
+
+- 新增 `tests/wageTax.spec.ts` 4 条：正常月薪、低于基本减除、专项附加扣除与超额扣款、非法输入。
+- 新增 `tests/employeePay.spec.ts` 2 条：元/分不重复换算与超额扣款标记。
+- `e2e/features.spec.ts` 新增企业职工用例，桌面和移动端都断言无 `#params-sidebar`、月到手 `¥8,810.00`、个人五险一金明细和返回总览链接。
+- 既有“参数导出后可重新导入且数值不变”在移动端改为先 `scrollIntoViewIfNeeded()` 再点击，避免侧栏独立滚动容器的自动滚动停在 `.ps-foot`。
+
 ## [3.6.11] — 2026-11-20
 
 算一算页先说明口径，政策溯源页先说明数据新不新。

@@ -17,6 +17,7 @@ import { defineComponent, h } from 'vue'
 export const PAGE_TITLES = {
   start: '办事入口 — 该做什么、能拿什么、去哪办',
   dashboard: '总览 — 月净收入与权益评分',
+  employee: '企业职工 — 工资条算到手',
   scenario: '方案对比与收支明细',
   planning: '税务优化与养老规划',
   rights: '权益护航 — 补偿计算与文书',

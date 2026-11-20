@@ -50,6 +50,27 @@ test.describe('核心功能', () => {
     expect(text).toContain('怎么合法省税')
   })
 
+  test('企业职工按工资条算到手，不显示骑手参数栏', async ({ page }) => {
+    await page.goto('/employee')
+    await page.waitForTimeout(1200)
+
+    await expect(page.locator('#params-sidebar')).toHaveCount(0)
+    await expect(page.getByRole('heading', { name: '工资条到手' })).toBeVisible()
+    const form = page.locator('.ep-form-card')
+    const gross = form.locator('.ep-field').filter({ hasText: '税前月薪' }).locator('input')
+    const fund = form.locator('.ep-field').filter({ hasText: '个人五险一金合计' }).locator('input')
+    await gross.fill('10000')
+    await gross.press('Tab')
+    await fund.fill('1000')
+    await fund.press('Tab')
+
+    await expect(page.getByText('到手结果（年度汇算口径）')).toBeVisible()
+    await expect(page.locator('.ep-kpi').first()).toContainText('¥8,810.00')
+    await expect(page.locator('.ep-breakdown')).toContainText('个人五险一金/月 ¥1,000.00')
+    await expect(page.getByText('年度到手')).toBeVisible()
+    await expect(page.getByRole('link', { name: '灵活就业算一算 →' })).toHaveAttribute('href', '/dashboard')
+  })
+
   test('AI 对话默认不写入 localStorage', async ({ page }) => {
     await page.goto('/dashboard')
     await dismissOnboarding(page)
@@ -175,8 +196,12 @@ test.describe('核心功能', () => {
     const changed = await slider.getAttribute('aria-valuenow')
     expect(changed).not.toBe('10')
 
+    const exportButton = page.getByRole('button', { name: '导出参数' })
+    // 移动端侧栏是独立滚动容器：先把它滚进视口，避免 Playwright 的自动滚动
+    // 停在底部操作区、被同级的 .ps-foot 拦住点击。
+    await exportButton.scrollIntoViewIfNeeded()
     const downloadPromise = page.waitForEvent('download')
-    await page.getByRole('button', { name: '导出参数' }).click()
+    await exportButton.click()
     const download = await downloadPromise
     const path = await download.path()
     expect(path).toBeTruthy()

@@ -6,11 +6,11 @@
 
 面向中国劳动者的**权益导航与办事平台**。收入 / 个税 / 社保 / 补偿的测算只是其中一件工具，AI 只是辅助。
 
-> 当前版本（3.6.11）是口径与溯源补丁：**60 条权益目录**，其中 **30 条 L2 可办**（材料、步骤、官方入口、时限、坑）、**30 条 L1 可知**（知道有这件事、去哪核验），**10 城深核**（社保、医保、公积金、就业四类本地官方入口）；「我的清单」支持本机时限置顶、txt 导出与打印/另存 PDF；向导首步新增刚入职/刚离职/换城市/被欠薪四个一键入口；结果清单按顺序编号，第 1 件高亮为「先办这个」；清单末尾给出算一算、问 AI、查政策三个下一步；点「问 AI」会自动带入当前城市和第 1 件事；算一算页明确只覆盖灵活就业口径，政策溯源页给出本城参数的新鲜度摘要。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
+> 当前版本（3.7.0）在企业职工场景补了 `/employee`：按工资条填税前月薪、个人五险一金和专项附加扣除，算年度个税与月到手，不猜企业缴费比例。其余仍是 3.6.11 的口径与溯源补丁：**60 条权益目录**，其中 **30 条 L2 可办**（材料、步骤、官方入口、时限、坑）、**30 条 L1 可知**（知道有这件事、去哪核验），**10 城深核**（社保、医保、公积金、就业四类本地官方入口）；「我的清单」支持本机时限置顶、txt 导出与打印/另存 PDF；向导首步新增刚入职/刚离职/换城市/被欠薪四个一键入口；结果清单按顺序编号，第 1 件高亮为「先办这个」；清单末尾给出算一算、问 AI、查政策三个下一步；点「问 AI」会自动带入当前城市和第 1 件事；算一算页明确只覆盖灵活就业口径，政策溯源页给出本城参数的新鲜度摘要。完整定位、目标信息架构与迁移计划见 [docs/POSITIONING.md](docs/POSITIONING.md)。
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1151-3fb950)](https://github.com/badhope/no-money)
-[![e2e](https://img.shields.io/badge/e2e-116-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1157-3fb950)](https://github.com/badhope/no-money)
+[![e2e](https://img.shields.io/badge/e2e-118-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#数据覆盖)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#隐私)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
@@ -172,7 +172,7 @@ flowchart TD
 
 ## 当前版本的六个模块（权益导航 P0 已上线）
 
-> 3.6.0 的实现顺序：先办事，再算钱；3.6.5 把省市办事入口收成一个解析器；未深核城市回退省级，不编市级链接。3.6.6 把目录补到 60 条，并给「我的清单」加本机时限置顶、txt 导出和打印/另存 PDF；3.6.7 再加四个常见情况的一键入口；3.6.8 把结果清单排序，第 1 件先办；3.6.9 再接上算一算、问 AI、查政策三个下一步；3.6.10 让「问 AI」自动带入当前城市和第 1 件事；3.6.11 把「只算灵活就业」和本城数据新鲜度写在页面上，减少误读。下一阶段是六段导航和按身份分流的计算口径，见 [docs/POSITIONING.md](docs/POSITIONING.md) 与 [ROADMAP.md](ROADMAP.md)。
+> 3.6.0 的实现顺序：先办事，再算钱；3.6.5 把省市办事入口收成一个解析器；未深核城市回退省级，不编市级链接。3.6.6 把目录补到 60 条，并给「我的清单」加本机时限置顶、txt 导出和打印/另存 PDF；3.6.7 再加四个常见情况的一键入口；3.6.8 把结果清单排序，第 1 件先办；3.6.9 再接上算一算、问 AI、查政策三个下一步；3.6.10 让「问 AI」自动带入当前城市和第 1 件事；3.6.11 把「只算灵活就业」和本城数据新鲜度写在页面上，减少误读；3.7.0 新增企业职工工资条页 `/employee`，按年度综合所得算到手，并把骑手参数侧栏从该页移除。六段导航仍未重排，居民/新毕业生口径仍未接，见 [docs/POSITIONING.md](docs/POSITIONING.md) 与 [ROADMAP.md](ROADMAP.md)。
 
 | 模块 | 回答什么 |
 |---|---|
@@ -209,7 +209,7 @@ AI 助手是**可选**的：
 ```bash
 npm ci
 npm run dev            # Web 开发服务器
-npm test               # 1151 项单元测试
+npm test               # 1157 项单元测试
 npm run test:e2e       # 114 项浏览器测试（构建 + 跑）
 npm run typecheck      # 类型检查
 npm run verify         # 引擎恒等式自检
