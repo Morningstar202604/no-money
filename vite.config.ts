@@ -126,7 +126,9 @@ export default defineConfig({
     watch: { ignored: ['**/src-tauri/**', '**/dist/**', '**/.aqg/**'] },
   },
 
-  preview: { port: 4173 },
+  // 显式绑定 IPv4 回环：GitHub runner 上 localhost 可能只解析到 ::1，
+  // Playwright 连 127.0.0.1 时会一直等到超时。
+  preview: { host: '127.0.0.1', port: 4173 },
 
   build: {
     outDir: 'dist',

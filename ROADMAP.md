@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.7.4** is the current baseline. The product direction is settled — a rights-navigation and
+**3.7.5** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,10 +23,10 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow; 3.7.3 makes a failed month open or update an issue instead of only showing a red run; 3.7.4 trims the public README and syncs the five hosting mirrors.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow; 3.7.3 makes a failed month open or update an issue instead of only showing a red run; 3.7.4 trims the public README and syncs the five hosting mirrors; 3.7.5 fixes the CI preview bind so browser smoke tests start on GitHub runners.
 
 **What is not done yet:** six-section nav reorder; resident and new-grad calculation modes; real-user
-testing. 3.7.4 ships the rights guide, the freshness gate, failure-to-issue automation, repository automation and the employee wage-slip slice only; assistant content operations and review
+testing. 3.7.5 ships the rights guide, the freshness gate, failure-to-issue automation, repository automation and the employee wage-slip slice only; assistant content operations and review
 cadence remain 3.8.0. Page-level deadline hints exist, but there is no push service or account.
 
 ---
@@ -328,6 +328,18 @@ to open the policy page.**
 
 **Status:** shipped — PATCH. No application or rule-data change; 60 files / 1,159 unit tests,
 8 files / 118 E2E remain the baseline.
+
+---
+
+## 3.7.5 — CI preview bind fix (shipped 2026-11-20)
+
+**Goal: the browser smoke test should start on a clean GitHub runner, not time out.**
+
+- [x] Bind `vite preview` to `127.0.0.1` in config and on the Playwright command line
+- [x] Run the same CI-mode E2E locally: 8 files / 118 tests pass
+- [x] Keep required checks `Typecheck, test, build` and `Browser smoke test` aligned with job names
+
+**Status:** shipped — PATCH. No application or policy-data change.
 
 ---
 

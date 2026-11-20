@@ -3,6 +3,21 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.5] — 2026-11-20
+
+修掉 GitHub Actions 上浏览器冒烟测试起不来的问题：Playwright 等 preview，preview 却只绑在
+IPv6 的 localhost 上。现在显式绑定 127.0.0.1，CI 与本地用同一套地址。
+
+### Fixed
+
+- `vite.config.ts` 的 `preview.host` 固定为 `127.0.0.1`；`playwright.config.ts` 启动 preview 时也传 `--host 127.0.0.1`，避免 runner 上 `localhost` 解析到 `::1`、Playwright 连 IPv4 一直等到 120 秒超时。
+- `npm run test:e2e` 在 CI 模式下全量 118 条通过；`Typecheck, test, build` 与 `Browser smoke test` 两条 required checks 都具备可执行路径。
+
+### Tests
+
+- 本地按 `CI=1` 跑完整 E2E：8 文件 / 118 条全部通过（3.5 分钟）。
+- `npm run test:e2e` 仍先构建再跑 preview；没有新增依赖，没有改应用逻辑与政策数据。
+
 ## [3.7.4] — 2026-11-20
 
 把仓库的对外展示和日常维护收干净：README 重写，五个托管平台统一同步。
