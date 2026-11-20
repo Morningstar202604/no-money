@@ -88,9 +88,10 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4879,
-      "baseMax": 24396,
-      "rate": 0.08
+      "baseMin": 5025,
+      "baseMax": 5025,
+      "rate": 0.08,
+      "fixedMonthly": 5
     }
   },
   "minimumWage": {
@@ -159,11 +160,14 @@
       "note": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。"
     },
     "medical": {
-      "title": "苏州职工基本医疗保险（灵活就业人员）",
-      "url": "",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。"
+      "title": "省人力资源社会保障厅 省财政厅 省医疗保障局 省税务局关于发布2026年度社会保险有关基数的通知",
+      "issuedBy": "江苏省人力资源和社会保障厅、江苏省财政厅、江苏省医疗保障局、国家税务总局江苏省税务局",
+      "url": "https://jshrss.jiangsu.gov.cn/art/2026/10/8/art_77277_11838872.html",
+      "effectiveFrom": "2026-01-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 全省职工医保基数上限 25127、下限 5025；苏州灵活就业医保基数固定为 5025 元/月。",
+      "docNo": "苏人社发〔2026〕30号"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -214,6 +218,16 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "关于明确我市职工基本医疗保险缴费费率的通知",
+      "issuedBy": "苏州市医疗保障局、苏州市财政局、国家税务总局苏州市税务局",
+      "url": "https://static.ciicbj.cn/hrlib/kb/template/2024/01/05/94ee5a52697d4f4697f7aabb453bffed.pdf",
+      "effectiveFrom": "2024-01-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "全市灵活就业人员缴费费率按 8% 执行；另缴大额医疗费用社会共济基金 5 元/月，月缴 407 元。",
+      "docNo": "苏医保待医〔2023〕37号"
     }
   }
 }

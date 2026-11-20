@@ -22,6 +22,7 @@ const DEPS: Array<[string, string]> = [
   ['pension', '养老缴费基数'],
   ['pensionRate', '养老费率'],
   ['medical', '医保缴费基数'],
+  ['medicalRate', '医保费率'],
   // 个税进入每个场景的净收入与「最优方案」排序，是结论依据之一；
   // 此前漏列，tax 置信度降级时「假设测算」门禁不会亮出这一项
   ['tax', '个税口径'],

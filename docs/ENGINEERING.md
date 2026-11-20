@@ -13,7 +13,7 @@
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
-| 知识库 | `kb:check` 375 条与数据源一致 |
+| 知识库 | `kb:check` 409 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
 | 构建 | 23.52s；`dist` **3.38 MB**（assets 2.55 MB）；首屏 **408K gzip**（预算 500K） |
 | PWA | 50 条 precache / **2,787.97 KiB（约 2.72 MB）**（预算 3 MB） |
@@ -196,9 +196,9 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 指标
 
-- 测试：1,172 项（61 个文件；含 5 项架构门禁 + 权益导航/城市入口测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
-- 首屏：408K gzip；PWA：2.72 MB；`dist`：3.38 MB（assets 2.55 MB）。
-- 数据：309 条来源，official 148（47.9%）、derived 40、unverified 121；34 城；0 城四字段全 official。20 城养老基数已完成核验（17 城 official，长春、贵阳、哈尔滨因官方只公布平均工资而标 derived）；34 城最低工资全部为 official（含北京、上海、天津三条旧小时值修正与福州按第二档修正），其余字段仍按原置信度保留。
+- 测试：1,176 项（61 个文件；含 5 项架构门禁 + 权益导航/城市入口测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
+- 首屏：408K gzip；PWA：2.73 MB；`dist`：3.44 MB（assets 2.55 MB）。
+- 数据：343 条来源，official 200（58.3%）、derived 47、unverified 96；34 城；0 城全部字段 official。34 城医保基数 official 33 / derived 1（郑州按社平 80% 派生）；医保费率 official 27 / derived 6 / unverified 1（西安）；34 城最低工资全部 official；养老基数 official 31 / derived 3。
 - 内容：`RightsItem` 60 条（23 条迁移 + 20 条新增 L2 + 17 条 L1）；其中 30 条 L2、30 条 L1；已到 60+ 目标。
 - 可用性：E2E 120 项（8 个文件，桌面 + 移动）；清单导出/打印有 E2E 下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 

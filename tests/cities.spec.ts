@@ -51,7 +51,7 @@ describe('城市规则文件基础完整性', () => {
 })
 
 describe('溯源纪律：每个外源参数必须可追溯或明确标未核实', () => {
-  const REQUIRED_SOURCE_KEYS = ['pension', 'pensionRate', 'medical', 'tax', 'minimumWage', 'retirement', 'income', 'soleVat', 'soleItr']
+  const REQUIRED_SOURCE_KEYS = ['pension', 'pensionRate', 'medical', 'medicalRate', 'tax', 'minimumWage', 'retirement', 'income', 'soleVat', 'soleItr']
   const CONFIDENCE = ['official', 'derived', 'unverified']
 
   it('所有关键来源键都存在', () => {

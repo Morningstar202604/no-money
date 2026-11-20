@@ -28,18 +28,25 @@ export function calcMonthly(
   enrolled: boolean,
   medicalTierRate: Rate | undefined,
   base: ContributionBase,
-  rule: BenefitRule
+  rule: BenefitRule,
+  medicalTier?: MedicalTier
 ): Result<BenefitBreakdown, BenefitError> {
   const declared = (Number(income) > 0 && Number.isFinite(Number(income))) ? income : Cent.create(0)
 
-  // 解析养老与医保缴费基数
+  // 解析养老与医保缴费基数；医保分档可单独规定基数（如成都单建统筹 7831）
   const pensionBase = resolveBase(base.pensionBase, declared, rule.pension.baseMin, rule.pension.baseMax)
-  const medicalBase = resolveBase(base.medicalBase, declared, rule.medical.baseMin, rule.medical.baseMax)
+  const medicalBase = medicalTier?.baseMonthly !== undefined
+    ? medicalTier.baseMonthly
+    : resolveBase(base.medicalBase, declared, rule.medical.baseMin, rule.medical.baseMax)
 
-  // 计算月缴费：基数 × 费率
+  // 计算月缴费：基数 × 费率 + 固定附加费（大额医疗、长护等）
   const pensionMonthly = nonNegCent(mulCentRate(pensionBase, rule.pension.rate))
-  const medicalRate = medicalTierRate ?? rule.medical.rate
-  const medicalMonthly = nonNegCent(mulCentRate(medicalBase, medicalRate))
+  const medicalRate = medicalTier?.rate ?? medicalTierRate ?? rule.medical.rate
+  const fixedMonthly = medicalTier?.fixedMonthly ?? rule.medical.fixedMonthly
+  const medicalMonthly = nonNegCent(addCent(
+    mulCentRate(medicalBase, medicalRate),
+    Cent.create(fixedMonthly ?? 0),
+  ))
 
   // 构建分项明细
   const items: BenefitItem[] = [

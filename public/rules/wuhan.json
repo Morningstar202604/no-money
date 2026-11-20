@@ -2,7 +2,7 @@
   "city": "wuhan",
   "cityName": "武汉",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -88,9 +88,10 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4498,
-      "baseMax": 22488,
-      "rate": 0.08
+      "baseMin": 7587,
+      "baseMax": 7587,
+      "rate": 0.048,
+      "fixedMonthly": 7
     }
   },
   "minimumWage": {
@@ -160,14 +161,14 @@
       "note": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。"
     },
     "medical": {
-      "title": "关于我省2025年度社会保险缴费基数标准的通知（含职工医保）",
-      "docNo": "鄂人社发〔2025〕28号",
-      "issuedBy": "湖北省人力资源和社会保障厅等三部门",
-      "url": "https://rst.hubei.gov.cn/zfxxgk/zc/qtzdgkwj/202509/t20250919_5775307.shtml",
-      "effectiveFrom": "2025-09-19",
-      "retrievedAt": "2026-10-15",
+      "title": "关于我省2026社保年度社会保险缴费基数标准的通知",
+      "issuedBy": "湖北省人力资源和社会保障厅、湖北省医疗保障局、国家税务总局湖北省税务局",
+      "url": "https://rst.hubei.gov.cn/zfxxgk/zc/qtzdgkwj/202610/t20261008_6027858.shtml",
+      "effectiveFrom": "2026-08-12",
+      "retrievedAt": "2026-11-20",
       "confidence": "official",
-      "note": "通知明确职工基本养老保险、职工基本医疗保险（生育保险）、失业保险、工伤保险统一标准；费率因参保形式而异，本项目 8% 为占位口径。"
+      "note": "2026 社保年度全省职工医保缴费基数月标准 7587、个人上限 22761、下限 4552；武汉灵活就业以 7587 为基数。",
+      "docNo": "鄂人社发〔2026〕29号"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -218,6 +219,15 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "武汉市灵活就业人员缴纳社保",
+      "issuedBy": "武汉市人民政府",
+      "url": "https://www.wuhan.gov.cn/ztzl/ztfw/lhjyryjnsb/index.shtml",
+      "effectiveFrom": "2025-10 起",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "武汉灵活就业以全市上年度职工月平均工资为基数，按 4.8% 缴基本医保，另缴大额医疗 7 元/月。注意：市页面示例仍用 7496×4.8%+7=366.81，与 2026 省级标准 7587 存在口径差，本规则取 7587 并在 note 标明。"
     }
   }
 }

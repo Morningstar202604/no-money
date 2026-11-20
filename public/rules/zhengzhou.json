@@ -2,7 +2,7 @@
   "city": "zhengzhou",
   "cityName": "郑州",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -88,9 +88,9 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 3912,
-      "baseMax": 19560,
-      "rate": 0.08
+      "baseMin": 5216,
+      "baseMax": 5216,
+      "rate": 0.09
     }
   },
   "minimumWage": {
@@ -161,13 +161,13 @@
     },
     "medical": {
       "title": "关于公布2026年度社会保险缴费基数上下限标准的通知（含基本医疗保险）",
-      "docNo": "豫人社办〔2026〕62号",
       "issuedBy": "河南省人力资源和社会保障厅",
       "url": "https://hrss.henan.gov.cn/2026/10-10/3435886.html",
       "effectiveFrom": "2026-07-01",
-      "retrievedAt": "2026-10-15",
-      "confidence": "official",
-      "note": "通知明确含基本养老保险、基本医疗保险、工伤保险、失业保险、生育保险，全省五险统一口径；费率因参保形式而异，本项目 8% 为占位口径。"
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "2026-07 起全省社保（含职工医保）基数 6520 元/月，个人下限 3912、上限 19560；郑州灵活就业医保按社平 80% 即 5216 元/月（官方地方解读示例写 5201.6，系按旧社平 6502 计算，采用 6520×80%=5216）。",
+      "docNo": "豫人社办〔2026〕62号"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -218,6 +218,15 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "郑州市灵活就业人员医保缴费标准",
+      "issuedBy": "郑州市医疗保障局",
+      "url": "https://hrss.henan.gov.cn/2026/10-10/3435886.html",
+      "effectiveFrom": "2026-07-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "郑州灵活就业医保基准费率 10%（含生育 1%），阶段性降 1 个百分点为 9%；按 5216 基数月缴约 469.44 元。费率为按政策口径派生。"
     }
   }
 }

@@ -18,6 +18,8 @@ export interface MedicalRule {
   baseMax: Cent
   /** 默认档费率（基点），灵活就业 8% = 0.08 */
   rate: Rate
+  /** 固定月附加费（分），如大额医疗、长期护理等 */
+  fixedMonthly?: Cent
 }
 
 /** 医保档次：部分城市（如东莞）对灵活就业人按档设费率 */
@@ -28,6 +30,10 @@ export interface MedicalTier {
   name: string
   /** 该档费率（基点） */
   rate: Rate
+  /** 该档单独规定的月缴费基数（分）；缺省时用 medical 基数 */
+  baseMonthly?: Cent
+  /** 该档单独规定的固定月附加费（分）；缺省时用 medical.fixedMonthly */
+  fixedMonthly?: Cent
   /** 备注说明 */
   note: string
 }

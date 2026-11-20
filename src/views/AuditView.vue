@@ -99,7 +99,7 @@
  * 为什么单独做一页：
  * /admin 给的是"覆盖率统计"，但用户真正需要的问题是
  * 「我现在看到的这个数字，哪个字段没核实、我该不该信」。
- * 这一页把 34 城 × 5 类核心字段做成矩阵，
+ * 这一页把 34 城 × 6 类核心字段做成矩阵，
  * 绿色/黄色一眼可辨——这是产品"诚实"承诺的可视化落地，不是装饰。
  *
  * 与 /admin 的分工：
@@ -121,6 +121,7 @@ interface Row {
   pension?: string
   minWage?: string
   medical?: string
+  medicalRate?: string
   tax?: string
   income?: string
   gaps: number
@@ -130,7 +131,8 @@ interface Row {
 const FIELDS = [
   { key: 'pension' as const, label: '养老金计发基数' },
   { key: 'minWage' as const, label: '最低工资' },
-  { key: 'medical' as const, label: '医保费率' },
+  { key: 'medical' as const, label: '医保缴费基数' },
+  { key: 'medicalRate' as const, label: '医保费率' },
   { key: 'tax' as const, label: '个税税率表' },
   { key: 'income' as const, label: '平台计价' },
 ]
@@ -181,6 +183,7 @@ async function load(): Promise<void> {
         pension: s.pension?.confidence,
         minWage: s.minimumWage?.confidence,
         medical: s.medical?.confidence,
+        medicalRate: s.medicalRate?.confidence,
         tax: s.tax?.confidence,
         income: s.income?.confidence,
         gaps: 0,

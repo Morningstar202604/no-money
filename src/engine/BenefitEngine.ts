@@ -28,10 +28,15 @@ export class BenefitEngine {
     const declared = Number.isFinite(income) && income > 0 ? income : 0
 
     const pensionBase = resolveBase(base.pensionBase, declared, this.rule.pension.baseMin, this.rule.pension.baseMax)
-    const medicalBase = resolveBase(base.medicalBase, declared, this.rule.medical.baseMin, this.rule.medical.baseMax)
-    const pensionMonthly = round(pensionBase * this.rule.pension.rate)
     const tier = this.rule.medicalTiers?.find(t => t.id === medicalTierId)
-    const medicalMonthly = round(medicalBase * (tier?.rate ?? this.rule.medical.rate))
+    // 部分城市各档单独规定基数（如成都统账 6265、单建 7831）；
+    // 固定附加费（大额医疗、长护）按档覆盖，未设档时落到 medical.fixedMonthly。
+    const medicalBase = tier?.baseMonthly !== undefined
+      ? tier.baseMonthly
+      : resolveBase(base.medicalBase, declared, this.rule.medical.baseMin, this.rule.medical.baseMax)
+    const pensionMonthly = round(pensionBase * this.rule.pension.rate)
+    const fixedMonthly = tier?.fixedMonthly ?? this.rule.medical.fixedMonthly ?? 0
+    const medicalMonthly = round(medicalBase * (tier?.rate ?? this.rule.medical.rate) + fixedMonthly)
 
     const items: BenefitBreakdown['items'] = [
       { name: '养老保险', monthly: pensionMonthly, covered: enrolled, risk: 'high' },

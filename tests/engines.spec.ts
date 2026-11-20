@@ -106,6 +106,32 @@ describe('BenefitEngine 灵活就业自缴口径', () => {
   })
 })
 
+describe('3.8.5 医保固定基数、分档基数与固定附加费', () => {
+  it('成都单建统筹按该档 7831 基数计价，不受医疗通用基数 6265 影响', () => {
+    const b = new BenefitEngine(loadRuleFile('chengdu.json').benefit)
+      .calcMonthly(30000, true, 'single_pool')
+    expect(b.medicalMonthly).toBeCloseTo(7831 * 0.04, 2)
+  })
+
+  it('成都统账含生育档按 6265×10.3% 计价', () => {
+    const b = new BenefitEngine(loadRuleFile('chengdu.json').benefit)
+      .calcMonthly(30000, true, 'combined_maternity')
+    expect(b.medicalMonthly).toBeCloseTo(6265 * 0.103, 2)
+  })
+
+  it('长沙固定基数 4106 外加 15 元大病，月缴合计 372.22', () => {
+    const b = new BenefitEngine(loadRuleFile('changsha.json').benefit)
+      .calcMonthly(30000, true)
+    expect(b.medicalMonthly).toBeCloseTo(4106 * 0.087 + 15, 2)
+  })
+
+  it('济南 9% 档覆盖全局 10 元大额附加费，月缴 411.57', () => {
+    const b = new BenefitEngine(loadRuleFile('jinan.json').benefit)
+      .calcMonthly(30000, true, 'with_account')
+    expect(b.medicalMonthly).toBeCloseTo(4573 * 0.09, 2)
+  })
+})
+
 describe('ScenarioEngine 结构不变式', () => {
   const eng = new ScenarioEngine(rule)
   const plain = eng.runScenario('current', '当前方案', work, costs, personal)

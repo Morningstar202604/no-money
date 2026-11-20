@@ -88,9 +88,9 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 7460,
-      "baseMax": 37302,
-      "rate": 0.08
+      "baseMin": 7546,
+      "baseMax": 37731,
+      "rate": 0.1
     }
   },
   "minimumWage": {
@@ -160,11 +160,13 @@
       "note": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。"
     },
     "medical": {
-      "title": "上海职工基本医疗保险（灵活就业人员）",
-      "url": "",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。"
+      "title": "本市调整2026年度社保缴费基数上下限",
+      "issuedBy": "上海市人力资源和社会保障局",
+      "url": "https://rsj.sh.gov.cn/tgsgg_17341/20260818/t0035_1443203.html",
+      "effectiveFrom": "2026-07-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026-07-01 起社保缴费基数上限 37731、下限 7546 元/月；灵活就业养老、医保均在此区间自选。"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -215,6 +217,16 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "关于调整本市灵活就业人员职工基本医疗保险缴费费率的通知",
+      "issuedBy": "上海市医疗保障局",
+      "url": "https://ybj.sh.gov.cn/gfxwj/20260313/921e047144694b61b6df8ca0c5ef2cfc.html",
+      "effectiveFrom": "2026-03-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "灵活就业人员职工医保（含生育）费率 10%，执行期 2026-03-01 至 2027-02-28。",
+      "docNo": "沪医保规〔2026〕2号"
     }
   }
 }

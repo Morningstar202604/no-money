@@ -9,11 +9,24 @@
   "income": {
     "basePricePerOrder": 5.0,
     "distanceRate": 1.2,
-    "weightSurcharge": { "threshold": 5, "rate": 0.5 },
-    "timeSubsidy": { "peakHours": ["11:00-13:00", "17:00-19:00", "21:00-23:00"], "multiplier": 1.25 },
+    "weightSurcharge": {
+      "threshold": 5,
+      "rate": 0.5
+    },
+    "timeSubsidy": {
+      "peakHours": [
+        "11:00-13:00",
+        "17:00-19:00",
+        "21:00-23:00"
+      ],
+      "multiplier": 1.25
+    },
     "holidayMultiplier": 1.6,
     "rainSurcharge": 1.35,
-    "monthlyBonus": { "threshold": 800, "amount": 500 }
+    "monthlyBonus": {
+      "threshold": 800,
+      "amount": 500
+    }
   },
   "tax": {
     "method": "annual_consolidated",
@@ -23,33 +36,109 @@
       "expenseDeductionThreshold": 4000,
       "basicDeductionMonthly": 5000,
       "taxTable": [
-        { "min": 0, "max": 36000, "rate": 0.03, "deduction": 0 },
-        { "min": 36000, "max": 144000, "rate": 0.1, "deduction": 2520 },
-        { "min": 144000, "max": 300000, "rate": 0.2, "deduction": 16920 },
-        { "min": 300000, "max": 420000, "rate": 0.25, "deduction": 31920 },
-        { "min": 420000, "max": 660000, "rate": 0.3, "deduction": 52920 },
-        { "min": 660000, "max": 960000, "rate": 0.35, "deduction": 85920 },
-        { "min": 960000, "max": 999999999, "rate": 0.45, "deduction": 181920 }
+        {
+          "min": 0,
+          "max": 36000,
+          "rate": 0.03,
+          "deduction": 0
+        },
+        {
+          "min": 36000,
+          "max": 144000,
+          "rate": 0.1,
+          "deduction": 2520
+        },
+        {
+          "min": 144000,
+          "max": 300000,
+          "rate": 0.2,
+          "deduction": 16920
+        },
+        {
+          "min": 300000,
+          "max": 420000,
+          "rate": 0.25,
+          "deduction": 31920
+        },
+        {
+          "min": 420000,
+          "max": 660000,
+          "rate": 0.3,
+          "deduction": 52920
+        },
+        {
+          "min": 660000,
+          "max": 960000,
+          "rate": 0.35,
+          "deduction": 85920
+        },
+        {
+          "min": 960000,
+          "max": 999999999,
+          "rate": 0.45,
+          "deduction": 181920
+        }
       ]
     }
   },
   "benefit": {
-    "pension": { "baseMin": 5521, "baseMax": 27603, "rate": 0.2 },
-    "medical": { "baseMin": 6234, "baseMax": 31170, "rate": 0.08 }
+    "pension": {
+      "baseMin": 5521,
+      "baseMax": 27603,
+      "rate": 0.2
+    },
+    "medical": {
+      "baseMin": 6234,
+      "baseMax": 31170,
+      "rate": 0.08
+    }
   },
-  "minimumWage": { "monthly": 2680, "nonFullTimeHourly": 25.4 },
-  "retirement": { "personalAccountRate": 0.08, "paymentIndex": 0.6, "assumedAnnualReturn": 0.03, "benefitBaseMonthly": 9493 },
+  "minimumWage": {
+    "monthly": 2680,
+    "nonFullTimeHourly": 25.4
+  },
+  "retirement": {
+    "personalAccountRate": 0.08,
+    "paymentIndex": 0.6,
+    "assumedAnnualReturn": 0.03,
+    "benefitBaseMonthly": 9493
+  },
   "soleProprietorship": {
     "vatRate": 0.01,
     "vatThresholdMonthly": 100000,
     "itrIncomeRate": 0.1,
     "itrDeductionMonthly": 5000,
     "bizTaxTable": [
-      { "min": 0, "max": 30000, "rate": 0.05, "deduction": 0 },
-      { "min": 30000, "max": 90000, "rate": 0.1, "deduction": 1500 },
-      { "min": 90000, "max": 300000, "rate": 0.2, "deduction": 10500 },
-      { "min": 300000, "max": 500000, "rate": 0.3, "deduction": 40500 },
-      { "min": 500000, "max": 999999999, "rate": 0.35, "deduction": 65500 }
+      {
+        "min": 0,
+        "max": 30000,
+        "rate": 0.05,
+        "deduction": 0
+      },
+      {
+        "min": 30000,
+        "max": 90000,
+        "rate": 0.1,
+        "deduction": 1500
+      },
+      {
+        "min": 90000,
+        "max": 300000,
+        "rate": 0.2,
+        "deduction": 10500
+      },
+      {
+        "min": 300000,
+        "max": 500000,
+        "rate": 0.3,
+        "deduction": 40500
+      },
+      {
+        "min": 500000,
+        "max": 999999999,
+        "rate": 0.35,
+        "deduction": 65500
+      }
     ]
   },
   "sources": {
@@ -75,13 +164,13 @@
     },
     "medical": {
       "title": "广州市医疗保障局 广州市财政局 广州市人力资源和社会保障局关于简易修改广州市职工医疗保险和生育保险筹资标准的通知",
-      "docNo": "穗医保规字〔2026〕4号",
       "issuedBy": "广州市医疗保障局、广州市财政局、广州市人力资源和社会保障局",
       "url": "https://www.gz.gov.cn/gzybj/gkmlpt/content/11/11029/post_11029015.html",
-      "effectiveFrom": "2027-01-01 起施行（2026 年内沿用 穗医保规字〔2022〕1号，实体内容一致）",
-      "retrievedAt": "2026-10-12",
+      "effectiveFrom": "2026 年内沿用 2022 年规定",
+      "retrievedAt": "2026-11-20",
       "confidence": "official",
-      "note": "原文二(二)：灵活就业人员应当按其缴费基数的8%按月足额缴纳职工基本医疗保险费；一(一)：灵活就业人员以个人申报的工资收入为缴费基数，上限为本市上上年度全口径城镇单位就业人员月平均工资的300%，下限为60%。原 [2022]1号 已被本文重新发布并作不涉及实体内容的简易修改"
+      "note": "灵活就业人员按缴费基数的 8% 缴纳职工医保；基数上下限 6234–31170 元/月。",
+      "docNo": "穗医保规字〔2026〕4号"
     },
     "medicalBase": {
       "title": "2026年度职工基本医疗保险（含生育保险）缴费基数上下限",
@@ -155,6 +244,15 @@
       "retrievedAt": "2026-10-12",
       "confidence": "derived",
       "note": "计发基数 9493 元/月为广东省（不含深圳）统一口径，深圳单列 11293 元；该数值见于省市人社部门公开答复与多家一致报道，尚未回溯到发布本基数的规范性文件原文文号，对外引用前需补原文。60岁退休计发月数139为法定值；投资收益率3%为自设假设，必须向用户标注。计发月数按 国发〔2005〕38号附表随退休年龄查表（40/45/50/55/60/65/70 岁 → 233/216/195/170/139/101/56），不再写死 139；投资收益率 3% 为自设假设，必须向用户标注"
+    },
+    "medicalRate": {
+      "title": "广州市职工医保筹资标准",
+      "issuedBy": "广州市医疗保障局",
+      "url": "https://www.gz.gov.cn/gzybj/gkmlpt/content/11/11029/post_11029015.html",
+      "effectiveFrom": "2026 年度",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "原文：灵活就业人员按其缴费基数的 8% 按月足额缴纳职工基本医疗保险费。"
     }
   }
 }

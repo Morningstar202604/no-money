@@ -24,7 +24,6 @@ import type {
 import { calcIncome as domainCalcIncome, calcCosts as domainCalcCosts } from '../../domain/income/calculator'
 import { calcLaborMonthly as domainCalcLabor } from '../../domain/tax/calculator'
 import { calcMonthly as domainCalcBenefit } from '../../domain/benefit/calculator'
-import { findMedicalTierRate } from '../../domain/benefit/calculator'
 import { err, tryCatch } from '../../domain/shared/result'
 import type { Result } from '../../domain/shared/result'
 import { AppError } from '../errors'
@@ -121,7 +120,8 @@ export class ScenarioService {
         )
         if (!taxResult.ok) throw new Error(`个税计算失败: ${taxResult.error.code}`)
 
-        const medicalTierRate = findMedicalTierRate(this.benefitRule.medicalTiers, personal.medicalTierId)
+        const medicalTier = this.benefitRule.medicalTiers?.find(t => t.id === personal.medicalTierId)
+        const medicalTierRate = medicalTier?.rate
         const benefitResult = domainCalcBenefit(
           monthlyGrossCent,
           personal.hasSocialInsurance,
@@ -131,6 +131,7 @@ export class ScenarioService {
             medicalBase: personal.medicalBase !== undefined ? toCent(personal.medicalBase) : undefined,
           },
           this.benefitRule,
+          medicalTier,
         )
         if (!benefitResult.ok) throw new Error(`社保计算失败: ${benefitResult.error.code}`)
 

@@ -2,7 +2,7 @@
   "city": "chongqing",
   "cityName": "重庆",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -88,10 +88,24 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4553,
-      "baseMax": 22765,
-      "rate": 0.08
-    }
+      "baseMin": 5175,
+      "baseMax": 5175,
+      "rate": 0.05
+    },
+    "medicalTiers": [
+      {
+        "id": "tier1",
+        "name": "一档（基本医保）",
+        "rate": 0.05,
+        "note": "年缴 3105 元（基本医疗 2484 + 大额 621），折月 258.75 元；按 5175 基数折算费率 5%。"
+      },
+      {
+        "id": "tier2",
+        "name": "二档（基本医保+个人账户）",
+        "rate": 0.11,
+        "note": "年缴 6831 元（基本医疗 6210 + 大额 621），折月 569.25 元；按 5175 基数折算费率 11%。"
+      }
+    ]
   },
   "minimumWage": {
     "monthly": 2330,
@@ -160,14 +174,14 @@
       "note": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。"
     },
     "medical": {
-      "title": "2026年度社会保险缴费基数上下限核定（含职工医保）",
-      "docNo": "渝人社规〔2026〕18号",
-      "issuedBy": "重庆市人力资源和社会保障局等四部门",
-      "url": "https://rlsbj.cq.gov.cn/zwgk_182/zfxxgkml/zcwj_145360/jfxzgfxwj/202609/t20260917_16091209.html",
-      "effectiveFrom": "2026-09-17",
-      "retrievedAt": "2026-10-15",
+      "title": "关于2026年以个人身份参加城镇职工医疗保险、长期护理保险缴费有关问题的通知",
+      "issuedBy": "重庆市医疗保障局、重庆市财政局、国家税务总局重庆市税务局",
+      "url": "https://ylbzj.cq.gov.cn/zwgk_535/zfxxgkml/zcwj_291934/gfxwj/202512/t20251218_15255273.html",
+      "effectiveFrom": "2026-01-01",
+      "retrievedAt": "2026-11-20",
       "confidence": "official",
-      "note": "职工基本医疗保险（含生育保险）与养老同档同标准核定；费率因参保形式而异，本项目 8% 为占位口径，以经办机构核定为准。"
+      "note": "2026 年按年度缴费基数为 62100 元（5175 元/月）；一档 3105 元/年、二档 6831 元/年；长期护理保险 147 元/年另计。",
+      "docNo": "渝医保发〔2025〕48号"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -217,6 +231,15 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "重庆市2026年度灵活就业人员医保缴费指南",
+      "issuedBy": "重庆市人民政府",
+      "url": "https://cq.gov.cn/ywdt/zwhd/bmdt/202601/t20260105_15289547.html",
+      "effectiveFrom": "2026-01-04",
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "官方公布年缴金额，未直接给费率；按 5175×12 折算：3105/62100=5%，6831/62100=11%。"
     }
   }
 }

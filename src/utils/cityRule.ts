@@ -9,7 +9,7 @@ const optional = (check: Check): Check => value => value === undefined || check(
 const shape = (fields: Record<string, Check>): Check => value => object(value) && Object.entries(fields).every(([key, check]) => check(value[key]))
 const list = (check: Check): Check => value => Array.isArray(value) && value.length > 0 && value.every(check)
 const bracket = shape({ min: number, max: number, rate: number, deduction: number })
-const insurance = shape({ baseMin: number, baseMax: number, rate: number })
+const insurance = shape({ baseMin: number, baseMax: number, rate: number, fixedMonthly: optional(number) })
 const source = shape({
   title: text, retrievedAt: text,
   confidence: value => value === 'official' || value === 'derived' || value === 'unverified',
@@ -25,7 +25,8 @@ const cityRule = shape({
   tax: shape({ method: text, laborRemuneration: shape({ expenseDeductionRate: rate, expenseDeductionFixed: optional(number),
     expenseDeductionThreshold: optional(number), basicDeductionMonthly: number, taxTable: list(bracket) }) }),
   benefit: shape({ pension: insurance, medical: insurance,
-    medicalTiers: optional(list(shape({ id: text, name: text, rate: rate, note: text }))) }),
+    medicalTiers: optional(list(shape({ id: text, name: text, rate: rate, note: text,
+      baseMonthly: optional(number), fixedMonthly: optional(number) }))) }),
   minimumWage: shape({ monthly: number, nonFullTimeHourly: number }),
   retirement: shape({ benefitBaseMonthly: number, paymentIndex: number, assumedAnnualReturn: rate, personalAccountRate: optional(rate) }),
   soleProprietorship: shape({ vatRate: rate, vatThresholdMonthly: number, itrIncomeRate: rate, itrDeductionMonthly: number, bizTaxTable: list(bracket) }),
@@ -35,7 +36,13 @@ const cityRule = shape({
 export function parseCityRule(value: unknown): CityRule {
   if (!cityRule(value)) throw new Error('城市规则格式无效，请核对规则文件')
   const rule = value as CityRule
-  const invalidInsurance = [rule.benefit.pension, rule.benefit.medical].some(item => item.baseMin <= 0 || item.baseMax <= item.baseMin || item.rate <= 0 || item.rate >= 1)
+  // 医保允许固定基数城市（如长沙、福州）上下限相等；养老仍须有真实区间
+  const invalidPension = rule.benefit.pension.baseMin <= 0 || rule.benefit.pension.baseMax <= rule.benefit.pension.baseMin
+    || rule.benefit.pension.rate <= 0 || rule.benefit.pension.rate >= 1
+  const invalidMedical = rule.benefit.medical.baseMin <= 0 || rule.benefit.medical.baseMax < rule.benefit.medical.baseMin
+    || rule.benefit.medical.rate <= 0 || rule.benefit.medical.rate >= 1
+    || (rule.benefit.medical.fixedMonthly !== undefined && rule.benefit.medical.fixedMonthly < 0)
+  const invalidInsurance = invalidPension || invalidMedical
   const tableInvalid = (table: CityRule['tax']['laborRemuneration']['taxTable']) =>
     table[0].min !== 0
     // 首档必须零扣除，否则 0 元收入会算出负税并在取整时被掩盖
@@ -56,7 +63,7 @@ export function parseCityRule(value: unknown): CityRule {
   if (invalidInsurance || tableInvalid(rule.tax.laborRemuneration.taxTable) || tableInvalid(rule.soleProprietorship.bizTaxTable)) {
     throw new Error('城市规则数值区间无效，请核对规则文件')
   }
-  const requiredSources = ['pension', 'pensionRate', 'medical', 'tax', 'minimumWage', 'retirement', 'income', 'soleVat', 'soleItr']
+  const requiredSources = ['pension', 'pensionRate', 'medical', 'medicalRate', 'tax', 'minimumWage', 'retirement', 'income', 'soleVat', 'soleItr']
   if (rule.verified && (requiredSources.some(key => !rule.sources[key]) || Object.values(rule.sources).some(s => s.confidence !== 'official' || !(s.docNo || s.url)))) {
     throw new Error('城市规则核验状态与来源不一致')
   }

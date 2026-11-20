@@ -121,7 +121,7 @@ export interface BenefitRule {
   /** 灵活就业人员自行缴纳全部费率，不存在单位分担 */
   pension: { baseMin: number; baseMax: number; rate: number }
   /** 以本人申报收入为基数，夹在上下限之间。rate 为默认档费率 */
-  medical: { baseMin: number; baseMax: number; rate: number }
+  medical: { baseMin: number; baseMax: number; rate: number; fixedMonthly?: number }
   /** 部分城市（如东莞）医保分档收费，无单一法定费率；缺省时按 medical.rate 计算 */
   medicalTiers?: MedicalTier[]
 }
@@ -132,6 +132,10 @@ export interface MedicalTier {
   name: string
   rate: number
   note: string
+  /** 该档单独规定的月缴费基数；缺省时用 medical 基数 */
+  baseMonthly?: number
+  /** 该档单独规定的固定月附加费；缺省时用 medical.fixedMonthly */
+  fixedMonthly?: number
 }
 
 // ===== 用户输入模型 =====

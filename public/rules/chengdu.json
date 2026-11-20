@@ -2,7 +2,7 @@
   "city": "chengdu",
   "cityName": "成都",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -88,10 +88,33 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4699,
-      "baseMax": 23493,
-      "rate": 0.08
-    }
+      "baseMin": 6265,
+      "baseMax": 6265,
+      "rate": 0.095
+    },
+    "medicalTiers": [
+      {
+        "id": "combined",
+        "name": "统账结合（不含生育）",
+        "rate": 0.095,
+        "baseMonthly": 6265,
+        "note": "2026-10 起：基数 6265 元，费率 9.5%（基本医保 8.75% + 大病互助 0.75%），月缴 595.18 元。"
+      },
+      {
+        "id": "combined_maternity",
+        "name": "统账结合（含生育）",
+        "rate": 0.103,
+        "baseMonthly": 6265,
+        "note": "基数 6265 元，费率 10.3%（基本医保 8.75% + 大病 0.75% + 生育 0.8%），月缴 645.30 元。"
+      },
+      {
+        "id": "single_pool",
+        "name": "单建统筹（无个人账户）",
+        "rate": 0.04,
+        "baseMonthly": 7831,
+        "note": "基数 7831 元（省平 100%），费率 4%，月缴 313.24 元，不建个人账户。"
+      }
+    ]
   },
   "minimumWage": {
     "monthly": 2330,
@@ -161,13 +184,13 @@
     },
     "medical": {
       "title": "关于2026年度职工医疗保险缴费有关问题的通知",
-      "docNo": "成医保办〔2026〕14号",
       "issuedBy": "成都市医疗保障局、成都市财政局、国家税务总局成都市税务局",
       "url": "https://cdyb.chengdu.gov.cn/gkml/qtwj/1550450279336378368.shtml",
       "effectiveFrom": "2026-10-01",
-      "retrievedAt": "2026-10-15",
+      "retrievedAt": "2026-11-20",
       "confidence": "official",
-      "note": "医保缴费基数与养老同口径（上限 23493 / 下限 4699 元/月）；灵活就业统账结合 6265 元/月、单建统筹 7831 元/月。费率因参保形式而异，本项目 8% 为统账结合口径占位，具体以经办机构核定为准。"
+      "note": "灵活就业统账结合基数为 7831×80%=6265 元/月，单建统筹基数为 7831×100%=7831 元/月；单位职工上下限 4699–23493 不适用于灵活就业。",
+      "docNo": "成医保办〔2026〕14号"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -218,6 +241,15 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "2026年成都灵活就业人员医保缴费一览表",
+      "issuedBy": "成都市郫都区医疗保障局",
+      "url": "https://www.pidu.gov.cn/pidu/c125819/2026-09/23/content_65c2672b5fc040feb870bf1811da68a3.shtml",
+      "effectiveFrom": "2026-10 属期起",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "官方表：统账结合（不含生育）9.5%=595.18 元；统账结合（含生育）10.3%=645.30 元；单建统筹 4%=313.24 元。"
     }
   }
 }

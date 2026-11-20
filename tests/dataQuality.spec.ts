@@ -103,8 +103,16 @@ describe('数据质量标记', () => {
 
 describe('本省法定参数覆盖后的数据质量判定', () => {
   it('未核实城市：填入本省基数与最低工资后，对应字段移出「未核实」清单', () => {
-    // 石家庄的 medical 仍为 unverified，pension 与 minimumWage 已在 3.8.2/3.9.0 核验为 official
-    const sjz = loadRuleFile('shijiazhuang.json')
+    // 3.8.5 起 34 城医保基数均已官方化；此处临时把石家庄医保来源降为
+    // unverified，单测只验证「来源置信度 → 缺失清单」的映射机制，不依赖真实占位。
+    const baseRule = loadRuleFile('shijiazhuang.json')
+    const sjz = {
+      ...baseRule,
+      sources: {
+        ...baseRule.sources,
+        medical: { ...baseRule.sources.medical, confidence: 'unverified' as const },
+      },
+    }
     const before = new ScenarioService(sjz).runScenario({ id: 'q', name: 'q', work, costs, personal: personal({ hasSocialInsurance: true }) })
     expect(before.ok).toBe(true)
     if (!before.ok) return

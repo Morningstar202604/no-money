@@ -88,9 +88,9 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4812,
-      "baseMax": 24060,
-      "rate": 0.08
+      "baseMin": 4986,
+      "baseMax": 4986,
+      "rate": 0.095
     }
   },
   "minimumWage": {
@@ -159,11 +159,14 @@
       "note": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。"
     },
     "medical": {
-      "title": "杭州职工基本医疗保险（灵活就业人员）",
-      "url": "",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。"
+      "title": "关于公布2026年杭州市基本医疗保障有关数据的通告",
+      "issuedBy": "杭州市医疗保障局、国家税务总局杭州市税务局",
+      "url": "https://m.thepaper.cn/newsDetail_forward_32364333",
+      "effectiveFrom": "2026-01-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 年灵活就业医保（含生育）基数为 4986 元/月，费率 9.5%，月缴 473.67 元。该基数按 2023 年省平 99722×60%÷12 计算，低于同期养老下限 5122。",
+      "docNo": "杭州发布 2026-01-11 全文"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -215,6 +218,16 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "杭州市基本医疗保障办法",
+      "issuedBy": "杭州市人民政府",
+      "url": "https://www.hangzhou.gov.cn/col/col1229051171/xszfwj/art/2025/art_be0c5ecb219a497491621830b71bc2c8.html",
+      "effectiveFrom": "2025-10-15",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "灵活就业人员以上年度省平工资 60% 为基数，按 9.5% 缴纳职工医保（含生育）。2026 年官方数据公布基数为 4986、月缴 473.67 元。",
+      "docNo": "杭政函〔2025〕88号"
     }
   }
 }

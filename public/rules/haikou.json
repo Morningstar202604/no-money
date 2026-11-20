@@ -88,9 +88,10 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4500,
-      "baseMax": 22500,
-      "rate": 0.08
+      "baseMin": 8188,
+      "baseMax": 8188,
+      "rate": 0.0485,
+      "fixedMonthly": 14.74
     }
   },
   "minimumWage": {
@@ -160,11 +161,13 @@
       "note": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。"
     },
     "medical": {
-      "title": "海口职工医保缴费基数（待核实）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：海口的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到海南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "海口市灵活就业人员医保缴费基数（2026年）",
+      "issuedBy": "海南省12345政务服务便民热线",
+      "url": "https://12345.hainan.gov.cn/hnwsbsdt/hnwebsite/pages/default/appeal_details?guid=f4d2efa1-84ed-4cb7-8544-e06ba95e84a3",
+      "effectiveFrom": "2026 年度",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 年海南灵活就业医保基数为上年度全省在岗职工月平均工资 100%，即 8188 元/月；基本医保 4.85%（397.12 元）+ 长护 14.74 元，合计 411.86 元/月。"
     },
     "tax": {
       "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
@@ -215,6 +218,15 @@
       "retrievedAt": "2026-10-27",
       "confidence": "unverified",
       "note": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。"
+    },
+    "medicalRate": {
+      "title": "海南灵活就业人员医保缴费标准",
+      "issuedBy": "海口市医疗保障局",
+      "url": "https://ybj.haikou.gov.cn/hksybj/zcwd/202511/2a9959bae4064d36b51f38fe847c4247.shtml",
+      "effectiveFrom": "2026 年度",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 年 12345 官方答复按 4.85% 实际征收，长护 14.74 元/月；2024 年文件曾写阶段性 5%，以现行征收口径为准。"
     }
   }
 }

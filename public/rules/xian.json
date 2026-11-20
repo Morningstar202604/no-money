@@ -2,7 +2,7 @@
   "city": "xian",
   "cityName": "西安",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -164,9 +164,9 @@
       "issuedBy": "西安市医疗保障局",
       "url": "https://ybj.xa.gov.cn/szyw/tzgg/1970694363029188610.html",
       "effectiveFrom": "2025-09-25",
-      "retrievedAt": "2026-10-15",
+      "retrievedAt": "2026-11-20",
       "confidence": "official",
-      "note": "医保基数与养老不同口径、且单独公布：2025年度上限 24948 元/月、下限 4990 元/月。2026 年度官方尚未检索到，故此处仍为 2025 年度口径。"
+      "note": "2025 年度职工医保基数上限 24948、下限 4990 元/月；2026 年度官方尚未检索到，暂沿用 2025 口径。"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -217,6 +217,15 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "西安市职工医保缴费基数公布（费率待核）",
+      "issuedBy": "西安市医疗保障局",
+      "url": "https://ybj.xa.gov.cn/szyw/tzgg/1970694363029188610.html",
+      "effectiveFrom": "2025-09-25",
+      "retrievedAt": "2026-11-20",
+      "confidence": "unverified",
+      "note": "当前 8% 仍为项目占位值；官方基数页未单列灵活就业费率，2026 费率待补官方原文。"
     }
   }
 }

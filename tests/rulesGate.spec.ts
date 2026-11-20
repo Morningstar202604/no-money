@@ -105,13 +105,13 @@ describe('规则文件溯源门禁', () => {
     }
   })
 
-  it('养老/医保基数下限必须小于上限（resolveBase 对反写区间会静默按下限计费）', () => {
+  it('养老基数下限必须小于上限，医保允许固定基数上下限相等', () => {
     for (const [f, rule] of Object.entries(rules)) {
       const pension = rule.benefit as { pension?: { baseMin: number; baseMax: number } } | undefined
       expect(pension?.pension?.baseMax ?? 0, `${f} 养老基数上限非法`).toBeGreaterThan(pension?.pension?.baseMin ?? 0)
       const medical = (rule.benefit as { medical?: { baseMin: number; baseMax: number } } | undefined)?.medical
       if (medical && medical.baseMin !== undefined) {
-        expect(medical.baseMax, `${f} 医保基数上限非法`).toBeGreaterThan(medical.baseMin)
+        expect(medical.baseMax, `${f} 医保基数上限非法`).toBeGreaterThanOrEqual(medical.baseMin)
       }
     }
   })

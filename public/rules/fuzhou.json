@@ -88,9 +88,9 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4500,
-      "baseMax": 22500,
-      "rate": 0.08
+      "baseMin": 4579,
+      "baseMax": 4579,
+      "rate": 0.1
     }
   },
   "minimumWage": {
@@ -160,11 +160,14 @@
       "note": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。"
     },
     "medical": {
-      "title": "福州职工医保缴费基数（待核实）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：福州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到福建省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "关于调整2026年职工医保缴费上下限基数的通知",
+      "issuedBy": "福建省医疗保障局",
+      "url": "https://ybj.fujian.gov.cn/zfxxgkzl/fdzdgknr/qtyzdgkzfxx/202606/t20260629_7168980.htm",
+      "effectiveFrom": "2026-07-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 职工医保（含生育、长护）上限 22893、下限 4579 元/月；灵活就业月缴费基数固定为 4579 元。",
+      "docNo": "闽医保函〔2026〕65号"
     },
     "tax": {
       "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
@@ -215,6 +218,15 @@
       "retrievedAt": "2026-10-27",
       "confidence": "unverified",
       "note": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。"
+    },
+    "medicalRate": {
+      "title": "福州市灵活就业人员医保政策问答",
+      "issuedBy": "福州市医疗保障局",
+      "url": "https://www.fuzhou.gov.cn/zgfzzt/ylws/ybzchb/202512/P020251208613428631915.pdf",
+      "effectiveFrom": "2026 年度",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "福州灵活就业人员按缴费基数的 10% 缴纳职工医保（含生育、长护），基数固定 4579 元/月。"
     }
   }
 }

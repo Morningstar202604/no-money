@@ -88,10 +88,27 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4500,
-      "baseMax": 22500,
-      "rate": 0.08
-    }
+      "baseMin": 4573,
+      "baseMax": 4573,
+      "rate": 0.07,
+      "fixedMonthly": 10
+    },
+    "medicalTiers": [
+      {
+        "id": "no_account",
+        "name": "不建个人账户",
+        "rate": 0.07,
+        "fixedMonthly": 10,
+        "note": "月缴 4573×7%+10=330.11 元。"
+      },
+      {
+        "id": "with_account",
+        "name": "建立个人账户",
+        "rate": 0.09,
+        "fixedMonthly": 0,
+        "note": "月缴 4573×9%=411.57 元，其中约 81.46 元划入个人账户。"
+      }
+    ]
   },
   "minimumWage": {
     "monthly": 2400,
@@ -160,11 +177,13 @@
       "note": "全国普遍为 20%（12% 统筹 + 8% 个账），具体以参保地经办口径为准。"
     },
     "medical": {
-      "title": "济南职工医保缴费基数（待核实）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "济南市2026年度职工基本医疗保险缴费基数调整",
+      "issuedBy": "济南市医疗保障局",
+      "url": "https://ybj.jinan.gov.cn/col/col116777/art/2026/art_d23ae2576b954cefa27abf820b467a04.html",
+      "effectiveFrom": "2026-09-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "灵活就业医保基数 4573 元/月；可按 7%（不建个人账户）或 9%（其中 2% 划入个人账户）缴纳。"
     },
     "tax": {
       "title": "中华人民共和国个人所得税法实施条例 + 个人所得税税率表一（综合所得）",
@@ -215,6 +234,15 @@
       "retrievedAt": "2026-10-27",
       "confidence": "unverified",
       "note": "行业所得率由各省级税务局按行业核定，无全国统一值；当前 10% 为占位。"
+    },
+    "medicalRate": {
+      "title": "济南职工基本医保缴费基数调整",
+      "issuedBy": "济南市医疗保障局",
+      "url": "https://ybj.jinan.gov.cn/col/col116777/art/2026/art_d23ae2576b954cefa27abf820b467a04.html",
+      "effectiveFrom": "2026-09-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "7% 档另缴职工大额医疗费 10 元/月；9% 档 411.57 元已含大额医疗费。"
     }
   }
 }

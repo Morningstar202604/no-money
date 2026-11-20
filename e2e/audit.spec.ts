@@ -5,26 +5,26 @@ import { test, expect } from '@playwright/test'
  *
  * 这页的存在意义是"让用户判断能不能信这个数"。
  * 因此测的不是"页面能打开"，而是：
- *   1. 矩阵真的渲染出 34 城 × 5 字段
+ *   1. 矩阵真的渲染出 34 城 × 6 字段
  *   2. 覆盖率是算出来的真数字，不是写死的
  *   3. 未核实字段用黄色标注（视觉上必须与已核实可区分）
  */
 test.describe('数据核验对账', () => {
-  test('矩阵渲染 34 城 × 5 字段，且覆盖率来自真实统计', async ({ page }) => {
+  test('矩阵渲染 34 城 × 6 字段，且覆盖率来自真实统计', async ({ page }) => {
     await page.goto('/audit')
     await page.waitForTimeout(3500)
 
     const rows = page.locator('.matrix tbody tr')
     await expect(rows).toHaveCount(34)
 
-    // 5 个字段列
+    // 6 个字段列
     const headers = page.locator('.matrix thead th')
-    // 城市列 + 5 字段 + 缺口列 = 7
-    await expect(headers).toHaveCount(7)
+    // 城市列 + 6 字段 + 缺口列 = 8
+    await expect(headers).toHaveCount(8)
 
-    // 每行必须有 5 个色块
+    // 每行必须有 6 个色块
     const cellsInFirstRow = rows.first().locator('.cell')
-    await expect(cellsInFirstRow).toHaveCount(5)
+    await expect(cellsInFirstRow).toHaveCount(6)
 
     // 覆盖率数字必须是 0-100 的整数（不是占位符）
     const ratioText = await page.locator('.metric-value').nth(3).innerText()

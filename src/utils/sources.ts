@@ -7,7 +7,8 @@ import type { SourceRef } from '../types'
 export const SOURCE_LABELS: Record<string, string> = {
   pension: '养老保险缴费基数上下限',
   pensionRate: '养老保险缴费比例',
-  medical: '医疗保险缴费规则',
+  medical: '医疗保险缴费基数',
+  medicalRate: '医疗保险缴费费率',
   medicalTierRate: '医保分档费率调整',
   medicalBase: '医疗保险缴费基数上下限',
   tax: '劳务报酬累计预扣',

@@ -146,7 +146,7 @@ async function checkCities() {
 
   let calcFailed = 0
   let sourceMissing = 0
-  const requiredSources = ['pension', 'pensionRate', 'medical', 'tax', 'minimumWage', 'retirement', 'income', 'soleVat', 'soleItr']
+  const requiredSources = ['pension', 'pensionRate', 'medical', 'medicalRate', 'tax', 'minimumWage', 'retirement', 'income', 'soleVat', 'soleItr']
 
   for (const f of files) {
     const id = f.replace('.json', '')

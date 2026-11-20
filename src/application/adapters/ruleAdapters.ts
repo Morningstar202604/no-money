@@ -103,12 +103,15 @@ export function adaptBenefitRule(
       baseMin: toCent(r.medical.baseMin),
       baseMax: toCent(r.medical.baseMax),
       rate: Rate.create(r.medical.rate),
+      fixedMonthly: r.medical.fixedMonthly === undefined ? undefined : toCent(r.medical.fixedMonthly),
     },
     medicalTiers: r.medicalTiers?.map(t => ({
       id: t.id,
       name: t.name,
       rate: Rate.create(t.rate),
       note: t.note,
+      baseMonthly: t.baseMonthly === undefined ? undefined : toCent(t.baseMonthly),
+      fixedMonthly: t.fixedMonthly === undefined ? undefined : toCent(t.fixedMonthly),
     })),
   }
 }

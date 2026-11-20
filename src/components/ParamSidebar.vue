@@ -336,7 +336,7 @@
         </div>
 
         <div v-if="medicalTiers.length > 0" class="ps-item">
-          <div class="ps-label">医保档次 <SourceTag source-key="medical" /></div>
+          <div class="ps-label">医保档次 <SourceTag source-key="medicalRate" /></div>
           <n-select
             :value="store.personal.medicalTierId || defaultTierId"
             :options="medicalTierOptions"
@@ -363,15 +363,19 @@
           </div>
 
           <div class="ps-item">
-            <div class="ps-label">医保缴费基数 <SourceTag source-key="medical" /> <b>¥{{ store.personal.medicalBase ?? autoMedicalBase }}</b></div>
+            <div class="ps-label">医保缴费基数 <SourceTag source-key="medical" /> <b>¥{{ effectiveMedicalBase }}</b></div>
             <n-slider
+              v-if="!medicalBaseLocked"
               :value="store.personal.medicalBase ?? autoMedicalBase"
               :min="medicalBaseMin"
               :max="medicalBaseMax"
               :step="100"
               @update:value="(v: number) => store.personal.medicalBase = v === autoMedicalBase ? undefined : v"
             />
-            <div class="ps-note">同上，医保基数也在上下限内自选。留空=按申报收入计。</div>
+            <div v-else class="ps-note">
+              该{{ selectedMedicalTier ? '医保档次' : '城市' }}按固定基数 ¥{{ effectiveMedicalBase }} 缴纳，无上下限自选。
+            </div>
+            <div v-if="!medicalBaseLocked" class="ps-note">同上，医保基数也在上下限内自选。留空=按申报收入计。</div>
           </div>
         </template>
 
@@ -623,6 +627,12 @@ const pensionBaseMin = computed(() => store.rule?.benefit.pension.baseMin ?? 0)
 const pensionBaseMax = computed(() => store.rule?.benefit.pension.baseMax ?? 10000)
 const medicalBaseMin = computed(() => store.rule?.benefit.medical.baseMin ?? 0)
 const medicalBaseMax = computed(() => store.rule?.benefit.medical.baseMax ?? 10000)
+const selectedMedicalTier = computed(() =>
+  store.rule?.benefit.medicalTiers?.find(t => t.id === store.personal.medicalTierId))
+const effectiveMedicalBase = computed(() =>
+  selectedMedicalTier.value?.baseMonthly ?? store.personal.medicalBase ?? autoMedicalBase.value)
+const medicalBaseLocked = computed(() =>
+  medicalBaseMin.value === medicalBaseMax.value || selectedMedicalTier.value?.baseMonthly !== undefined)
 
 function autoBase(min: number, max: number): number {
   const gross = store.scenarios[0]?.income.grossIncome ?? 0

@@ -88,9 +88,10 @@
       "rate": 0.2
     },
     "medical": {
-      "baseMin": 4361,
-      "baseMax": 21805,
-      "rate": 0.08
+      "baseMin": 4106,
+      "baseMax": 4106,
+      "rate": 0.087,
+      "fixedMonthly": 15
     }
   },
   "minimumWage": {
@@ -159,11 +160,14 @@
       "note": "灵活就业人员企业职工基本养老保险缴费比例普遍为 20%（12% 统筹 + 8% 个人账户）；以参保地经办口径为准。"
     },
     "medical": {
-      "title": "长沙职工基本医疗保险（灵活就业人员）",
-      "url": "",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "本城灵活就业人员职工医保个人费率未逐字回溯到现行有效文件，暂按 8% 占位参与测算（8% 为多地灵活就业职工医保常见口径）；请以参保地医保局口径为准，参保前务必核实。"
+      "title": "关于明确2026年度职工基本医疗保险缴费基数的通知",
+      "issuedBy": "湖南省医疗保障局",
+      "url": "http://ybj.hunan.gov.cn/ybj/first113541/firstF/f3113607/202608/t20260821_34049019.html",
+      "effectiveFrom": "2026-10-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 基准值 6843 元/月，灵活就业医保基数统一按 60% 即 4106 元/月；职工医保基数上限 20529、下限 4106。",
+      "docNo": "湘医保发〔2026〕36号"
     },
     "tax": {
       "title": "个人所得税法实施条例 + 税率表一（综合所得）",
@@ -215,6 +219,15 @@
       "retrievedAt": "2026-10-14",
       "confidence": "unverified",
       "note": "行业所得率各省分别核定；本文件 10% 为占位值，未回溯本市现行表。"
+    },
+    "medicalRate": {
+      "title": "长沙灵活就业人员医保缴费标准",
+      "issuedBy": "长沙市医疗保障局",
+      "url": "http://ybj.changsha.gov.cn/xxgk/dtyw/202609/t20260903_12542125.html",
+      "effectiveFrom": "2026-10-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "灵活就业费率 8.7%（职工医保 8% + 生育 0.7%），另缴大病保险 15 元/月；按月缴约 372 元。"
     }
   }
 }
