@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 7054,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -188,12 +189,11 @@
       "note": "南昌东湖、西湖、青云谱、青山湖、红谷滩及两个开发区执行一类区域 2,240 元 / 22.4 元；新建区、南昌县执行二类 2,090 元 / 20.9 元。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；南昌的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于公布2025年度城镇职工基本养老保险基本养老金计发基数有关问题的通知",
+      "url": "https://rst.jiangxi.gov.cn/jxsrlzyhshbzt/col/col54443/content/content_1970060182248210432.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2025 年 7054 元/月，官方原文明确；2026 年新基数尚未公布。"
     },
     "income": {
       "title": "平台接单计价规则",

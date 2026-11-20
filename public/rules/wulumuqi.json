@@ -115,7 +115,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 8744,
+    "benefitBaseYear": 2026
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -202,12 +203,11 @@
       "note": "乌鲁木齐市、克拉玛依市执行第一档 2,270 元 / 22.7 元；自 2026-10-01 起执行。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；乌鲁木齐的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于明确2026年自治区城镇职工基本养老保险缴费基数的通知",
+      "url": "https://rst.xinjiang.gov.cn/xjrst/c112734/202609/234e01d8b8b9404ca3c98c2cee384903.shtml",
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "2026 年 8744 元/月为新疆 2025 年全口径月平均工资；官方通知明确该数据关系参保缴费、待遇核定，计发基数按同口径采用，未见单列计发文。"
     },
     "income": {
       "title": "平台接单计价规则",

@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 8390,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -188,12 +189,12 @@
       "note": "和平、沈河、铁西、皇姑、大东、浑南、于洪、沈北、苏家屯月最低工资 2,230 元 / 22 元；辽中、新民、法库、康平 2,080 元 / 20 元；自 2025-12-01 起执行。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；沈阳的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于公布2025年养老保险缴费基数上下限和计发基数等有关问题的通知",
+      "docNo": "辽人社〔2025〕17号",
+      "url": "https://rst.ln.gov.cn/rst/zxzx/gsgg/2025092012232024861/index.shtml",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2025 年沈阳市企业职工计发基数 8390 元/月（100680 元/年），全省不含沈阳、大连为 7346 元/月；2026 年新基数尚未公布。"
     },
     "income": {
       "title": "平台接单计价规则",

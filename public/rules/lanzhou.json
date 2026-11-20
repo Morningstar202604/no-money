@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 7594,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -188,12 +189,12 @@
       "note": "兰州城关、七里河、安宁、西固、红古执行一类地区 2,200 元 / 22 元；永登、榆中、皋兰执行二类 2,130 元 / 21.5 元；自 2025-12-01 起执行。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；兰州的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于公布2024年甘肃省基本养老金计发基数的通知",
+      "docNo": "甘人社通〔2024〕330号",
+      "url": "https://www.jyg.gov.cn/rsj/zwxxgk/fdzdgknr/shbzxx/art/2025/art_653628171.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "2024 年官方基数 7594 元/月；2025/2026 年未检索到甘肃新计发基数专项文，暂按 7594 元/月测算。"
     },
     "income": {
       "title": "平台接单计价规则",

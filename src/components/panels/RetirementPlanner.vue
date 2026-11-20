@@ -6,8 +6,9 @@
         职工养老金 = 基础养老金 + 个人账户养老金。灵活就业者按基数的 20% 全额自缴，
         其中 12% 进统筹基金、8% 记入个人账户——只有 8% 参与账户滚存。
         年龄可在左侧参数栏「税务与社保」中调整。计发基数取本城口径
-        （<b>{{ (store.rule?.retirement.benefitBaseMonthly ?? 0).toLocaleString() }}</b> 元/月）<SourceTag source-key="retirement" />，账户收益率
-        {{ assumedReturnPct }}% 为假设值，实际由人社部门核算。
+        （<b>{{ (store.rule?.retirement.benefitBaseMonthly ?? 0).toLocaleString() }}</b> 元/月<span v-if="baseYear">，{{ baseYear }} 年</span>）<SourceTag source-key="retirement" />。
+        <span v-if="baseYearPending">{{ currentYear }} 年新基数尚未在本地规则登记，当前按 {{ baseYear }} 年标准测算，实际以人社核定为准。</span>
+        账户收益率 {{ assumedReturnPct }}% 为假设值，实际由人社部门核算。
       </p>
       <!-- 未参保时本页仍会算出养老金，若不说明前提，用户会以为自己已经有这笔钱 -->
       <n-alert v-if="!store.personal.hasSocialInsurance" type="info" :show-icon="true" style="margin-top: 8px">
@@ -291,6 +292,9 @@ const annualReturn = computed(() =>
     : (store.rule?.retirement.assumedAnnualReturn ?? DEFAULT_RETURN),
 )
 const assumedReturnPct = computed(() => Math.round(annualReturn.value * 1000) / 10)
+const currentYear = new Date().getFullYear()
+const baseYear = computed(() => store.rule?.retirement.benefitBaseYear)
+const baseYearPending = computed(() => typeof baseYear.value === 'number' && baseYear.value < currentYear)
 const usingCustomReturn = computed(() => typeof store.personal.assumedAnnualReturn === 'number')
 function setReturn(pct: number | null) {
   store.personal.assumedAnnualReturn = (pct === null || !Number.isFinite(pct)) ? undefined : pct / 100

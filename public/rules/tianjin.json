@@ -102,7 +102,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 9417
+    "benefitBaseMonthly": 9417,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -188,12 +189,11 @@
       "note": "月最低工资 2,510 元、非全日制小时 26.6 元，自 2025-09-01 起执行；标准包含个人社保和公积金缴费部分。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（基础养老金 + 个人账户养老金）",
-      "docNo": "国发〔2005〕38号",
+      "title": "2025年基本养老金计发基数政策问答",
       "url": "https://hrss.tj.gov.cn/zhengwugongkai/zhengcezhinan/zcjdnew/202511/t20251117_7179567.html",
-      "retrievedAt": "2026-10-14",
+      "retrievedAt": "2026-11-20",
       "confidence": "official",
-      "note": "天津市人社局政策问答原文：「2025年基本养老金计发基数为9417元。这一数据用于2025年新退休人员（含个体工商户、灵活就业人员等参加企业职工基本养老保险人员）计发基本养老金」。计发月数按国发〔2005〕38号附表查表。核对于 2026-10-14。"
+      "note": "2025 年 9417 元/月，天津市人社局政策问答原文明确；2026 年新基数尚未公布。"
     },
     "income": {
       "title": "平台接单计价规则",

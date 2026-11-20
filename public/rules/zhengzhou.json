@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 7600
+    "benefitBaseMonthly": 6738,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -189,12 +190,11 @@
       "note": "一类行政区域 2350 元/月（郑州市区；小时 23 元），二类 2150、三类 2000。本项目取一类区。"
     },
     "retirement": {
-      "title": "基本养老金计发办法",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "养老金计发基数仍为占位值：河南省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。"
+      "title": "2025 年全国各省养老金计发基数汇编（第三方交叉核对）",
+      "url": "https://m12333.cn/policy/pdkif.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "2025 年 6738 元/月，按人社通 2025 年各省计发基数汇编；另有 6401 元/月说法，口径存在冲突，暂取 6738 并标 derived。2026 年新基数尚未公布。"
     },
     "income": {
       "title": "平台接单计价规则",

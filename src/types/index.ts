@@ -54,6 +54,8 @@ export interface SoleProprietorshipRule {
 /** 养老金计发参数。benefitBaseMonthly 为本城计发基数，深圳单列、其余地市用全省口径 */
 export interface RetirementRule {
   benefitBaseMonthly: number
+  /** 计发基数所属年度：2026 表示当年已公布，2025 表示当年新基数未公布、按上一年度预发 */
+  benefitBaseYear?: number
   paymentIndex: number
   assumedAnnualReturn: number
   /** 记入个人账户的费率（粤人社规〔2026〕14号第七条：20% 中 8% 记个人账户、12% 进统筹） */

@@ -102,7 +102,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 6843
+    "benefitBaseMonthly": 7694,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -189,13 +190,13 @@
       "note": "长沙湘江新区（岳麓）、芙蓉、天心、开福、雨花、望城执行第一档 2,200 元 / 22 元；长沙县、浏阳、宁乡执行第二档 2,000 元 / 20 元。"
     },
     "retirement": {
-      "title": "湖南省2026年社会保险缴费基准值（养老金计发用）",
+      "title": "关于公布2025年社会保险缴费基准值和计发基数的通知",
       "issuedBy": "湖南省人力资源和社会保障厅",
-      "url": "https://rst.hunan.gov.cn/rst/xxgk/zcfg/zxzc/202608/t20260822_34049202.html",
-      "effectiveFrom": "2026-01-01 至 2026-12-31",
+      "url": "https://rst.hunan.gov.cn/rst/xxgk/zcfg/zxzc/202509/t20250922_33809937.html",
       "confidence": "official",
-      "note": "原文：「2026年1月1日至12月31日，全省三项社会保险的缴费基准值调整为6843元/月。计算职工基本养老金计发办法中的2026年度缴费工资指数时相应进行调整」。核对于 2026-10-14。",
-      "retrievedAt": "2026-10-14"
+      "note": "2025 年 7694 元/月。原 6843 是 2026 年养老缴费基准值，只用于算缴费指数，不是计发基数，本轮已纠正；2026 年新基数尚未公布。",
+      "retrievedAt": "2026-11-20",
+      "docNo": "湘人社规〔2025〕30号"
     },
     "income": {
       "title": "平台接单计价规则",

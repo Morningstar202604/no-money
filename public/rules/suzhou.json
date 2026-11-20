@@ -102,7 +102,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8600
+    "benefitBaseMonthly": 8917,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -189,12 +190,12 @@
       "note": "江苏一类地区月最低工资 2,660 元、非全日制小时 25 元，自 2026-01-01 起执行；苏州市区、张家港、常熟、太仓、昆山均执行一类标准。"
     },
     "retirement": {
-      "title": "基本养老金计发办法",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "计发基数为占位值，未回溯本市最新年度公布文件；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。"
+      "title": "2025年度社会保险有关基数（基础养老金计发基数 8917 元）",
+      "docNo": "苏人社发〔2025〕33号",
+      "url": "http://www.jinhu.gov.cn/col/1387_142711/index.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2025 年 8917 元/月，江苏省 2025 年度基础养老金计发基数；2026 年新基数尚未公布。"
     },
     "income": {
       "title": "平台接单计价规则",

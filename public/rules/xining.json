@@ -115,7 +115,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 9128,
+    "benefitBaseYear": 2026
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -203,12 +204,12 @@
       "note": "原文明确全省月最低工资标准 2,080 元、小时最低工资标准 20 元，自 2025-05-01 起施行。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；西宁的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于公布2026年度我省城镇职工基本养老保险基本养老金计发基数的通知",
+      "docNo": "青人社厅函〔2026〕291号",
+      "url": "http://rst.qinghai.gov.cn/zxzx/tzgg/query/202611111104567548.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 年 9128 元/月，2026-11-09 发文、11-11 公开，官方原文明确。"
     },
     "income": {
       "title": "平台接单计价规则",

@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 12049
+    "benefitBaseMonthly": 12049,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -189,12 +190,12 @@
       "note": "月最低工资 2,540 元、非全日制小时 27.7 元，自 2025-09-01 起执行；月标准不含个人社保和公积金，小时标准含单位和个人社保费。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（基础养老金 + 个人账户养老金）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-14",
-      "confidence": "derived",
-      "note": "计发基数为本市最新年度口径；计发月数按国发〔2005〕38号附表随退休年龄查表（60岁=139）。2025年起最低缴费年限将从 15 年逐步提高至 20 年（2030 起）。"
+      "title": "关于2025年本市参保人员社会保险待遇有关问题的通告",
+      "docNo": "京人社发〔2025〕13号",
+      "url": "https://rsj.beijing.gov.cn/xxgk/2024zcwj/202511/t20251107_4265291.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2025 年 12049 元/月，官方原文明确用于 2025 年新退休人员待遇核算；2026 年新基数尚未公布，当前按 2025 年标准测算。"
     },
     "income": {
       "title": "平台接单计价规则",

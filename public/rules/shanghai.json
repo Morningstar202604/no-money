@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 12434
+    "benefitBaseMonthly": 12577,
+    "benefitBaseYear": 2026
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -188,12 +189,11 @@
       "note": "月最低工资 2,740 元、非全日制小时 25 元，自 2025-07-01 起执行；月标准不含个人社保和公积金，小时标准不含单位和个人社保费。"
     },
     "retirement": {
-      "title": "基本养老金计发办法",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "计发基数为占位值，未回溯本市最新年度公布文件；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。"
+      "title": "本市调整2026年度社保缴费基数上下限",
+      "url": "https://rsj.sh.gov.cn/tgsgg_17341/20260818/t0035_1443203.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "2026 年 12577 元/月为上海 2025 年度全口径月平均工资，按上海口径作为 2026 年待遇计发基数；官方公告只写平均工资，未单列计发基数文号。"
     },
     "income": {
       "title": "平台接单计价规则",

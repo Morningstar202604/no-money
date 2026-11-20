@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "app": "没钱 No Money",
-  "generatedAt": "2026-11-20T09:50:56.726Z",
+  "generatedAt": "2026-11-20T10:53:13.818Z",
   "counts": {
     "policy": 17,
     "guide": 26,
@@ -2027,17 +2027,16 @@
       "id": "src-guangzhou-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "养老金计发公式：基础养老金=计发基数×(1+平均缴费指数)÷2×缴费年限×1%；个人账户养老金=储存额/计发月数",
-      "summary": "计发基数 9493 元/月为广东省（不含深圳）统一口径，深圳单列 11293 元；该数值见于省市人社部门公开答复与多家一致报道，尚未回溯到发布本基数的规范性文件原文文号，对外引用前需补原文。60岁退休计发月数139为法定值；投资收益率3%为自设假设，必须向用户标注。计发月数按 国发〔2005〕38号附表随退休年龄查表（40/45/50/55/60/65/70 岁 → 233/216/195/170/139/101/56），不再写死 139；投资收益率 3% 为自设假设，必须向用户标注",
+      "title": "关于公布2025年职工基本养老保险缴费基数上下限和基本养老金计发基数有关问题的通知",
+      "summary": "2025 年全省企业职工和机关事业单位计发基数 9493 元/月；深圳另行公布。2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "生效：2025-01-01 至 2026-12-31 全省统一使用 9493 元/月",
-        "核对于 2026-10-12"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "derived",
+      "docNo": "粤人社发〔2025〕32号",
+      "confidence": "official",
       "city": "guangzhou",
       "tags": [
         "溯源",
@@ -2046,7 +2045,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gdlgb.gov.cn/xwdt/slzx6/content/post_101186.html"
+          "url": "https://hrss.gd.gov.cn/zwgk/xxgkml/bmwj/qtwj/shbz/content/post_4789618.html"
         }
       ]
     },
@@ -2293,17 +2292,16 @@
       "id": "src-shenzhen-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "深圳市企业职工基本养老保险基本养老金计发基数",
-      "summary": "深圳企业职工养老保险独立核算，计发基数不与广东省内其他地市共用（广州、东莞等用 9493 元）。11293 元见于深圳市人社局公开答复与多家一致报道；2026 年正式基数尚未见规范性文件发布，当前按沿用上年标准处理，待正式文件公布后需回溯更新。计发月数按 国发〔2005〕38号附表随退休年龄查表（40/45/50/55/60/65/70 岁 → 233/216/195/170/139/101/56），不再写死 139；投资收益率 3% 为自设假设，必须向用户标注",
+      "title": "深圳市2025年职工基本养老金计发基数是多少",
+      "summary": "2025 年深圳企业职工单列 11293 元/月；机关事业单位按广东省同期 9493 元/月执行。2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
         "深圳市人力资源和社会保障局",
-        "生效：2025-01-01 至 2025-12-31 为 11293 元/月；2026 年办理退休人员沿用该标准",
-        "核对于 2026-10-12"
+        "核对于 2026-11-20"
       ],
-      "confidence": "derived",
+      "confidence": "official",
       "city": "shenzhen",
       "tags": [
         "溯源",
@@ -2312,7 +2310,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.sz.gov.cn/hdjl/ywzsk/rsj/shbz/content/post_12494386.html"
+          "url": "https://hrss.sz.gov.cn/zmhd/cjwt/cjwt/shbz/content/post_12493488.html"
         }
       ]
     },
@@ -2588,23 +2586,27 @@
       "id": "src-dongguan-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "养老金计发公式（同广州）",
-      "summary": "东莞属广东省（不含深圳）统一口径，计发基数 9493 元/月，深圳单列 11293 元不得套用。该数值见于省市人社部门公开答复与多家一致报道，尚未回溯到规范性文件原文文号；60岁计发月数139为法定值；收益率为自设假设。计发月数按 国发〔2005〕38号附表随退休年龄查表（40/45/50/55/60/65/70 岁 → 233/216/195/170/139/101/56），不再写死 139；投资收益率 3% 为自设假设，必须向用户标注",
+      "title": "关于公布2025年职工基本养老保险缴费基数上下限和基本养老金计发基数有关问题的通知",
+      "summary": "2025 年全省企业职工和机关事业单位计发基数 9493 元/月；深圳另行公布。2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "生效：2025-01-01 至 2026-12-31 全省统一使用 9493 元/月",
-        "核对于 2026-10-12"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "derived",
+      "docNo": "粤人社发〔2025〕32号",
+      "confidence": "official",
       "city": "dongguan",
       "tags": [
         "溯源",
         "东莞"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://hrss.gd.gov.cn/zwgk/xxgkml/bmwj/qtwj/shbz/content/post_4789618.html"
+        }
+      ]
     },
     {
       "id": "src-dongguan-medicalRate",
@@ -2768,16 +2770,16 @@
       "id": "src-beijing-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（基础养老金 + 个人账户养老金）",
-      "summary": "计发基数为本市最新年度口径；计发月数按国发〔2005〕38号附表随退休年龄查表（60岁=139）。2025年起最低缴费年限将从 15 年逐步提高至 20 年（2030 起）。",
+      "title": "关于2025年本市参保人员社会保险待遇有关问题的通告",
+      "summary": "2025 年 12049 元/月，官方原文明确用于 2025 年新退休人员待遇核算；2026 年新基数尚未公布，当前按 2025 年标准测算。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "核对于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "derived",
+      "docNo": "京人社发〔2025〕13号",
+      "confidence": "official",
       "city": "beijing",
       "tags": [
         "溯源",
@@ -2786,7 +2788,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rsj.beijing.gov.cn/xxgk/2024zcwj/202511/t20251107_4265291.html"
         }
       ]
     },
@@ -3018,15 +3020,14 @@
       "id": "src-tianjin-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（基础养老金 + 个人账户养老金）",
-      "summary": "天津市人社局政策问答原文：「2025年基本养老金计发基数为9417元。这一数据用于2025年新退休人员（含个体工商户、灵活就业人员等参加企业职工基本养老保险人员）计发基本养老金」。计发月数按国发〔2005〕38号附表查表。核对于 2026-10-14。",
+      "title": "2025年基本养老金计发基数政策问答",
+      "summary": "2025 年 9417 元/月，天津市人社局政策问答原文明确；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "核对于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
       "confidence": "official",
       "city": "tianjin",
       "tags": [
@@ -3269,16 +3270,15 @@
       "id": "src-shanghai-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法",
-      "summary": "计发基数为占位值，未回溯本市最新年度公布文件；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "title": "本市调整2026年度社保缴费基数上下限",
+      "summary": "2026 年 12577 元/月为上海 2025 年度全口径月平均工资，按上海口径作为 2026 年待遇计发基数；官方公告只写平均工资，未单列计发基数文号。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "derived",
       "city": "shanghai",
       "tags": [
         "溯源",
@@ -3287,7 +3287,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rsj.sh.gov.cn/tgsgg_17341/20260818/t0035_1443203.html"
         }
       ]
     },
@@ -3521,16 +3521,16 @@
       "id": "src-hangzhou-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "浙江省2026年社会保险有关基数（加权平均工资，养老金计发用）",
-      "summary": "文件公布 2025 年度加权平均工资 102446 元/年（≈8537 元/月），并要求各地以其为依据计算 2026 年度社保待遇与缴费基数上下限。本项目以 8537 元/月作为计发基数口径（派生值，非文件直接列示）。核对于 2026-10-14。",
+      "title": "关于公布2026年社会保险有关基数的通知",
+      "summary": "2026 年 8537 元/月，按官方 2025 年度加权平均工资 102446 元折算（102446/12）；政策明确该平均工资作为 2026 年新退休人员计发基数。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
         "浙江省人力资源和社会保障厅",
-        "生效：2026-01-01 起",
-        "核对于 2026-10-14"
+        "核对于 2026-11-20"
       ],
+      "docNo": "浙人社发〔2026〕52号",
       "confidence": "derived",
       "city": "hangzhou",
       "tags": [
@@ -3540,7 +3540,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://rlsbt.zj.gov.cn/col/col1229506773/art/2026/art_2b4555c11a034b9e874038cbff2f84fb.html"
+          "url": "http://rlsbt.zj.gov.cn/col/col1229506773/art/2026/art_2b4555c11a034b9e874038cbff2f84fb.html"
         }
       ]
     },
@@ -3774,16 +3774,16 @@
       "id": "src-nanjing-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法",
-      "summary": "计发基数为占位值，未回溯本市最新年度公布文件；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "title": "2025年度社会保险有关基数（基础养老金计发基数 8917 元）",
+      "summary": "2025 年 8917 元/月，江苏省 2025 年度基础养老金计发基数；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "苏人社发〔2025〕33号",
+      "confidence": "official",
       "city": "nanjing",
       "tags": [
         "溯源",
@@ -3792,7 +3792,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "http://www.jinhu.gov.cn/col/1387_142711/index.html"
         }
       ]
     },
@@ -4025,16 +4025,16 @@
       "id": "src-suzhou-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法",
-      "summary": "计发基数为占位值，未回溯本市最新年度公布文件；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "title": "2025年度社会保险有关基数（基础养老金计发基数 8917 元）",
+      "summary": "2025 年 8917 元/月，江苏省 2025 年度基础养老金计发基数；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "苏人社发〔2025〕33号",
+      "confidence": "official",
       "city": "suzhou",
       "tags": [
         "溯源",
@@ -4043,7 +4043,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "http://www.jinhu.gov.cn/col/1387_142711/index.html"
         }
       ]
     },
@@ -4278,16 +4278,15 @@
       "id": "src-wuhan-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法",
-      "summary": "养老金计发基数仍为占位值：湖北省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "title": "2025 年全国各省养老金计发基数汇编（第三方交叉核对）",
+      "summary": "2025 年 9112 元/月，未检索到湖北省 2025 年计发基数专项发文，按人社通 2025 年各省计发基数汇编交叉核对；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "derived",
       "city": "wuhan",
       "tags": [
         "溯源",
@@ -4296,7 +4295,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://m12333.cn/policy/pdkif.html"
         }
       ]
     },
@@ -4529,16 +4528,16 @@
       "id": "src-changsha-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "湖南省2026年社会保险缴费基准值（养老金计发用）",
-      "summary": "原文：「2026年1月1日至12月31日，全省三项社会保险的缴费基准值调整为6843元/月。计算职工基本养老金计发办法中的2026年度缴费工资指数时相应进行调整」。核对于 2026-10-14。",
+      "title": "关于公布2025年社会保险缴费基准值和计发基数的通知",
+      "summary": "2025 年 7694 元/月。原 6843 是 2026 年养老缴费基准值，只用于算缴费指数，不是计发基数，本轮已纠正；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
         "湖南省人力资源和社会保障厅",
-        "生效：2026-01-01 至 2026-12-31",
-        "核对于 2026-10-14"
+        "核对于 2026-11-20"
       ],
+      "docNo": "湘人社规〔2025〕30号",
       "confidence": "official",
       "city": "changsha",
       "tags": [
@@ -4548,7 +4547,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://rst.hunan.gov.cn/rst/xxgk/zcfg/zxzc/202608/t20260822_34049202.html"
+          "url": "https://rst.hunan.gov.cn/rst/xxgk/zcfg/zxzc/202509/t20250922_33809937.html"
         }
       ]
     },
@@ -4782,16 +4781,15 @@
       "id": "src-zhengzhou-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法",
-      "summary": "养老金计发基数仍为占位值：河南省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "title": "2025 年全国各省养老金计发基数汇编（第三方交叉核对）",
+      "summary": "2025 年 6738 元/月，按人社通 2025 年各省计发基数汇编；另有 6401 元/月说法，口径存在冲突，暂取 6738 并标 derived。2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "derived",
       "city": "zhengzhou",
       "tags": [
         "溯源",
@@ -4800,7 +4798,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://m12333.cn/policy/pdkif.html"
         }
       ]
     },
@@ -5034,16 +5032,15 @@
       "id": "src-chengdu-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法",
-      "summary": "养老金计发基数仍为占位值：四川省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "title": "2025 年全国各省养老金计发基数汇编（第三方交叉核对）",
+      "summary": "2025 年 8462 元/月，未检索到四川省 2025 年计发基数专项发文，按人社通 2025 年各省计发基数汇编交叉核对；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "derived",
       "city": "chengdu",
       "tags": [
         "溯源",
@@ -5052,7 +5049,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://m12333.cn/policy/pdkif.html"
         }
       ]
     },
@@ -5285,16 +5282,15 @@
       "id": "src-chongqing-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法",
-      "summary": "养老金计发基数仍为占位值：重庆市人社局（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "title": "2025 年全国各省养老金计发基数汇编（第三方交叉核对）",
+      "summary": "2025 年 8240 元/月，未检索到重庆市 2025 年计发基数专项发文，按人社通 2025 年各省计发基数汇编交叉核对；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "derived",
       "city": "chongqing",
       "tags": [
         "溯源",
@@ -5303,7 +5299,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://m12333.cn/policy/pdkif.html"
         }
       ]
     },
@@ -5536,16 +5532,15 @@
       "id": "src-xian-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法",
-      "summary": "养老金计发基数仍为占位值：陕西省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。",
+      "title": "陕西 2025 年养老金计发基数 7881 元/月（报道核对）",
+      "summary": "2025 年 7881 元/月，陕西 2025 年计发基数，2026 年新基数未公布、按 2025 年预发；省人社厅专项发文尚未定位，标 derived。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "derived",
       "city": "xian",
       "tags": [
         "溯源",
@@ -5554,7 +5549,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://www.sina.cn/news/article/nikphnv1377070.html"
         }
       ]
     },
@@ -5788,16 +5783,16 @@
       "id": "src-shijiazhuang-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；石家庄的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2025年度社会保险缴费基数上下限和养老保险计发基数的通知",
+      "summary": "2025 年 7410 元/月，官方原文明确；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "冀人社字〔2025〕105号",
+      "confidence": "official",
       "city": "shijiazhuang",
       "tags": [
         "溯源",
@@ -5806,7 +5801,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rst.hebei.gov.cn/pageWarp?isId=1758250097248vuk&id=1"
         }
       ]
     },
@@ -6041,16 +6036,16 @@
       "id": "src-taiyuan-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；太原的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于发布2025年基本养老金计发基数标准的通知",
+      "summary": "2025 年 7253 元/月，官方通知为晋人社厅发〔2025〕36号；省人社厅网页原文尚未定位，暂按通知截图/转载核对，标 derived。2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "晋人社厅发〔2025〕36号",
+      "confidence": "derived",
       "city": "taiyuan",
       "tags": [
         "溯源",
@@ -6059,7 +6054,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://www.iesdouyin.com/share/video/7581899809226902838"
         }
       ]
     },
@@ -6292,16 +6287,16 @@
       "id": "src-huhehaote-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；呼和浩特的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于2026年社会保险缴费基数有关问题的通知",
+      "summary": "2026 年 8430 元/月为内蒙古 2025 年全口径月平均工资；官方通知明确用于计算 2026 年养老保险实际缴费指数，计发基数按同口径采用，未见单列计发文。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "内人社办发〔2026〕85号",
+      "confidence": "derived",
       "city": "huhehaote",
       "tags": [
         "溯源",
@@ -6310,7 +6305,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rsj.xlgl.gov.cn/rsj/xwdt9/ttxw/2026090308400372441/index.shtml"
         }
       ]
     },
@@ -6543,16 +6538,16 @@
       "id": "src-shenyang-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；沈阳的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2025年养老保险缴费基数上下限和计发基数等有关问题的通知",
+      "summary": "2025 年沈阳市企业职工计发基数 8390 元/月（100680 元/年），全省不含沈阳、大连为 7346 元/月；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "辽人社〔2025〕17号",
+      "confidence": "official",
       "city": "shenyang",
       "tags": [
         "溯源",
@@ -6561,7 +6556,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rst.ln.gov.cn/rst/zxzx/gsgg/2025092012232024861/index.shtml"
         }
       ]
     },
@@ -6795,16 +6790,16 @@
       "id": "src-changchun-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；长春的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于发布吉林省2026年城镇职工基本养老金计发基数的通知",
+      "summary": "2026 年长春市 8058 元/月（96696 元/年）；全省不含长春为 7481.5 元/月。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "吉人社联〔2026〕99号",
+      "confidence": "official",
       "city": "changchun",
       "tags": [
         "溯源",
@@ -6813,7 +6808,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://xxgk.jl.gov.cn/zcbm/fgw_97992/xxgkmlqy/202611/t20261102_9737144.html"
         }
       ]
     },
@@ -7046,16 +7041,16 @@
       "id": "src-haerbin-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；哈尔滨的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "2026年度全省基本养老保险使用工资基数",
+      "summary": "2026 年 7705 元/月（92460 元/年），2026-01-01 起执行；官方 PDF 明确用于缴纳企业职工养老保险费及计发基本养老金。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "黑人社函〔2025〕611号",
+      "confidence": "official",
       "city": "haerbin",
       "tags": [
         "溯源",
@@ -7064,7 +7059,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://hrss.hlj.gov.cn/hrss/c116755/202603/31920862/files/2026%E5%B9%B4%E5%BA%A6%E5%85%A8%E7%9C%81%E5%9F%BA%E6%9C%AC%E5%85%BB%E8%80%81%E4%BF%9D%E9%99%A9%E4%BD%BF%E7%94%A8%E5%B7%A5%E8%B5%84%E5%9F%BA%E6%95%B0.pdf"
         }
       ]
     },
@@ -7298,16 +7293,16 @@
       "id": "src-hefei-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；合肥的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2025年退休人员基本养老金计发基数的通知",
+      "summary": "2025 年 7999 元/月，官方原文明确；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "皖人社秘〔2025〕153号",
+      "confidence": "official",
       "city": "hefei",
       "tags": [
         "溯源",
@@ -7316,7 +7311,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://hrss.ah.gov.cn/public/6595721/80776356.html"
         }
       ]
     },
@@ -7550,16 +7545,16 @@
       "id": "src-fuzhou-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；福州的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2026年企业职工基本养老保险和机关事业单位养老保险基本养老金计发基数的通知",
+      "summary": "2026 年 8011 元/月，2026-11-10 发文、11-17 公开，适用于企业职工、灵活就业和机关事业单位。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "闽人社文〔2026〕16号",
+      "confidence": "official",
       "city": "fuzhou",
       "tags": [
         "溯源",
@@ -7568,7 +7563,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rst.fujian.gov.cn/zw/zfxxgk/zfxxgkml/zyywgz/ldgx/202611/t20261117_7250820.htm"
         }
       ]
     },
@@ -7801,16 +7796,15 @@
       "id": "src-nanchang-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；南昌的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2025年度城镇职工基本养老保险基本养老金计发基数有关问题的通知",
+      "summary": "2025 年 7054 元/月，官方原文明确；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "official",
       "city": "nanchang",
       "tags": [
         "溯源",
@@ -7819,7 +7813,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rst.jiangxi.gov.cn/jxsrlzyhshbzt/col/col54443/content/content_1970060182248210432.html"
         }
       ]
     },
@@ -8052,16 +8046,16 @@
       "id": "src-jinan-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；济南的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2025年度职工基本养老保险待遇计发基数的通知",
+      "summary": "2025 年 7831 元/月，适用于机关事业单位和除菏泽市以外的企业养老保险；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "鲁人社字〔2025〕100号",
+      "confidence": "official",
       "city": "jinan",
       "tags": [
         "溯源",
@@ -8070,7 +8064,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "http://hrss.shandong.gov.cn/articles/ch00378/202510/1e743c80-1abf-47a8-b62a-db2518c0820b.shtml"
         }
       ]
     },
@@ -8304,16 +8298,16 @@
       "id": "src-nanning-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；南宁的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2025年职工基本养老保险待遇计发基数的通知",
+      "summary": "2025 年 6983 元/月，官方原文明确；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "桂人社发〔2025〕43号",
+      "confidence": "official",
       "city": "nanning",
       "tags": [
         "溯源",
@@ -8322,7 +8316,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "http://rst.gxzf.gov.cn/zwgk/xxgkzcfg/fgfxlm/t25993557.shtml"
         }
       ]
     },
@@ -8555,16 +8549,16 @@
       "id": "src-haikou-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；海口的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布海南省2025年度城镇职工社会保险缴费基数上下限的通知",
+      "summary": "2025 年 8188 元/月为海南 2025 年度全口径月平均工资，按海南口径作为计发基数；海南未发布 2026 年专项计发基数，网传 8254 属推算，未采用。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "琼人社发〔2025〕67号",
+      "confidence": "derived",
       "city": "haikou",
       "tags": [
         "溯源",
@@ -8573,7 +8567,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://hrss.hainan.gov.cn/hrss/0503/202509/802b311fa8cd4218821074e1ae087a86.shtml?ddtab=true"
         }
       ]
     },
@@ -8807,16 +8801,15 @@
       "id": "src-guiyang-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；贵阳的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2025年贵州省全口径城镇单位就业人员年平均工资的通知",
+      "summary": "2026 年 7376.75 元/月，按官方 2025 年全口径年平均工资 88521 元折算（88521/12）；省人社厅明确该平均工资用于确定 2026 年基本养老金计发基数。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "derived",
       "city": "guiyang",
       "tags": [
         "溯源",
@@ -8825,7 +8818,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rst.guizhou.gov.cn/zwgk/zdlyxx/jgsydwylbxzdgg/202607/t20260714_90621072.html"
         }
       ]
     },
@@ -9058,16 +9051,15 @@
       "id": "src-kunming-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；昆明的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2025年度全省职工基本养老保险失业保险和工伤保险相关参数的通知",
+      "summary": "2025 年度新增退休人员计发基数 8265 元/月，官方原文明确；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "official",
       "city": "kunming",
       "tags": [
         "溯源",
@@ -9076,7 +9068,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://lincang.gov.cn/zfxxgk_lcs_rsbzj/artview/1307/333576.html"
         }
       ]
     },
@@ -9310,16 +9302,16 @@
       "id": "src-lasa-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；拉萨的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于发布2026年上年度全区职工月平均工资的通知",
+      "summary": "2026 年 11954 元/月，官方明确作为全区基本养老保险等待遇计发依据，2026-01-01 起执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "藏人社发〔2026〕46号",
+      "confidence": "official",
       "city": "lasa",
       "tags": [
         "溯源",
@@ -9328,7 +9320,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://hrss.xizang.gov.cn/xwzx/tzgg/202609/t20260914_558610.html"
         }
       ]
     },
@@ -9562,16 +9554,16 @@
       "id": "src-lanzhou-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；兰州的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2024年甘肃省基本养老金计发基数的通知",
+      "summary": "2024 年官方基数 7594 元/月；2025/2026 年未检索到甘肃新计发基数专项文，暂按 7594 元/月测算。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "甘人社通〔2024〕330号",
+      "confidence": "derived",
       "city": "lanzhou",
       "tags": [
         "溯源",
@@ -9580,7 +9572,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://www.jyg.gov.cn/rsj/zwxxgk/fdzdgknr/shbzxx/art/2025/art_653628171.html"
         }
       ]
     },
@@ -9815,16 +9807,16 @@
       "id": "src-xining-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；西宁的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于公布2026年度我省城镇职工基本养老保险基本养老金计发基数的通知",
+      "summary": "2026 年 9128 元/月，2026-11-09 发文、11-11 公开，官方原文明确。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "青人社厅函〔2026〕291号",
+      "confidence": "official",
       "city": "xining",
       "tags": [
         "溯源",
@@ -9833,7 +9825,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "http://rst.qinghai.gov.cn/zxzx/tzgg/query/202611111104567548.html"
         }
       ]
     },
@@ -10068,16 +10060,16 @@
       "id": "src-yinchuan-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；银川的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于确定2025年度社会保险缴费基数和待遇计发基数的通知",
+      "summary": "2025 年 8366 元/月，官方原文明确；2026 年新基数尚未公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "docNo": "宁人社发〔2025〕130号",
+      "confidence": "official",
       "city": "yinchuan",
       "tags": [
         "溯源",
@@ -10086,7 +10078,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://hrss.nx.gov.cn/xxgk/zcj/zcfg/shbz/202509/t20250921_5030586.html"
         }
       ]
     },
@@ -10319,16 +10311,15 @@
       "id": "src-wulumuqi-retirement",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "summary": "公式全国统一，但计发基数由各省公布；乌鲁木齐的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。",
+      "title": "关于明确2026年自治区城镇职工基本养老保险缴费基数的通知",
+      "summary": "2026 年 8744 元/月为新疆 2025 年全口径月平均工资；官方通知明确该数据关系参保缴费、待遇核定，计发基数按同口径采用，未见单列计发文。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "核对于 2026-11-20"
       ],
-      "docNo": "国发〔2005〕38号",
-      "confidence": "unverified",
+      "confidence": "derived",
       "city": "wulumuqi",
       "tags": [
         "溯源",
@@ -10337,7 +10328,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm"
+          "url": "https://rst.xinjiang.gov.cn/xjrst/c112734/202609/234e01d8b8b9404ca3c98c2cee384903.shtml"
         }
       ]
     },

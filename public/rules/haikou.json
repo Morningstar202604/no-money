@@ -102,7 +102,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 8188,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -189,12 +190,12 @@
       "note": "原文明确一类地区（海口、三亚、儋州、三沙）月最低工资标准 2,250 元、非全日制小时最低工资 20.0 元，自 2025-12-01 起执行。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；海口的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于公布海南省2025年度城镇职工社会保险缴费基数上下限的通知",
+      "docNo": "琼人社发〔2025〕67号",
+      "url": "https://hrss.hainan.gov.cn/hrss/0503/202509/802b311fa8cd4218821074e1ae087a86.shtml?ddtab=true",
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "2025 年 8188 元/月为海南 2025 年度全口径月平均工资，按海南口径作为计发基数；海南未发布 2026 年专项计发基数，网传 8254 属推算，未采用。"
     },
     "income": {
       "title": "平台接单计价规则",

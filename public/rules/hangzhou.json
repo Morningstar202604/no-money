@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8537
+    "benefitBaseMonthly": 8537,
+    "benefitBaseYear": 2026
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -188,13 +189,13 @@
       "note": "杭州市区月最低工资 2,660 元、非全日制小时 25 元，自 2026-01-01 起执行；杭州历年均按浙江省第一档执行，县（市）另行公布。"
     },
     "retirement": {
-      "title": "浙江省2026年社会保险有关基数（加权平均工资，养老金计发用）",
+      "title": "关于公布2026年社会保险有关基数的通知",
       "issuedBy": "浙江省人力资源和社会保障厅",
-      "url": "https://rlsbt.zj.gov.cn/col/col1229506773/art/2026/art_2b4555c11a034b9e874038cbff2f84fb.html",
-      "effectiveFrom": "2026-01-01 起",
+      "url": "http://rlsbt.zj.gov.cn/col/col1229506773/art/2026/art_2b4555c11a034b9e874038cbff2f84fb.html",
       "confidence": "derived",
-      "note": "文件公布 2025 年度加权平均工资 102446 元/年（≈8537 元/月），并要求各地以其为依据计算 2026 年度社保待遇与缴费基数上下限。本项目以 8537 元/月作为计发基数口径（派生值，非文件直接列示）。核对于 2026-10-14。",
-      "retrievedAt": "2026-10-14"
+      "note": "2026 年 8537 元/月，按官方 2025 年度加权平均工资 102446 元折算（102446/12）；政策明确该平均工资作为 2026 年新退休人员计发基数。",
+      "retrievedAt": "2026-11-20",
+      "docNo": "浙人社发〔2026〕52号"
     },
     "income": {
       "title": "平台接单计价规则",

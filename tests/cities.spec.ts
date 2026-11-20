@@ -34,6 +34,9 @@ describe('城市规则文件基础完整性', () => {
       expect(rule.benefit.medical.baseMin, `${file} 医保基数下限异常`).toBeGreaterThan(0)
       expect(rule.minimumWage.monthly, `${file} 最低工资异常`).toBeGreaterThan(0)
       expect(rule.retirement.benefitBaseMonthly, `${file} 计发基数异常`).toBeGreaterThan(0)
+      expect(rule.retirement.benefitBaseYear, `${file} 计发基数年份缺失`).toBeGreaterThanOrEqual(2025)
+      expect(rule.retirement.benefitBaseYear, `${file} 计发基数年份越界`).toBeLessThanOrEqual(2026)
+      expect(rule.sources.retirement.confidence, `${file} 计发基数仍为 unverified`).not.toBe('unverified')
       expect(rule.tax.laborRemuneration.taxTable.length, `${file} 税率表为空`).toBeGreaterThan(0)
     }
   })

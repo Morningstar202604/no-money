@@ -118,7 +118,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 8265,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -205,12 +206,11 @@
       "note": "昆明五华、盘龙、西山、官渡、呈贡、晋宁及安宁、嵩明执行一类地区 2,270 元 / 22 元；昆明其他县及东川执行二类 2,120 元 / 21 元；自 2026-09-01 起执行。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；昆明的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于公布2025年度全省职工基本养老保险失业保险和工伤保险相关参数的通知",
+      "url": "https://lincang.gov.cn/zfxxgk_lcs_rsbzj/artview/1307/333576.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2025 年度新增退休人员计发基数 8265 元/月，官方原文明确；2026 年新基数尚未公布。"
     },
     "income": {
       "title": "平台接单计价规则",

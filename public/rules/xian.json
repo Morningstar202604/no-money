@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 7900
+    "benefitBaseMonthly": 7881,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -188,12 +189,11 @@
       "note": "一类区 2376 元/月（含西安市新城区、碑林区、莲湖区、雁塔区、长安区等），二类 2250、三类 2140。本项目取一类区。"
     },
     "retirement": {
-      "title": "基本养老金计发办法",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "养老金计发基数仍为占位值：陕西省人社厅（人社/医保）门户与站内检索均未找到明确公布「基本养老金计发基数」的现行文件（检索到的多为养老金“调整”通知，非计发基数）。该项直接决定基础养老金，未核实前请勿据此决策；计发月数按国发〔2005〕38号附表随退休年龄查表。 该计发基数为占位值，待核实、不可对外引用。"
+      "title": "陕西 2025 年养老金计发基数 7881 元/月（报道核对）",
+      "url": "https://www.sina.cn/news/article/nikphnv1377070.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "derived",
+      "note": "2025 年 7881 元/月，陕西 2025 年计发基数，2026 年新基数未公布、按 2025 年预发；省人社厅专项发文尚未定位，标 derived。"
     },
     "income": {
       "title": "平台接单计价规则",

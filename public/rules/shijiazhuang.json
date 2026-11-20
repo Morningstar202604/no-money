@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 7410,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -189,12 +190,12 @@
       "note": "石家庄市区（不含井陉矿区）、正定县执行第一档 2,380 元 / 24 元；晋州、新乐等按市级确定档次执行；自 2025-12-01 起执行。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；石家庄的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于公布2025年度社会保险缴费基数上下限和养老保险计发基数的通知",
+      "docNo": "冀人社字〔2025〕105号",
+      "url": "https://rst.hebei.gov.cn/pageWarp?isId=1758250097248vuk&id=1",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2025 年 7410 元/月，官方原文明确；2026 年新基数尚未公布。"
     },
     "income": {
       "title": "平台接单计价规则",

@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 9493
+    "benefitBaseMonthly": 9493,
+    "benefitBaseYear": 2025
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -237,13 +238,12 @@
       "note": "广州执行一类标准 2,680 元/月、25.4 元/小时；深圳执行一类标准 2,700 元/月、25.4 元/小时。"
     },
     "retirement": {
-      "title": "养老金计发公式：基础养老金=计发基数×(1+平均缴费指数)÷2×缴费年限×1%；个人账户养老金=储存额/计发月数",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gdlgb.gov.cn/xwdt/slzx6/content/post_101186.html",
-      "effectiveFrom": "2025-01-01 至 2026-12-31 全省统一使用 9493 元/月",
-      "retrievedAt": "2026-10-12",
-      "confidence": "derived",
-      "note": "计发基数 9493 元/月为广东省（不含深圳）统一口径，深圳单列 11293 元；该数值见于省市人社部门公开答复与多家一致报道，尚未回溯到发布本基数的规范性文件原文文号，对外引用前需补原文。60岁退休计发月数139为法定值；投资收益率3%为自设假设，必须向用户标注。计发月数按 国发〔2005〕38号附表随退休年龄查表（40/45/50/55/60/65/70 岁 → 233/216/195/170/139/101/56），不再写死 139；投资收益率 3% 为自设假设，必须向用户标注"
+      "title": "关于公布2025年职工基本养老保险缴费基数上下限和基本养老金计发基数有关问题的通知",
+      "docNo": "粤人社发〔2025〕32号",
+      "url": "https://hrss.gd.gov.cn/zwgk/xxgkml/bmwj/qtwj/shbz/content/post_4789618.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2025 年全省企业职工和机关事业单位计发基数 9493 元/月；深圳另行公布。2026 年新基数尚未公布。"
     },
     "medicalRate": {
       "title": "广州市职工医保筹资标准",

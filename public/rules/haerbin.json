@@ -101,7 +101,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 7705,
+    "benefitBaseYear": 2026
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -188,12 +189,12 @@
       "note": "哈尔滨市区（呼兰、阿城、双城除外）月最低工资 2,270 元、非全日制小时 21 元，自 2025-12-01 起执行；2026-12-01 起新标准 2,350 元 / 23 元（黑政规〔2026〕2号），届时更新。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；哈尔滨的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "2026年度全省基本养老保险使用工资基数",
+      "docNo": "黑人社函〔2025〕611号",
+      "url": "https://hrss.hlj.gov.cn/hrss/c116755/202603/31920862/files/2026%E5%B9%B4%E5%BA%A6%E5%85%A8%E7%9C%81%E5%9F%BA%E6%9C%AC%E5%85%BB%E8%80%81%E4%BF%9D%E9%99%A9%E4%BD%BF%E7%94%A8%E5%B7%A5%E8%B5%84%E5%9F%BA%E6%95%B0.pdf",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 年 7705 元/月（92460 元/年），2026-01-01 起执行；官方 PDF 明确用于缴纳企业职工养老保险费及计发基本养老金。"
     },
     "income": {
       "title": "平台接单计价规则",

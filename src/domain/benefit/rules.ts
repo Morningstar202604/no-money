@@ -52,6 +52,8 @@ export interface BenefitRule {
 export interface RetirementRule {
   /** 计发基数（分/月），深圳单列、其余地市用全省口径 */
   benefitBaseMonthly: Cent
+  /** 计发基数所属年度：2026 表示当年已公布，2025 表示当年新基数未公布、按上一年度预发 */
+  benefitBaseYear?: number
   /** 平均缴费指数（基点），广东规则低于 0.6 按 0.6 计 */
   paymentIndex: Rate
   /** 假想年化投资收益率（基点），仅用于个人账户累积测算 */

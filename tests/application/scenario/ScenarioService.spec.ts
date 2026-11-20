@@ -251,12 +251,10 @@ describe('用户实测计价覆盖（把「占位假设」变成「我的数据�
     if (r.ok) {
       expect(r.value.dataQuality.unverifiedFields).not.toContain('计价单价/补贴')
       expect(r.value.dataQuality.overriddenFields).toContain('计价单价/补贴')
-      // 覆盖计价后是否仍算假设测算，取决于其余依赖项的置信度。
-      // 广州养老金计发基数是 derived（据官方口径推算，非直接发布值），
-      // 而它直接决定退休页的基础养老金——因此整体仍应为 provisional，
-      // 但未核实清单里不应再包含计价，且必须包含计发基数。
+      // 覆盖计价后是否仍算假设测算，取决于其余依赖项的置信度，
+      // 不能再把某一城的计发基数置信度写死：3.8.6 已把广州 9493 升为 official。
       const uf = r.value.dataQuality.unverifiedFields
-      expect(uf).toContain('养老金计发基数')
+      expect(uf).not.toContain('计价单价/补贴')
       expect(r.value.dataQuality.overriddenFields).toContain('计价单价/补贴')
     }
   })

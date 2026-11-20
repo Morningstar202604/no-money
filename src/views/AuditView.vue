@@ -4,7 +4,7 @@
       <div>
         <h1 class="audit-title">数据核验对账</h1>
         <p class="audit-sub">
-          每一格代表一座城市的一个政策参数。绿色＝已核到官方原文，黄色＝占位待核实。
+          每一格代表一座城市的一个政策参数。绿色＝已核到官方原文，蓝色＝据官方口径推算，黄色＝占位待核实。
           <b>不做模糊处理：没核实的就显示为没核实。</b>
         </p>
       </div>
@@ -22,16 +22,20 @@
         <span class="metric-value ok">{{ officialCount }}</span>
       </div>
       <div class="metric">
+        <span class="metric-label">官方推算字段</span>
+        <span class="metric-value derived">{{ derivedCount }}</span>
+      </div>
+      <div class="metric">
         <span class="metric-label">待核实字段</span>
-        <span class="metric-value warn">{{ totalCount - officialCount }}</span>
+        <span class="metric-value warn">{{ pendingCount }}</span>
       </div>
       <div class="metric">
         <span class="metric-label">官方覆盖率</span>
         <span class="metric-value" :class="officialRatio >= 40 ? 'ok' : 'warn'">{{ officialRatio }}%</span>
       </div>
       <div class="metric">
-        <span class="metric-label">全核实城市</span>
-        <span class="metric-value" :class="fullyVerified ? 'ok' : 'warn'">{{ fullyVerified }} / {{ rows.length }}</span>
+        <span class="metric-label">全官方城市</span>
+        <span class="metric-value" :class="allOfficial ? 'ok' : 'warn'">{{ allOfficial }} / {{ rows.length }}</span>
       </div>
     </div>
 
@@ -84,7 +88,7 @@
       </p>
       <ol class="todo-list">
         <li v-for="r in worstCities" :key="r.id">
-          <b>{{ r.city }}</b> — {{ r.gaps }} 个字段待核实
+          <b>{{ r.city }}</b> — {{ r.gaps }} 个字段待核实<span v-if="r.derived">，{{ r.derived }} 个官方推算</span>
           <span class="todo-fields">{{ r.missingFields.join('、') }}</span>
         </li>
       </ol>
@@ -119,17 +123,20 @@ interface Row {
   id: string
   city: string
   pension?: string
+  retirement?: string
   minWage?: string
   medical?: string
   medicalRate?: string
   tax?: string
   income?: string
   gaps: number
+  derived: number
   missingFields: string[]
 }
 
 const FIELDS = [
-  { key: 'pension' as const, label: '养老金计发基数' },
+  { key: 'pension' as const, label: '养老缴费基数' },
+  { key: 'retirement' as const, label: '养老金计发基数' },
   { key: 'minWage' as const, label: '最低工资' },
   { key: 'medical' as const, label: '医保缴费基数' },
   { key: 'medicalRate' as const, label: '医保费率' },
@@ -154,10 +161,12 @@ const totalCount = computed(() => rows.value.length * fields.length)
 const officialCount = computed(
   () => rows.value.reduce((n, r) => n + fields.filter((f) => r[f.key] === 'official').length, 0),
 )
+const derivedCount = computed(() => rows.value.reduce((n, r) => n + r.derived, 0))
+const pendingCount = computed(() => rows.value.reduce((n, r) => n + r.gaps, 0))
 const officialRatio = computed(() =>
   totalCount.value ? Math.round((officialCount.value / totalCount.value) * 100) : 0,
 )
-const fullyVerified = computed(() => rows.value.filter((r) => r.gaps === 0).length)
+const allOfficial = computed(() => rows.value.filter((r) => r.gaps === 0 && r.derived === 0).length)
 
 /** 缺口最多的前 6 城 */
 const worstCities = computed(() =>
@@ -181,16 +190,21 @@ async function load(): Promise<void> {
         id: rule.city,
         city: rule.cityName,
         pension: s.pension?.confidence,
+        retirement: s.retirement?.confidence,
         minWage: s.minimumWage?.confidence,
         medical: s.medical?.confidence,
         medicalRate: s.medicalRate?.confidence,
         tax: s.tax?.confidence,
         income: s.income?.confidence,
         gaps: 0,
+        derived: 0,
         missingFields: [],
       }
       for (const f of fields) {
-        if (row[f.key] !== 'official') {
+        if (row[f.key] === 'official') continue
+        if (row[f.key] === 'derived') {
+          row.derived++
+        } else {
           row.gaps++
           row.missingFields.push(f.label)
         }
@@ -201,7 +215,7 @@ async function load(): Promise<void> {
     }
   }
   // 缺口多的排前面：用户打开就想看"哪里最不可信"
-  rows.value = loaded.sort((a, b) => b.gaps - a.gaps)
+  rows.value = loaded.sort((a, b) => b.gaps - a.gaps || b.derived - a.derived)
 }
 
 async function runVerify(): Promise<void> {
@@ -228,11 +242,12 @@ onMounted(() => {
 .audit-title { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-text-primary); margin: 0 0 var(--space-1); }
 .audit-sub { font-size: var(--font-size-sm); color: var(--color-text-secondary); margin: 0; max-width: 70ch; line-height: var(--line-height-relaxed); }
 
-.metric-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-3); margin-bottom: var(--space-4); }
+.metric-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-3); margin-bottom: var(--space-4); }
 .metric { padding: var(--space-4); background: var(--color-bg-primary); border: 1px solid var(--color-border-primary); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: var(--space-1); }
 .metric-label { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
 .metric-value { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); font-family: var(--font-family-num); color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
 .metric-value.ok { color: var(--color-success-600); }
+.metric-value.derived { color: var(--color-info-600); }
 .metric-value.warn { color: var(--color-warning-600); }
 
 .note {

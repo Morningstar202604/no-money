@@ -116,7 +116,8 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 8000
+    "benefitBaseMonthly": 8058,
+    "benefitBaseYear": 2026
   },
   "soleProprietorship": {
     "vatRate": 0.01,
@@ -204,12 +205,12 @@
       "note": "长春市区（含双阳区、九台区）月最低工资 2,230 元、非全日制小时 22 元，执行期自 2025-12-01 至下一次调整。"
     },
     "retirement": {
-      "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",
-      "docNo": "国发〔2005〕38号",
-      "url": "https://www.gov.cn/zhengce/zhengceku/2008-03/28/content_7376.htm",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "公式全国统一，但计发基数由各省公布；长春的计发基数未核实，当前 8000 元为全国量级参考值。 该计发基数为占位值，**待核实**、不可对外引用。"
+      "title": "关于发布吉林省2026年城镇职工基本养老金计发基数的通知",
+      "docNo": "吉人社联〔2026〕99号",
+      "url": "https://xxgk.jl.gov.cn/zcbm/fgw_97992/xxgkmlqy/202611/t20261102_9737144.html",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "2026 年长春市 8058 元/月（96696 元/年）；全省不含长春为 7481.5 元/月。"
     },
     "income": {
       "title": "平台接单计价规则",

@@ -21,7 +21,7 @@ type RuleFile = {
   verified?: boolean
   sources?: Record<string, Source>
   benefit?: { medical?: { rate?: number }; medicalTiers?: { id: string; rate: number; note?: string }[] }
-  retirement?: { benefitBaseMonthly?: number }
+  retirement?: { benefitBaseMonthly?: number; benefitBaseYear?: number }
   soleProprietorship?: { vatRate?: number; vatThresholdMonthly?: number; itrIncomeRate?: number }
   tax?: { soleRate?: unknown }
 }
@@ -87,7 +87,10 @@ describe('规则文件溯源门禁', () => {
   it('退休计发基数不得被静默写死或缺失来源', () => {
     for (const [f, rule] of Object.entries(rules)) {
       expect(rule.retirement?.benefitBaseMonthly, `${f} 计发基数非法`).toBeGreaterThan(0)
+      expect(rule.retirement?.benefitBaseYear, `${f} 计发基数年份缺失`).toBeGreaterThanOrEqual(2025)
+      expect(rule.retirement?.benefitBaseYear, `${f} 计发基数年份越界`).toBeLessThanOrEqual(2026)
       expect(rule.sources?.retirement, `${f} 缺 retirement 来源`).toBeTruthy()
+      expect(rule.sources?.retirement?.confidence, `${f} 计发基数仍为 unverified`).not.toBe('unverified')
     }
   })
 
