@@ -101,7 +101,7 @@
     "personalAccountRate": 0.08,
     "paymentIndex": 0.6,
     "assumedAnnualReturn": 0.03,
-    "benefitBaseMonthly": 7594,
+    "benefitBaseMonthly": 7746,
     "benefitBaseYear": 2025
   },
   "soleProprietorship": {
@@ -189,12 +189,12 @@
       "note": "兰州城关、七里河、安宁、西固、红古执行一类地区 2,200 元 / 22 元；永登、榆中、皋兰执行二类 2,130 元 / 21.5 元；自 2025-12-01 起执行。"
     },
     "retirement": {
-      "title": "关于公布2024年甘肃省基本养老金计发基数的通知",
-      "docNo": "甘人社通〔2024〕330号",
-      "url": "https://www.jyg.gov.cn/rsj/zwxxgk/fdzdgknr/shbzxx/art/2025/art_653628171.html",
+      "title": "甘肃省企业职工退休基本养老金领取资格认定表（2025 年参数）及多源计发基数表",
+      "url": "https://timeline.sohu.com/news/kvOkp1UgRy",
       "retrievedAt": "2026-11-20",
       "confidence": "derived",
-      "note": "2024 年官方基数 7594 元/月；2025/2026 年未检索到甘肃新计发基数专项文，暂按 7594 元/月测算。"
+      "note": "2025 年 7746 元/月。依据甘肃省企业职工退休基本养老金领取资格认定表实拍参数（原退休上年度在岗职工月平均工资 7746）及多源 2025 年计发基数表交叉核对；甘肃省人社厅 2025 年专项计发文未检索到，仍标 derived。2024 年官方基数为 7594 元/月（甘人社通〔2024〕330号），本轮已把 7594/2025 的年份错配修正为 7746/2025。",
+      "issuedBy": "甘肃省社会保险事业管理局（核定表）/ 人社通、算钱（交叉核对）"
     },
     "income": {
       "title": "平台接单计价规则",

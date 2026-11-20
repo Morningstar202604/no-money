@@ -193,3 +193,34 @@ describe('全国覆盖：31 个省级行政区全部可选', () => {
     }
   })
 })
+
+describe('3.8.7 计发基数复核回归', () => {
+  const ruleOf = (city: string) => {
+    const hit = RULES.find(r => r.rule.city === city)
+    if (!hit) throw new Error(`缺少规则文件 ${city}.json`)
+    return hit.rule
+  }
+
+  it('重庆、上海、太原、杭州、贵阳已升 official，且都有可打开链接', () => {
+    for (const city of ['chongqing', 'shanghai', 'taiyuan', 'hangzhou', 'guiyang']) {
+      const rule = ruleOf(city)
+      expect(rule.sources.retirement.confidence, `${city} 计发基数应标 official`).toBe('official')
+      expect(rule.sources.retirement.url, `${city} 计发基数缺官方链接`).toMatch(/^https?:\/\//)
+    }
+  })
+
+  it('兰州 2025 年按 7746 修正，不再把 2024 年的 7594 标成 2025', () => {
+    const rule = ruleOf('lanzhou')
+    expect(rule.retirement.benefitBaseMonthly).toBe(7746)
+    expect(rule.retirement.benefitBaseYear).toBe(2025)
+    expect(rule.sources.retirement.note).toContain('7594/2025')
+    expect(rule.sources.retirement.note).toContain('7746')
+  })
+
+  it('郑州 6401 已归位 2023 年，2025 年取 6738', () => {
+    const rule = ruleOf('zhengzhou')
+    expect(rule.retirement.benefitBaseMonthly).toBe(6738)
+    expect(rule.retirement.benefitBaseYear).toBe(2025)
+    expect(rule.sources.retirement.note).toContain('6401 元/月是 2023 年基数')
+  })
+})

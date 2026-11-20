@@ -11,7 +11,7 @@
 npm run build      # 输出到 dist/
 ```
 
-`dist/` 是完整可部署目录，约 3.38 MB（其中 `assets/` 约 2.55 MB，gzip 后约 1.2 MB）。
+`dist/` 是完整可部署目录，约 3.44 MB（其中 `assets/` 约 2.56 MB，gzip 后约 1.2 MB）。
 
 ---
 
