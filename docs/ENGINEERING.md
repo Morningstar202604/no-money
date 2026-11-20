@@ -198,7 +198,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 - 测试：1,172 项（61 个文件；含 5 项架构门禁 + 权益导航/城市入口测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
 - 首屏：408K gzip；PWA：2.72 MB；`dist`：3.38 MB（assets 2.55 MB）。
-- 数据：309 条来源，official 122（39.5%）、derived 40、unverified 147；34 城；0 城四字段全 official。20 城养老基数已完成核验（17 城 official，长春、贵阳、哈尔滨因官方只公布平均工资而标 derived），其余字段仍按原置信度保留。
+- 数据：309 条来源，official 127（41.1%）、derived 40、unverified 142；34 城；0 城四字段全 official。20 城养老基数已完成核验（17 城 official，长春、贵阳、哈尔滨因官方只公布平均工资而标 derived）；海口、合肥、南宁、西宁、银川 5 城最低工资已核验为 official，其余字段仍按原置信度保留。
 - 内容：`RightsItem` 60 条（23 条迁移 + 20 条新增 L2 + 17 条 L1）；其中 30 条 L2、30 条 L1；已到 60+ 目标。
 - 可用性：E2E 120 项（8 个文件，桌面 + 移动）；清单导出/打印有 E2E 下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 

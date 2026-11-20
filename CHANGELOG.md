@@ -3,6 +3,35 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.3] — 2026-11-20
+
+5 城最低工资从全国量级占位值换成省级政府现行文件，给权益评级一个可信锚点。
+
+### Changed
+
+- 海口 2,250 元/月、20.0 元/小时，依据 琼人社规〔2025〕7号，2025-12-01 起；合肥 2,320 元/月、23 元/小时，依据 皖政办秘〔2025〕32号，2025-09-01 起；南宁 2,200 元/月、22.4 元/小时，依据 桂政发〔2025〕16号，2025-07-01 起；西宁 2,080 元/月、20 元/小时，依据 青政〔2025〕11号，2025-05-01 起；银川 2,350 元/月、23 元/小时，依据 宁政规发〔2026〕2号，2026-11-01 起。
+- 5 城 `sources.minimumWage` 升为 `official`，补齐标题、文号、发布机构、URL、执行日期、核对日期和适用地区说明。
+- `lastCheckedAt` 统一为 `2026-11-20`，重新导出 `public/knowledge/kb.json`。
+
+### Unchanged
+
+- `benefit.medical` 的基数与费率、`retirement.benefitBaseMonthly`、`sources.pensionRate` 维持原置信度；5 城 `verified` 仍为 `false`。
+- 应用代码、依赖和界面不动；其余 29 城规则不动。
+
+### Data
+
+- 来源条目仍为 309 条：official 122 → 127（41.1%）、derived 40 不变、unverified 147 → 142、超 365 天 0。
+- `minimumWage` 字段：13 城 official / 21 城 unverified；本轮只覆盖海口、合肥、南宁、西宁、银川 5 城。
+
+### Docs
+
+- 新增 `docs/DATA-VERIFICATION-MINWAGE-2026-11-20.md`，逐城记录月/小时标准、文号、执行日期、适用地区与原文链接。
+- `docs/ENGINEERING.md`、`ROADMAP.md`、`docs/POSITIONING.md`、`docs/AUDIT-2026-11-19.md` 同步版本与统计。
+
+### Tests
+
+- `npm run check`：61 文件 / 1,172 单测通过；`build`、`doctor`、`freshness:check`、`kb:check` 全绿；E2E 120 条通过。
+
 ## [3.8.2] — 2026-11-20
 
 剩余 15 城 2026 年养老缴费基数补齐，20 个原本 `pension` 待核验的城市全部清零。

@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.8.2** is the current baseline. The product direction is settled — a rights-navigation and
+**3.8.3** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,7 +23,7 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow; 3.7.3 makes a failed month open or update an issue instead of only showing a red run; 3.7.4 trims the public README and syncs the five hosting mirrors; 3.7.5 fixes the CI preview bind so browser smoke tests start on GitHub runners; 3.7.6 records the one Cargo advisory with no compatible fix; 3.8.0 makes the seven checklists first-class and wires the content-review/contributor loop; 3.8.1 verifies 2026 pension bases for the first five cities (Shanghai, Jinan, Fuzhou, Nanchang, Kunming) against official notices; 3.8.2 completes the remaining fifteen (Changchun, Guiyang, Harbin, Haikou, Hefei, Hohhot, Lanzhou, Lhasa, Nanning, Shenyang, Shijiazhuang, Taiyuan, Urumqi, Xining, Yinchuan), with 12 direct official min/max and 3 derived from official average wages at the statutory 60%/300%.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow; 3.7.3 makes a failed month open or update an issue instead of only showing a red run; 3.7.4 trims the public README and syncs the five hosting mirrors; 3.7.5 fixes the CI preview bind so browser smoke tests start on GitHub runners; 3.7.6 records the one Cargo advisory with no compatible fix; 3.8.0 makes the seven checklists first-class and wires the content-review/contributor loop; 3.8.1 verifies 2026 pension bases for the first five cities (Shanghai, Jinan, Fuzhou, Nanchang, Kunming) against official notices; 3.8.2 completes the remaining fifteen (Changchun, Guiyang, Harbin, Haikou, Hefei, Hohhot, Lanzhou, Lhasa, Nanning, Shenyang, Shijiazhuang, Taiyuan, Urumqi, Xining, Yinchuan), with 12 direct official min/max and 3 derived from official average wages at the statutory 60%/300%; 3.8.3 verifies current minimum-wage standards for Haikou, Hefei, Nanning, Xining and Yinchuan with provincial government documents.
 
 **What is not done yet:** six-section nav reorder; resident and new-grad calculation modes; real-user
 testing. 3.8.0 ships the rights guide, the freshness gate, failure-to-issue automation, repository automation, the employee wage-slip slice, seven ready-made checklists and the content-review loop. Page-level deadline hints exist, but there is no push service or account.
@@ -396,6 +396,20 @@ without opening the AI chat.**
 
 **Status:** shipped — PATCH. Data-only; no application code or dependency change.
 
+## 3.8.3 — Minimum-wage anchors for five cities (shipped 2026-11-20)
+
+**Goal: replace the 2,000 yuan national placeholder with current, applicable provincial standards in five cities.**
+
+- [x] Haikou 2,250 / 20.0, Hainan 琼人社规〔2025〕7号, effective 2025-12-01
+- [x] Hefei 2,320 / 23, Anhui 皖政办秘〔2025〕32号, effective 2025-09-01
+- [x] Nanning 2,200 / 22.4, Guangxi 桂政发〔2025〕16号, effective 2025-07-01
+- [x] Xining 2,080 / 20, Qinghai 青政〔2025〕11号, effective 2025-05-01
+- [x] Yinchuan 2,350 / 23, Ningxia 宁政规发〔2026〕2号, effective 2026-11-01
+- [x] `sources.minimumWage` upgraded to `official` with title, document number, issuer, URL, effective date and applicable district
+- [x] `kb.json` regenerated; official 122 → 127, derived 40 unchanged, unverified 147 → 142, stale 0
+
+**Status:** shipped — PATCH. Data-only; no application code or dependency change.
+
 ---
 
 ## Engineering track (runs alongside)
@@ -435,15 +449,17 @@ without opening the AI chat.**
 
 - [x] First batch: verify 2026 pension bases for 5 of the 20 `unverified` cities (Shanghai, Jinan, Fuzhou, Nanchang, Kunming), each with an official URL and a printed document number where available (3.8.1)
 - [x] Remaining 15 cities: 12 with direct official min/max, 3 derived from official average wages at 60%/300%; no `pension` field remains `unverified` (3.8.2)
-- [ ] Next data wave: medical base / medical rate / minimum wage / pension benefit base per city, kept separate from the pension-base batch
+- [x] Minimum wage: verify current monthly/hourly standards for Haikou, Hefei, Nanning, Xining and Yinchuan with provincial government documents (3.8.3)
+- [ ] Next minimum-wage wave: remaining 21 cities, each with the applicable district and effective date
+- [ ] Next data wave: medical base / medical rate / pension benefit base per city, kept separate from the pension-base batch
 - [x] Add per-field `lastVerified` date (done via `SourceTag`: 「核对于/登记于」+ `retrievedAt`)
 - [x] "Data freshness" panel listing every parameter older than 12 months (per-city summary shipped in 3.6.11; global 34-city view shipped in 3.7.1)
 - [x] Monthly freshness workflow opens or updates an issue on failure (3.7.3, GitHub Actions); GitCode / Gitee CI still not wired
 
 **Acceptance:** the `unverified` count for social-insurance base drops below 10, and every remaining
 one has an explicit note explaining what is missing. Current state: all 20 `pension` fields are
-`official` or `derived`; the remaining `unverified` items are medical base/rate, minimum wage and
-pension benefit base, each with its original note.
+`official` or `derived`; 13 of 34 `minimumWage` fields are `official`; the remaining `unverified`
+items are medical base/rate, 21 minimum wages and pension benefit base, each with its original note.
 
 ---
 
