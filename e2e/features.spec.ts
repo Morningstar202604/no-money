@@ -71,6 +71,35 @@ test.describe('核心功能', () => {
     await expect(page.getByRole('link', { name: '灵活就业算一算 →' })).toHaveAttribute('href', '/dashboard')
   })
 
+  test('新毕业生第一年：试用期 + 转正两段工资，年度税与到手正确', async ({ page }) => {
+    await page.goto('/employee')
+    await page.waitForTimeout(1200)
+
+    await page.getByRole('tab', { name: '新毕业生第一年' }).click()
+    const form = page.locator('.ep-form-card')
+    const probation = form.locator('.ep-field').filter({ hasText: '试用期月薪' }).locator('input')
+    const months = form.locator('.ep-field').filter({ hasText: '试用期月数' }).locator('input')
+    const regular = form.locator('.ep-field').filter({ hasText: '转正后月薪' }).locator('input')
+    const fund = form.locator('.ep-field').filter({ hasText: '个人五险一金 / 月' }).locator('input')
+
+    await probation.fill('8000')
+    await probation.press('Tab')
+    await months.fill('3')
+    await months.press('Tab')
+    await regular.fill('10000')
+    await regular.press('Tab')
+    await fund.fill('1000')
+    await fund.press('Tab')
+
+    await expect(page.getByText('第一年到手（年度汇算口径）')).toBeVisible()
+    const kpis = page.locator('.ep-kpi')
+    await expect(kpis.nth(0)).toContainText('¥6,882.11')
+    await expect(kpis.nth(1)).toContainText('¥8,852.63')
+    await expect(kpis.nth(2)).toContainText('¥1,680.00')
+    await expect(kpis.nth(3)).toContainText('¥100,320.00')
+    await expect(page.locator('.ep-breakdown')).toContainText('试用期 3 个月 + 转正 9 个月')
+  })
+
   test('AI 对话默认不写入 localStorage', async ({ page }) => {
     await page.goto('/dashboard')
     await dismissOnboarding(page)

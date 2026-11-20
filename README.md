@@ -18,7 +18,7 @@ No Money turns those questions into a short, ordered list. It tells you what to 
 
 - **Find the next step.** Pick your city, identity, and situation, or open one of seven ready-made checklists; the first action is always highlighted.
 - **Check what you may be owed.** Unpaid wages, injury, dismissal, unused leave, and other common disputes, with the legal basis shown.
-- **Understand the numbers.** Net income, effective hourly pay, income tax, and pension contributions, with every assumption visible.
+- **Understand the numbers.** Net income, effective hourly pay, income tax, pension contributions, and a new grad’s first year across probation and regular pay, with every assumption visible.
 - **Verify the source.** Each policy value is marked official, derived, or unverified. When a value is unverified, the result says so instead of pretending.
 
 ## Inside
@@ -28,7 +28,7 @@ No Money turns those questions into a short, ordered list. It tells you what to 
 | **What to do** | A 3-step wizard and seven ready-made checklists, first action highlighted |
 | **What to claim** | Benefits and rights, each with its legal basis and deadline |
 | **How to do it** | 18 step-by-step L2 guides in 8 categories, with materials and official entry |
-| **Run the numbers** | Take-home pay, effective hourly wage, tax and pension, with assumptions exposed |
+| **Run the numbers** | Take-home pay, effective hourly wage, tax and pension, plus a new-grad probation-to-regular first year |
 | **Ask** | Opens the assistant with your city and first checklist item prefilled |
 | **Policy & data** | Local insurance bases, minimum wage, tax rates, and every value's provenance |
 

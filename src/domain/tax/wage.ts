@@ -34,25 +34,34 @@ export interface WageAnnualResult {
   effectiveRate: Rate
 }
 
-export function calcWageAnnual(
-  monthlyGross: Cent,
-  monthlySocialFund: Cent,
-  monthlySpecialDeduction: Cent,
+export interface WageMonth {
+  /** 当月税前工资（分） */
+  gross: Cent
+  /** 当月个人五险一金（分） */
+  socialFund: Cent
+  /** 当月专项附加扣除（分） */
+  specialDeduction: Cent
+}
+
+/** 按 12 个月的实际工资逐月求和后算年度综合所得税。 */
+export function calcWageAnnualFromMonths(
+  months: readonly WageMonth[],
   rule: Pick<LaborRemunerationRule, 'basicDeductionMonthly' | 'taxTable'>,
 ): Result<WageAnnualResult, TaxError> {
-  const gross = Number(monthlyGross)
-  const social = Number(monthlySocialFund)
-  const special = Number(monthlySpecialDeduction)
-  if (![gross, social, special].every(Number.isFinite) || gross < 0 || social < 0 || special < 0) {
+  if (months.length !== 12) {
+    return err({ code: 'INVALID_INPUT', message: '工资薪金年度测算必须提供 12 个月的工资' })
+  }
+  const values = months.flatMap((month) => [Number(month.gross), Number(month.socialFund), Number(month.specialDeduction)])
+  if (!values.every(Number.isFinite) || values.some(v => v < 0)) {
     return err({ code: 'INVALID_INPUT', message: '工资、五险一金和专项附加扣除必须是非负数' })
   }
   if (!rule.taxTable.length) {
     return err({ code: 'INVALID_RULE', message: '税率表为空' })
   }
 
-  const annualGross = safeCent(Math.round(gross * 12))
-  const annualSocialFund = safeCent(Math.round(social * 12))
-  const annualSpecialDeduction = safeCent(Math.round(special * 12))
+  const annualGross = safeCent(months.reduce((sum, month) => sum + Number(month.gross), 0))
+  const annualSocialFund = safeCent(months.reduce((sum, month) => sum + Number(month.socialFund), 0))
+  const annualSpecialDeduction = safeCent(months.reduce((sum, month) => sum + Number(month.specialDeduction), 0))
   const annualBasicDeduction = safeCent(Math.round(Number(rule.basicDeductionMonthly) * 12))
   const annualTaxable = nonNegCent(
     subCent(subCent(subCent(annualGross, annualSocialFund), annualSpecialDeduction), annualBasicDeduction),
@@ -81,4 +90,27 @@ export function calcWageAnnual(
     monthlyNet,
     effectiveRate,
   })
+}
+
+export function calcWageAnnual(
+  monthlyGross: Cent,
+  monthlySocialFund: Cent,
+  monthlySpecialDeduction: Cent,
+  rule: Pick<LaborRemunerationRule, 'basicDeductionMonthly' | 'taxTable'>,
+): Result<WageAnnualResult, TaxError> {
+  const gross = Number(monthlyGross)
+  const social = Number(monthlySocialFund)
+  const special = Number(monthlySpecialDeduction)
+  if (![gross, social, special].every(Number.isFinite) || gross < 0 || social < 0 || special < 0) {
+    return err({ code: 'INVALID_INPUT', message: '工资、五险一金和专项附加扣除必须是非负数' })
+  }
+
+  return calcWageAnnualFromMonths(
+    Array.from({ length: 12 }, () => ({
+      gross: safeCent(gross),
+      socialFund: safeCent(social),
+      specialDeduction: safeCent(special),
+    })),
+    rule,
+  )
 }
