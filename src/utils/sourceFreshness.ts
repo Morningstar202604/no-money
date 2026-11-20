@@ -49,3 +49,60 @@ export function summarizeSourceFreshness(
   }
   return summary
 }
+
+export interface CityFreshnessRow extends SourceFreshness {
+  city: string
+  label: string
+  province: string
+}
+
+export interface FreshnessOverview {
+  /** 只包含成功读取规则的城市，读取失败的城市不补 0 */
+  rows: CityFreshnessRow[]
+  totals: SourceFreshness
+  /** 读取成功的城市数 */
+  loaded: number
+  /** 读取失败的城市显示名，按注册表顺序 */
+  missing: string[]
+}
+
+/**
+ * 34 城总览：输入城市注册表和「城市 id → 规则」映射。
+ * 只汇总成功读取的规则；失败的城市单独列出，不用零值冒充“已核对”。
+ */
+export function summarizeCityFreshness(
+  cities: ReadonlyArray<{ value: string; label: string; province: string }>,
+  rules: Record<string, { sources?: Record<string, SourceRef> } | null | undefined>,
+  now: Date = new Date(),
+): FreshnessOverview {
+  const rows: CityFreshnessRow[] = []
+  const missing: string[] = []
+  const totals: SourceFreshness = {
+    total: 0,
+    official: 0,
+    derived: 0,
+    unverified: 0,
+    staleCount: 0,
+    unverifiedKeys: [],
+  }
+
+  for (const city of cities) {
+    const rule = rules[city.value]
+    if (!rule) {
+      missing.push(city.label)
+      continue
+    }
+    const summary = summarizeSourceFreshness(rule.sources, now)
+    rows.push({ ...summary, city: city.value, label: city.label, province: city.province })
+    totals.total += summary.total
+    totals.official += summary.official
+    totals.derived += summary.derived
+    totals.unverified += summary.unverified
+    totals.staleCount += summary.staleCount
+    if (summary.oldestRetrievedAt && (!totals.oldestRetrievedAt || summary.oldestRetrievedAt < totals.oldestRetrievedAt)) {
+      totals.oldestRetrievedAt = summary.oldestRetrievedAt
+    }
+  }
+
+  return { rows, totals, loaded: rows.length, missing }
+}

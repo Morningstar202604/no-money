@@ -6,10 +6,10 @@
 
 A **rights-navigation and public-service guide** for workers in China. Income, tax, social-insurance and compensation calculators are tools inside it; the AI is only an assistant.
 
-> Version 3.7.0 adds an employee wage-slip page at `/employee`: enter pre-tax monthly salary, personal social-insurance + housing-fund contributions and monthly special deductions to get annual income tax and monthly take-home, without guessing employer contribution rates. The rest is the 3.6.11 scope-and-provenance patch: a **60-item rights catalog** with **30 L2 items** (materials, steps, official entry, deadline, pitfalls) and **30 L1 items** (know it exists, where to verify), **10 cities deep-verified** for social insurance, medical insurance, housing fund and employment services, plus a local-only checklist with deadline-first reminders, TXT export and print/PDF, four one-click common situations, a ranked result list that highlights the first thing to do, and a three-action handoff to calculate / ask AI / read policy, an AI prompt pre-filled with the city and first checklist item, an explicit "flexible-work calculation only" scope note, and a per-city data-freshness summary. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
+> Version 3.7.1 expands the policy data-source tab into a 34-city freshness overview: official / derived / unverified counts, oldest date and stale count per city, with a switch-to-city action. 3.7.0 also adds an employee wage-slip page at `/employee`: enter pre-tax monthly salary, personal social-insurance + housing-fund contributions and monthly special deductions to get annual income tax and monthly take-home, without guessing employer contribution rates. The rest is the 3.6.11 scope-and-provenance patch: a **60-item rights catalog** with **30 L2 items** (materials, steps, official entry, deadline, pitfalls) and **30 L1 items** (know it exists, where to verify), **10 cities deep-verified** for social insurance, medical insurance, housing fund and employment services, plus a local-only checklist with deadline-first reminders, TXT export and print/PDF, four one-click common situations, a ranked result list that highlights the first thing to do, and a three-action handoff to calculate / ask AI / read policy, an AI prompt pre-filled with the city and first checklist item, an explicit "flexible-work calculation only" scope note, and a per-city data-freshness summary. See [docs/POSITIONING.md](docs/POSITIONING.md) for the full positioning and migration plan.
 
 [![CI](https://github.com/badhope/no-money/actions/workflows/ci.yml/badge.svg)](https://github.com/badhope/no-money/actions/workflows/ci.yml)
-[![tests](https://img.shields.io/badge/tests-1157-3fb950)](https://github.com/badhope/no-money)
+[![tests](https://img.shields.io/badge/tests-1159-3fb950)](https://github.com/badhope/no-money)
 [![e2e](https://img.shields.io/badge/e2e-118-3fb950)](https://github.com/badhope/no-money)
 [![cities](https://img.shields.io/badge/cities-34-58a6ff)](#data-coverage)
 [![telemetry](https://img.shields.io/badge/telemetry-none-3fb950)](#privacy)
@@ -172,7 +172,7 @@ A delivery rider is told "up to ¥10,000 a month." That number hides four things
 
 ## The current six modules (rights navigation P0 shipped)
 
-> 3.6.0 shipped the content-depth layer: do the paperwork first, then run the numbers. 3.6.5 unified city/province service entries behind one resolver; unverified cities fall back to province without invented links. 3.6.6 reaches 60 items and adds a local checklist with deadline-first hints, TXT export and print/PDF; 3.6.7 adds one-click common situations (first job / just left / city change / unpaid wages); 3.6.8 ranks the result list so the first action stands out; 3.6.9 adds a handoff from the checklist to calculate, ask the AI assistant and read policy; 3.6.10 pre-fills the AI prompt with the current city and first checklist item, so the user only confirms and sends; 3.6.11 states the calculator scope and summarizes how many city parameters are official, derived or still unverified; 3.7.0 adds an employee wage-slip page at `/employee` using annual comprehensive-income tax, and removes the rider parameter sidebar from that page. Six-section navigation is still open, and resident/new-grad modes are not wired yet; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
+> 3.6.0 shipped the content-depth layer: do the paperwork first, then run the numbers. 3.6.5 unified city/province service entries behind one resolver; unverified cities fall back to province without invented links. 3.6.6 reaches 60 items and adds a local checklist with deadline-first hints, TXT export and print/PDF; 3.6.7 adds one-click common situations (first job / just left / city change / unpaid wages); 3.6.8 ranks the result list so the first action stands out; 3.6.9 adds a handoff from the checklist to calculate, ask the AI assistant and read policy; 3.6.10 pre-fills the AI prompt with the current city and first checklist item, so the user only confirms and sends; 3.6.11 states the calculator scope and summarizes how many city parameters are official, derived or still unverified; 3.7.0 adds an employee wage-slip page at `/employee` using annual comprehensive-income tax, and removes the rider parameter sidebar from that page; 3.7.1 expands the policy data-source tab into a 34-city freshness overview and never fills failed cities with zero. Six-section navigation is still open, and resident/new-grad modes are not wired yet; see [docs/POSITIONING.md](docs/POSITIONING.md) and [ROADMAP.md](ROADMAP.md).
 
 | Module | Answers |
 |---|---|
@@ -209,7 +209,7 @@ See [SECURITY.md](SECURITY.md).
 ```bash
 npm ci
 npm run dev            # web dev server
-npm test               # 1157 unit tests
+npm test               # 1159 unit tests
 npm run test:e2e       # 114 browser tests (builds first)
 npm run typecheck      # type check
 npm run verify         # engine identity self-check

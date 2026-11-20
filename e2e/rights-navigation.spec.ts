@@ -36,6 +36,11 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByText('民生手册', { exact: true })).toBeHidden()
 
     await page.locator('.n-tabs-tab').filter({ hasText: '数据溯源' }).click()
+    await expect(page.getByText('34 城数据新鲜度总览')).toBeVisible()
+    await expect(page.getByText(/已读取 34 \/ 34 城/)).toBeVisible()
+    await page.getByText('查看 34 城明细').click()
+    await expect(page.locator('.df-row')).toHaveCount(34)
+    await expect(page.locator('.df-row').filter({ hasText: '广州' }).first()).toContainText('当前')
     await expect(page.getByText('本城数据状态：')).toBeVisible()
     await expect(page.getByText(/项参数/)).toBeVisible()
 

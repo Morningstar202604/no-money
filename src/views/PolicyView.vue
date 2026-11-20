@@ -84,7 +84,57 @@
       </n-tab-pane>
 
       <n-tab-pane name="sources" tab="数据溯源">
-        <n-card class="card" style="margin-top: 0" title="当前城市参数逐条溯源">
+        <n-card class="card" style="margin-top: 0" title="34 城数据新鲜度总览">
+          <p class="desc" style="margin-bottom:10px">
+            汇总 34 个城市规则文件的来源等级和登记日期。<b>只统计成功读取的城市</b>；读取失败的城市单独列出，不补 0、不冒充已核对。
+            点开明细可切到任一城市，下面的「本城数据状态」会随之刷新。
+          </p>
+          <div v-if="freshnessLoading" class="df-loading">正在读取 34 城规则…（已读取 {{ freshnessOverview.loaded }} / {{ CITY_REGISTRY.length }}）</div>
+          <n-alert v-if="!freshnessLoading && freshnessError" type="warning" :show-icon="true" style="margin-bottom:8px">
+            {{ freshnessError }}
+          </n-alert>
+          <template v-if="!freshnessLoading && freshnessOverview.loaded">
+            <div class="df-summary">
+              <span>已读取 <b>{{ freshnessOverview.loaded }} / {{ CITY_REGISTRY.length }}</b> 城</span>
+              <span>参数 <b>{{ freshnessOverview.totals.total }}</b></span>
+              <span>官方 <b>{{ freshnessOverview.totals.official }}</b></span>
+              <span>推算 <b>{{ freshnessOverview.totals.derived }}</b></span>
+              <span>待核验 <b>{{ freshnessOverview.totals.unverified }}</b></span>
+              <span :class="{ 'df-warn': freshnessOverview.totals.staleCount > 0 }">超 12 个月 <b>{{ freshnessOverview.totals.staleCount }}</b></span>
+            </div>
+            <div v-if="freshnessOverview.missing.length" class="df-missing">
+              未读取：{{ freshnessOverview.missing.join('、') }}。
+              <button type="button" class="df-switch" @click="reloadFreshness">重试</button>
+            </div>
+            <details class="df-details">
+              <summary>查看 34 城明细</summary>
+              <div class="df-list">
+                <div v-for="row in freshnessOverview.rows" :key="row.city" class="df-row">
+                  <div class="df-city">
+                    <b>{{ row.label }}</b><span>{{ row.province }}</span>
+                    <n-tag v-if="row.city === store.work.city" size="tiny" :bordered="false" type="success">当前</n-tag>
+                  </div>
+                  <div class="df-metrics">
+                    官 <b>{{ row.official }}</b> · 推 <b>{{ row.derived }}</b> · 待 <b>{{ row.unverified }}</b>
+                  </div>
+                  <div class="df-date">最早 {{ row.oldestRetrievedAt ?? '—' }}</div>
+                  <div class="df-stale" :class="{ 'df-warn': row.staleCount > 0 }">超期 {{ row.staleCount }}</div>
+                  <div class="df-action">
+                    <button v-if="row.city !== store.work.city" type="button" class="df-switch" @click="switchCity(row.city)">切到此城</button>
+                    <span v-else class="df-current">当前城市</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          </template>
+          <n-empty v-else-if="!freshnessLoading" description="34 城规则均未读取，请检查网络后重试">
+            <template #extra>
+              <button type="button" class="df-switch" @click="reloadFreshness">重新读取</button>
+            </template>
+          </n-empty>
+        </n-card>
+
+        <n-card class="card" style="margin-top: 12px" title="当前城市参数逐条溯源">
           <p class="desc" style="margin-bottom:10px">
             测算页的每个外部参数都来自左侧规则文件，此处展示其出处与置信度。
             <strong>official</strong>=已回溯官方原文；<strong>derived</strong>=据官方口径推算；<strong>unverified</strong>=无权威来源，仅作占位。
@@ -237,10 +287,11 @@
 import { createPageHeading } from '../components/PageHeading'
 const PageHeading = createPageHeading('policy')
 
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { NCard, NTabs, NTabPane, NGrid, NGi, NTag, NSteps, NStep, NEmpty, NInput, NRadioGroup, NRadioButton, NAlert } from 'naive-ui'
 import { useMainStore } from '../stores/main'
 import { CITY_REGISTRY } from '../data/cities'
+import type { CityRule } from '../types'
 import { SOURCE_LABELS, sourceLabel } from '../utils/sources'
 import { assetUrl } from '../utils/asset'
 import FoldCard from '../components/FoldCard.vue'
@@ -252,7 +303,7 @@ import { REALITY_FACTS, REALITY_CATEGORY_ORDER, REALITY_CATEGORY_LABELS } from '
 import { GUIDE_ITEMS, GUIDE_GROUP_ORDER, GUIDE_GROUP_LABELS } from '../utils/livingGuide'
 import { POLICIES, RELIEF_GUIDE, PROVINCE_POLICY_CHECKLIST, type PolicyStatus } from '../data/policies'
 import { resolveServiceChannel } from '../data/cityChannels'
-import { summarizeSourceFreshness } from '../utils/sourceFreshness'
+import { summarizeCityFreshness, summarizeSourceFreshness } from '../utils/sourceFreshness'
 import {
   buildStaticKbEntries,
   citySourceEntries,
@@ -265,6 +316,47 @@ const store = useMainStore()
 const rule = computed(() => store.rule)
 const sourceFreshness = computed(() => summarizeSourceFreshness(rule.value?.sources))
 const unverifiedSourceLabels = computed(() => sourceFreshness.value.unverifiedKeys.map(sourceLabel))
+
+/* ---------- 34 城总览 ---------- */
+const freshnessRules = ref<Record<string, Pick<CityRule, 'sources'> | null>>({})
+const freshnessLoading = ref(false)
+const freshnessError = ref('')
+let freshnessRequested = false
+
+async function loadFreshnessOverview(force = false) {
+  if (freshnessLoading.value) return
+  if (freshnessRequested && !force) return
+  freshnessRequested = true
+  freshnessLoading.value = true
+  freshnessError.value = ''
+  const results = await Promise.all(CITY_REGISTRY.map(async (city) => {
+    try {
+      const res = await fetch(assetUrl(`rules/${city.value}.json`))
+      if (!res.ok) throw new Error(String(res.status))
+      const rule = await res.json() as Pick<CityRule, 'sources'>
+      return [city, rule] as const
+    } catch {
+      return [city, null] as const
+    }
+  }))
+  freshnessRules.value = Object.fromEntries(results.map(([city, rule]) => [city.value, rule]))
+  const failed = results.filter(([, rule]) => !rule).length
+  freshnessError.value = failed
+    ? `有 ${failed} 城规则读取失败；总览只统计成功读取的城市，未读取的不会补 0。`
+    : ''
+  freshnessLoading.value = false
+}
+
+function reloadFreshness() {
+  freshnessRequested = false
+  void loadFreshnessOverview(true)
+}
+
+function switchCity(city: string) {
+  void store.setCity(city)
+}
+
+const freshnessOverview = computed(() => summarizeCityFreshness(CITY_REGISTRY, freshnessRules.value))
 const kbJsonUrl = assetUrl('knowledge/kb.json')
 const kbReadmeUrl = assetUrl('knowledge/README.md')
 
@@ -310,6 +402,10 @@ const activeTab = computed<TabGroup>({
   get: () => TAB_GROUP[tab.value] ?? 'policy',
   set: (value) => { tab.value = value },
 })
+
+watch(activeTab, (tab) => {
+  if (tab === 'sources') void loadFreshnessOverview()
+}, { immediate: true })
 
 /* ---------- 知识库 ---------- */
 const STATIC_KB = buildStaticKbEntries()
@@ -385,6 +481,32 @@ const reliefGuide = RELIEF_GUIDE
   border-left: 2px solid var(--color-text-warning);
   padding: 6px 8px;
   border-radius: 0 3px 3px 0;
+}
+
+/* ---------- 34 城数据新鲜度 ---------- */
+.df-loading { font-size: 12px; color: var(--color-text-tertiary); padding: 8px 0; }
+.df-summary { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12px; color: var(--color-text-secondary); line-height: 1.7; }
+.df-summary b { color: var(--color-text-primary); font-family: var(--font-family-num); }
+.df-warn { color: var(--color-text-warning); }
+.df-missing { margin-top: 8px; font-size: 11px; color: var(--color-text-warning); line-height: 1.7; }
+.df-details { margin-top: 10px; border-top: 1px solid var(--color-border-primary); }
+.df-details summary { cursor: pointer; padding: 9px 0 6px; font-size: 12px; font-weight: 600; color: var(--color-text-brand); }
+.df-list { padding-top: 2px; }
+.df-row { display: flex; flex-wrap: wrap; align-items: center; gap: 3px 12px; padding: 7px 0; border-bottom: 1px solid var(--color-border-primary); font-size: 11px; line-height: 1.5; }
+.df-row:last-child { border-bottom: 0; }
+.df-city { display: flex; align-items: center; gap: 5px; min-width: 92px; }
+.df-city b { font-size: 12px; color: var(--color-text-primary); }
+.df-city span { color: var(--color-text-tertiary); }
+.df-metrics { color: var(--color-text-secondary); }
+.df-metrics b { color: var(--color-text-primary); font-family: var(--font-family-num); }
+.df-date { color: var(--color-text-tertiary); }
+.df-stale { color: var(--color-text-tertiary); }
+.df-action { margin-left: auto; }
+.df-switch { border: 0; background: transparent; padding: 0; color: var(--color-text-brand); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.df-current { color: var(--color-text-tertiary); }
+@media (max-width: 640px) {
+  .df-row { gap: 3px 8px; }
+  .df-action { margin-left: 0; }
 }
 
 /* ---------- 知识库 ---------- */

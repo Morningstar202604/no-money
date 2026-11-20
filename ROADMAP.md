@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.7.0** is the current baseline. The product direction is settled — a rights-navigation and
+**3.7.1** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,10 +23,10 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview.
 
 **What is not done yet:** six-section nav reorder; resident and new-grad calculation modes; real-user
-testing. 3.7.0 ships the employee wage-slip slice only; assistant content operations and review
+testing. 3.7.1 ships the 34-city overview and the employee wage-slip slice only; assistant content operations and review
 cadence remain 3.8.0. Page-level deadline hints exist, but there is no push service or account.
 
 ---
@@ -265,6 +265,23 @@ document number or official link was added.
 
 ---
 
+## 3.7.1 — 34-city freshness overview (shipped 2026-11-20)
+
+**Goal: see which of the 34 cities have weak or stale sources without leaving the policy page.**
+
+- [x] `/policy?tab=sources` summary: loaded cities, total parameters, official / derived /
+      unverified counts, and sources older than 12 months
+- [x] Per-city rows: official / derived / unverified, oldest `retrievedAt`, stale count, current-city tag
+- [x] "切到此城" switches the calculation city and refreshes the existing per-city source detail
+- [x] 34 rows live in a native `<details>`, closed by default; no new top-level nav or route
+- [x] Failed city rules are listed separately; totals never fill failed cities with zero
+- [x] Unit tests for aggregation and missing rules; E2E asserts 34 rows and the current-city marker
+
+**Status:** shipped — PATCH. 60 files / 1,159 unit tests, 8 files / 118 E2E. No policy amount,
+document number or official link was added.
+
+---
+
 ## 3.8.0 — Assistant and content operations
 
 - [ ] AI assistant answers only with city + identity + situation, returns 1–3 actions, the first step,
@@ -297,7 +314,7 @@ document number or official link was added.
       full gate each time
 - [ ] Circular-dependency scan that understands `.vue` (dependency-cruiser or madge with a Vue parser)
 - [ ] Lighthouse CI on a 4G profile: LCP < 2.5s, CLS < 0.1, TBT < 200ms
-- [x] PWA precache budget check in `doctor` (done; 2.71 MB, warn at 3 MB)
+- [x] PWA precache budget check in `doctor` (done; 2.72 MB, warn at 3 MB)
 
 ### P2
 
@@ -313,7 +330,7 @@ document number or official link was added.
 - [ ] Verify social-insurance bases for the 20 cities currently marked `unverified`, each with a
       document number and URL
 - [x] Add per-field `lastVerified` date (done via `SourceTag`: 「核对于/登记于」+ `retrievedAt`)
-- [ ] "Data freshness" panel listing every parameter older than 12 months (per-city summary shipped in 3.6.11; global 34-city view still open)
+- [x] "Data freshness" panel listing every parameter older than 12 months (per-city summary shipped in 3.6.11; global 34-city view shipped in 3.7.1)
 - [ ] Monthly CI job that opens an issue when any rule file exceeds its freshness window
 
 **Acceptance:** the `unverified` count for social-insurance base drops below 10, and every remaining
