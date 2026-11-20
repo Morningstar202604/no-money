@@ -224,3 +224,66 @@ describe('3.8.7 计发基数复核回归', () => {
     expect(rule.sources.retirement.note).toContain('6401 元/月是 2023 年基数')
   })
 })
+
+describe('3.8.8 医保遗留口径回归', () => {
+  const ruleOf = (city: string) => {
+    const hit = RULES.find(r => r.rule.city === city)
+    if (!hit) throw new Error(`缺少规则文件 ${city}.json`)
+    return hit.rule
+  }
+
+  it('34 城医保费率不再有 unverified', () => {
+    for (const { file, rule } of RULES) {
+      expect(rule.sources.medicalRate.confidence, `${file} 医保费率仍为 unverified`).not.toBe('unverified')
+    }
+  })
+
+  it('西安 2026：基数 4990、费率 8%、大额 8 元/月，月缴 407.2', () => {
+    const rule = ruleOf('xian')
+    expect(rule.benefit.medical.rate).toBe(0.08)
+    expect(rule.benefit.medical.fixedMonthly).toBe(8)
+    expect(rule.benefit.medical.baseMin * rule.benefit.medical.rate + (rule.benefit.medical.fixedMonthly ?? 0)).toBeCloseTo(407.2, 1)
+    expect(rule.sources.medicalRate.confidence).toBe('official')
+    expect(rule.sources.medicalRate.note).toContain('407.2')
+  })
+
+  it('郑州 2026：净费率 10%，5216×10%=521.6，不再按 9% 少算', () => {
+    const rule = ruleOf('zhengzhou')
+    expect(rule.benefit.medical.baseMin).toBe(5216)
+    expect(rule.benefit.medical.rate).toBe(0.1)
+    expect(rule.benefit.medical.baseMin * rule.benefit.medical.rate).toBeCloseTo(521.6, 1)
+    expect(rule.sources.medicalRate.note).toContain('5201.6')
+  })
+
+  it('石家庄 6.5% 原文到期后降为 derived，不再用 official 覆盖 2026-07 之后', () => {
+    const rule = ruleOf('shijiazhuang')
+    expect(rule.benefit.medical.rate).toBe(0.065)
+    expect(rule.sources.medicalRate.confidence).toBe('derived')
+    expect(rule.sources.medicalRate.note).toContain('2026-06-30')
+  })
+
+  it('呼和浩特 2026：长护 0.4% + 大额 100 元/年折 35.31 元/月，统账月缴 547.85', () => {
+    const rule = ruleOf('huhehaote')
+    expect(rule.benefit.medical.fixedMonthly).toBe(35.31)
+    expect(rule.benefit.medical.baseMin * rule.benefit.medical.rate + (rule.benefit.medical.fixedMonthly ?? 0)).toBeCloseTo(547.85, 1)
+    expect(rule.sources.medicalRate.note).toContain('8.7%/5.7%')
+  })
+
+  it('乌鲁木齐 2026-09：单建 503.62、统账 678.5，用固定月附加补齐差额', () => {
+    const rule = ruleOf('wulumuqi')
+    expect(rule.benefit.medical.fixedMonthly).toBe(31.48)
+    const single = rule.benefit.medicalTiers?.find(t => t.id === 'single_pool')
+    const combined = rule.benefit.medicalTiers?.find(t => t.id === 'combined')
+    expect(single?.fixedMonthly).toBe(31.48)
+    expect(combined?.fixedMonthly).toBe(101.44)
+    expect(rule.benefit.medical.baseMin * (single?.rate ?? 0) + (single?.fixedMonthly ?? 0)).toBeCloseTo(503.62, 1)
+    expect(rule.benefit.medical.baseMin * (combined?.rate ?? 0) + (combined?.fixedMonthly ?? 0)).toBeCloseTo(678.5, 1)
+  })
+
+  it('武汉 7587 是职工医保基数，7496 是养老基数，note 已把两个险种拆开', () => {
+    const rule = ruleOf('wuhan')
+    expect(rule.benefit.medical.baseMin).toBe(7587)
+    expect(rule.sources.medicalRate.note).toContain('7496')
+    expect(rule.sources.medicalRate.note).toContain('养老缴费基数')
+  })
+})
