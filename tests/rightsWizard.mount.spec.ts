@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import RightsWizard from '../src/components/RightsWizard.vue'
+import { useRightsChecklistStore } from '../src/stores/rightsChecklist'
 
 function mountWizard() {
   const pinia = createPinia()
@@ -69,6 +70,24 @@ describe('三步办事向导', () => {
     expect(wrapper.text()).toContain('第 1 件 · 先办这个')
     expect(wrapper.findAll('.right-card').length).toBeGreaterThanOrEqual(3)
     expect(wrapper.findAll('.right-card').length).toBeLessThanOrEqual(7)
+    wrapper.unmount()
+  })
+
+  it('顶部有 7 类模板，点工伤直接出倒计时清单并可批量加入', async () => {
+    const wrapper = mountWizard()
+    await wrapper.vm.$nextTick()
+    expect(wrapper.findAll('.rw-quick-card')).toHaveLength(7)
+
+    await clickButton(wrapper, '工伤')
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('.rw-template').text()).toContain('工伤 30 天倒计时')
+    expect(wrapper.text()).toContain('单位 30 日')
+    expect(wrapper.findAll('.right-card').length).toBeGreaterThanOrEqual(3)
+
+    await clickButton(wrapper, '全部加入我的清单')
+    const checklist = useRightsChecklistStore()
+    expect(checklist.trackedCount).toBeGreaterThanOrEqual(3)
+    expect(wrapper.text()).toContain('已加入我的清单')
     wrapper.unmount()
   })
 

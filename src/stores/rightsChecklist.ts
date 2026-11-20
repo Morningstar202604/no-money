@@ -92,6 +92,21 @@ export const useRightsChecklistStore = defineStore('rightsChecklist', {
       this.persist()
     },
 
+    /** 一次把一张模板的全部条目加入「我的清单」，已收藏的不重复切换 */
+    saveMany(ids: string[]): number {
+      let added = 0
+      for (const id of ids) {
+        const entry = this.ensure(id)
+        if (!entry.saved) {
+          entry.saved = true
+          entry.updatedAt = isoDate()
+          added += 1
+        }
+      }
+      if (added) this.persist()
+      return added
+    },
+
     toggleDone(id: string) {
       const entry = this.ensure(id)
       entry.done = !entry.done

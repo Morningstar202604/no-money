@@ -67,6 +67,30 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByText('已带入当前清单，确认后点发送；可先改。')).toBeVisible()
   })
 
+  test('七类办事模板可直接出清单、批量加入并导出', async ({ page }) => {
+    await page.goto('/start')
+    await dismissOnboarding(page)
+
+    const quickCards = page.locator('.rw-quick-card')
+    await expect(quickCards).toHaveCount(7)
+    await page.getByRole('button', { name: /工伤/ }).click()
+
+    await expect(page.locator('.rw-template')).toContainText('工伤 30 天倒计时')
+    await expect(page.locator('.rw-template')).toContainText('单位 30 日')
+    await expect(page.locator('.rw-list .right-card').first()).toBeVisible()
+    await expect(page.getByText('第 1 件 · 先办这个')).toBeVisible()
+
+    await page.getByRole('button', { name: '全部加入我的清单' }).click()
+    await expect(page.getByText(/已加入我的清单/)).toBeVisible()
+    const raw = await page.evaluate(() => localStorage.getItem('nomoney_rights_checklist_v1') || '')
+    expect(raw).toContain('right-injury-report')
+
+    const downloadPromise = page.waitForEvent('download')
+    await page.getByRole('button', { name: '导出这张清单' }).click()
+    const download = await downloadPromise
+    expect(download.suggestedFilename()).toContain('工伤 30 天倒计时')
+  })
+
   test('三步向导生成 3–7 条，每条都有官方入口或明确说没有', async ({ page }) => {
     await page.goto('/start')
     await dismissOnboarding(page)

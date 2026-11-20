@@ -64,6 +64,12 @@ docs(readme): clarify annual settlement basis
 
 Keep commits scoped. Do not mix a refactor with a behavior change.
 
+## Adding a rights item
+
+Read [docs/CONTENT-REVIEW.md](docs/CONTENT-REVIEW.md) first. A content PR must include a primary source, an honest `confidence`, a real `lastVerified` date, and a reviewer sign-off. If the amount is local and you cannot verify it, leave the amount out and say “以当地标准为准” — do not fill it with a plausible guess.
+
+If the item belongs to one of the seven checklists, add it to `src/data/rights/templates.ts` only when it is part of the real “do this first” sequence.
+
 ## Adding a city
 
 1. Add the city to `src/data/cities.ts` with map coordinates.

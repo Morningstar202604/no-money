@@ -41,7 +41,7 @@ A mismatch fails the release checklist. `scripts/bump-version.mjs` updates all t
 1. **Decide the segment** using the table above.
 2. **Bump all three files**:
    ```bash
-   node scripts/bump-version.mjs 3.7.6
+   node scripts/bump-version.mjs 3.8.0
    ```
 3. **Update `CHANGELOG.md`** — move `[Unreleased]` entries into the new version with today's date. Follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) categories: Added, Changed, Deprecated, Removed, Fixed, Security.
 4. **Run the full gate**:
@@ -54,7 +54,7 @@ A mismatch fails the release checklist. `scripts/bump-version.mjs` updates all t
 5. **Commit** with `chore(release): X.Y.Z`.
 6. **Tag** with an annotated tag:
    ```bash
-   git tag -a v3.7.6 -m "v3.7.6"
+   git tag -a v3.8.0 -m "v3.8.0"
    ```
 7. **Push** branch and tag to all mirrors:
    ```bash

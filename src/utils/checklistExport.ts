@@ -14,13 +14,18 @@ function exportedAt(): string {
   return new Date().toISOString().slice(0, 10)
 }
 
+function listHeading(title?: string): string {
+  return title ? `没钱 No Money · ${title}` : '没钱 No Money · 我的办事清单'
+}
+
 export function buildChecklistText(
   items: RightsItem[],
   done: (id: string) => boolean,
   date = exportedAt(),
+  title?: string,
 ): string {
   const lines = [
-    '没钱 No Money · 我的办事清单',
+    listHeading(title),
     '本清单保存在本机；不含身份证、工资、城市信息。',
     `导出日期：${date}`,
     '',
@@ -53,6 +58,7 @@ export function buildChecklistHtml(
   items: RightsItem[],
   done: (id: string) => boolean,
   date = exportedAt(),
+  title?: string,
 ): string {
   const rows = items.length
     ? items.map((item, index) => `
@@ -69,7 +75,7 @@ export function buildChecklistHtml(
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>没钱 No Money · 我的办事清单</title>
+<title>${escapeHtml(listHeading(title))}</title>
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; padding: 24px 28px; color: #1a1a1a; font: 13px/1.65 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
@@ -92,7 +98,7 @@ export function buildChecklistHtml(
 </style>
 </head>
 <body>
-<header><h1>没钱 No Money · 我的办事清单</h1><p class="meta">本清单保存在本机；不含身份证、工资、城市信息。导出日期：${escapeHtml(date)}</p></header>
+<header><h1>${escapeHtml(listHeading(title))}</h1><p class="meta">本清单保存在本机；不含身份证、工资、城市信息。导出日期：${escapeHtml(date)}</p></header>
 ${rows}
 <footer>提醒：金额、比例、截止日期以当地最新文件为准；本平台不代办、不代缴。</footer>
 </body>

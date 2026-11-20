@@ -8,11 +8,11 @@
         <span class="rw-quick-label">不知道怎么选？点一个，直接出清单（城市用当前测算城市）：</span>
         <div class="rw-quick-grid">
           <button
-            v-for="o in QUICK_OPTIONS"
-            :key="o.value"
+            v-for="o in RIGHTS_TEMPLATES"
+            :key="o.key"
             type="button"
             class="rw-quick-card"
-            @click="quickStart(o.value)"
+            @click="quickStart(o)"
           >
             <b>{{ o.label }}</b>
             <span>{{ o.hint }}</span>
@@ -100,11 +100,25 @@
         共 {{ result.length }} 条。先办第 1 件，其余按顺序来；不用一次全做完。每条都写了第一步、时限和官方入口。具体金额/比例以你当地最新文件为准，本平台不代办、不代缴。
       </p>
 
+      <div v-if="activeTemplate" class="rw-template">
+        <span class="rw-template-kicker">办事模板</span>
+        <b>{{ activeTemplate.name }}</b>
+        <span>{{ activeTemplate.intro }}</span>
+        <span v-if="activeTemplate.note" class="rw-template-note">{{ activeTemplate.note }}</span>
+      </div>
+
       <CityServiceLinks v-if="resolvedChannel" :city="city" />
       <p v-else class="rw-local">
         还没收录这个城市的省级入口。先拨 <b>12333</b> 问当地社保/医保经办地址，
         或打开「国家社会保险公共服务平台」查全国入口；本平台不代办。
       </p>
+
+      <div class="rw-toolbar" aria-label="清单操作">
+        <n-button size="small" @click="saveAll">全部加入我的清单</n-button>
+        <n-button size="small" @click="exportCurrent">导出这张清单</n-button>
+        <n-button size="small" @click="printCurrent">打印</n-button>
+        <span v-if="actionNote" class="rw-action-note" role="status">{{ actionNote }}</span>
+      </div>
 
       <div class="rw-list">
         <RightsItemCard v-for="(item, index) in result" :key="item.id" :item="item" :rank="index + 1" />
@@ -140,11 +154,16 @@ import {
   type RightsItem,
   type RightsSituation,
 } from '../data/rights/catalog'
+import { RIGHTS_TEMPLATES, getRightsForTemplate, type RightsTemplate } from '../data/rights/templates'
 import { resolveServiceChannel } from '../data/cityChannels'
 import { buildRightsAiPrompt } from '../utils/rightsAiPrompt'
+import { downloadTextFile } from '../utils/download'
+import { buildChecklistHtml, buildChecklistText } from '../utils/checklistExport'
+import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
 const emit = defineEmits<{ browse: []; calc: []; 'ask-ai': [prompt: string]; policy: [] }>()
 const store = useMainStore()
+const checklist = useRightsChecklistStore()
 
 const step = ref<1 | 2 | 3>(1)
 const generated = ref(false)
@@ -152,13 +171,8 @@ const city = ref<string | null>(store.work.city || 'guangzhou')
 const identity = ref<RightsIdentity>('unsure')
 const situation = ref<RightsSituation>('first-job')
 const result = ref<RightsItem[]>([])
-
-const QUICK_OPTIONS: { value: RightsSituation; label: string; hint: string }[] = [
-  { value: 'first-job', label: '刚入职', hint: '合同、社保、社保卡' },
-  { value: 'unemployment', label: '刚离职', hint: '失业登记、失业金、接续' },
-  { value: 'social', label: '换城市', hint: '转移、异地就医、公积金' },
-  { value: 'trouble', label: '被欠薪/辞退', hint: '取证、监察、仲裁' },
-]
+const activeTemplate = ref<RightsTemplate | null>(null)
+const actionNote = ref('')
 
 const progress = [
   { n: 1, label: '城市' },
@@ -175,14 +189,18 @@ const resultTitle = computed(() =>
   identity.value === 'unsure' ? situationLabel.value : `${identityLabel.value} · ${situationLabel.value}`,
 )
 
-function quickStart(value: RightsSituation) {
-  situation.value = value
-  identity.value = value === 'first-job' ? 'new-grad' : 'unsure'
+function quickStart(template: RightsTemplate) {
+  activeTemplate.value = template
+  situation.value = template.situation
+  identity.value = template.identity
+  actionNote.value = ''
   generate()
 }
 
 function generate() {
-  result.value = getRightsForSituation(city.value, identity.value, situation.value)
+  result.value = activeTemplate.value
+    ? getRightsForTemplate(activeTemplate.value)
+    : getRightsForSituation(city.value, identity.value, situation.value)
   generated.value = true
   step.value = 3
 }
@@ -190,7 +208,44 @@ function generate() {
 function reset() {
   generated.value = false
   result.value = []
+  activeTemplate.value = null
+  actionNote.value = ''
   step.value = 1
+}
+
+const currentTitle = computed(() => activeTemplate.value?.name ?? `${resultTitle.value}清单`)
+
+function saveAll() {
+  const added = checklist.saveMany(result.value.map((item) => item.id))
+  actionNote.value = added
+    ? `已加入我的清单：${added} 条；下次打开还在。`
+    : '这些条目都已经在我的清单里。'
+}
+
+function exportCurrent() {
+  if (!result.value.length) return
+  const date = new Date().toISOString().slice(0, 10)
+  const ok = downloadTextFile({
+    filename: `没钱-${currentTitle.value}-${date}.txt`,
+    content: buildChecklistText(result.value, checklist.isDone, date, currentTitle.value),
+  })
+  actionNote.value = ok ? '已导出 txt，可打印或发给家人；不含身份证、工资。' : '当前浏览器不支持下载，可改用「打印」。'
+}
+
+function printCurrent() {
+  if (!result.value.length) return
+  const win = window.open('', '_blank')
+  if (!win) {
+    actionNote.value = '浏览器拦截了打印窗口，请允许弹窗，或先「导出这张清单」。'
+    return
+  }
+  const date = new Date().toISOString().slice(0, 10)
+  win.document.write(buildChecklistHtml(result.value, checklist.isDone, date, currentTitle.value))
+  win.document.close()
+  win.opener = null
+  win.focus()
+  window.setTimeout(() => win.print(), 200)
+  actionNote.value = '已打开打印页；在打印窗口选「另存为 PDF」。'
 }
 
 function browse() {
@@ -204,7 +259,7 @@ function askAi() {
     cityName: cityLabel.value,
     itemTitle: first.title,
     identityLabel: identityLabel.value,
-    situationLabel: situationLabel.value,
+    situationLabel: activeTemplate.value?.name ?? situationLabel.value,
     itemDeadline: first.deadline,
   }))
 }
@@ -247,6 +302,16 @@ function askAi() {
 .rw-hint { margin: 0; font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-tertiary); }
 .rw-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .rw-choices-wide { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.rw-template {
+  display: flex; flex-direction: column; gap: 3px; margin-top: 2px; padding: 10px 12px;
+  background: var(--color-primary-50); border: 1px solid var(--color-primary-200); border-radius: var(--radius-md);
+}
+.rw-template-kicker { font-size: var(--font-size-xs); color: var(--color-text-brand); letter-spacing: .04em; }
+.rw-template b { font-size: var(--font-size-sm); color: var(--color-text-primary); }
+.rw-template span { font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-secondary); }
+.rw-template-note { padding-top: 3px; border-top: 1px dashed var(--color-border-primary); color: var(--color-text-tertiary) !important; }
+.rw-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+.rw-action-note { font-size: var(--font-size-xs); color: var(--color-success-600); }
 .rw-choice {
   display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
   padding: 10px 12px; text-align: left; cursor: pointer;

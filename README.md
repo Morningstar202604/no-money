@@ -16,7 +16,7 @@ No Money turns those questions into a short, ordered list. It tells you what to 
 
 ## What it helps with
 
-- **Find the next step.** Pick your city, identity, and situation; get a short checklist with the first action highlighted.
+- **Find the next step.** Pick your city, identity, and situation, or open one of seven ready-made checklists; the first action is always highlighted.
 - **Check what you may be owed.** Unpaid wages, injury, dismissal, unused leave, and other common disputes, with the legal basis shown.
 - **Understand the numbers.** Net income, effective hourly pay, income tax, and pension contributions, with every assumption visible.
 - **Verify the source.** Each policy value is marked official, derived, or unverified. When a value is unverified, the result says so instead of pretending.
@@ -87,6 +87,7 @@ Architecture is one-way: `views → components → stores → application → do
 | [docs/REALITY-AND-SCOPE.md](docs/REALITY-AND-SCOPE.md) | Real-world constraints and scope |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Web, Docker, desktop, API, and cache setup |
 | [docs/ENGINEERING.md](docs/ENGINEERING.md) | Local checks, CI, and release gates |
+| [docs/CONTENT-REVIEW.md](docs/CONTENT-REVIEW.md) | Content cadence, source rules, and reviewer sign-off |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | Version and release policy |
 | [ROADMAP.md](ROADMAP.md) | What is shipped and what comes next |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |

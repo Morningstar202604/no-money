@@ -62,6 +62,17 @@ describe('我的清单本机持久化', () => {
     expect(localStorage.getItem(RIGHTS_CHECKLIST_STORAGE_KEY)).toBeNull()
   })
 
+  it('批量加入一张模板的清单，不重复计数', () => {
+    const store = freshStore()
+    expect(store.saveMany(['right-injury-report', 'right-arbitration', 'right-legal-aid'])).toBe(3)
+    expect(store.trackedCount).toBe(3)
+    expect(store.saveMany(['right-injury-report', 'right-arbitration'])).toBe(0)
+    expect(store.trackedCount).toBe(3)
+    const raw = localStorage.getItem(RIGHTS_CHECKLIST_STORAGE_KEY) ?? ''
+    expect(raw).toContain('right-arbitration')
+    expect(raw).not.toContain('city')
+  })
+
   it('损坏的本地数据不会让页面崩', () => {
     localStorage.setItem(RIGHTS_CHECKLIST_STORAGE_KEY, '{broken')
     const store = freshStore()

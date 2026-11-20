@@ -3,6 +3,27 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.0] — 2026-11-20
+
+把七类高频办事场景做成不依赖 AI 的现成清单：打开就能看到先办哪件，能整张加入我的清单，也能导出/打印带走。
+
+### Added
+
+- `src/data/rights/templates.ts`：入职 7 天、离职交接、工伤 30 天、失业金、生育津贴、退休办理、欠薪取证七类模板。每类用显式 `itemIds` 定顺序，第一条就是最该先做的动作；条目不足 3 条时才用同身份/情境兜底，不硬凑。
+- 向导顶部改为 7 个模板入口；结果页显示模板名、用途和一条交接/取证提醒。
+- 结果页新增「全部加入我的清单」「导出这张清单」「打印」；导出/打印标题使用模板名，不再一律写“我的办事清单”。
+- `docs/CONTENT-REVIEW.md`：每周新条目收集、每月链接/新鲜度检查、每季度政策复核、每年归档；新增条目的来源、置信度、审稿签收和模板顺序检查。
+- `CONTRIBUTING.md` 增加“新增权益条目”流程；README 中英文文档索引补上内容复核入口。
+
+### Changed
+
+- `useRightsChecklistStore.saveMany()`：一张模板的条目一次加入，已收藏的不重复切换。
+- `buildChecklistText()` / `buildChecklistHtml()` 增加可选标题参数；不传时仍是“我的办事清单”，旧调用不受影响。
+
+### Tests
+
+- 新增 `tests/rightsTemplates.spec.ts` 10 条：7 个模板、条目存在、3–7 条、无重复、第一条有动作、模板顺序不依赖 priority。
+- 向导/清单/导出测试补 3 条；E2E 增加七模板批量加入与导出回归（桌面 + 移动）。
 ## [3.7.6] — 2026-11-20
 
 把 Cargo 侧一条无兼容修复的 `glib` 安全告警记录下来，并停掉反复失败的 Dependabot security update。

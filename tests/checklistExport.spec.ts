@@ -43,6 +43,14 @@ describe('清单导出/打印', () => {
     expect(text).not.toMatch(/身份证号|银行卡号|手机号|工资\s*¥/)
   })
 
+  it('模板导出用模板名做标题，不冒充“我的清单”', () => {
+    const text = buildChecklistText([saved], makeDone([]), '2026-11-19', '入职 7 天清单')
+    expect(text).toContain('没钱 No Money · 入职 7 天清单')
+    expect(text).not.toContain('没钱 No Money · 我的办事清单')
+    const html = buildChecklistHtml([saved], makeDone([]), '2026-11-19', '入职 7 天清单')
+    expect(html).toContain('<title>没钱 No Money · 入职 7 天清单</title>')
+  })
+
   it('空清单给出下一步，而不是空白文件', () => {
     const text = buildChecklistText([], makeDone([]), '2026-11-19')
     expect(text).toContain('清单为空')

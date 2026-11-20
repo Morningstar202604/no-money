@@ -10,7 +10,7 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for what each segment means here.
 
 ## Where we are now
 
-**3.7.6** is the current baseline. The product direction is settled — a rights-navigation and
+**3.8.0** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the first P1 content slice is shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
@@ -23,11 +23,10 @@ public-service guide for workers — and the first P1 content slice is shipped:
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
 local checklist persistence with deadline-first hints, TXT export and print/PDF; `/start` four-entry tabs;
 content tests. The calculator and all routes still work.
-3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow; 3.7.3 makes a failed month open or update an issue instead of only showing a red run; 3.7.4 trims the public README and syncs the five hosting mirrors; 3.7.5 fixes the CI preview bind so browser smoke tests start on GitHub runners; 3.7.6 records the one Cargo advisory with no compatible fix.
+3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow; 3.7.3 makes a failed month open or update an issue instead of only showing a red run; 3.7.4 trims the public README and syncs the five hosting mirrors; 3.7.5 fixes the CI preview bind so browser smoke tests start on GitHub runners; 3.7.6 records the one Cargo advisory with no compatible fix; 3.8.0 makes the seven checklists first-class and wires the content-review/contributor loop.
 
 **What is not done yet:** six-section nav reorder; resident and new-grad calculation modes; real-user
-testing. 3.7.6 ships the rights guide, the freshness gate, failure-to-issue automation, repository automation and the employee wage-slip slice only; assistant content operations and review
-cadence remain 3.8.0. Page-level deadline hints exist, but there is no push service or account.
+testing. 3.8.0 ships the rights guide, the freshness gate, failure-to-issue automation, repository automation, the employee wage-slip slice, seven ready-made checklists and the content-review loop. Page-level deadline hints exist, but there is no push service or account.
 
 ---
 
@@ -355,13 +354,20 @@ to open the policy page.**
 
 ---
 
-## 3.8.0 — Assistant and content operations
+## 3.8.0 — Assistant and seven checklists (shipped 2026-11-20)
 
-- [ ] AI assistant answers only with city + identity + situation, returns 1–3 actions, the first step,
-      an official entry and "以当地为准"; never invents an amount or a document number
-- [ ] 7 scenario templates: 入职 7 天 / 离职交接 / 工伤 30 天 / 失业金 / 生育津贴 / 退休办理 / 欠薪取证
-- [ ] Content review cadence: quarterly policy review, monthly link check, weekly new-item intake
-- [ ] Contributor workflow for adding an item with sources and reviewer sign-off
+**Goal: a user can start from a real situation and walk away with an ordered, printable checklist,
+without opening the AI chat.**
+
+- [x] AI assistant stays on city + identity + situation, returns 1–3 actions, names the first step
+      and an official entry, and says “以当地为准”; it never invents an amount or a document number
+- [x] Seven templates: 入职 7 天 / 离职交接 / 工伤 30 天 / 失业金 / 生育津贴 / 退休办理 / 欠薪取证
+- [x] Every template uses explicit `itemIds`, so its first item is the first action — not a category sort
+- [x] Result page can add the whole template to “我的清单”, export it as TXT, or print/PDF with the template name
+- [x] Content review cadence: quarterly policy review, monthly link/freshness check, weekly new-item intake
+- [x] Contributor workflow: primary source, honest confidence, reviewer sign-off, template-order check
+
+**Status:** shipped — MINOR. No policy-data change; template content reuses existing audited items.
 
 ---
 

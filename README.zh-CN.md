@@ -16,7 +16,7 @@
 
 ## 它能帮你什么
 
-- **找到下一步。** 选城市、身份和处境，得到一份短清单，第 1 件事直接标出来。
+- **找到下一步。** 选城市、身份和处境，或直接打开七类现成清单；第 1 件事永远标在最前面。
 - **看能主张什么。** 欠薪、工伤、辞退、未休年假等常见纠纷，列出可主张的项目和依据。
 - **把账算明白。** 净收入、有效时薪、个税、养老缴费，每一步假设都摊开。
 - **核对来源。** 每个政策数值都标官方、推算或待核验；没核到的就明说，不装作已核实。
@@ -87,6 +87,7 @@ npm run doctor
 | [docs/REALITY-AND-SCOPE.md](docs/REALITY-AND-SCOPE.md) | 现实约束与范围 |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | 网页、Docker、桌面、API 与缓存 |
 | [docs/ENGINEERING.md](docs/ENGINEERING.md) | 本地检查、CI 与发布门禁 |
+| [docs/CONTENT-REVIEW.md](docs/CONTENT-REVIEW.md) | 内容复核节奏、来源规则与审稿签收 |
 | [docs/VERSIONING.md](docs/VERSIONING.md) | 版本与发布规则 |
 | [ROADMAP.md](ROADMAP.md) | 已交付内容与下一步 |
 | [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md) | 贡献指南 |
