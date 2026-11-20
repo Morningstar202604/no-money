@@ -204,9 +204,9 @@ describe('规则文件溯源约束', () => {
       expect(r.minimumWage.nonFullTimeHourly).toBeLessThan(r.minimumWage.monthly / 21.75 * 2)
     })
 
-    // 广东分档：广深为一类25.4元/小时（官方），东莞为二类；其他省份有自己的档次，
-    // 不能因为月标准 >=2600 就把所有城市都按广东一类小时标准锁死。
-    if (r.province?.includes('广东') && r.minimumWage.monthly >= 2600) {
+    // 本组只遍历广东三城：广深为一类 25.4 元/小时（官方），东莞为二类，
+    // 不能只凭月标准判定档次，否则会把它省或其他档位误锁成广东一类。
+    if (r.minimumWage.monthly >= 2600) {
       it(`${city}：广东一类地区小时最低工资应为25.4元`, () => {
         expect(r.minimumWage.nonFullTimeHourly).toBeCloseTo(25.4, 1)
       })

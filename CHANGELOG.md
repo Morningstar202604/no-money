@@ -34,7 +34,8 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Tests
 
 - 修正三处因数据变化失效的测试假设：广东一类小时标准断言限定到广东省；石家庄覆盖测试改为 `medical` 未核验、`minimumWage` 已 official；长春 `NAlert` 回归改为临时把 `minimumWage` 降为 unverified，避免最低工资 official 后提示不再出现。
-- `npm run check`：61 文件 / 1,170 单测通过（动态条件断言合并后比旧基线少 2 条）；`build`、`doctor`、`freshness:check`、`kb:check` 全绿；E2E 120 条通过（1 条移动端用例首跑超时、重试通过）。
+- 把 `typecheck:test` 纳入 `npm run check`，避免测试文件类型错误只在 CI 暴露。
+- `npm run check`：61 文件 / 1,172 单测通过；`build`、`doctor`、`freshness:check`、`kb:check` 全绿；E2E 120 条通过（1 条移动端用例首跑超时、重试通过）。
 
 ## [3.8.3] — 2026-11-20
 

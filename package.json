@@ -20,7 +20,7 @@
     "verify:reality": "tsx scripts/reality-check.ts",
     "kb:check": "tsx scripts/export-kb.ts --check",
     "lint": "vue-tsc --noEmit",
-    "check": "npm run lint && npm test && npm run verify && npm run freshness:check",
+    "check": "npm run lint && npm run typecheck:test && npm test && npm run verify && npm run freshness:check",
     "test:e2e": "npm run build && playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install --with-deps chromium",
