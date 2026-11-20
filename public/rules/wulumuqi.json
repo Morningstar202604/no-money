@@ -2,7 +2,7 @@
   "city": "wulumuqi",
   "cityName": "乌鲁木齐",
   "year": 2026,
-  "lastCheckedAt": "2026-10-27",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -83,8 +83,8 @@
   },
   "benefit": {
     "pension": {
-      "baseMin": 4500,
-      "baseMax": 22500,
+      "baseMin": 5246,
+      "baseMax": 26231,
       "rate": 0.2
     },
     "medical": {
@@ -143,12 +143,14 @@
   },
   "sources": {
     "pension": {
-      "title": "乌鲁木齐社保缴费工资基数上下限（待核实）",
-      "issuedBy": "新疆省人力资源和社会保障厅（待核）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：乌鲁木齐的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到新疆省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "关于明确2026年自治区城镇职工基本养老保险缴费基数的通知",
+      "docNo": "",
+      "issuedBy": "新疆维吾尔自治区人力资源和社会保障厅、新疆维吾尔自治区财政厅、国家税务总局新疆维吾尔自治区税务局",
+      "url": "https://rst.xinjiang.gov.cn/xjrst/c112734/202609/234e01d8b8b9404ca3c98c2cee384903.shtml",
+      "effectiveFrom": "2026 年度",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "原文明确 2025 年自治区全口径城镇单位就业人员平均工资 104,926 元（月 8,744 元），2026 年个人缴费基数下限 5,246 元/月、上限 26,231 元/月；官方页未单列文号。"
     },
     "pensionRate": {
       "title": "灵活就业人员养老保险缴费比例 20%",

@@ -2,7 +2,7 @@
   "city": "lanzhou",
   "cityName": "兰州",
   "year": 2026,
-  "lastCheckedAt": "2026-10-27",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -83,8 +83,8 @@
   },
   "benefit": {
     "pension": {
-      "baseMin": 4500,
-      "baseMax": 22500,
+      "baseMin": 4526,
+      "baseMax": 22626,
       "rate": 0.2
     },
     "medical": {
@@ -143,12 +143,14 @@
   },
   "sources": {
     "pension": {
-      "title": "兰州社保缴费工资基数上下限（待核实）",
-      "issuedBy": "甘肃省人力资源和社会保障厅（待核）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：兰州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到甘肃省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "关于公布2026年甘肃省社会保险缴费基数的通知",
+      "docNo": "甘人社通〔2026〕218号",
+      "issuedBy": "甘肃省人力资源和社会保障厅、甘肃省财政厅、甘肃省统计局、国家税务总局甘肃省税务局",
+      "url": "http://gansu.chinatax.gov.cn/art/2026/8/18/art_8549_4633.html",
+      "effectiveFrom": "2026-01-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "原文明确 2026 年度职工基本养老保险、失业保险、工伤保险个人月缴费基数 7,542 元，上限 22,626 元、下限 4,526 元，自 2026-01-01 起使用。"
     },
     "pensionRate": {
       "title": "灵活就业人员养老保险缴费比例 20%",

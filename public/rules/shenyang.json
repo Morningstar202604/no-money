@@ -2,7 +2,7 @@
   "city": "shenyang",
   "cityName": "沈阳",
   "year": 2026,
-  "lastCheckedAt": "2026-10-27",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -83,8 +83,8 @@
   },
   "benefit": {
     "pension": {
-      "baseMin": 4500,
-      "baseMax": 22500,
+      "baseMin": 4533,
+      "baseMax": 22665,
       "rate": 0.2
     },
     "medical": {
@@ -143,12 +143,14 @@
   },
   "sources": {
     "pension": {
-      "title": "沈阳社保缴费工资基数上下限（待核实）",
-      "issuedBy": "辽宁省人力资源和社会保障厅（待核）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：沈阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到辽宁省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "关于公布2026年养老保险缴费基数等有关问题的通知",
+      "docNo": "辽人社〔2026〕19号",
+      "issuedBy": "辽宁省人力资源和社会保障厅、辽宁省财政厅、国家税务总局辽宁省税务局、国家税务总局大连市税务局",
+      "url": "https://rst.ln.gov.cn/rst/zfxx/fdzdgknr/lzyj/rstgfxwj/lrs/2026083110175583355/index.shtml",
+      "effectiveFrom": "2026 年度",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "原文明确 2026 年全省企业职工基本养老保险、机关事业单位养老保险个人缴费基数上限 22,665 元/月、下限 4,533 元/月；灵活就业人员七档表中的 60% 档同值。"
     },
     "pensionRate": {
       "title": "灵活就业人员养老保险缴费比例 20%",

@@ -3,6 +3,36 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.2] — 2026-11-20
+
+剩余 15 城 2026 年养老缴费基数补齐，20 个原本 `pension` 待核验的城市全部清零。
+
+### Changed
+
+- 海口 4,952.4 / 24,762；合肥 4,354 / 21,772；呼和浩特 5,058 / 25,290；兰州 4,526 / 22,626；拉萨 7,172.4 / 35,862；南宁 4,204.8 / 21,024；沈阳 4,533 / 22,665；石家庄 4,076 / 20,382；太原 4,244 / 21,219；乌鲁木齐 5,246 / 26,231；西宁 5,333 / 26,664；银川 5,023 / 25,113。以上 12 城官方通知直接写明上下限，`sources.pension` 升为 `official`。
+- 长春 4,488.9 / 22,444.5、贵阳 4,426.05 / 22,130.25、哈尔滨 4,623 / 23,115：官方原文只公布全口径年平均工资（89,778 / 88,521 / 92,460 元），上下限按国家统一 60%/300% 口径计算，`sources.pension` 标为 `derived`，note 写明计算过程，不冒充 `official`。
+- 文号能确认的全部写入；乌鲁木齐官方页未单列文号、`docNo` 留空；石家庄采用遵化市政府对省文件的全文转载，未找到省人社厅原始页。
+- 15 城 `lastCheckedAt` 统一为 `2026-11-20`，重新导出 `public/knowledge/kb.json`。
+
+### Unchanged
+
+- `benefit.medical`、`minimumWage`、`retirement.benefitBaseMonthly`、`sources.pensionRate` 维持原置信度；15 城 `verified` 仍为 `false`。
+- 应用代码、依赖和界面不动；其余 19 城规则不动。
+
+### Data
+
+- 来源条目仍为 309 条：official 110 → 122（39.5%）、derived 37 → 40、unverified 162 → 147、超 365 天 0。
+- 20 个原 `pension` 待核验城市全部处理完毕：17 城 `official`，3 城 `derived`；`pension` 字段不再有 `unverified`。
+
+### Docs
+
+- `docs/DATA-VERIFICATION-2026-11-20.md` 扩为 20 城记录，逐城写明数值、文号、执行时间、原文链接与置信度。
+- `docs/ENGINEERING.md`、`ROADMAP.md`、`docs/POSITIONING.md`、`docs/AUDIT-2026-11-19.md` 同步版本与统计。
+
+### Tests
+
+- `npm run check`：61 文件 / 1,172 单测通过；`build`、`doctor`、`freshness:check`、`kb:check` 全绿；E2E 120 条通过。
+
 ## [3.8.1] — 2026-11-20
 
 首批 5 城 2026 年养老缴费基数从占位值换成官方原文，数据口径不动别的字段。

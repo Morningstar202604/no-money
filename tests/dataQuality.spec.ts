@@ -103,21 +103,22 @@ describe('数据质量标记', () => {
 
 describe('本省法定参数覆盖后的数据质量判定', () => {
   it('未核实城市：填入本省基数与最低工资后，对应字段移出「未核实」清单', () => {
-    // 石家庄的 pension / minimumWage 都是 unverified（全国量级占位值）
+    // 石家庄的 medical / minimumWage 是 unverified（养老基数已在 3.8.2 核验为 official）
     const sjz = loadRuleFile('shijiazhuang.json')
     const before = new ScenarioService(sjz).runScenario({ id: 'q', name: 'q', work, costs, personal: personal({ hasSocialInsurance: true }) })
     expect(before.ok).toBe(true)
     if (!before.ok) return
-    expect(before.value.dataQuality.unverifiedFields).toContain('养老缴费基数')
+    expect(before.value.dataQuality.officialFields).toContain('养老缴费基数')
+    expect(before.value.dataQuality.unverifiedFields).toContain('医保缴费基数')
     expect(before.value.dataQuality.unverifiedFields).toContain('最低工资')
 
     const after = new ScenarioService(sjz, undefined, { baseMin: 4000, baseMax: 20000, minWageMonthly: 2200 })
       .runScenario({ id: 'q', name: 'q', work, costs, personal: personal({ hasSocialInsurance: true }) })
     expect(after.ok).toBe(true)
     if (!after.ok) return
-    expect(after.value.dataQuality.unverifiedFields, '填了本省值就不该再列为未核实').not.toContain('养老缴费基数')
+    expect(after.value.dataQuality.unverifiedFields, '填了本省值就不该再列为未核实').not.toContain('医保缴费基数')
     expect(after.value.dataQuality.unverifiedFields).not.toContain('最低工资')
-    expect(after.value.dataQuality.overriddenFields).toContain('养老缴费基数')
+    expect(after.value.dataQuality.overriddenFields).toContain('医保缴费基数')
     expect(after.value.dataQuality.overriddenFields).toContain('最低工资')
   })
 })

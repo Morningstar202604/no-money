@@ -2,7 +2,7 @@
   "city": "shijiazhuang",
   "cityName": "石家庄",
   "year": 2026,
-  "lastCheckedAt": "2026-10-27",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -83,8 +83,8 @@
   },
   "benefit": {
     "pension": {
-      "baseMin": 4500,
-      "baseMax": 22500,
+      "baseMin": 4076,
+      "baseMax": 20382,
       "rate": 0.2
     },
     "medical": {
@@ -143,12 +143,14 @@
   },
   "sources": {
     "pension": {
-      "title": "石家庄社保缴费工资基数上下限（待核实）",
-      "issuedBy": "河北省人力资源和社会保障厅（待核）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：石家庄的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到河北省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "关于公布2026年社保缴费有关基数的通知",
+      "docNo": "冀人社字〔2026〕57号",
+      "issuedBy": "河北省人力资源和社会保障厅、河北省财政厅",
+      "url": "http://www.zunhua.gov.cn/zunhua/zunhuashebaofuwu/20260716/1211632648.html",
+      "effectiveFrom": "2026 年度",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "原文明确 2026 年全省社会保险（含职工基本养老、工伤、失业保险）以 2025 年全口径月平均工资 6,794 元核定，缴费基数下限 4,076 元（60%）、上限 20,382 元（300%）。"
     },
     "pensionRate": {
       "title": "灵活就业人员养老保险缴费比例 20%",

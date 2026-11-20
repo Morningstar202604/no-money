@@ -70,10 +70,10 @@ describe('缴费档次基数必须与档位标签一致', () => {
       for (let i = 1; i < bases.length; i++) {
         expect(bases[i], `${r.city} 第 ${i} 档基数未高于前一档（档位与基数脱钩）`).toBeGreaterThan(bases[i - 1])
       }
-      // 档位与基数成固定比例：200% 档 = 60% 档 × (200/60)
-      const first = tiers[0]
+      // 档位与基数成固定比例：200% 档 = 未四舍五入的下限 × (200/60)
+      // 用 first.base（已取整）反推会在小数下限上产生 1 元级误差，如贵阳 4,426.05。
       const last = tiers[tiers.length - 1]
-      expect(last.base).toBe(Math.round(first.base * (last.pct / first.pct)))
+      expect(last.base).toBe(Math.round(baseMin * (last.pct / 60)))
     }
   })
 
