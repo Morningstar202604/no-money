@@ -3,6 +3,23 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.7.6] — 2026-11-20
+
+把 Cargo 侧一条无兼容修复的 `glib` 安全告警记录下来，并停掉反复失败的 Dependabot security update。
+
+### Changed
+
+- `docs/SECURITY-EXCEPTIONS.md` 新增 `glib 0.18.5`（GHSA-wrw7-89jp-8q8g，medium）例外：说明依赖链、不可达路径、为什么 `0.20.0` 无法与 `tao 0.37` 的 `gtk 0.18` 共存，以及上游升级后的复查条件。
+- GitHub 三个仓库的该条 Dependabot 告警标记为 `tolerable_risk`；告警保留可查，不再每次 push 触发一个注定失败的 security update job。
+
+### Fixed
+
+- 移动端参数栏底部留白从 16px 增至 40px，重置按钮不再贴着视口底边；E2E 先滚到参数栏底部再点重置，避免 CI 较矮视口下点击点被 `.ps-foot` 挡住。
+
+### Tests
+
+- 本地 `CI=1` 全量 E2E：8 文件 / 118 条通过；60 文件 / 1,159 单测沿用 3.7.5 基线。未改依赖版本或政策数据。
+
 ## [3.7.5] — 2026-11-20
 
 修掉 GitHub Actions 上浏览器冒烟测试起不来的问题：Playwright 等 preview，preview 却只绑在

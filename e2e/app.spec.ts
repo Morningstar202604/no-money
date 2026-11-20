@@ -195,6 +195,11 @@ test.describe('应用可用性', () => {
     const changed = await slider.getAttribute('aria-valuenow')
     expect(changed).not.toBe('10')
 
+    // 重置按钮在参数栏最底部；移动端参数栏是独立滚动容器。
+    // 先滚到底再点，避免 Playwright 只把按钮勉强滚到视口边缘，
+    // 被 .ps-foot 的底部留白挡住点击点（CI 的 727px 视口更容易触发）。
+    await page.locator('.sidebar-content').evaluate((el) => { el.scrollTop = el.scrollHeight })
+    await page.waitForTimeout(300)
     await page.getByRole('button', { name: '重置为默认参数' }).click()
     await expect.poll(async () => await page.getByRole('slider').first().getAttribute('aria-valuenow')).toBe('10')
   })

@@ -766,6 +766,9 @@ onUnmounted(() => {
   flex: 1;
   overflow-y: auto;
   padding: var(--space-3);
+  /* 最后一个动作按钮（重置参数）需要离开视口底边；
+     移动端浏览器可视高度比设计稿短 20px 左右时，不加这段会被裁掉点击区。 */
+  padding-bottom: calc(var(--space-3) + 24px);
 }
 
 .sidebar-collapsed-hint {
