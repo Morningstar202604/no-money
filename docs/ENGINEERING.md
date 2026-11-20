@@ -196,11 +196,11 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 指标
 
-- 测试：1,151 项（含 5 项架构门禁 + 权益导航/城市入口测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
+- 测试：1,172 项（61 个文件；含 5 项架构门禁 + 权益导航/城市入口测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
 - 首屏：408K gzip；PWA：2.72 MB；`dist`：3.38 MB（assets 2.55 MB）。
-- 数据：309 条来源，official 105（34.0%）；34 城；0 城四字段全 official。
+- 数据：309 条来源，official 110（35.6%）、derived 37、unverified 162；34 城；0 城四字段全 official。首批 5 城养老基数已完成逐字核验，其余字段仍按原置信度保留。
 - 内容：`RightsItem` 60 条（23 条迁移 + 20 条新增 L2 + 17 条 L1）；其中 30 条 L2、30 条 L1；已到 60+ 目标。
-- 可用性：E2E 116 项；清单导出/打印有 E2E 下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
+- 可用性：E2E 120 项（8 个文件，桌面 + 移动）；清单导出/打印有 E2E 下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 
 ## 6. 模块化与架构边界
 

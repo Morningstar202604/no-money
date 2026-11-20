@@ -2,7 +2,7 @@
   "city": "kunming",
   "cityName": "昆明",
   "year": 2026,
-  "lastCheckedAt": "2026-10-27",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -83,8 +83,8 @@
   },
   "benefit": {
     "pension": {
-      "baseMin": 4500,
-      "baseMax": 22500,
+      "baseMin": 4403,
+      "baseMax": 22017,
       "rate": 0.2
     },
     "medical": {
@@ -143,12 +143,14 @@
   },
   "sources": {
     "pension": {
-      "title": "昆明社保缴费工资基数上下限（待核实）",
-      "issuedBy": "云南省人力资源和社会保障厅（待核）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：昆明的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到云南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "关于公布2026年度全省社会保险相关参数的通知",
+      "docNo": "",
+      "issuedBy": "云南省人力资源和社会保障厅、云南省财政厅、国家税务总局云南省税务局、云南省医疗保障局",
+      "url": "https://zwfw.hrss.yn.gov.cn/NewsView.aspx?ClassID=552&NewsID=65761",
+      "effectiveFrom": "2026 年度（医保基数上下限自 2026-09-01 起）",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "原文：2026年度职工基本养老保险等个人缴费基数上限22017元/月、下限4403元/月。本次只核养老基数；医保费率与最低工资仍为待核实占位值。通知于 2026-08-27 发布；养老等按「2026 年度」执行，职工医保基数上下限自 2026-09-01 起。"
     },
     "pensionRate": {
       "title": "灵活就业人员养老保险缴费比例 20%",

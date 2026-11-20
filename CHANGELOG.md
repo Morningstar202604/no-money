@@ -3,6 +3,30 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.1] — 2026-11-20
+
+首批 5 城 2026 年养老缴费基数从占位值换成官方原文，数据口径不动别的字段。
+
+### Changed
+
+- 上海 `benefit.pension` 改为 7,546 / 37,731；济南 4,573 / 22,863；福州 4,579 / 22,893；南昌 3,990 / 19,947；昆明 4,403 / 22,017。
+- 5 城 `sources.pension` 升为 `official`，补齐标题、发布机构、URL、执行日期和核对日期；济南、福州写入可确认的文号，上海、南昌、昆明官方页面未单列文号，`docNo` 留空，不用第三方转述补造。
+- `lastCheckedAt` 统一为 `2026-11-20`，重新导出 `public/knowledge/kb.json`。
+
+### Unchanged
+
+- `benefit.medical`、`minimumWage`、`retirement.benefitBaseMonthly`、`sources.pensionRate` 维持原置信度；5 城 `verified` 仍为 `false`，因为城市级标志要求全部来源为官方。
+- 应用代码、依赖和界面不动；其余 29 城规则不动。
+
+### Docs
+
+- 新增 `docs/DATA-VERIFICATION-2026-11-20.md`，逐城记录数值、文号、执行日期、原文链接与未改字段。
+- `docs/ENGINEERING.md` 与 `docs/AUDIT-2026-11-19.md` 更新来源统计：官方 105 → 110，待核验 167 → 162。
+
+### Tests
+
+- `npm run check`：61 文件 / 1,172 单测通过；`build`、`doctor`、`freshness:check`、`kb:check` 全绿。数据定向测试 35 条通过。
+
 ## [3.8.0] — 2026-11-20
 
 把七类高频办事场景做成不依赖 AI 的现成清单：打开就能看到先办哪件，能整张加入我的清单，也能导出/打印带走。

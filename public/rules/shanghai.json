@@ -2,7 +2,7 @@
   "city": "shanghai",
   "cityName": "上海",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -83,8 +83,8 @@
   },
   "benefit": {
     "pension": {
-      "baseMin": 7460,
-      "baseMax": 37302,
+      "baseMin": 7546,
+      "baseMax": 37731,
       "rate": 0.2
     },
     "medical": {
@@ -143,13 +143,14 @@
   },
   "sources": {
     "pension": {
-      "title": "本市调整2025年度社保缴费基数上下限（上海市人力资源和社会保障局 公示公告）",
+      "title": "本市调整2026年度社保缴费基数上下限",
+      "docNo": "",
       "issuedBy": "上海市人力资源和社会保障局",
-      "url": "https://rsj.sh.gov.cn/tgsgg_17341/index.html",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "上海市人社局公示公告栏目存在《本市调整2025年度社保缴费基数上下限》条目，正文数值经搜索引擎摘要显示为「上限 37302 元、下限 7460 元（2025 年度）」，本次未打开该公示正文逐字核对，故标 unverified。请到上述公示公告栏目核对原文后再使用。核对于 2026-10-14。",
-      "effectiveFrom": "2025 年度"
+      "url": "https://rsj.sh.gov.cn/tgsgg_17341/20260818/t0035_1443203.html",
+      "effectiveFrom": "2026-07-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "原文：2026年7月1日起，本市社保缴费基数上限调整为37731元/月、下限调整为7546元/月。本次只核养老基数；医保费率与最低工资仍为待核实占位值。"
     },
     "pensionRate": {
       "title": "灵活就业人员养老保险缴费比例 20%",
