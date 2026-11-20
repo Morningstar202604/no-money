@@ -2,7 +2,7 @@
   "city": "hangzhou",
   "cityName": "杭州",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -94,8 +94,8 @@
     }
   },
   "minimumWage": {
-    "monthly": 2490,
-    "nonFullTimeHourly": 22.7
+    "monthly": 2660,
+    "nonFullTimeHourly": 25.0
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -175,11 +175,14 @@
       "note": "个税全国统一立法，按年度汇算清缴口径测算。"
     },
     "minimumWage": {
-      "title": "杭州最低工资标准",
-      "url": "",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。"
+      "title": "杭州市人民政府关于调整市区最低工资标准的通知",
+      "docNo": "杭政函〔2026〕16号",
+      "issuedBy": "杭州市人民政府",
+      "url": "https://www.hangzhou.gov.cn/col/col1229506256/art/2026/art_d999b9f323cf4f7ca39e869a75049a02.html",
+      "effectiveFrom": "2026-01-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "杭州市区月最低工资 2,660 元、非全日制小时 25 元，自 2026-01-01 起执行；杭州历年均按浙江省第一档执行，县（市）另行公布。"
     },
     "retirement": {
       "title": "浙江省2026年社会保险有关基数（加权平均工资，养老金计发用）",

@@ -2,7 +2,7 @@
   "city": "nanjing",
   "cityName": "南京",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -94,8 +94,8 @@
     }
   },
   "minimumWage": {
-    "monthly": 2490,
-    "nonFullTimeHourly": 22.7
+    "monthly": 2660,
+    "nonFullTimeHourly": 25.0
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -175,11 +175,14 @@
       "note": "个税全国统一立法，按年度汇算清缴口径测算。"
     },
     "minimumWage": {
-      "title": "南京最低工资标准",
-      "url": "",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。"
+      "title": "南京市人力资源和社会保障局关于调整全市最低工资标准的通知",
+      "docNo": "宁人社〔2025〕75号",
+      "issuedBy": "南京市人力资源和社会保障局",
+      "url": "https://rsj.nanjing.gov.cn/njsrlzyhshbzj/202512/P020251231623041068023.pdf",
+      "effectiveFrom": "2026-01-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "依据苏人社规〔2025〕3号，南京全市月最低工资 2,660 元、非全日制小时 25 元，自 2026-01-01 起执行；南京执行江苏一类地区标准。"
     },
     "retirement": {
       "title": "基本养老金计发办法",

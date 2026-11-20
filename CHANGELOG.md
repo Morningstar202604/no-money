@@ -3,6 +3,39 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.8.4] — 2026-11-20
+
+最低工资字段收口：34 城全部升为 `official`，不再保留全国 2,000 元占位。
+
+### Changed
+
+- 剩余 21 城最低工资改为省级政府现行文件：北京 2,540/27.7、天津 2,510/26.6、上海 2,740/25、南京 2,660/25、苏州 2,660/25、杭州 2,660/25、济南 2,400/24、福州 2,195/23、南昌 2,240/22.4、长沙 2,200/22、长春 2,230/22、哈尔滨 2,270/21、沈阳 2,230/22、呼和浩特 2,380/23.5、石家庄 2,380/24、太原 2,350/25.3、贵阳 2,130/22.4、昆明 2,270/22、拉萨 2,360/23、兰州 2,200/22、乌鲁木齐 2,270/22.7。
+- 修正三条错误占位：上海小时 26 → 25；北京小时 26.4 → 27.7；天津小时 24.4 → 26.6。
+- 福州按实际适用档写入 2,195/23（福建第二档），不套用仅厦门执行的第一档 2,265/23.5。
+- 21 城 `sources.minimumWage` 补齐标题、文号、发布机构、URL、执行日期、核对日期与适用区县；北京、乌鲁木齐官方页未单列文号，`docNo` 留空。
+- `lastCheckedAt` 统一为 `2026-11-20`，重新导出 `public/knowledge/kb.json`。
+
+### Unchanged
+
+- `benefit.medical` 的基数与费率、`retirement.benefitBaseMonthly`、`sources.pensionRate` 维持原置信度；34 城 `verified` 仍为 `false`。
+- 应用代码、依赖和界面不动。
+
+### Data
+
+- 来源条目仍为 309 条：official 127 → 148（47.9%）、derived 40 不变、unverified 142 → 121、超 365 天 0。
+- `minimumWage`：34/34 城 `official`，本轮新增 21 城。
+- 哈尔滨写当前有效的 2,270/21，并在 note 标明 2026-12-01 起新标准 2,350/23（黑政规〔2026〕2号），避免提前替换尚未生效的值。
+
+### Docs
+
+- `docs/DATA-VERIFICATION-MINWAGE-2026-11-20.md` 从 5 城扩为 34 城全量记录，含逐城适用档、文号、执行日期与原文链接。
+- `docs/ENGINEERING.md`、`ROADMAP.md`、`docs/POSITIONING.md`、`docs/AUDIT-2026-11-19.md` 同步版本与统计。
+
+### Tests
+
+- 修正三处因数据变化失效的测试假设：广东一类小时标准断言限定到广东省；石家庄覆盖测试改为 `medical` 未核验、`minimumWage` 已 official；长春 `NAlert` 回归改为临时把 `minimumWage` 降为 unverified，避免最低工资 official 后提示不再出现。
+- `npm run check`：61 文件 / 1,170 单测通过（动态条件断言合并后比旧基线少 2 条）；`build`、`doctor`、`freshness:check`、`kb:check` 全绿；E2E 120 条通过（1 条移动端用例首跑超时、重试通过）。
+
 ## [3.8.3] — 2026-11-20
 
 5 城最低工资从全国量级占位值换成省级政府现行文件，给权益评级一个可信锚点。

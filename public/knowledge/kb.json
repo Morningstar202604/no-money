@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "app": "没钱 No Money",
-  "generatedAt": "2026-11-20T08:00:41.807Z",
+  "generatedAt": "2026-11-20T08:35:41.671Z",
   "counts": {
     "policy": 17,
     "guide": 26,
@@ -2000,14 +2000,16 @@
       "type": "source",
       "category": "本城规则溯源",
       "title": "广东省人民政府关于调整我省最低工资标准的通知",
-      "summary": "广州、深圳执行一类标准：广州2680元/月，深圳2700元/月，对应非全日制小时最低工资均为25.4元/小时",
+      "summary": "广州执行一类标准 2,680 元/月、25.4 元/小时；深圳执行一类标准 2,700 元/月、25.4 元/小时。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
+        "广东省人民政府",
         "生效：2026-09-01",
-        "核对于 2026-10-12"
+        "核对于 2026-11-20"
       ],
+      "docNo": "粤府函〔2026〕188号",
       "confidence": "official",
       "city": "guangzhou",
       "tags": [
@@ -2017,7 +2019,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.sz.gov.cn/cn/xxgk/zfxxgj/zwdt/content/post_12936470.html"
+          "url": "https://hrss.gd.gov.cn/gkmlpt/content/4/4942/mpost_4942224.html"
         }
       ]
     },
@@ -2161,14 +2163,16 @@
       "type": "source",
       "category": "本城规则溯源",
       "title": "广东省人民政府关于调整我省最低工资标准的通知",
-      "summary": "深圳2026-09-01起全日制2700元/月，非全日制小时最低工资25.4元/小时",
+      "summary": "深圳执行一类标准 2,700 元/月、25.4 元/小时；广州执行一类标准 2,680 元/月、25.4 元/小时。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
+        "广东省人民政府",
         "生效：2026-09-01",
-        "核对于 2026-10-12"
+        "核对于 2026-11-20"
       ],
+      "docNo": "粤府函〔2026〕188号",
       "confidence": "official",
       "city": "shenzhen",
       "tags": [
@@ -2178,7 +2182,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://hrss.sz.gov.cn/gkmlpt/content/12/12954/post_12954870.html"
+          "url": "https://hrss.gd.gov.cn/gkmlpt/content/4/4942/mpost_4942224.html"
         }
       ]
     },
@@ -2426,16 +2430,16 @@
       "type": "source",
       "category": "本城规则溯源",
       "title": "广东省人民政府关于调整我省最低工资标准的通知",
-      "summary": "东莞执行二类标准2300元/月；对应非全日制小时最低工资标准为21.9元/小时（与珠海、佛山、中山同档）。原文见广东省人民政府《关于调整我省最低工资标准的通知》（2026-09-01 起施行）",
+      "summary": "东莞执行二类标准 2,300 元/月、21.9 元/小时，与珠海、佛山、中山同档。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
         "广东省人民政府",
         "生效：2026-09-01",
-        "核对于 2026-10-12"
+        "核对于 2026-11-20"
       ],
-      "docNo": "广东省人民政府关于调整我省最低工资标准的通知（2026年）",
+      "docNo": "粤府函〔2026〕188号",
       "confidence": "official",
       "city": "dongguan",
       "tags": [
@@ -2445,7 +2449,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://www.sz.gov.cn/cn/xxgk/zfxxgj/zwdt/content/post_12936470.html"
+          "url": "https://hrss.gd.gov.cn/gkmlpt/content/4/4942/mpost_4942224.html"
         }
       ]
     },
@@ -2646,21 +2650,29 @@
       "id": "src-beijing-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "北京最低工资标准（未检索到原文，数值仅作占位）",
-      "summary": "北京月最低工资 2540 元、非全日制 26.4 元/小时为占位值：本次未回溯到北京市人社局的最低工资调整通知原文，此前误引的社保基数通知页面不含最低工资数字，已删除该链接。不可对外引用；请以北京市人社局公布为准。",
+      "title": "北京市人力资源和社会保障局等部门关于调整北京市2025年最低工资标准的通知",
+      "summary": "月最低工资 2,540 元、非全日制小时 27.7 元，自 2025-09-01 起执行；月标准不含个人社保和公积金，小时标准含单位和个人社保费。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "北京市人力资源和社会保障局、北京市总工会、北京企业联合会/北京市企业家协会、北京市工商业联合会",
+        "生效：2025-09-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "",
+      "confidence": "official",
       "city": "beijing",
       "tags": [
         "溯源",
         "北京"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rsj.beijing.gov.cn/xxgk/2024zcwj/202507/t20250725_4158456.html"
+        }
+      ]
     },
     {
       "id": "src-beijing-retirement",
@@ -2854,15 +2866,18 @@
       "id": "src-tianjin-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "天津最低工资标准",
-      "summary": "天津最低工资 2320 元/月、24.4 元/小时为占位值：已核到天津市人社局《关于调整天津市最低工资标准的通知》的政策问答页，但该页正文未列具体数额（数字见政策原文附件），本次未回溯到原文，不可对外引用。",
+      "title": "市人社局关于调整天津市最低工资标准的通知",
+      "summary": "月最低工资 2,510 元、非全日制小时 26.6 元，自 2025-09-01 起执行；标准包含个人社保和公积金缴费部分。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "天津市人力资源和社会保障局",
+        "生效：2025-09-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "津人社规字〔2025〕1号",
+      "confidence": "official",
       "city": "tianjin",
       "tags": [
         "溯源",
@@ -2871,7 +2886,7 @@
       "links": [
         {
           "title": "原文",
-          "url": "https://hrss.tj.gov.cn/zhengwugongkai/zhengcezhinan/zcjdnew/202509/t20250908_7127631.html"
+          "url": "https://hrss.tj.gov.cn/zhengwugongkai/zhengcezhinan/zxwjnew/202509/t20250908_7127617.html"
         }
       ]
     },
@@ -3068,21 +3083,29 @@
       "id": "src-shanghai-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "上海最低工资标准",
-      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "title": "上海市人力资源和社会保障局关于调整本市最低工资标准的通知",
+      "summary": "月最低工资 2,740 元、非全日制小时 25 元，自 2025-07-01 起执行；月标准不含个人社保和公积金，小时标准不含单位和个人社保费。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "上海市人力资源和社会保障局",
+        "生效：2025-07-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "沪人社规〔2025〕10号",
+      "confidence": "official",
       "city": "shanghai",
       "tags": [
         "溯源",
         "上海"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.shanghai.gov.cn/gwk/search/content/t0035_1434097"
+        }
+      ]
     },
     {
       "id": "src-shanghai-retirement",
@@ -3276,21 +3299,29 @@
       "id": "src-hangzhou-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "杭州最低工资标准",
-      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "title": "杭州市人民政府关于调整市区最低工资标准的通知",
+      "summary": "杭州市区月最低工资 2,660 元、非全日制小时 25 元，自 2026-01-01 起执行；杭州历年均按浙江省第一档执行，县（市）另行公布。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "杭州市人民政府",
+        "生效：2026-01-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "杭政函〔2026〕16号",
+      "confidence": "official",
       "city": "hangzhou",
       "tags": [
         "溯源",
         "杭州"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.hangzhou.gov.cn/col/col1229506256/art/2026/art_d999b9f323cf4f7ca39e869a75049a02.html"
+        }
+      ]
     },
     {
       "id": "src-hangzhou-retirement",
@@ -3485,21 +3516,29 @@
       "id": "src-nanjing-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "南京最低工资标准",
-      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "title": "南京市人力资源和社会保障局关于调整全市最低工资标准的通知",
+      "summary": "依据苏人社规〔2025〕3号，南京全市月最低工资 2,660 元、非全日制小时 25 元，自 2026-01-01 起执行；南京执行江苏一类地区标准。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "南京市人力资源和社会保障局",
+        "生效：2026-01-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "宁人社〔2025〕75号",
+      "confidence": "official",
       "city": "nanjing",
       "tags": [
         "溯源",
         "南京"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rsj.nanjing.gov.cn/njsrlzyhshbzj/202512/P020251231623041068023.pdf"
+        }
+      ]
     },
     {
       "id": "src-nanjing-retirement",
@@ -3693,21 +3732,29 @@
       "id": "src-suzhou-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "苏州最低工资标准",
-      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "title": "省人力资源社会保障厅关于调整全省最低工资标准的通知",
+      "summary": "江苏一类地区月最低工资 2,660 元、非全日制小时 25 元，自 2026-01-01 起执行；苏州市区、张家港、常熟、太仓、昆山均执行一类标准。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "江苏省人力资源和社会保障厅",
+        "生效：2026-01-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "苏人社规〔2025〕3号",
+      "confidence": "official",
       "city": "suzhou",
       "tags": [
         "溯源",
         "苏州"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://jshrss.jiangsu.gov.cn/art/2025/12/29/art_77263_11701076.html"
+        }
+      ]
     },
     {
       "id": "src-suzhou-retirement",
@@ -4126,21 +4173,29 @@
       "id": "src-changsha-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "长沙最低工资标准",
-      "summary": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。",
+      "title": "湖南省人力资源和社会保障厅关于调整2025年最低工资标准的通知",
+      "summary": "长沙湘江新区（岳麓）、芙蓉、天心、开福、雨花、望城执行第一档 2,200 元 / 22 元；长沙县、浏阳、宁乡执行第二档 2,000 元 / 20 元。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-14"
+        "湖南省人力资源和社会保障厅",
+        "生效：2025-09-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "湘人社规〔2025〕22号",
+      "confidence": "official",
       "city": "changsha",
       "tags": [
         "溯源",
         "长沙"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.hunan.gov.cn/rst/xxgk/zcfg/zxzc/202507/t20250730_33754136.html"
+        }
+      ]
     },
     {
       "id": "src-changsha-retirement",
@@ -5234,21 +5289,29 @@
       "id": "src-shijiazhuang-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "石家庄最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：石家庄的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到河北省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "河北省人力资源和社会保障厅关于调整最低工资标准的通知",
+      "summary": "石家庄市区（不含井陉矿区）、正定县执行第一档 2,380 元 / 24 元；晋州、新乐等按市级确定档次执行；自 2025-12-01 起执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "河北省人力资源和社会保障厅",
+        "生效：2025-12-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "冀人社字〔2025〕137号",
+      "confidence": "official",
       "city": "shijiazhuang",
       "tags": [
         "溯源",
         "石家庄"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.hebei.gov.cn/rsmh_file/subjectPictures/20240201/fe0af8e2-7c75-4489-b9e3-fb0e22e9a1ea10_%E6%94%BF%E5%8A%A1%E5%85%AC%E5%BC%80-10_%E6%94%BF%E5%8A%A1%E5%85%AC%E5%BC%80/index.html?column=1458&article=1764833880991b04"
+        }
+      ]
     },
     {
       "id": "src-shijiazhuang-retirement",
@@ -5443,21 +5506,29 @@
       "id": "src-taiyuan-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "太原最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：太原的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "山西省人民政府办公厅关于调整我省最低工资标准的通知",
+      "summary": "太原市迎泽、尖草坪、杏花岭、万柏林、晋源、小店、古交、清徐执行一类 2,350 元 / 25.3 元；阳曲、娄烦执行二类 2,250 元 / 24.2 元；自 2026-10-01 起实施。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "山西省人民政府办公厅",
+        "生效：2026-10-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "晋政办发〔2026〕29号",
+      "confidence": "official",
       "city": "taiyuan",
       "tags": [
         "溯源",
         "太原"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.shanxi.gov.cn/zcwjk/bgtwj/202608/t20260817_10201204.shtml"
+        }
+      ]
     },
     {
       "id": "src-taiyuan-retirement",
@@ -5652,21 +5723,29 @@
       "id": "src-huhehaote-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "呼和浩特最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：呼和浩特的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到内蒙古省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "内蒙古自治区人民政府办公厅关于调整自治区最低工资标准的通知",
+      "summary": "呼和浩特市新城区、回民区、玉泉区、赛罕区等为一类地区，月最低工资 2,380 元、非全日制小时 23.5 元；自 2025-12-01 起执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "内蒙古自治区人民政府办公厅",
+        "生效：2025-12-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "内政办发〔2025〕40号",
+      "confidence": "official",
       "city": "huhehaote",
       "tags": [
         "溯源",
         "呼和浩特"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "http://www.huhhot.gov.cn/ztzl/lqhmzczq/hmzq/zzjzc1/202603/t20260306_1981094.html"
+        }
+      ]
     },
     {
       "id": "src-huhehaote-retirement",
@@ -5861,21 +5940,29 @@
       "id": "src-shenyang-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "沈阳最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：沈阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到辽宁省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "沈阳市人力资源和社会保障局关于调整沈阳市最低工资标准的通知",
+      "summary": "和平、沈河、铁西、皇姑、大东、浑南、于洪、沈北、苏家屯月最低工资 2,230 元 / 22 元；辽中、新民、法库、康平 2,080 元 / 20 元；自 2025-12-01 起执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "沈阳市人力资源和社会保障局",
+        "生效：2025-12-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "沈人社发〔2025〕32号",
+      "confidence": "official",
       "city": "shenyang",
       "tags": [
         "溯源",
         "沈阳"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.ln.gov.cn/eportal/ui?pageId=ab4555d39b8b4d06a3c48b4319b3801e&msgDataId=d34a55c1808146d8970979a847e08397"
+        }
+      ]
     },
     {
       "id": "src-shenyang-retirement",
@@ -6070,21 +6157,29 @@
       "id": "src-changchun-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "长春最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：长春的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到吉林省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "吉林省人民政府关于发布全省最低工资标准的通知",
+      "summary": "长春市区（含双阳区、九台区）月最低工资 2,230 元、非全日制小时 22 元，执行期自 2025-12-01 至下一次调整。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "吉林省人民政府",
+        "生效：2025-12-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "吉政函〔2025〕59号",
+      "confidence": "official",
       "city": "changchun",
       "tags": [
         "溯源",
         "长春"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://xxgk.jl.gov.cn/szf/gkml/202511/t20251126_9360748.html?from=szf"
+        }
+      ]
     },
     {
       "id": "src-changchun-retirement",
@@ -6279,21 +6374,29 @@
       "id": "src-haerbin-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "哈尔滨最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：哈尔滨的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到黑龙江省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "黑龙江省人民政府关于调整全省最低工资标准的通知",
+      "summary": "哈尔滨市区（呼兰、阿城、双城除外）月最低工资 2,270 元、非全日制小时 21 元，自 2025-12-01 起执行；2026-12-01 起新标准 2,350 元 / 23 元（黑政规〔2026〕2号），届时更新。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "黑龙江省人民政府",
+        "生效：2025-12-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "黑政规〔2025〕1号",
+      "confidence": "official",
       "city": "haerbin",
       "tags": [
         "溯源",
         "哈尔滨"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.hlj.gov.cn/hljzqc/c100117/202511/c00_31892338.shtml"
+        }
+      ]
     },
     {
       "id": "src-haerbin-retirement",
@@ -6705,21 +6808,29 @@
       "id": "src-fuzhou-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "福州最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：福州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到福建省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "福建省人力资源和社会保障厅关于公布我省最低工资标准的通知",
+      "summary": "福州鼓楼、台江、仓山、晋安、马尾、长乐、福清、闽侯、连江、闽清、罗源、永泰等执行第二档 2,195 元 / 23 元；第一档 2,265 元仅厦门执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "福建省人力资源和社会保障厅",
+        "生效：2025-04-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "闽人社文〔2025〕14号",
+      "confidence": "official",
       "city": "fuzhou",
       "tags": [
         "溯源",
         "福州"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.fujian.gov.cn/zw/zfxxgk/zfxxgkml/zyywgz/jycj/202501/t20250127_6710184.htm"
+        }
+      ]
     },
     {
       "id": "src-fuzhou-retirement",
@@ -6914,21 +7025,29 @@
       "id": "src-nanchang-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "南昌最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：南昌的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到江西省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "江西省人民政府办公厅关于调整最低工资标准的通知",
+      "summary": "南昌东湖、西湖、青云谱、青山湖、红谷滩及两个开发区执行一类区域 2,240 元 / 22.4 元；新建区、南昌县执行二类 2,090 元 / 20.9 元。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "江西省人民政府办公厅",
+        "生效：2025-12-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "赣府厅字〔2025〕42号",
+      "confidence": "official",
       "city": "nanchang",
       "tags": [
         "溯源",
         "南昌"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://jiangxi.gov.cn/jxsrmzf/szfbg100/pc/content/content_1992850074916360192.html"
+        }
+      ]
     },
     {
       "id": "src-nanchang-retirement",
@@ -7123,21 +7242,29 @@
       "id": "src-jinan-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "济南最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "山东省人民政府关于调整全省最低工资标准的通知",
+      "summary": "济南市历下区、市中区、槐荫区、天桥区、历城区执行第一档 2,400 元 / 24 元；长清、章丘、济阳、莱芜、钢城、平阴、商河执行第二档 2,210 元 / 22 元。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "山东省人民政府",
+        "生效：2025-10-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "鲁政字〔2025〕140号",
+      "confidence": "official",
       "city": "jinan",
       "tags": [
         "溯源",
         "济南"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.jinan.gov.cn/col/col118356/art/2026/art_0b1409de14e848bcb2cb12fdad1440a0.html"
+        }
+      ]
     },
     {
       "id": "src-jinan-retirement",
@@ -7766,21 +7893,29 @@
       "id": "src-guiyang-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "贵阳最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：贵阳的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到贵州省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "贵州省人力资源和社会保障厅关于调整贵州省最低工资标准的通知",
+      "summary": "贵阳市云岩、南明、乌当、白云、花溪、观山湖、清镇执行一类区 2,130 元 / 22.4 元；开阳二类 1,980 元 / 20.8 元；息烽、修文三类 1,890 元 / 19.8 元。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "贵州省人力资源和社会保障厅",
+        "生效：2025-02-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "黔人社发〔2025〕4号",
+      "confidence": "official",
       "city": "guiyang",
       "tags": [
         "溯源",
         "贵阳"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.guizhou.gov.cn/zwgk/gzhgfxwjsjk/gfxwjsjk/202502/t20250210_86743960.html"
+        }
+      ]
     },
     {
       "id": "src-guiyang-retirement",
@@ -7975,21 +8110,29 @@
       "id": "src-kunming-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "昆明最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：昆明的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到云南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "云南省人力资源和社会保障厅关于调整最低工资标准的通知",
+      "summary": "昆明五华、盘龙、西山、官渡、呈贡、晋宁及安宁、嵩明执行一类地区 2,270 元 / 22 元；昆明其他县及东川执行二类 2,120 元 / 21 元；自 2026-09-01 起执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "云南省人力资源和社会保障厅",
+        "生效：2026-09-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "云人社发〔2026〕9号",
+      "confidence": "official",
       "city": "kunming",
       "tags": [
         "溯源",
         "昆明"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://zwfw.hrss.yn.gov.cn/jyj/NewsView.aspx?ClassID=1079&NewsID=65808"
+        }
+      ]
     },
     {
       "id": "src-kunming-retirement",
@@ -8184,21 +8327,29 @@
       "id": "src-lasa-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "拉萨最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：拉萨的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到西藏省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "西藏自治区人民政府办公厅转发人力资源社会保障厅关于调整我区最低工资标准意见的通知",
+      "summary": "全区月最低工资统一为 2,360 元、非全日制小时 23 元，自 2025-11-01 起执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "西藏自治区人民政府办公厅",
+        "生效：2025-11-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "藏政办函〔2025〕25号",
+      "confidence": "official",
       "city": "lasa",
       "tags": [
         "溯源",
         "拉萨"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://www.xizang.gov.cn/zwgk/xxfb/zbwj/202509/W020250928611933568563.pdf"
+        }
+      ]
     },
     {
       "id": "src-lasa-retirement",
@@ -8393,21 +8544,29 @@
       "id": "src-lanzhou-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "兰州最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：兰州的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到甘肃省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "甘肃省人民政府办公厅关于调整全省最低工资标准地区类别和最低工资标准的通知",
+      "summary": "兰州城关、七里河、安宁、西固、红古执行一类地区 2,200 元 / 22 元；永登、榆中、皋兰执行二类 2,130 元 / 21.5 元；自 2025-12-01 起执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "甘肃省人民政府办公厅",
+        "生效：2025-12-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "甘政办发〔2025〕71号",
+      "confidence": "official",
       "city": "lanzhou",
       "tags": [
         "溯源",
         "兰州"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "http://www.gs.gov.cn/art/c103795/2026h/774/202601/174271055.shtml"
+        }
+      ]
     },
     {
       "id": "src-lanzhou-retirement",
@@ -9036,21 +9195,29 @@
       "id": "src-wulumuqi-minimumWage",
       "type": "source",
       "category": "本城规则溯源",
-      "title": "乌鲁木齐最低工资标准（待核实）",
-      "summary": "**本省数据尚未核实**：乌鲁木齐的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到新疆省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。",
+      "title": "新疆维吾尔自治区人民政府关于调整新疆维吾尔自治区最低工资标准的通知",
+      "summary": "乌鲁木齐市、克拉玛依市执行第一档 2,270 元 / 22.7 元；自 2026-10-01 起执行。",
       "keyPoints": [],
       "numbers": [],
       "steps": [],
       "notes": [
-        "登记于 2026-10-27"
+        "新疆维吾尔自治区人民政府",
+        "生效：2026-10-01",
+        "核对于 2026-11-20"
       ],
-      "confidence": "unverified",
+      "docNo": "",
+      "confidence": "official",
       "city": "wulumuqi",
       "tags": [
         "溯源",
         "乌鲁木齐"
       ],
-      "links": []
+      "links": [
+        {
+          "title": "原文",
+          "url": "https://rst.xinjiang.gov.cn/xjrst/c112485/202608/cf9bc983a5924369baea2a94b737f1db.shtml"
+        }
+      ]
     },
     {
       "id": "src-wulumuqi-retirement",

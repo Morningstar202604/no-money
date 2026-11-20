@@ -94,8 +94,8 @@
     }
   },
   "minimumWage": {
-    "monthly": 2000,
-    "nonFullTimeHourly": 20
+    "monthly": 2270,
+    "nonFullTimeHourly": 22.0
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -176,11 +176,14 @@
       "note": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。"
     },
     "minimumWage": {
-      "title": "昆明最低工资标准（待核实）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：昆明的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到云南省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "云南省人力资源和社会保障厅关于调整最低工资标准的通知",
+      "docNo": "云人社发〔2026〕9号",
+      "issuedBy": "云南省人力资源和社会保障厅",
+      "url": "https://zwfw.hrss.yn.gov.cn/jyj/NewsView.aspx?ClassID=1079&NewsID=65808",
+      "effectiveFrom": "2026-09-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "昆明五华、盘龙、西山、官渡、呈贡、晋宁及安宁、嵩明执行一类地区 2,270 元 / 22 元；昆明其他县及东川执行二类 2,120 元 / 21 元；自 2026-09-01 起执行。"
     },
     "retirement": {
       "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",

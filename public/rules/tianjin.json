@@ -2,7 +2,7 @@
   "city": "tianjin",
   "cityName": "天津",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -94,8 +94,8 @@
     }
   },
   "minimumWage": {
-    "monthly": 2320,
-    "nonFullTimeHourly": 24.4
+    "monthly": 2510,
+    "nonFullTimeHourly": 26.6
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -175,11 +175,14 @@
       "note": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。"
     },
     "minimumWage": {
-      "title": "天津最低工资标准",
-      "url": "https://hrss.tj.gov.cn/zhengwugongkai/zhengcezhinan/zcjdnew/202509/t20250908_7127631.html",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "天津最低工资 2320 元/月、24.4 元/小时为占位值：已核到天津市人社局《关于调整天津市最低工资标准的通知》的政策问答页，但该页正文未列具体数额（数字见政策原文附件），本次未回溯到原文，不可对外引用。"
+      "title": "市人社局关于调整天津市最低工资标准的通知",
+      "docNo": "津人社规字〔2025〕1号",
+      "issuedBy": "天津市人力资源和社会保障局",
+      "url": "https://hrss.tj.gov.cn/zhengwugongkai/zhengcezhinan/zxwjnew/202509/t20250908_7127617.html",
+      "effectiveFrom": "2025-09-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "月最低工资 2,510 元、非全日制小时 26.6 元，自 2025-09-01 起执行；标准包含个人社保和公积金缴费部分。"
     },
     "retirement": {
       "title": "基本养老金计发办法（基础养老金 + 个人账户养老金）",

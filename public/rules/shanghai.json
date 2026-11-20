@@ -95,7 +95,7 @@
   },
   "minimumWage": {
     "monthly": 2740,
-    "nonFullTimeHourly": 26.0
+    "nonFullTimeHourly": 25.0
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -176,11 +176,14 @@
       "note": "个税全国统一立法，按年度汇算清缴口径测算。"
     },
     "minimumWage": {
-      "title": "上海最低工资标准",
-      "url": "",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "本文件最低工资为占位值，未回溯本市现行有效通知原文，不可对外引用。"
+      "title": "上海市人力资源和社会保障局关于调整本市最低工资标准的通知",
+      "docNo": "沪人社规〔2025〕10号",
+      "issuedBy": "上海市人力资源和社会保障局",
+      "url": "https://www.shanghai.gov.cn/gwk/search/content/t0035_1434097",
+      "effectiveFrom": "2025-07-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "月最低工资 2,740 元、非全日制小时 25 元，自 2025-07-01 起执行；月标准不含个人社保和公积金，小时标准不含单位和个人社保费。"
     },
     "retirement": {
       "title": "基本养老金计发办法",

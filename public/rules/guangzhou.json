@@ -2,7 +2,7 @@
   "city": "guangzhou",
   "cityName": "广州",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -139,11 +139,13 @@
     },
     "minimumWage": {
       "title": "广东省人民政府关于调整我省最低工资标准的通知",
-      "url": "https://www.sz.gov.cn/cn/xxgk/zfxxgj/zwdt/content/post_12936470.html",
+      "docNo": "粤府函〔2026〕188号",
+      "issuedBy": "广东省人民政府",
+      "url": "https://hrss.gd.gov.cn/gkmlpt/content/4/4942/mpost_4942224.html",
       "effectiveFrom": "2026-09-01",
-      "retrievedAt": "2026-10-12",
+      "retrievedAt": "2026-11-20",
       "confidence": "official",
-      "note": "广州、深圳执行一类标准：广州2680元/月，深圳2700元/月，对应非全日制小时最低工资均为25.4元/小时"
+      "note": "广州执行一类标准 2,680 元/月、25.4 元/小时；深圳执行一类标准 2,700 元/月、25.4 元/小时。"
     },
     "retirement": {
       "title": "养老金计发公式：基础养老金=计发基数×(1+平均缴费指数)÷2×缴费年限×1%；个人账户养老金=储存额/计发月数",

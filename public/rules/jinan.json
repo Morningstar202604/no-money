@@ -94,8 +94,8 @@
     }
   },
   "minimumWage": {
-    "monthly": 2000,
-    "nonFullTimeHourly": 20
+    "monthly": 2400,
+    "nonFullTimeHourly": 24.0
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -176,11 +176,14 @@
       "note": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。"
     },
     "minimumWage": {
-      "title": "济南最低工资标准（待核实）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：济南的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到山东省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "山东省人民政府关于调整全省最低工资标准的通知",
+      "docNo": "鲁政字〔2025〕140号",
+      "issuedBy": "山东省人民政府",
+      "url": "https://www.jinan.gov.cn/col/col118356/art/2026/art_0b1409de14e848bcb2cb12fdad1440a0.html",
+      "effectiveFrom": "2025-10-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "济南市历下区、市中区、槐荫区、天桥区、历城区执行第一档 2,400 元 / 24 元；长清、章丘、济阳、莱芜、钢城、平阴、商河执行第二档 2,210 元 / 22 元。"
     },
     "retirement": {
       "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",

@@ -94,8 +94,8 @@
     }
   },
   "minimumWage": {
-    "monthly": 2000,
-    "nonFullTimeHourly": 20
+    "monthly": 2380,
+    "nonFullTimeHourly": 24.0
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -176,11 +176,14 @@
       "note": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。"
     },
     "minimumWage": {
-      "title": "石家庄最低工资标准（待核实）",
-      "url": "",
-      "retrievedAt": "2026-10-27",
-      "confidence": "unverified",
-      "note": "**本省数据尚未核实**：石家庄的社保缴费基数上下限、最低工资与养老金计发基数均未回溯到河北省人社厅现行有效文件。当前为「全国量级参考值」（基数下限 4500 / 上限 22500 / 最低工资 2000 元），仅用于让你先跑通测算流程，**不可对外引用、不能作为决策依据**。请用左侧「我的计价」与「社保基数自定义」填入本省官方公布值，或在参数栏手动校准。"
+      "title": "河北省人力资源和社会保障厅关于调整最低工资标准的通知",
+      "docNo": "冀人社字〔2025〕137号",
+      "issuedBy": "河北省人力资源和社会保障厅",
+      "url": "https://rst.hebei.gov.cn/rsmh_file/subjectPictures/20240201/fe0af8e2-7c75-4489-b9e3-fb0e22e9a1ea10_%E6%94%BF%E5%8A%A1%E5%85%AC%E5%BC%80-10_%E6%94%BF%E5%8A%A1%E5%85%AC%E5%BC%80/index.html?column=1458&article=1764833880991b04",
+      "effectiveFrom": "2025-12-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "石家庄市区（不含井陉矿区）、正定县执行第一档 2,380 元 / 24 元；晋州、新乐等按市级确定档次执行；自 2025-12-01 起执行。"
     },
     "retirement": {
       "title": "基本养老金计发办法（全国统一公式）+ 本省计发基数（待核实）",

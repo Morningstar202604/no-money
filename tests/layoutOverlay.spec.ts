@@ -116,10 +116,11 @@ describe('主布局渲染', () => {
     const pinia = createPinia()
     setActivePinia(pinia)
     const store = useMainStore()
-    // 用真实城市规则（长春：pension 与 minimumWage 均为 unverified，恰好触发
-    // 法定参数提示卡），走与运行时一致的 parseCityRule 解析路径——手工 stub
-    // 会在 ScenarioService 重算 scenarios 时因缺字段崩溃，且掩盖解析回归
+    // 用真实城市规则走与运行时一致的 parseCityRule 解析路径；3.8.4 后长春
+    // 养老与最低工资都已不是 unverified，这里把最低工资临时回退为 unverified，
+    // 仅为触发「未回溯官方原文」提示卡，验证 NAlert 真实渲染。
     const raw = JSON.parse(readFileSync('public/rules/changchun.json', 'utf8'))
+    raw.sources.minimumWage.confidence = 'unverified'
     store.rule = parseCityRule(raw)
     const router = makeRouter()
     const Wrapper = defineComponent({

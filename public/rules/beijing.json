@@ -2,7 +2,7 @@
   "city": "beijing",
   "cityName": "北京",
   "year": 2026,
-  "lastCheckedAt": "2026-10-12",
+  "lastCheckedAt": "2026-11-20",
   "verified": false,
   "occupation": "delivery",
   "occupationName": "外卖骑手",
@@ -95,7 +95,7 @@
   },
   "minimumWage": {
     "monthly": 2540,
-    "nonFullTimeHourly": 26.4
+    "nonFullTimeHourly": 27.7
   },
   "retirement": {
     "personalAccountRate": 0.08,
@@ -176,10 +176,14 @@
       "note": "个税为全国统一立法，按年度汇算清缴口径（减除20%费用 + 5000元/月基本减除 + 税率表一）。"
     },
     "minimumWage": {
-      "title": "北京最低工资标准（未检索到原文，数值仅作占位）",
-      "retrievedAt": "2026-10-14",
-      "confidence": "unverified",
-      "note": "北京月最低工资 2540 元、非全日制 26.4 元/小时为占位值：本次未回溯到北京市人社局的最低工资调整通知原文，此前误引的社保基数通知页面不含最低工资数字，已删除该链接。不可对外引用；请以北京市人社局公布为准。"
+      "title": "北京市人力资源和社会保障局等部门关于调整北京市2025年最低工资标准的通知",
+      "docNo": "",
+      "issuedBy": "北京市人力资源和社会保障局、北京市总工会、北京企业联合会/北京市企业家协会、北京市工商业联合会",
+      "url": "https://rsj.beijing.gov.cn/xxgk/2024zcwj/202507/t20250725_4158456.html",
+      "effectiveFrom": "2025-09-01",
+      "retrievedAt": "2026-11-20",
+      "confidence": "official",
+      "note": "月最低工资 2,540 元、非全日制小时 27.7 元，自 2025-09-01 起执行；月标准不含个人社保和公积金，小时标准含单位和个人社保费。"
     },
     "retirement": {
       "title": "基本养老金计发办法（基础养老金 + 个人账户养老金）",
