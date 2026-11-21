@@ -17,9 +17,25 @@
  */
 import type { CityRule, PersonalParams, WorkParams, CostParams, ScenarioResult } from '../types'
 import { ScenarioService, type ScenarioInput } from '../application/scenario/ScenarioService'
+import { round2 } from '../domain/shared/number'
+import { scoreLevel } from '../utils/score'
+import {
+  DEFAULT_WORK,
+  DEFAULT_COSTS,
+  DEFAULT_PERSONAL,
+} from '../domain/shared/defaults'
 
 /** 规则加载器：浏览器与 Node 各自实现，内核不关心来源 */
 export type RuleLoader = (city: string) => Promise<CityRule>
+
+/**
+ * 默认参数从 src/domain/shared/defaults.ts 唯一出口。
+ *
+ * 为什么要从内核再导出：tests/share.spec.ts 等调用方通过 `../kernel/calculate`
+ * 取默认值构造分享参数基准。直接 re-export 保证它们拿到的与 Web、CLI、API、MCP
+ * 是同一份对象，而不是又一份复制品。
+ */
+export { DEFAULT_WORK, DEFAULT_COSTS, DEFAULT_PERSONAL }
 
 /**
  * 产能模型默认值：与 DEFAULT_WORK / DEFAULT_COSTS / DEFAULT_PERSONAL 一样
@@ -73,40 +89,6 @@ export interface CalculateResult {
   dataConfidence: 'official' | 'partial' | 'unverified'
   /** 未核实的字段名（中文），供调用方如实展示 */
   unverifiedFields: string[]
-}
-
-/** 默认工作参数：与 Web 端默认值保持一致 */
-export const DEFAULT_WORK: Omit<WorkParams, 'city'> = {
-  dailyHours: 10,
-  dailyOrders: 35,
-  avgDistance: 2.5,
-  workDaysMonth: 26,
-  rainDaysMonth: 3,
-  holidayDaysMonth: 2,
-}
-
-/** 默认成本参数 */
-export const DEFAULT_COSTS: CostParams = {
-  vehicleType: 'electric',
-  fuelCostMonth: 0,
-  electricityCostMonth: 300,
-  maintenanceMonth: 150,
-  foodCostMonth: 1200,
-  insuranceMonth: 0,
-  phoneCostMonth: 100,
-  trafficFineMonth: 0,
-  vehicleDepreciationMonth: 200,
-  otherCostMonth: 0,
-}
-
-/** 默认个人参数 */
-export const DEFAULT_PERSONAL: PersonalParams = {
-  currentAge: 25,
-  expectedRetireAge: 60,
-  hasSocialInsurance: false,
-  specialDeductionMonth: 0,
-  personalPensionAnnual: 0,
-  taxHealthInsuranceAnnual: 0,
 }
 
 /** 从规则里挑出未核实字段，转成中文名 */
@@ -193,7 +175,7 @@ export function toCalculateResult(result: ScenarioResult, rule: CityRule): Calcu
     taxMonthly: round2(taxMonthly),
     socialInsuranceMonthly: round2(result.benefit.totalMonthly),
     rightsScore: result.rightsScore,
-    rightsLevel: rightsLevelOf(result.rightsScore),
+    rightsLevel: scoreLevel(result.rightsScore),
     rightsFlags: result.rightsFlags ?? [],
     // 只保留数值项：vehicleType 是枚举字符串，混在金额明细里会被误当金额
     costBreakdown: Object.fromEntries(
@@ -206,14 +188,3 @@ export function toCalculateResult(result: ScenarioResult, rule: CityRule): Calcu
   }
 }
 
-function round2(n: number): number {
-  return Math.round(n * 100) / 100
-}
-
-/** 评分等级：与 Web 端 scoreLevel 同一套阈值，避免两端口径漂移 */
-function rightsLevelOf(score: number): string {
-  if (score >= 80) return '保障充足'
-  if (score >= 60) return '基本覆盖'
-  if (score >= 40) return '保障不足'
-  return '高风险'
-}

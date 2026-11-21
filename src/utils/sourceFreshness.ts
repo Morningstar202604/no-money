@@ -6,6 +6,35 @@ import type { SourceRef } from '../types'
 
 const ONE_YEAR_MS = 365 * 24 * 60 * 60 * 1000
 
+export interface SourceConfidenceCounts {
+  total: number
+  official: number
+  derived: number
+  unverified: number
+}
+
+/**
+ * 按置信度统计来源条目。
+ *
+ * 为什么单独提出来：/policy 的数据新鲜度总览与 /admin、/audit 的覆盖率
+ * 此前各自用 filter 数一遍 official/derived/unverified；新增一种置信度或
+ * 遇到脏值时，两套统计会给出不同的分母。这里统一口径：
+ * 未知/缺失一律算 unverified（宁可少报官方，不可把脏值算成官方）。
+ */
+export function countSourceConfidence(
+  sources: Record<string, { confidence?: string }> | null | undefined,
+): SourceConfidenceCounts {
+  const counts: SourceConfidenceCounts = { total: 0, official: 0, derived: 0, unverified: 0 }
+  if (!sources) return counts
+  for (const source of Object.values(sources)) {
+    counts.total++
+    if (source?.confidence === 'official') counts.official++
+    else if (source?.confidence === 'derived') counts.derived++
+    else counts.unverified++
+  }
+  return counts
+}
+
 export interface SourceFreshness {
   total: number
   official: number
@@ -23,11 +52,9 @@ export function summarizeSourceFreshness(
   sources: Record<string, SourceRef> | null | undefined,
   now: Date = new Date(),
 ): SourceFreshness {
+  const counts = countSourceConfidence(sources)
   const summary: SourceFreshness = {
-    total: 0,
-    official: 0,
-    derived: 0,
-    unverified: 0,
+    ...counts,
     staleCount: 0,
     unverifiedKeys: [],
   }
@@ -36,9 +63,9 @@ export function summarizeSourceFreshness(
   const cutoff = now.getTime() - ONE_YEAR_MS
   let oldestMs = Number.POSITIVE_INFINITY
   for (const [key, source] of Object.entries(sources)) {
-    summary.total++
-    summary[source.confidence]++
-    if (source.confidence === 'unverified') summary.unverifiedKeys.push(key)
+    if (source.confidence !== 'official' && source.confidence !== 'derived') {
+      summary.unverifiedKeys.push(key)
+    }
     const dateMs = Date.parse(source.retrievedAt)
     if (!Number.isFinite(dateMs)) continue
     if (dateMs < oldestMs) {

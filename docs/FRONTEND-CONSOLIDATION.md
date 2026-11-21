@@ -220,3 +220,34 @@
 - 新抽的公共件必须有至少两个真实使用方；只有一个使用方时留在原处。
 - 页面文案、入口标题、官方链接只允许一个来源；复制粘贴视为缺陷。
 - 版本：纯去重/小修走 PATCH，例如 `3.6.1`；新增页面或新能力才走 MINOR。
+
+## 已完成（0.0.42）
+
+这一轮不是“再加一层抽象”，而是先证明重复确实存在，再按“同一事实/同一状态机/同一默认值”三类收口。
+
+| 重复点 | 原来 | 现在 |
+|---|---|---|
+| 34 城规则加载 | `/admin`、`/audit`、`/policy` 三个页面各有一套 fetch/回退/缺失处理；`/admin` 的“重新检查”还把 34 份 JSON 又拉了一遍 | `src/data/cityRules.ts` 唯一加载器；`/admin`、`/audit` 共用 `useCityRules()`，`/admin` 检查直接复用已加载规则；`/policy` 总览也走同一加载器 |
+| `CityRule` 类型 | `cityRules.ts` 自建一份字段可选化的 `CityRule`，与 `types/index.ts` 的完整模型并存 | 删除本地模型，直接使用 `CityRule`；`CityRuleLoadResult.rules` 即完整规则 |
+| 置信度计数 | `sourceFreshness.ts` 与 `cityRules.ts` 各自 filter official/derived/unverified | `countSourceConfidence()` 唯一实现，未知值一律计入 unverified |
+| 默认工作/成本/个人参数 | store、kernel、`scripts/verify-engines.ts` 各写一份默认值；store 与 kernel 的成本逐项不同（总额碰巧都是 1950） | `src/domain/shared/defaults.ts` 唯一来源；Web、CLI、API、MCP、自检脚本共用 |
+| 退休/贴现/记账利率默认值 | `RetirementPlanner`、旧 `BenefitEngine`、`selfFunded` 各写 `0.03` | `src/domain/benefit/actuarial.ts` 的 `DEFAULT_ASSUMED_ANNUAL_RETURN` / `DEFAULT_DISCOUNT_RATE` / `DEFAULT_PENSION_ADJUST_RATE` |
+| 取消判断 | `rightsShare`、store、`useAIChat` 各写一套 `AbortError` 判断，后两处还依赖 `DOMException` 构造器 | `src/utils/abort.ts` 的 `isAbortError()`，按 `name` 判断 |
+| 官方原文链接 | `GuideCard` / `KbResultCard` / `RealityList` 三套 `.gc-link` / `.kb-link` / `.rf-link`，字号与下划线已开始分叉 | `src/components/OfficialLinks.vue` 统一渲染，三处只传 links 与 label |
+| Admin/Audit 页面骨架 | 两页各写 `.metric-row`、`.metric`、`.panel`、`.data-note`、`.table-wrap`、`.city-id`、`.num`，6 列与 3×2 列两套网格 | `src/styles/dataPage.css` 共享 scoped 页面样式；指标网格改 `auto-fit`，900/640px 断点只一处 |
+| CLI/API/MCP 规则读取 | 三个入口各写 `nodeRuleLoader`、`listCities`、缺失城市文案 | `src/kernel/nodeRules.ts` 的 `createNodeRuleLoader()` / `listRuleCities()` / `readPackageVersion()` |
+| CLI/MCP 金额格式 | 两处各写 `toLocaleString('zh-CN', …)` | `src/utils/output.ts` 的 `formatMoney()` |
+| 场景重复测算 | store 的 `scenarios` 与 `comparison` 对同一批 `ScenarioInput` 各跑一次 `runScenario` | `scenarios` 直接取 `comparison.scenarios`，算一次、卡片/排行榜/图表共用 |
+| 总览与方案页对比图 | `/dashboard` 的“各方案净收入对比”与 `/scenario` 的“方案净收入对比”是同一组方案的重复柱图 | 删除总览柱图，只留收支结构饼图；排行榜卡加“方案对比实验室 →”，详细对比只留在 `/scenario` |
+| 城市列表别名 | store 导出 `CITIES = CITY_OPTIONS`，`ParamSidebar` 再经 store 取一次 | 删除别名，页面直接读 `src/data/cities.ts` 的 `CITY_OPTIONS` |
+
+### 审查后明确不合并
+
+- `/admin` 与 `/audit`：受众不同（治理视角 vs 知情视角）。本轮共享加载、类型、文案与页面骨架，但不合成一页，避免把“我要不要信这个数”埋进治理表格。
+- `/dashboard` 与 `/scenario`：总览保留最优方案 KPI、排行榜和收支结构；详细方案卡、逐项成本与对比图只在实验室页。重复柱图已删除，其余是“摘要 vs 明细”，不是同一功能。
+- `/policy` 与 `/audit`：前者回答“这条政策的原文/来源是什么”，后者回答“34 城 × 7 字段哪些还没核实”；共享 34 城加载不等于共享页面。
+- `/start` 与 `/rights`：前者是办事清单导航，后者是补偿计算/维权指南/文书生成；入口可互相跳，正文与工具不合并。
+- `provinceChannels` 与 `cityChannels`：省级入口是兜底层，10 城深核是精确层，统一由 `resolveServiceChannel()` 解析；数据分层不等于重复数据。
+- `RightsItemCard` 与 `GuideCard`：前者是目录入口，后者是长正文；同一条目在 `/start` 展开时复用 `GuideCard`，正文只有一份。
+- `src/engine/ScenarioEngine`：仅作为对拍基准保留，生产路径是 `ScenarioService`；删掉它会失去独立 oracle，保留成本远低于“公式悄悄漂移”的风险。
+- `src/utils/cityRule.ts` 与 `src/data/cityRules.ts`：前者做完整规则校验/时间提示，后者做 34 城加载与覆盖率统计；职责不同，没有合并。

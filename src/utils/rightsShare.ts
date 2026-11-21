@@ -5,18 +5,9 @@
  * 避免截图/转发后失去“这条依据是什么、什么时候核过”的上下文。
  */
 import type { RightsItem } from '../data/rights/catalog'
+import { isAbortError } from './abort'
 
 export type RightsShareMode = 'shared' | 'copied'
-
-/**
- * 用户取消系统分享的信号。
- * 不用 `instanceof DOMException`：部分旧 WebView 没有 DOMException 构造函数，
- * 取消会被误判成失败并再弹一次错误；按 `name` 判断更稳。
- */
-function isAbortError(error: unknown): boolean {
-  return typeof error === 'object' && error !== null
-    && 'name' in error && (error as { name?: unknown }).name === 'AbortError'
-}
 
 /** 系统分享被用户取消时返回 null；其它失败给一句能照做的中文。 */
 export function shareErrorMessage(error: unknown): string | null {

@@ -8,15 +8,15 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/对拍/组件测试 | **67 文件 / 1,262 项全过**，耗时 360.13s |
-| E2E | **9 文件 / 138 项全过**（desktop-chromium + mobile-chromium，5.7m） |
+| 单元/对拍/组件测试 | **68 文件 / 1,268 项全过**，耗时 361.09s |
+| E2E | **9 文件 / 138 项全过**（desktop-chromium + mobile-chromium，5.8m） |
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
 | 知识库 | `kb:check` 409 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
-| 构建 | 19.89s；`dist` **3.48 MB**（assets 2.59 MB）；首屏 **409K gzip**（预算 500K） |
-| PWA | 56 条 precache / **2,835.51 KiB（约 2.77 MB）**（预算 3 MB） |
+| 构建 | 20.26s；`dist` **3.48 MB**（assets 2.59 MB）；首屏 **409K gzip**（预算 500K） |
+| PWA | 59 条 precache / **2,834.57 KiB（约 2.77 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（26 个关键文件、版本三处一致、34 城、PWA、体积、文档） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |
@@ -25,18 +25,18 @@
 
 | chunk | 大小 | 说明 |
 |---|---:|---|
-| `index` | 72.33K | 应用入口 + 布局 + 首屏组件 |
+| `index` | 75.34K | 应用入口 + 布局 + 首屏组件 |
 | `naive-ui` | 176.19K | 首屏最大依赖 |
 | `vendor-misc` | 117.65K | 其余运行时依赖 |
 | `vendor-util` | 29.89K | 工具库 |
 | `vendor-vue` | 20.01K | Vue 运行时 |
 | `RightsView` | 27.03K | 路由懒加载 |
-| `AdminView` | 3.08K | 34 城治理面板，复用 `cityRules` |
-| `AuditView` | 2.45K | 34 × 7 核验矩阵，复用 `cityRules` |
-| `RightsItemCard` | 4.42K | 权益卡入口，详情按需拆到 GuideCard |
-| `RightsStartView` | 12.31K | 办事首页与我的清单，含整张清单分享 |
+| `AdminView` | 3.02K | 34 城治理面板，复用 `cityRules` + `useCityRules` |
+| `AuditView` | 2.35K | 34 × 7 核验矩阵，复用 `cityRules` + `useCityRules` |
+| `RightsItemCard` | 4.39K | 权益卡入口，详情按需拆到 GuideCard |
+| `RightsStartView` | 12.33K | 办事首页与我的清单，含整张清单分享 |
 | `EmployeeView` | 5.28K | 企业职工工资条页，路由懒加载 |
-| `PolicyView` | 8.59K | 政策页，34 城总览按页签懒加载 |
+| `PolicyView` | 8.49K | 政策页，34 城总览按页签懒加载 |
 | `echarts` | 294.44K | 仅图表页加载，未进首屏 |
 
 ## 2. 质量门禁

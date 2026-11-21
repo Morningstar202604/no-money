@@ -5,9 +5,9 @@ import {
   CITY_FALLBACK_IDS,
   loadCityRules,
   summarizeCityRules,
-  type CityRule,
   type CityRuleFetcher,
 } from '../src/data/cityRules'
+import type { CityRule } from '../src/types'
 
 const rules = CITY_REGISTRY.map((city) =>
   JSON.parse(readFileSync(`public/rules/${city.value}.json`, 'utf8')) as CityRule,

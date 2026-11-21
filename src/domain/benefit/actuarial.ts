@@ -28,6 +28,9 @@
 
 import { round2, clampNumber } from '../shared/number'
 
+/** 个人账户记账利率默认假设（非官方承诺） */
+export const DEFAULT_ASSUMED_ANNUAL_RETURN = 0.03
+
 /** 养老金调整率默认假设（非官方承诺） */
 export const DEFAULT_PENSION_ADJUST_RATE = 0.03
 /** 贴现率默认假设（机会成本口径） */
@@ -146,7 +149,7 @@ export function calcPensionActuarial(input: PensionActuarialInput): PensionActua
     nominalTotal: round2(nominalTotal),
     presentValue: round2(presentValue),
     contributionPresentValue: round2(contributionFV),
-    multiple: Math.round(multiple * 100) / 100,
+    multiple: round2(multiple),
     breakEvenAge,
     assumptions: { adjustRate, discountRate, payoutYears },
   }

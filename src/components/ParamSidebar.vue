@@ -444,7 +444,8 @@
 import { computed } from 'vue'
 import { NSlider, NRadioGroup, NRadioButton, NSwitch, NSelect, NButton, NModal, NInputNumber, NAlert, useMessage } from 'naive-ui'
 import { ref } from 'vue'
-import { useMainStore, CITIES } from '../stores/main'
+import { useMainStore } from '../stores/main'
+import { CITY_OPTIONS } from '../data/cities'
 import { calcCosts } from '../domain/income/calculator'
 import { adaptCosts } from '../application/adapters/ruleAdapters'
 import { calcCapacity } from '../domain/income/capacity'
@@ -589,9 +590,9 @@ function clearStatutory() {
   store.personal.statutoryOverrides = undefined
 }
 
-const cityOptions = CITIES
+const cityOptions = CITY_OPTIONS
 const showMap = ref(false)
-const cityCount = CITIES.length
+const cityCount = CITY_OPTIONS.length
 
 function onMapPick(city: string) {
   showMap.value = false

@@ -13,22 +13,13 @@
         {{ n.label }} <b>{{ n.value }}</b>
       </span>
     </div>
-    <div v-if="hit.entry.links.length" class="kb-links">
-      <a
-        v-for="(l, i) in hit.entry.links.slice(0, 3)"
-        :key="i"
-        class="kb-link"
-        :href="l.url"
-        target="_blank"
-        rel="noopener noreferrer"
-        :title="l.url"
-      >{{ l.title }} ↗</a>
-    </div>
+    <OfficialLinks :links="hit.entry.links" :max="3" />
   </article>
 </template>
 
 <script setup lang="ts">
 import { NTag } from 'naive-ui'
+import OfficialLinks from './OfficialLinks.vue'
 import { KB_TYPE_LABELS, type KbEntryType, type KbHit } from '../utils/knowledge'
 
 defineProps<{ hit: KbHit }>()
@@ -81,13 +72,4 @@ function typeTagType(t: KbEntryType) {
 .kb-num { font-size: 11px; color: var(--color-text-tertiary); }
 .kb-num b { color: var(--color-text-primary); font-weight: 600; font-variant-numeric: tabular-nums; }
 
-.kb-links { display: flex; flex-wrap: wrap; gap: 4px 12px; }
-.kb-link {
-  font-size: 11px;
-  color: var(--color-text-brand);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(45, 212, 191, 0.35);
-  line-height: 1.6;
-}
-.kb-link:hover { border-bottom-color: var(--color-text-brand); }
 </style>

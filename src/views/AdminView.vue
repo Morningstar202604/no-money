@@ -1,9 +1,9 @@
 <template>
-  <div class="admin">
-    <header class="admin-head">
+  <div class="data-page admin">
+    <header class="data-head">
       <div>
-        <h1 class="admin-title">数据管理后台</h1>
-        <p class="admin-sub">
+        <h1 class="data-title">数据管理后台</h1>
+        <p class="data-sub">
           34 座城市规则的核验状态、全库条目与 7 项核心字段的官方覆盖率，以及一致性检查。本页只读，不修改任何规则。
         </p>
       </div>
@@ -146,15 +146,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { NButton, NInput } from 'naive-ui'
 
-import {
-  loadCityRules,
-  summarizeCityRules,
-  type CityRule,
-  type CityRuleLoadResult,
-} from '../data/cityRules'
+import { summarizeCityRules } from '../data/cityRules'
+import { useCityRules } from '../composables/useCityRules'
 
-const rules = ref<CityRule[]>([])
-const loadResult = ref<CityRuleLoadResult | null>(null)
+const { rules, notice: loadNotice, load } = useCityRules()
 const filter = ref('')
 const running = ref(false)
 const checkResult = ref<{ total: number; passed: number; failed: number; failures: string[] } | null>(null)
@@ -179,34 +174,17 @@ const confidenceCounts = computed(() => ({
   unverified: summary.value.totals.unverified,
 }))
 
-const loadNotice = computed(() => {
-  if (!loadResult.value) return ''
-  const parts: string[] = []
-  if (loadResult.value.usedRegistryFallback) {
-    parts.push('城市索引不可用或不完整，已回退到内置 34 城注册表')
-  }
-  if (loadResult.value.missing.length) {
-    parts.push(`${loadResult.value.missing.length} 城规则读取失败：${loadResult.value.missing.join('、')}`)
-  }
-  return parts.join('；')
-})
-
-async function loadCities(): Promise<void> {
-  // city-index.json 放在 public/ 根下，不放 rules/ 里：rules/ 被多个测试当作
-  // 「城市规则文件」整体扫描，塞一个 index.json 进去会多算一座城。
-  const loaded = await loadCityRules(import.meta.env.BASE_URL)
-  loadResult.value = loaded
-  rules.value = loaded.rules
-}
-
 async function runCheck(): Promise<void> {
   running.value = true
   try {
     const { calculate } = await import('../kernel/calculate')
+    // 复用 load() 已经拉过的规则：此前这里为每座城市重新 fetch 一遍，
+    // 页面打开一次就把 34 份 JSON 下载两遍，且第二遍与矩阵可能读到不同版本。
+    const byCity = new Map(rules.value.map((rule) => [rule.city, rule]))
     const loader = async (city: string) => {
-      const res = await fetch(`${import.meta.env.BASE_URL}rules/${city}.json`)
-      if (!res.ok) throw new Error(`规则缺失：${city}`)
-      return res.json()
+      const rule = byCity.get(city)
+      if (!rule) throw new Error(`规则缺失：${city}`)
+      return rule
     }
 
     let passed = 0
@@ -234,121 +212,14 @@ async function runCheck(): Promise<void> {
 }
 
 onMounted(async () => {
-  await loadCities()
+  await load()
   await runCheck()
 })
 </script>
 
+<style scoped src="../styles/dataPage.css"></style>
+
 <style scoped>
-.admin {
-  padding: var(--space-6);
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.data-note {
-  margin: 0 0 var(--space-4);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-warning-200);
-  border-radius: var(--radius-md);
-  background: var(--color-warning-50);
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-
-.admin-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
-}
-
-.admin-title {
-  font-size: var(--font-size-2xl);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  margin: 0 0 var(--space-1);
-}
-
-.admin-sub {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin: 0;
-  max-width: 60ch;
-  line-height: var(--line-height-relaxed);
-}
-
-.metric-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-3);
-  margin-bottom: var(--space-5);
-}
-
-.metric {
-  padding: var(--space-4);
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.metric-label {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
-}
-
-.metric-value {
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-bold);
-  font-family: var(--font-family-num);
-  color: var(--color-text-primary);
-  font-variant-numeric: tabular-nums;
-}
-
-.metric-note {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-tertiary);
-  font-variant-numeric: tabular-nums;
-}
-
-.metric-value.ok { color: var(--color-success-600); }
-.metric-value.warn { color: var(--color-warning-600); }
-
-.panel {
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  margin-bottom: var(--space-4);
-}
-
-.panel-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
-}
-
-.panel-title {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin: 0 0 var(--space-3);
-}
-
-.panel-head .panel-title { margin-bottom: 0; }
-
-.panel-hint {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-tertiary);
-  margin: 0 0 var(--space-2);
-}
-
 .bar-stack {
   display: flex;
   height: 40px;
@@ -372,16 +243,7 @@ onMounted(async () => {
 .bar.derived { background: var(--color-info-600); }
 .bar.unverified { background: var(--color-warning-600); }
 
-.legend {
-  display: flex;
-  gap: var(--space-5);
-  margin-top: var(--space-3);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  flex-wrap: wrap;
-}
-
-.legend span { display: inline-flex; align-items: center; gap: var(--space-1); }
+.legend { margin-top: var(--space-3); }
 
 .dot {
   width: 8px;
@@ -393,8 +255,6 @@ onMounted(async () => {
 .dot.official { background: var(--color-success-600); }
 .dot.derived { background: var(--color-info-600); }
 .dot.unverified { background: var(--color-warning-600); }
-
-.table-wrap { overflow-x: auto; }
 
 .city-table {
   width: 100%;
@@ -420,15 +280,6 @@ onMounted(async () => {
 }
 
 .city-table tr:hover td { background: var(--surface-1); }
-
-.num { text-align: right; font-variant-numeric: tabular-nums; }
-
-.city-id {
-  display: block;
-  font-size: 10px;
-  color: var(--color-text-tertiary);
-  font-family: var(--font-family-mono);
-}
 
 .mini-bar {
   display: inline-block;
@@ -482,13 +333,4 @@ onMounted(async () => {
   color: var(--color-danger-600);
 }
 
-@media (max-width: 900px) {
-  .metric-row { grid-template-columns: repeat(2, 1fr); }
-  .admin { padding: var(--space-4); }
-}
-
-@media (max-width: 640px) {
-  .metric-row { grid-template-columns: 1fr; }
-  .admin-head { flex-direction: column; }
-}
 </style>

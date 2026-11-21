@@ -10,21 +10,8 @@
  * - 每个覆盖率都带分子、分母、百分比，页面上不再出现没有分母说明的“官方覆盖率”。
  */
 import { CITY_REGISTRY } from './cities'
-
-export interface CityRuleSource {
-  confidence?: string
-  title?: string
-  [key: string]: unknown
-}
-
-export interface CityRule {
-  city: string
-  cityName: string
-  year?: number
-  lastCheckedAt?: string
-  verified?: boolean
-  sources?: Record<string, CityRuleSource>
-}
+import type { CityRule } from '../types'
+import { countSourceConfidence } from '../utils/sourceFreshness'
 
 /** 只依赖 Response 的 ok/json，方便单元测试传入假 fetch。 */
 export type CityRuleFetcher = (url: string) => Promise<{ ok: boolean; json(): Promise<unknown> }>
@@ -91,6 +78,24 @@ export interface CityRuleLoadResult {
   rules: CityRule[]
   missing: string[]
   usedRegistryFallback: boolean
+}
+
+/**
+ * 34 城加载结果的一句人话提示。
+ *
+ * /admin、/audit、/policy 三处都需要同一句：索引是否回退、哪些城市缺文件。
+ * 之前每页各拼一遍，措辞和缺失城的展示方式容易漂移；这里作为唯一文案来源。
+ */
+export function cityRuleLoadNotice(result: CityRuleLoadResult | null | undefined): string {
+  if (!result) return ''
+  const parts: string[] = []
+  if (result.usedRegistryFallback) {
+    parts.push('城市索引不可用或不完整，已回退到内置 34 城注册表')
+  }
+  if (result.missing.length) {
+    parts.push(`${result.missing.length} 城规则读取失败：${result.missing.join('、')}`)
+  }
+  return parts.join('；')
 }
 
 function coverageOf(numerator: number, denominator: number): Coverage {
@@ -171,12 +176,8 @@ export async function loadCityRules(
 
 export function summarizeCityRules(rules: CityRule[]): CityRuleSummary {
   const rows: CityRuleRow[] = rules.map((rule) => {
-    const sourceEntries = Object.values(rule.sources ?? {})
-    const official = sourceEntries.filter((source) => source.confidence === 'official').length
-    const derived = sourceEntries.filter((source) => source.confidence === 'derived').length
-    const unverified = sourceEntries.filter(
-      (source) => source.confidence !== 'official' && source.confidence !== 'derived',
-    ).length
+    const counts = countSourceConfidence(rule.sources)
+    const { official, derived, unverified } = counts
 
     const core = {} as Record<CoreCoverageKey, string | undefined>
     const missingCoreFields: string[] = []
@@ -201,11 +202,11 @@ export function summarizeCityRules(rules: CityRule[]): CityRuleSummary {
       id: rule.city,
       name: rule.cityName || rule.city,
       year: rule.year,
-      totalSources: sourceEntries.length,
+      totalSources: counts.total,
       official,
       derived,
       unverified,
-      officialRatio: sourceEntries.length ? Math.round((official / sourceEntries.length) * 100) : 0,
+      officialRatio: counts.total ? Math.round((official / counts.total) * 100) : 0,
       coreOfficial,
       coreDerived,
       coreGaps,

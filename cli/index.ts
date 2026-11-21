@@ -12,11 +12,11 @@
  * - 默认输出人类可读表格；--json 输出机器可读，两者字段同源
  * - 退出码：0 成功，1 用法错误，2 计算失败（便于脚本判断）
  */
-import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { calculate, type CalculateResult, type RuleLoader } from '../src/kernel/calculate.js'
-import type { CityRule } from '../src/types/index.js'
+import { calculate, type CalculateResult } from '../src/kernel/calculate.js'
+import { createNodeRuleLoader, listRuleCities, type CityMeta } from '../src/kernel/nodeRules.js'
+import { formatMoney } from '../src/utils/output.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
@@ -97,27 +97,18 @@ function fail(msg: string): never {
 // ---------- 规则加载（Node 侧实现） ----------
 const rulesDir = join(ROOT, 'public', 'rules')
 
-const nodeRuleLoader: RuleLoader = async (city: string) => {
-  const file = join(rulesDir, `${city}.json`)
-  if (!existsSync(file)) {
-    throw new Error(`未找到城市规则：${city}（可用 no-money cities 查看全部）`)
-  }
-  return JSON.parse(readFileSync(file, 'utf8')) as CityRule
-}
+const nodeRuleLoader = createNodeRuleLoader(rulesDir)
 
-function listCities(): Array<{ id: string; name: string; year: number; verified: boolean }> {
-  if (!existsSync(rulesDir)) fail(`规则目录不存在：${rulesDir}`)
-  return readdirSync(rulesDir)
-    .filter(f => f.endsWith('.json'))
-    .map(f => {
-      const rule = JSON.parse(readFileSync(join(rulesDir, f), 'utf8')) as CityRule
-      return { id: rule.city, name: rule.cityName, year: rule.year, verified: rule.verified }
-    })
-    .sort((a, b) => a.id.localeCompare(b.id))
+function listCities(): CityMeta[] {
+  try {
+    return listRuleCities(rulesDir)
+  } catch (e) {
+    fail((e as Error).message)
+  }
 }
 
 // ---------- 输出格式化 ----------
-const money = (n: number) => `¥${n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+const money = formatMoney
 
 function printResult(r: CalculateResult): void {
   const conf = r.dataConfidence === 'official' ? '已核实' : r.dataConfidence === 'partial' ? '部分待核实' : '未核实'

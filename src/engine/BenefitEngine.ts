@@ -1,4 +1,5 @@
 import type { BenefitRule, BenefitBreakdown, RetirementRule } from '../types'
+import { DEFAULT_ASSUMED_ANNUAL_RETURN } from '../domain/benefit/actuarial'
 import { round2 as round } from '../utils/number'
 import { issuanceMonthsForAge } from '../utils/issuanceMonths'
 
@@ -63,7 +64,7 @@ export class BenefitEngine {
     retireAge: number,
     monthlyContribution: number,
     yearsContributed: number,
-    annualReturn = this.retirement?.assumedAnnualReturn ?? 0.03,
+    annualReturn = this.retirement?.assumedAnnualReturn ?? DEFAULT_ASSUMED_ANNUAL_RETURN,
     paymentIndex = this.retirement?.paymentIndex ?? 0.6,
   ) {
     const benefitBase = this.retirement?.benefitBaseMonthly ?? 9493

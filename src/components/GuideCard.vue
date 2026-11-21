@@ -21,25 +21,13 @@
     <p v-if="item.caution" class="gc-caution"><b>注意</b>{{ item.caution }}</p>
     <p v-if="item.toolHint" class="gc-tool"><b>本工具</b>{{ item.toolHint }}</p>
 
-    <div class="gc-links">
-      <span class="gc-links-label">官方原文</span>
-      <a
-        v-for="(l, i) in item.links"
-        :key="i"
-        class="gc-link"
-        :href="l.url"
-        target="_blank"
-        rel="noopener noreferrer"
-        :title="l.url"
-      >
-        {{ l.docNo ? `${l.docNo} · ` : '' }}{{ l.title }} ↗
-      </a>
-    </div>
+    <OfficialLinks :links="item.links" label="官方原文" />
   </article>
 </template>
 
 <script setup lang="ts">
 import type { GuideItem } from '../utils/livingGuide'
+import OfficialLinks from './OfficialLinks.vue'
 
 defineProps<{ item: GuideItem }>()
 </script>
@@ -149,28 +137,4 @@ defineProps<{ item: GuideItem }>()
   margin: 0 0 6px;
 }
 
-.gc-links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 6px 14px;
-  margin-top: 6px;
-}
-
-.gc-links-label {
-  font-size: 11px;
-  color: var(--color-text-tertiary);
-  flex-shrink: 0;
-}
-
-.gc-link {
-  font-size: 11px;
-  color: var(--color-text-brand);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(45, 212, 191, 0.35);
-  line-height: 1.6;
-}
-.gc-link:hover {
-  border-bottom-color: var(--color-text-brand);
-}
 </style>

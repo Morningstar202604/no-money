@@ -10,11 +10,11 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ## Where we are now
 
-**0.0.41** is the current baseline. The product direction is settled — a rights-navigation and
+**0.0.42** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
 new-grad first-year mode, plain-language guide search, guide sharing, whole-checklist sharing,
 the checklist export/share edge fixes, a local phone-calendar reminder, four front-end
-dedupe fixes, the `/policy` manual-body dedupe and the 34-city loading/coverage cleanup are shipped:
+dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup and the cross-module duplicate audit are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -28,6 +28,9 @@ dedupe fixes, the `/policy` manual-body dedupe and the 34-city loading/coverage 
 - `/admin` and `/audit` now share `src/data/cityRules.ts`: one 34-city load path, exact
   numerators/denominators for “all-source” 225/343 and “7 core fields” 186/238, no per-page
   38/8 fallback lists
+- 0.0.42 removes the remaining duplicate implementations: one default-parameter source for Web /
+  CLI / API / MCP, one Node rule loader, one `isAbortError`, one official-link component, one
+  Admin/Audit page scaffold, and `scenarios` no longer re-runs the engine behind `comparison`
 
 **What is shipped:** `/start` with four entries; a 3-step wizard; a **60-item `RightsItem` catalog**
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
@@ -42,6 +45,20 @@ repository automation, the employee wage-slip slice, seven ready-made checklists
 content-review loop. Page-level deadline hints and a user-set `.ics` phone-calendar export exist, but there is no push service or account.
 
 ---
+
+## 0.0.42 — Duplicate audit: one source for defaults, loaders and comparison (shipped 2026-11-21)
+
+**Goal: remove real duplicate implementations, not just duplicate-looking UI, without merging pages that serve different questions.**
+
+- [x] `src/domain/shared/defaults.ts` is the only source for work/cost/personal defaults; store, kernel and `verify-engines` import it. Web and CLI now produce the same cost breakdown, not just the same total.
+- [x] `src/data/cityRules.ts` uses the existing `CityRule` type; `countSourceConfidence()` is shared by source freshness and coverage; `/admin`, `/audit` and `/policy` share the 34-city loader, and `/admin` no longer re-fetches 34 JSON files after loading them.
+- [x] `src/utils/abort.ts`, `src/components/OfficialLinks.vue`, `src/styles/dataPage.css`, `src/kernel/nodeRules.ts` and `src/utils/output.ts` replace three abort checks, three official-link styles, two page scaffolds, three Node loaders and two money formatters.
+- [x] `scenarios` now reads `comparison.scenarios`, so the engine runs once per parameter change instead of twice; the duplicate comparison bar chart is removed from `/dashboard`, which links to `/scenario` for detail.
+- [x] Retirement/self-funded default rates come from `domain/benefit/actuarial.ts`; the redundant `CITIES` alias is removed.
+- [x] 6 new dedupe tests; 68 files / 1,268 unit tests, 9 files / 138 E2E; no policy data changes.
+- [x] Explicitly kept separate: `/admin` vs `/audit`, `/dashboard` vs `/scenario`, `/policy` vs `/audit`, `/start` vs `/rights`, province vs city channels, `RightsItemCard` vs `GuideCard`; the old `ScenarioEngine` stays as a parity oracle.
+
+**Not done:** resident mode and 10 real-user tests remain open.
 
 ## 0.0.41 — 34-city loading and coverage denominators (shipped 2026-11-21)
 

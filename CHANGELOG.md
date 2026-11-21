@@ -3,6 +3,39 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
 
+## [0.0.42] — 2026-11-21
+
+这一轮做的是“重复实现审计”：不是看页面像不像，而是查同一份事实/同一套状态机/同一组默认值有没有被写了两遍。没有新增页面，也没有改政策数值。
+
+### Changed
+
+- 默认参数收口到 `src/domain/shared/defaults.ts`：store、内核、`scripts/verify-engines.ts` 共用同一份工作/成本/个人参数。此前 store 与 kernel 的 `DEFAULT_COSTS` 逐项不同（维护 200/150、餐饮 800/1200、保险 100/0……），只是总额碰巧都是 1950 元；部分传参时 CLI/API/MCP 会拼出与 Web 不同的成本结构。广州默认净收入仍为 **6843.7**。
+- 34 城加载三页同源：`/admin`、`/audit` 改用 `useCityRules()`，`/policy` 的数据新鲜度总览也走 `loadCityRules()`；`/admin` 的“重新检查”复用已加载规则，不再把 34 份 JSON 重新下载一遍。
+- `src/data/cityRules.ts` 删除本地 `CityRule`/`CityRuleSource`，直接使用 `src/types/index.ts` 的完整模型；置信度计数抽为 `countSourceConfidence()`，未知值一律算 `unverified`。
+- 取消判断统一为 `src/utils/abort.ts` 的 `isAbortError()`，不再在 `rightsShare`、store、`useAIChat` 各写一套，也不再依赖 `DOMException` 构造器。
+- 官方原文链接统一为 `src/components/OfficialLinks.vue`，替换 `GuideCard` / `KbResultCard` / `RealityList` 三套 `.gc-link` / `.kb-link` / `.rf-link` 样式。
+- `/admin` 与 `/audit` 共用 `src/styles/dataPage.css`：指标卡、面板、提示条、表格、城市 id、数字列与 900/640px 断点只维护一份；指标网格改为 `auto-fit`。
+- CLI / HTTP API / MCP 共用 `src/kernel/nodeRules.ts`（规则读取、城市清单、版本读取、缺失城市文案）与 `src/utils/output.ts`（金额格式化）。
+- store 的 `scenarios` 改为直接取 `comparison.scenarios`：同一批 `ScenarioInput` 不再被 `runScenario` 跑两遍；卡片、排行榜、图表共用同一结果。
+- `/dashboard` 删除与 `/scenario` 重复的“各方案净收入对比”柱图，只保留收支结构饼图；排行榜卡增加“方案对比实验室 →”入口，详细对比只留在 `/scenario`。
+- 退休/贴现/记账利率默认值统一到 `domain/benefit/actuarial.ts` 的 `DEFAULT_ASSUMED_ANNUAL_RETURN` / `DEFAULT_DISCOUNT_RATE` / `DEFAULT_PENSION_ADJUST_RATE`；删除 store 的 `CITIES` 别名，页面直接读 `CITY_OPTIONS`。
+
+### Tests
+
+- 新增 `tests/dedupe.spec.ts` 6 条：默认参数同源与逐项成本口径、未知置信度计数、34 城加载提示、`scenarios === comparison.scenarios`、入口城市清单/缺失文案。
+- `tests/cityRules.spec.ts` 改为从 `types` 取 `CityRule`。
+- 全量：**68 文件 / 1,268 单测通过**（`npm run check` 361.09s）；E2E **9 文件 / 138 条通过**（桌面 + 移动，5.8m）。
+- 构建 20.26s；`dist` 3.48 MB（assets 2.59 MB）；PWA 59 条 / 2,834.57 KiB；首屏 409K gzip。
+
+### Data
+
+- 政策数据零改动：343 条来源仍为 official 225 / derived 50 / unverified 68；养老金计发基数 official 27 / derived 7 / unverified 0；34 城 `verified` 仍全部 `false`。
+
+### Docs
+
+- CHANGELOG / ROADMAP / FRONTEND-CONSOLIDATION / POSITIONING / ENGINEERING / AUDIT / VERSIONING 同步；五处版本号统一为 `0.0.42`。
+- `docs/FRONTEND-CONSOLIDATION.md` 新增“已完成（0.0.42）”清单与“审查后明确不合并”理由；`docs/AUDIT-2026-11-19.md` 新增第 50 节。
+
 ## [0.0.41] — 2026-11-21
 
 把 `/admin` 与 `/audit` 各自维护的 34 城加载和“官方覆盖率”收口：两个页面现在用同一份统计，页面上的每个百分比都写明分子/分母。没有新增页面，也没有改政策数值。

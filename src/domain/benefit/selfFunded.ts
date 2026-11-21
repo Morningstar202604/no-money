@@ -18,7 +18,12 @@
  * 这些不是现金流能完全表达的，界面必须单列。
  */
 
-import { calcPensionActuarial, expectedPensionYears } from './actuarial'
+import {
+  calcPensionActuarial,
+  expectedPensionYears,
+  DEFAULT_ASSUMED_ANNUAL_RETURN,
+  DEFAULT_DISCOUNT_RATE,
+} from './actuarial'
 import { round2, clampNumber } from '../shared/number'
 
 export interface SelfFundedInput {
@@ -64,8 +69,8 @@ export interface SelfFundedResult {
 export function calcSelfFunded(input: SelfFundedInput): SelfFundedResult {
   const monthly = Math.max(0, finiteOr(input.monthlyAmount, 0))
   const years = Math.max(0, finiteOr(input.years, 0))
-  const annualReturn = clampNumber(input.annualReturn, -0.2, 0.3, 0.03)
-  const discountRate = clampNumber(input.discountRate, 0, 0.2, 0.03)
+  const annualReturn = clampNumber(input.annualReturn, -0.2, 0.3, DEFAULT_ASSUMED_ANNUAL_RETURN)
+  const discountRate = clampNumber(input.discountRate, 0, 0.2, DEFAULT_DISCOUNT_RATE)
   const payoutYears = Math.max(1, finiteOr(input.payoutYears, expectedPensionYears(60)))
   const payoutReturn = clampNumber(input.payoutReturn, -0.2, 0.2, 0.02)
 

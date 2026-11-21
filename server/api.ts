@@ -27,11 +27,10 @@
  * - 所有输入经内核校验，不信任任何客户端字段
  */
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
-import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { calculate, type CalculateResult, type RuleLoader } from '../src/kernel/calculate.js'
-import type { CityRule } from '../src/types/index.js'
+import { calculate, type CalculateResult } from '../src/kernel/calculate.js'
+import { createNodeRuleLoader, listRuleCities, readPackageVersion } from '../src/kernel/nodeRules.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
@@ -39,27 +38,16 @@ const rulesDir = join(ROOT, 'public', 'rules')
 
 // 版本从 package.json 读，不硬编码：此前写死 '2.4.0'，
 // 项目到 3.1.2 时 /health 还在对外报旧版本。
-const PKG = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { version: string }
-const APP_VERSION = PKG.version
+const APP_VERSION = readPackageVersion(ROOT)
 
 const PORT = Number(process.env.PORT ?? 8787)
 const HOST = process.env.HOST ?? '127.0.0.1'
 const MAX_BODY = 64 * 1024
 
-const ruleLoader: RuleLoader = async (city: string) => {
-  const file = join(rulesDir, `${city}.json`)
-  if (!existsSync(file)) throw new Error(`未收录城市：${city}`)
-  return JSON.parse(readFileSync(file, 'utf8')) as CityRule
-}
+const ruleLoader = createNodeRuleLoader(rulesDir)
 
 function listCities() {
-  return readdirSync(rulesDir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => {
-      const rule = JSON.parse(readFileSync(join(rulesDir, f), 'utf8')) as CityRule
-      return { id: rule.city, name: rule.cityName, year: rule.year, verified: rule.verified }
-    })
-    .sort((a, b) => a.id.localeCompare(b.id))
+  return listRuleCities(rulesDir)
 }
 
 // ---------- 简单令牌桶限流 ----------

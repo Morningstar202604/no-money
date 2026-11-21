@@ -1,14 +1,14 @@
 <template>
-  <div class="audit">
-    <header class="audit-head">
+  <div class="data-page audit">
+    <header class="data-head">
       <div>
-        <h1 class="audit-title">数据核验对账</h1>
-        <p class="audit-sub">
+        <h1 class="data-title">数据核验对账</h1>
+        <p class="data-sub">
           34 城 × 7 项核心字段，每一格代表一座城市的一个政策参数。绿色＝已核到官方原文，蓝色＝据官方口径推算，黄色＝占位待核实。
           <b>不做模糊处理：没核实的就显示为没核实。</b>
         </p>
       </div>
-      <n-button size="small" :loading="running" @click="runVerify">重新统计</n-button>
+      <n-button size="small" :loading="loading" @click="load">重新统计</n-button>
     </header>
 
     <p v-if="loadNotice" class="data-note">{{ loadNotice }}</p>
@@ -113,21 +113,14 @@
  *   /admin  → 数据治理视角（全库置信度分布、一致性检查）
  *   /audit  → 用户知情视角（我要不要相信这个数）
  */
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { NButton } from 'naive-ui'
 
-import {
-  loadCityRules,
-  summarizeCityRules,
-  CORE_COVERAGE_FIELDS,
-  type CityRule,
-  type CityRuleLoadResult,
-} from '../data/cityRules'
+import { summarizeCityRules, CORE_COVERAGE_FIELDS } from '../data/cityRules'
+import { useCityRules } from '../composables/useCityRules'
 
 const fields = CORE_COVERAGE_FIELDS
-const rules = ref<CityRule[]>([])
-const loadResult = ref<CityRuleLoadResult | null>(null)
-const running = ref(false)
+const { rules, loading, notice: loadNotice, load } = useCityRules()
 
 function cellClass(conf?: string): string {
   if (conf === 'official') return 'ok'
@@ -149,69 +142,19 @@ const pendingCount = computed(() => summary.value.totals.coreGaps)
 const officialRatio = computed(() => summary.value.coreCoverage.percent)
 const allOfficial = computed(() => rows.value.filter((r) => r.coreGaps === 0 && r.coreDerived === 0).length)
 
-const loadNotice = computed(() => {
-  if (!loadResult.value) return ''
-  const parts: string[] = []
-  if (loadResult.value.usedRegistryFallback) {
-    parts.push('城市索引不可用或不完整，已回退到内置 34 城注册表')
-  }
-  if (loadResult.value.missing.length) {
-    parts.push(`${loadResult.value.missing.length} 城规则读取失败：${loadResult.value.missing.join('、')}`)
-  }
-  return parts.join('；')
-})
-
 /** 缺口最多的前 6 城 */
 const worstCities = computed(() =>
   [...rows.value].sort((a, b) => b.coreGaps - a.coreGaps).slice(0, 6),
 )
 
-async function load(): Promise<void> {
-  const loaded = await loadCityRules(import.meta.env.BASE_URL)
-  loadResult.value = loaded
-  rules.value = loaded.rules
-}
-
-async function runVerify(): Promise<void> {
-  running.value = true
-  try {
-    await load()
-  } finally {
-    running.value = false
-  }
-}
-
 onMounted(() => {
-  void runVerify()
+  void load()
 })
 </script>
 
+<style scoped src="../styles/dataPage.css"></style>
+
 <style scoped>
-.audit { padding: var(--space-6); max-width: 1280px; margin: 0 auto; }
-
-.audit-head {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  gap: var(--space-4); margin-bottom: var(--space-5);
-}
-.audit-title { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); color: var(--color-text-primary); margin: 0 0 var(--space-1); }
-.audit-sub { font-size: var(--font-size-sm); color: var(--color-text-secondary); margin: 0; max-width: 70ch; line-height: var(--line-height-relaxed); }
-
-.metric-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-3); margin-bottom: var(--space-4); }
-.metric { padding: var(--space-4); background: var(--color-bg-primary); border: 1px solid var(--color-border-primary); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: var(--space-1); }
-.metric-label { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
-.metric-value { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); font-family: var(--font-family-num); color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
-.metric-note { font-size: var(--font-size-xs); color: var(--color-text-tertiary); font-variant-numeric: tabular-nums; }
-.metric-value.ok { color: var(--color-success-600); }
-.metric-value.derived { color: var(--color-info-600); }
-.metric-value.warn { color: var(--color-warning-600); }
-
-.data-note {
-  margin: 0 0 var(--space-4); padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-warning-200); border-radius: var(--radius-md);
-  background: var(--color-warning-50); font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-
 .note {
   padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4);
   background: var(--color-warning-50); border: 1px solid var(--color-warning-200);
@@ -219,21 +162,13 @@ onMounted(() => {
   color: var(--color-text-secondary); line-height: var(--line-height-relaxed);
 }
 
-.panel { background: var(--color-bg-primary); border: 1px solid var(--color-border-primary); border-radius: var(--radius-lg); padding: var(--space-5); margin-bottom: var(--space-4); }
-.panel-title { font-size: var(--font-size-lg); font-weight: var(--font-weight-semibold); color: var(--color-text-primary); margin: 0 0 var(--space-3); }
-.panel-hint { font-size: var(--font-size-sm); color: var(--color-text-tertiary); margin: 0 0 var(--space-2); }
+.legend { margin-bottom: var(--space-3); }
 
-.legend { display: flex; gap: var(--space-4); margin-bottom: var(--space-3); font-size: var(--font-size-xs); color: var(--color-text-secondary); flex-wrap: wrap; }
-.legend span { display: inline-flex; align-items: center; gap: 6px; }
-
-.table-wrap { overflow-x: auto; }
 .matrix { width: 100%; border-collapse: collapse; font-size: var(--font-size-sm); }
 .matrix th { text-align: center; padding: var(--space-2); border-bottom: 1px solid var(--color-border-primary); color: var(--color-text-tertiary); font-size: var(--font-size-xs); font-weight: var(--font-weight-medium); white-space: nowrap; }
 .matrix td { padding: var(--space-2); border-bottom: 1px solid var(--surface-border); text-align: center; }
 .matrix tr:hover td { background: var(--surface-1); }
 .sticky-col { text-align: left !important; white-space: nowrap; }
-.city-id { display: block; font-size: 10px; color: var(--color-text-tertiary); font-family: var(--font-family-mono); }
-.num { text-align: right !important; font-variant-numeric: tabular-nums; font-weight: var(--font-weight-medium); }
 .gap-zero { color: var(--color-success-600); }
 
 .cell { display: inline-block; width: 14px; height: 14px; border-radius: 3px; }
@@ -244,6 +179,4 @@ onMounted(() => {
 .todo-list { margin: 0; padding-left: var(--space-5); font-size: var(--font-size-sm); color: var(--color-text-primary); line-height: 2; }
 .todo-fields { color: var(--color-text-tertiary); font-size: var(--font-size-xs); }
 
-@media (max-width: 900px) { .metric-row { grid-template-columns: repeat(2, 1fr); } .audit { padding: var(--space-4); } }
-@media (max-width: 640px) { .metric-row { grid-template-columns: 1fr; } .audit-head { flex-direction: column; } }
 </style>

@@ -317,6 +317,7 @@ import { computed, ref, watch } from 'vue'
 import { NCard, NTabs, NTabPane, NGrid, NGi, NTag, NSteps, NStep, NEmpty, NInput, NRadioGroup, NRadioButton, NAlert } from 'naive-ui'
 import { useMainStore } from '../stores/main'
 import { CITY_REGISTRY } from '../data/cities'
+import { loadCityRules } from '../data/cityRules'
 import type { CityRule } from '../types'
 import { SOURCE_LABELS, sourceLabel } from '../utils/sources'
 import { assetUrl } from '../utils/asset'
@@ -355,20 +356,13 @@ async function loadFreshnessOverview(force = false) {
   freshnessRequested = true
   freshnessLoading.value = true
   freshnessError.value = ''
-  const results = await Promise.all(CITY_REGISTRY.map(async (city) => {
-    try {
-      const res = await fetch(assetUrl(`rules/${city.value}.json`))
-      if (!res.ok) throw new Error(String(res.status))
-      const rule = await res.json() as Pick<CityRule, 'sources'>
-      return [city, rule] as const
-    } catch {
-      return [city, null] as const
-    }
-  }))
-  freshnessRules.value = Object.fromEntries(results.map(([city, rule]) => [city.value, rule]))
-  const failed = results.filter(([, rule]) => !rule).length
-  freshnessError.value = failed
-    ? `有 ${failed} 城规则读取失败；总览只统计成功读取的城市，未读取的不会补 0。`
+  // 与 /admin、/audit 共用同一套 34 城加载与索引回退：
+  // 之前这里自己 Promise.all 34 个 fetch，索引缺失时没有统一兜底，
+  // 同一份规则在三个页面可能显示不同的城市集合。
+  const loaded = await loadCityRules(import.meta.env.BASE_URL)
+  freshnessRules.value = Object.fromEntries(loaded.rules.map((rule) => [rule.city, rule]))
+  freshnessError.value = loaded.missing.length
+    ? `有 ${loaded.missing.length} 城规则读取失败；总览只统计成功读取的城市，未读取的不会补 0。`
     : ''
   freshnessLoading.value = false
 }

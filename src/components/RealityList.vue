@@ -10,18 +10,7 @@
       <p v-if="f.detail" class="rf-detail">{{ f.detail }}</p>
       <p v-if="f.source" class="rf-line"><span class="rf-k">依据</span>{{ f.source }}</p>
       <p v-if="f.verify" class="rf-line"><span class="rf-k">自验</span>{{ f.verify }}</p>
-      <div v-if="f.links?.length" class="rf-links">
-        <span class="rf-k">原文</span>
-        <a
-          v-for="(l, i) in f.links"
-          :key="i"
-          class="rf-link"
-          :href="l.url"
-          target="_blank"
-          rel="noopener noreferrer"
-          :title="l.url"
-        >{{ l.title }} ↗</a>
-      </div>
+      <OfficialLinks :links="f.links ?? []" label="原文" />
     </div>
   </div>
 </template>
@@ -29,6 +18,7 @@
 <script setup lang="ts">
 import { NTag } from 'naive-ui'
 import { EVIDENCE_LABELS, type EvidenceLevel, type RealityFact } from '../utils/reality'
+import OfficialLinks from './OfficialLinks.vue'
 
 defineProps<{ facts: RealityFact[] }>()
 
@@ -93,22 +83,4 @@ function evidenceTagType(e: EvidenceLevel) {
   color: var(--color-text-secondary);
 }
 
-.rf-links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
-  margin-top: 4px;
-}
-
-.rf-link {
-  font-size: 11px;
-  color: var(--color-text-brand);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(45, 212, 191, 0.35);
-  line-height: 1.6;
-}
-.rf-link:hover {
-  border-bottom-color: var(--color-text-brand);
-}
 </style>

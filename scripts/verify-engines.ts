@@ -12,7 +12,8 @@
 import { readFileSync } from 'fs'
 import { ScenarioEngine } from '../src/engine/ScenarioEngine'
 import { ScenarioService } from '../src/application/scenario/ScenarioService'
-import type { CityRule, WorkParams, CostParams, PersonalParams } from '../src/types'
+import type { CityRule } from '../src/types'
+import { DEFAULT_WORK, DEFAULT_COSTS, DEFAULT_PERSONAL } from '../src/domain/shared/defaults'
 
 const failures: string[] = []
 function check(ok: boolean, label: string, detail: string): void {
@@ -25,18 +26,9 @@ function check(ok: boolean, label: string, detail: string): void {
 }
 
 const rule = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
-const work: WorkParams = {
-  city: 'guangzhou', dailyHours: 10, dailyOrders: 35,
-  avgDistance: 2.5, workDaysMonth: 26, rainDaysMonth: 3, holidayDaysMonth: 2,
-}
-const costs: CostParams = {
-  vehicleType: 'electric', fuelCostMonth: 0, electricityCostMonth: 300, maintenanceMonth: 200,
-  insuranceMonth: 100, phoneCostMonth: 100, foodCostMonth: 800, trafficFineMonth: 50,
-  vehicleDepreciationMonth: 300, otherCostMonth: 100,
-}
-const personal: PersonalParams = {
-  currentAge: 25, expectedRetireAge: 60, hasSocialInsurance: false, specialDeductionMonth: 0,
-}
+const work = DEFAULT_WORK
+const costs = DEFAULT_COSTS
+const personal = DEFAULT_PERSONAL
 
 const legacy = new ScenarioEngine(rule)
 const svc = new ScenarioService(rule)

@@ -24,32 +24,25 @@
  *     }
  *   }
  */
-import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { McpServer } from '@modelcontextprotocol/server'
 import { StdioServerTransport } from '@modelcontextprotocol/server/stdio'
 import * as z from 'zod/v4'
-import { calculate, type CalculateResult, type RuleLoader } from '../src/kernel/calculate.js'
-import type { CityRule } from '../src/types/index.js'
+import { calculate, type CalculateResult } from '../src/kernel/calculate.js'
+import { createNodeRuleLoader, listRuleCities, readPackageVersion } from '../src/kernel/nodeRules.js'
+import { formatMoney } from '../src/utils/output.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
 const rulesDir = join(ROOT, 'public', 'rules')
 
 /** Node 侧规则加载：读本地 JSON，不走网络 */
-const nodeRuleLoader: RuleLoader = async (city: string) => {
-  const file = join(rulesDir, `${city}.json`)
-  if (!existsSync(file)) {
-    const available = readdirSync(rulesDir).filter(f => f.endsWith('.json')).map(f => f.replace('.json', ''))
-    throw new Error(`未收录城市「${city}」。可用城市：${available.slice(0, 10).join(', ')} 等 ${available.length} 个`)
-  }
-  return JSON.parse(readFileSync(file, 'utf8')) as CityRule
-}
+const nodeRuleLoader = createNodeRuleLoader(rulesDir)
 
 /** 把计算结果转成模型易读的 Markdown */
 function resultToText(r: CalculateResult): string {
-  const money = (n: number) => `¥${n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  const money = formatMoney
   const conf =
     r.dataConfidence === 'official' ? '已核实官方来源' : r.dataConfidence === 'partial' ? '部分字段待核实' : '未核实（仅作假设测算）'
 
@@ -79,7 +72,7 @@ function resultToText(r: CalculateResult): string {
 }
 
 // 版本从 package.json 读，与 API/CLI/Web 保持一致
-const PKG_VERSION = (JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { version: string }).version
+const PKG_VERSION = readPackageVersion(ROOT)
 
 const server = new McpServer({
   name: 'no-money',
@@ -160,7 +153,7 @@ server.registerTool(
         )
       }
 
-      const money = (n: number) => `¥${n.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      const money = formatMoney
       const lines = [
         '## 多城市收入对比',
         '',
@@ -191,18 +184,7 @@ server.registerTool(
     inputSchema: z.object({}),
   },
   async () => {
-    const cities = readdirSync(rulesDir)
-      .filter((f) => f.endsWith('.json'))
-      .map((f) => {
-        const rule = JSON.parse(readFileSync(join(rulesDir, f), 'utf8')) as CityRule
-        return {
-          id: rule.city,
-          name: rule.cityName,
-          year: rule.year,
-          verified: rule.verified,
-        }
-      })
-      .sort((a, b) => a.id.localeCompare(b.id))
+    const cities = listRuleCities(rulesDir)
 
     const lines = [
       `## 已收录 ${cities.length} 座城市`,

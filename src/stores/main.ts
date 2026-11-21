@@ -5,18 +5,16 @@ import { ScenarioService } from '../application/scenario/ScenarioService'
 import type { ScenarioInput } from '../application/scenario/ScenarioService'
 import { hydrateParams } from '../utils/params'
 import { decodeShare } from '../utils/share'
+import { isAbortError } from '../utils/abort'
+import { DEFAULT_WORK, DEFAULT_COSTS, DEFAULT_PERSONAL } from '../domain/shared/defaults'
 import {
   calcCapacity,
   hoursForOrders,
   DEFAULT_CAPACITY,
   type CapacityModel,
 } from '../domain/income/capacity'
-import { CITY_OPTIONS } from '../data/cities'
 import { assetUrl } from '../utils/asset'
 import { parseCityRule, ruleTimeNotice as describeRuleTime } from '../utils/cityRule'
-
-// 城市清单以 src/data/cities.ts 注册表为准（含地图坐标）；规则文件在 public/rules/<value>.json
-export const CITIES = CITY_OPTIONS
 
 interface CustomPlan {
   id: string
@@ -29,38 +27,6 @@ const PARAMS_KEY = 'nomoney_params_v1'
 
 /** 产能模型参数属于用户可调假设（单均固定耗时/平均速度/休息时间） */
 const CAPACITY_KEY = 'nomoney_capacity_v1'
-
-const DEFAULT_WORK: WorkParams = {
-  city: 'guangzhou', dailyHours: 10, dailyOrders: 35,
-  avgDistance: 2.5, workDaysMonth: 26, rainDaysMonth: 3, holidayDaysMonth: 2,
-}
-const DEFAULT_COSTS: CostParams = {
-  vehicleType: 'electric', fuelCostMonth: 0,
-  electricityCostMonth: 300, maintenanceMonth: 200,
-  insuranceMonth: 100, phoneCostMonth: 100, foodCostMonth: 800,
-  trafficFineMonth: 50, vehicleDepreciationMonth: 300, otherCostMonth: 100,
-}
-const DEFAULT_PERSONAL: PersonalParams = {
-  currentAge: 25, expectedRetireAge: 60, hasSocialInsurance: false,
-  specialDeductionMonth: 0,
-  // 可选键必须显式出现在 fallback 中：hydrate 的白名单取自 fallback 的键，
-  // 缺键会让写入端存下、读取端静默丢弃（medicalTierId 曾因此每次刷新都丢）
-  medicalTierId: undefined,
-  pensionBase: undefined,
-  medicalBase: undefined,
-  // 同上：可选键必须显式出现，否则导入/恢复时被白名单静默丢弃
-  incomeOverrides: undefined,
-  assumedAnnualReturn: undefined,
-  pensionAdjustRate: undefined,
-  discountRate: undefined,
-  selfInvestReturn: undefined,
-  deadheadRatio: undefined,
-  vehicleProfile: undefined,
-  statutoryOverrides: undefined,
-  // 税优额度（年缴）：不填即未参加，不参与扣除
-  personalPensionAnnual: undefined,
-  taxHealthInsuranceAnnual: undefined,
-}
 
 /** 品牌重命名前的旧存储键；对话历史和 API Key 不在启动阶段静默迁移 */
 const LEGACY_KEYS: Record<string, string> = {
@@ -347,7 +313,7 @@ export const useMainStore = defineStore('main', () => {
     } catch (err) {
       if (seq !== loadSeq) return
       rule.value = null
-      const aborted = err instanceof DOMException && err.name === 'AbortError'
+      const aborted = isAbortError(err)
       loadError.value = aborted ? '加载超时（12秒），请检查网络后重试' : (err instanceof Error ? err.message : String(err))
     } finally {
       clearTimeout(timer)
@@ -544,13 +510,23 @@ export const useMainStore = defineStore('main', () => {
     return list
   })
 
-  const scenarios = computed<ScenarioResult[]>(() => {
+  /**
+   * 方案对比的唯一计算入口。
+   *
+   * compare() 内部已经对每个 ScenarioInput 跑了一次 runScenario；此前的 scenarios
+   * 计算属性又对同一批输入重跑一遍，导致每次参数变化把全部方案算两次。
+   * 页面同时读 scenarios（卡片）和 comparison（最优/排行榜）时，
+   * 两份结果只是「碰巧一样」，任何一次单边修改都会让卡片与图表打架。
+   * 现在 scenarios 直接从 comparison.scenarios 取，算一次、两处用。
+   */
+  const comparison = computed(() => {
     const eng = engine.value
-    if (!eng) return []
-    return scenarioInputs.value
-      .map(s => unwrap(eng.runScenario(s)))
-      .filter((s): s is ScenarioResult => s !== null)
+    const list = scenarioInputs.value
+    if (!eng || list.length === 0) return null
+    return unwrap(eng.compare({ scenarios: list }))
   })
+
+  const scenarios = computed<ScenarioResult[]>(() => comparison.value?.scenarios ?? [])
 
   function addScenario(name: string, w: WorkParams, c: CostParams) {
     customPlans.value.push({ id: `custom_${Date.now()}`, name, work: { ...w }, costs: { ...c } })
@@ -559,13 +535,6 @@ export const useMainStore = defineStore('main', () => {
   function removeScenario(id: string) {
     customPlans.value = customPlans.value.filter(p => p.id !== id)
   }
-
-  const comparison = computed(() => {
-    const eng = engine.value
-    const list = scenarioInputs.value
-    if (!eng || list.length === 0) return null
-    return unwrap(eng.compare({ scenarios: list }))
-  })
 
   // ---------- 主题（浅/深） ----------
   // 默认浅色：产品主要在白天户外使用，强光下浅色可读性更好。

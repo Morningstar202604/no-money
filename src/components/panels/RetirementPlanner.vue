@@ -277,6 +277,11 @@ import SourceTag from '../SourceTag.vue'
 import FoldCard from '../FoldCard.vue'
 import RealityList from '../RealityList.vue'
 import { realityFactsBy } from '../../utils/reality'
+import {
+  DEFAULT_ASSUMED_ANNUAL_RETURN,
+  DEFAULT_DISCOUNT_RATE,
+  DEFAULT_PENSION_ADJUST_RATE,
+} from '../../domain/benefit/actuarial'
 
 const store = useMainStore()
 const engine = computed(() => store.rule ? new BenefitEngine(store.rule.benefit, store.rule.retirement) : null)
@@ -285,11 +290,10 @@ const engine = computed(() => store.rule ? new BenefitEngine(store.rule.benefit,
  * 此前本文件各处兜底值不一致（0.05 / 0.03 混用），同一页面不同图表
  * 会按不同收益率算——统一到这一个解析函数。
  */
-const DEFAULT_RETURN = 0.03
 const annualReturn = computed(() =>
   typeof store.personal.assumedAnnualReturn === 'number' && Number.isFinite(store.personal.assumedAnnualReturn)
     ? store.personal.assumedAnnualReturn
-    : (store.rule?.retirement.assumedAnnualReturn ?? DEFAULT_RETURN),
+    : (store.rule?.retirement.assumedAnnualReturn ?? DEFAULT_ASSUMED_ANNUAL_RETURN),
 )
 const assumedReturnPct = computed(() => Math.round(annualReturn.value * 1000) / 10)
 const currentYear = new Date().getFullYear()
@@ -386,8 +390,8 @@ const totalCostWan = computed(() => (totalCost.value / 10000).toFixed(1) + '万�
  * 精算指标：把「每月领多少」升级为「这笔投入划不划算」。
  * 调整率/贴现率都是显式假设（默认各 3%），不是官方承诺；领取年限按退休年龄估算。
  */
-const adjustRate = computed(() => store.personal.pensionAdjustRate ?? 0.03)
-const discountRate = computed(() => store.personal.discountRate ?? 0.03)
+const adjustRate = computed(() => store.personal.pensionAdjustRate ?? DEFAULT_PENSION_ADJUST_RATE)
+const discountRate = computed(() => store.personal.discountRate ?? DEFAULT_DISCOUNT_RATE)
 const actuarial = computed(() => calcPensionActuarial({
   monthlyPension: retireResult.value.totalPension,
   retireAge: store.personal.expectedRetireAge,

@@ -3,6 +3,7 @@ import type { ScenarioResult } from '../types'
 import { scoreTier, scoreLevel } from '../utils/score'
 import { validateEndpoint } from '../utils/endpoint'
 import { redactContext } from '../utils/redact'
+import { isAbortError } from '../utils/abort'
 import { searchKnowledge, kbContextForPrompt, KB_TYPE_LABELS, citySourceEntries, buildStaticKbEntries } from '../utils/knowledge'
 import type { CityRule } from '../types'
 import { provinceOf } from '../data/provinces'
@@ -521,7 +522,7 @@ export function useAIChat() {
         persistHistory()
         return
       } catch (err: unknown) {
-        if (version !== requestVersion || (err instanceof DOMException && err.name === 'AbortError')) return
+        if (version !== requestVersion || isAbortError(err)) return
         const msg = String(err instanceof Error ? err.message : (err ?? '未知错误')).slice(0, 200)
         messages.value.push({ id: newId('err'), role: 'assistant', content: `⚠️ AI连接失败：${msg}。已切换规则引擎：\n\n` + ruleReply(question, scenarios, minWageMonthly), timestamp: Date.now(), isError: true })
         persistHistory()

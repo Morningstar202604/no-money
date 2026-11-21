@@ -144,21 +144,13 @@
 
     <!-- 图表分析：默认收起，点开才渲染 -->
     <FoldCard
-      title="收入与结构图表"
-      summary="净收入对比 · 收支结构"
+      title="收支结构图表"
+      summary="当前最优方案的收入构成"
       style="margin-top: 12px"
-    >      <n-grid :x-gap="12" cols="1 m:2" responsive="screen">
-        <n-gi>
-          <n-card title="各方案净收入对比" class="card">
-            <ChartBox :option="barOption" :height="300" />
-          </n-card>
-        </n-gi>
-        <n-gi>
-          <n-card title="收支结构分析" class="card">
-            <ChartBox :option="pieOption" :height="300" />
-          </n-card>
-        </n-gi>
-      </n-grid>
+    >
+      <n-card title="收支结构分析" class="card">
+        <ChartBox :option="pieOption" :height="300" />
+      </n-card>
     </FoldCard>
 
     <!-- 收入波动与风险：单点数字会让人误以为是稳定现金流 -->
@@ -219,6 +211,9 @@
         </n-gi>
         <n-gi :span="2">
           <n-card title="方案排行榜" class="card">
+            <template #header-extra>
+              <n-button text size="small" @click="router.push('/scenario')">方案对比实验室 →</n-button>
+            </template>
             <n-data-table :data="rankedScenarios" :columns="rankCols" :bordered="false" :single-line="false" size="small" />
           </n-card>
         </n-gi>
@@ -239,7 +234,7 @@ import { useMainStore } from '../stores/main'
 import AnimatedNumber from '../components/AnimatedNumber.vue'
 import SkeletonLoader from '../components/SkeletonLoader.vue'
 import { simulateIncomeDistribution, recommendBuffer } from '../domain/income/volatility'
-import { axisX, axisY, GRID, chartColors } from '../utils/chart'
+import { chartColors } from '../utils/chart'
 import { scoreTier, scoreLevel, TIER_COLORS } from '../utils/score'
 import ChartBox from '../components/ChartBox.vue'
 import FoldCard from '../components/FoldCard.vue'
@@ -315,24 +310,6 @@ const rankCols: DataTableColumns<RankRow> = [
   // 占位数据下把「推荐」换成「假设」：评级只是占位假设下的相对排序，不是真实建议
   { title: '评级', key: 'tag', width: 72, align: 'center', render: (row) => provisional.value ? '假设' : row.tag === 'recommended' ? '推荐' : row.tag === 'viable' ? '可行' : '有风险' },
 ]
-
-const barOption = computed<EChartsCoreOption>(() => {
-  void store.isDark // 主题依赖：切换深浅色时重算配色并触发图表重绘
-  const comp = store.comparison
-  if (!comp) return {}
-  const P = chartColors()
-  return {
-    tooltip: { trigger: 'axis' },
-    grid: { ...GRID, bottom: '14%' },
-    xAxis: axisX(comp.ranking.map(r => r.label), P),
-    yAxis: axisY(P),
-    series: [{
-      type: 'bar',
-      data: comp.ranking.map((r, i) => ({ value: r.netAnnual, itemStyle: { color: P.series[i] || P.light } })),
-      barWidth: '45%',
-    }]
-  }
-})
 
 const pieOption = computed<EChartsCoreOption>(() => {
   void store.isDark
