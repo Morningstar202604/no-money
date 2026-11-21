@@ -10,11 +10,11 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ## Where we are now
 
-**0.0.42** is the current baseline. The product direction is settled — a rights-navigation and
+**0.0.43** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
 new-grad first-year mode, plain-language guide search, guide sharing, whole-checklist sharing,
 the checklist export/share edge fixes, a local phone-calendar reminder, four front-end
-dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup and the cross-module duplicate audit are shipped:
+dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup, the cross-module duplicate audit and the legacy-engine removal are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -31,6 +31,10 @@ dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cle
 - 0.0.42 removes the remaining duplicate implementations: one default-parameter source for Web /
   CLI / API / MCP, one Node rule loader, one `isAbortError`, one official-link component, one
   Admin/Audit page scaffold, and `scenarios` no longer re-runs the engine behind `comparison`
+- 0.0.43 deletes the legacy `src/engine` after moving `TaxOptimizer`, `RetirementPlanner` and
+  `pensionSeries` to `domain`, and collapses the remaining small UI state machines: one 34-city
+  loader state for `/policy`, one metric-grid component for `/admin` + `/audit`, and one
+  contribution-city field behind both `/employee` modes
 
 **What is shipped:** `/start` with four entries; a 3-step wizard; a **60-item `RightsItem` catalog**
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
@@ -46,6 +50,21 @@ content-review loop. Page-level deadline hints and a user-set `.ics` phone-calen
 
 ---
 
+## 0.0.43 — Legacy engine removal and small-unit dedupe (shipped 2026-11-21)
+
+**Goal: delete the old implementation once the new one covers its production callers, then look one level lower than page-level dedupe — state machines, field groups, metric cards and derived page values.**
+
+- [x] `TaxOptimizer` uses `calcLaborAnnual` / `calcSoleProprietorship`; labor tax, effective rate and after-tax income all come from one domain `TaxBreakdown`; the self-employed taxable base uses `itrDeductionMonthly × 12`, not a hard-coded 60000.
+- [x] `RetirementPlanner` uses `projectRetirement`; a page-level `projectView()` passes age, retirement age, account contribution, years, return rate, contribution index and benefit base explicitly and surfaces `Result` failure instead of a silent 0.6 fallback.
+- [x] `pensionSeries` is a domain pure function; `verify-engines` only checks `ScenarioService`; `reality-check` no longer constructs `BenefitEngine`.
+- [x] `src/engine` and both parity specs are deleted. Data-honesty and boundary assertions worth keeping moved to `tests/ruleInvariants.spec.ts`; formula coverage stays in `tests/domain/**` and `tests/application/**`.
+- [x] `/policy` uses the same `useCityRules()` state machine as `/admin` and `/audit`; `load()` is idempotent, `reload()` is explicit, and a failed load retries on re-entry.
+- [x] `DataMetricGrid.vue` replaces 12 hand-written metric cards; `EmployeeView` has one shared contribution-city field for both modes.
+- [x] `tests/architecture.spec.ts` fails if `src/engine` returns or source code imports `engine/`.
+- [x] Explicitly kept separate: `/admin` vs `/audit`, `/dashboard` vs `/scenario`, `/policy` vs `/audit`, `/start` vs `/rights`, province vs city channels, `RightsItemCard` vs `GuideCard`; `fullyVerified` (all sources) vs `allOfficial` (7 core fields) have different denominators.
+
+**Not done:** resident mode and 10 real-user tests remain open.
+
 ## 0.0.42 — Duplicate audit: one source for defaults, loaders and comparison (shipped 2026-11-21)
 
 **Goal: remove real duplicate implementations, not just duplicate-looking UI, without merging pages that serve different questions.**
@@ -56,7 +75,7 @@ content-review loop. Page-level deadline hints and a user-set `.ics` phone-calen
 - [x] `scenarios` now reads `comparison.scenarios`, so the engine runs once per parameter change instead of twice; the duplicate comparison bar chart is removed from `/dashboard`, which links to `/scenario` for detail.
 - [x] Retirement/self-funded default rates come from `domain/benefit/actuarial.ts`; the redundant `CITIES` alias is removed.
 - [x] 6 new dedupe tests; 68 files / 1,268 unit tests, 9 files / 138 E2E; no policy data changes.
-- [x] Explicitly kept separate: `/admin` vs `/audit`, `/dashboard` vs `/scenario`, `/policy` vs `/audit`, `/start` vs `/rights`, province vs city channels, `RightsItemCard` vs `GuideCard`; the old `ScenarioEngine` stays as a parity oracle.
+- [x] Explicitly kept separate: `/admin` vs `/audit`, `/dashboard` vs `/scenario`, `/policy` vs `/audit`, `/start` vs `/rights`, province vs city channels, `RightsItemCard` vs `GuideCard`; the old `ScenarioEngine` stayed as a parity oracle in 0.0.42 and was deleted in 0.0.43.
 
 **Not done:** resident mode and 10 real-user tests remain open.
 
@@ -747,7 +766,7 @@ five mirrors on `main` + `v3.8.7`.
 
 ### P2
 
-- [ ] Remove `src/engine` after `TaxOptimizer` / `RetirementPlanner` migrate to `domain/`
+- [x] Remove `src/engine` after `TaxOptimizer` / `RetirementPlanner` migrate to `domain/` (done in 0.0.43)
 - [ ] Move `src/utils/livingGuide.ts` content into `src/data/rights/` with typed `RightsItem`s
 - [ ] Split `naive-ui` first-screen chunk if a lighter component set becomes viable
 - [ ] Windows installer signing / auto-update check

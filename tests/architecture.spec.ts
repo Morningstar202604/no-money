@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join, relative } from 'node:path'
 
 /**
@@ -69,11 +69,7 @@ const FORBIDDEN_IN_KERNEL = [
   /(^|\/)engine\//,
 ]
 
-const ENGINE_ALLOWLIST = new Set([
-  'src/components/panels/TaxOptimizer.vue',
-  'src/components/panels/RetirementPlanner.vue',
-  'src/utils/pensionSeries.ts',
-])
+
 
 describe('architecture boundaries', () => {
   it('domain is framework-free and does not reach upward', () => {
@@ -120,14 +116,12 @@ describe('architecture boundaries', () => {
     expect(offenders).toEqual([])
   })
 
-  it('only allowlisted production files import the legacy engine', () => {
+  it('legacy engine directory is gone, not silently revived', () => {
+    expect(existsSync(join(SRC, 'engine')), 'src/engine 已在 0.0.43 删除，不得重新引入').toBe(false)
     const offenders: string[] = []
     for (const file of walk(SRC)) {
-      if (rel(file).startsWith('src/engine/')) continue
       const bad = importsOf(file).filter((p) => /(^|\/)engine\//.test(p))
-      if (bad.length && !ENGINE_ALLOWLIST.has(rel(file))) {
-        offenders.push(`${rel(file)}: ${bad.join(', ')}`)
-      }
+      if (bad.length) offenders.push(`${rel(file)}: ${bad.join(', ')}`)
     }
     expect(offenders).toEqual([])
   })

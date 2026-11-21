@@ -40,18 +40,16 @@ export interface SoleProprietorshipRule {
   bizTaxTable: readonly TaxBracket[]
 }
 
-/** 税引擎配置：组合两大规则 */
-export interface TaxEngineConfig {
-  laborRemuneration: LaborRemunerationRule
-  soleProprietorship: SoleProprietorshipRule
-}
-
 /** 税收计算结果：纯数据，分为单位 */
 export interface TaxBreakdown {
   /** 月度税额明细（分） */
   monthlyTax: readonly Cent[]
   /** 年度税额合计（分） */
   annualTax: Cent
+  /** 年度费用减除合计（分）：劳务报酬为 20% 或 800 元/月，个体户为核定费用减除 */
+  expenseDeduction: Cent
+  /** 年度应纳税所得额（分） */
+  taxableIncome: Cent
   /** 有效税率（基点） */
   effectiveRate: Rate
   /** 税后收入（分） */

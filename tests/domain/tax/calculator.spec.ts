@@ -106,6 +106,9 @@ describe('calcLaborMonthly - 手算基准对齐', () => {
     expect(r.ok).toBe(true)
     if (r.ok) {
       expect(Number(r.value.annualTax)).toBeCloseTo(29664, -2)
+      // 年收入 87360，20% 费用减除 17472，基本减除 60000，应纳税所得额 9888
+      expect(Number(r.value.expenseDeduction)).toBe(1747200)
+      expect(Number(r.value.taxableIncome)).toBe(988800)
       // 有效税率 = 296.64 / (7280*12) ≈ 0.34%
       expect(Number(r.value.effectiveRate)).toBeCloseTo(0.0034, 4)
     }
@@ -125,14 +128,22 @@ describe('calcLaborMonthly - 手算基准对齐', () => {
     const monthlyIncome = Array(12).fill(cent(3900))
     const r = calcLaborMonthly(monthlyIncome, cent(0), rule)
     expect(r.ok).toBe(true)
-    if (r.ok) expect(Number(r.value.annualTax)).toBe(0)
+    if (r.ok) {
+      expect(Number(r.value.annualTax)).toBe(0)
+      expect(Number(r.value.expenseDeduction)).toBe(960000)
+      expect(Number(r.value.taxableIncome)).toBe(0)
+    }
   })
 
   it('月收入 4100 元（刚过 4000 阈值），按 20% 扣除', () => {
     const monthlyIncome = Array(12).fill(cent(4100))
     const r = calcLaborMonthly(monthlyIncome, cent(0), rule)
     expect(r.ok).toBe(true)
-    if (r.ok) expect(Number(r.value.annualTax)).toBe(0)
+    if (r.ok) {
+      expect(Number(r.value.annualTax)).toBe(0)
+      expect(Number(r.value.expenseDeduction)).toBe(984000)
+      expect(Number(r.value.taxableIncome)).toBe(0)
+    }
   })
 
   it('专项附加扣除 2000 元/月，税额降低', () => {

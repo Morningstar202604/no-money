@@ -27,7 +27,7 @@
 - 允许医保 `baseMin == baseMax`：长沙、福州、海口、昆明、兰州、南昌、沈阳、杭州、贵阳、石家庄、哈尔滨、成都、重庆、武汉等按固定基数缴费，养老仍要求区间。
 - `medicalTiers[]` 新增 `baseMonthly`：同一城市不同档可有不同基数（成都统账 6265 / 单建 7831）。
 - `medicalTiers[]` 与 `medical` 新增 `fixedMonthly`：大额医疗、长护、大病等固定月附加费；档次可覆盖全局值（济南 9% 档不再重复加 10 元）。
-- 计算路径 `src/domain/benefit/calculator.ts` 与 `src/engine/BenefitEngine.ts` 同步。
+- 计算路径 `src/domain/benefit/calculator.ts`；旧 `src/engine/BenefitEngine.ts` 已于 0.0.43 删除，本条不再存在第二实现。
 
 ## 34 城结果
 

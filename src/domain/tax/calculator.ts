@@ -101,6 +101,7 @@ export function calcLaborMonthly(
   // 年度合计
   const totalIncome = monthlyIncomes.reduce((sum, inc) => addCent(sum, inc), Cent.create(0))
   const annualTax = monthlyTax.reduce((sum, tax) => addCent(sum, tax), Cent.create(0))
+  const taxableIncome = calcCumulativeTaxable(cumulativeIncome, cumulativeExpense, cumulativeDeduction)
 
   // 有效税率 = 年度税额 / 总收入 * 100%
   const effectiveRate = Number(totalIncome) > 0
@@ -113,6 +114,8 @@ export function calcLaborMonthly(
   return ok({
     monthlyTax,
     annualTax,
+    expenseDeduction: cumulativeExpense,
+    taxableIncome,
     effectiveRate,
     afterTaxIncome,
     method: 'labor'
@@ -168,6 +171,8 @@ export function calcSoleProprietorship(
   return ok({
     monthlyTax,
     annualTax,
+    expenseDeduction: totalDeductionCent,
+    taxableIncome: taxable,
     effectiveRate,
     afterTaxIncome,
     method: 'sole_proprietorship'

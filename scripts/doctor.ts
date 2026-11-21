@@ -61,7 +61,6 @@ function checkFiles() {
     'docs/POSITIONING.md',
     'docs/REALITY-AND-SCOPE.md',
     'docs/ENGINEERING.md',
-    'src/engine/README.md',
     'tests/architecture.spec.ts',
     'THIRD-PARTY-NOTICES.md',
     'docs/DEPLOYMENT.md',

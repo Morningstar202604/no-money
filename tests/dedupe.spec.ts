@@ -3,7 +3,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { useMainStore } from '../src/stores/main'
 import { calculate, DEFAULT_WORK, DEFAULT_COSTS } from '../src/kernel/calculate'
 import { DEFAULT_WORK as SHARED_WORK, DEFAULT_COSTS as SHARED_COSTS } from '../src/domain/shared/defaults'
@@ -72,3 +72,79 @@ describe('0.0.42 去重', () => {
 function loadRuleSync(city: string): CityRule {
   return JSON.parse(readFileSync(`public/rules/${city}.json`, 'utf8')) as CityRule
 }
+
+describe('0.0.43 删除旧引擎与小单元去重', () => {
+  it('旧 src/engine 目录已删除，生产不再引用旧引擎', () => {
+    expect(existsSync('src/engine')).toBe(false)
+    const offenders: string[] = []
+    for (const file of [
+      'src/components/panels/TaxOptimizer.vue',
+      'src/components/panels/RetirementPlanner.vue',
+      'src/utils/pensionSeries.ts',
+    ]) {
+      const src = readFileSync(file, 'utf8')
+      if (/engine\//.test(src)) offenders.push(file)
+    }
+    expect(offenders).toEqual([])
+  })
+
+  it('TaxOptimizer / RetirementPlanner 走 domain，不在页面里重算公式', () => {
+    const tax = readFileSync('src/components/panels/TaxOptimizer.vue', 'utf8')
+    const retire = readFileSync('src/components/panels/RetirementPlanner.vue', 'utf8')
+    expect(tax).toMatch(/calcLaborAnnual/)
+    expect(tax).toMatch(/calcSoleProprietorship/)
+    expect(tax).toMatch(/adaptLaborRule/)
+    expect(retire).toMatch(/projectRetirement/)
+    expect(retire).toMatch(/adaptRetirementRule/)
+  })
+
+  it('/policy、/admin、/audit 共用同一套 34 城加载状态机', () => {
+    for (const file of ['src/views/PolicyView.vue', 'src/views/AdminView.vue', 'src/views/AuditView.vue']) {
+      const src = readFileSync(file, 'utf8')
+      expect(src, `${file} 必须使用 useCityRules`).toMatch(/useCityRules/)
+      expect(src, `${file} 不得再自建 loadCityRules 状态`).not.toMatch(/freshnessRequested|const freshnessLoading = ref/)
+    }
+  })
+
+  it('Admin/Audit 的 12 张指标卡共用 DataMetricGrid，不再各写一份 markup', () => {
+    for (const file of ['src/views/AdminView.vue', 'src/views/AuditView.vue']) {
+      const src = readFileSync(file, 'utf8')
+      expect(src).toMatch(/DataMetricGrid/)
+      expect(src).not.toMatch(/class="metric-row"/)
+    }
+  })
+
+  it('EmployeeView 的两种工资条模式共用一个参保城市字段', () => {
+    const src = readFileSync('src/views/EmployeeView.vue', 'utf8')
+    expect((src.match(/<span class="ep-label">参保城市<\/span>/g) ?? []).length).toBe(1)
+  })
+
+  it('TaxOptimizer 的应纳税所得额取自 domain，不再手写 20% 费用减除', () => {
+    const tax = readFileSync('src/components/panels/TaxOptimizer.vue', 'utf8')
+    expect(tax).toMatch(/taxableIncome/)
+    expect(tax).toMatch(/expenseDeduction/)
+    expect(tax).not.toMatch(/labor\.value \* 0\.8/)
+    expect(tax).not.toMatch(/itrIncomeRate \?\? 0\) - \(soleRule\.value\?\.itrDeductionMonthly/)
+  })
+
+  it('置信度标签/色阶只有一套映射', () => {
+    const policy = readFileSync('src/views/PolicyView.vue', 'utf8')
+    const audit = readFileSync('src/views/AuditView.vue', 'utf8')
+    expect(policy).toMatch(/confidenceType\(/)
+    expect(policy).toMatch(/confidenceLabel\(/)
+    expect(audit).toMatch(/confidenceTone\(/)
+    expect(audit).toMatch(/confidenceLabel\(/)
+    expect(policy).not.toMatch(/confidence === 'official' \? 'success'/)
+    expect(policy).not.toMatch(/confidence === 'unverified' \? '登记于'/)
+    expect(audit).not.toMatch(/conf === 'official' \? 'ok'/)
+    const sourceTag = readFileSync('src/components/SourceTag.vue', 'utf8')
+    expect(sourceTag).toMatch(/retrievedDateVerb\(/)
+    expect(sourceTag).not.toMatch(/confidence === 'unverified' \? '登记于'/)
+  })
+
+  it('退休曲线基准来自 domain，不再向旧 BenefitEngine 传实例', () => {
+    const src = readFileSync('src/utils/pensionSeries.ts', 'utf8')
+    expect(src).toMatch(/projectRetirement/)
+    expect(src).not.toMatch(/BenefitEngine/)
+  })
+})

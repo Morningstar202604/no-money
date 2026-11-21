@@ -16,9 +16,13 @@ import { Cent, Rate, yuanToCent, centToYuan } from '../../domain/shared/value-ob
 
 import type { IncomeRule as DomainIncomeRule } from '../../domain/income/rules'
 import type { WorkParams as DomainWorkParams, CostParams as DomainCostParams } from '../../domain/income/rules'
-import type { LaborRemunerationRule as DomainLaborRule } from '../../domain/tax/rules'
+import type {
+  LaborRemunerationRule as DomainLaborRule,
+  SoleProprietorshipRule as DomainSoleRule,
+} from '../../domain/tax/rules'
 import type {
   BenefitRule as DomainBenefitRule,
+  RetirementRule as DomainRetirementRule,
 } from '../../domain/benefit/rules'
 
 // ===== 元 → 分 =====
@@ -74,6 +78,23 @@ export function adaptLaborRule(r: CityRule['tax']['laborRemuneration']): DomainL
 }
 
 
+/** 个体工商户核定征收规则：营业额、减除标准与税率表均以元为单位 */
+export function adaptSoleProprietorshipRule(r: CityRule['soleProprietorship']): DomainSoleRule {
+  return {
+    vatRate: Rate.create(r.vatRate),
+    vatThresholdMonthly: toCent(r.vatThresholdMonthly),
+    itrIncomeRate: Rate.create(r.itrIncomeRate),
+    itrDeductionMonthly: toCent(r.itrDeductionMonthly),
+    bizTaxTable: r.bizTaxTable.map(b => ({
+      min: toCent(b.min),
+      max: toCent(b.max),
+      rate: Rate.create(b.rate),
+      deduction: toCent(b.deduction),
+    })),
+  }
+}
+
+
 /**
  * 社保规则：缴费基数上下限以元为单位。
  *
@@ -113,6 +134,17 @@ export function adaptBenefitRule(
       baseMonthly: t.baseMonthly === undefined ? undefined : toCent(t.baseMonthly),
       fixedMonthly: t.fixedMonthly === undefined ? undefined : toCent(t.fixedMonthly),
     })),
+  }
+}
+
+
+/** 退休测算规则：计发基数与缴费指数进入 domain，金额转分、比率保留小数 */
+export function adaptRetirementRule(r: CityRule['retirement']): DomainRetirementRule {
+  return {
+    benefitBaseMonthly: toCent(r.benefitBaseMonthly),
+    benefitBaseYear: r.benefitBaseYear,
+    paymentIndex: Rate.create(r.paymentIndex ?? 0.6),
+    assumedAnnualReturn: Rate.create(r.assumedAnnualReturn),
   }
 }
 

@@ -3,6 +3,37 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
 
+## [0.0.43] — 2026-11-21
+
+这一轮做两件事：删掉已经没人用的旧引擎，再把界面里比“页面”更小的重复单元收掉——加载状态机、指标卡、城市字段、页面派生值。不新增页面，也不改政策数值。
+
+### Changed
+
+- 删除 `src/engine`：`ScenarioEngine`、`IncomeEngine`、`TaxEngine`、`BenefitEngine` 与其 README 全部移除。0.0.42 曾以“对拍 oracle”为由保留，但旧实现已被新实现替代，不再作为长期基准。
+- `TaxOptimizer.vue` 改走 `domain/tax`：`calcLaborAnnual` 与 `calcSoleProprietorship` 产出同一份 `TaxBreakdown`，税额、有效税率、税后收入不再从税额反推；个体户核定减除改为规则文件 `itrDeductionMonthly × 12`，不再写死 60000。
+- `RetirementPlanner.vue` 改走 `domain/benefit` 的 `projectRetirement`：页面新增 `projectView()` 统一传当前年龄、退休年龄、个账月缴、缴费年限、收益率、缴费指数、计发基数，首屏、档次图、增长曲线、年限对比表共用同一条路径；`Result` 失败时返回 `null`，不再静默落到 0.6 下限。
+- `src/utils/pensionSeries.ts` 改为直接调用 domain 纯函数，不再接收旧 engine 实例。
+- `/policy` 的 34 城新鲜度总览改用 `useCityRules()`：删除页面内 `freshnessRules/freshnessLoading/freshnessError/freshnessRequested` 与手拼加载文案；composable 提供幂等 `load()` 与显式 `reload()`，加载失败后再次进入页签仍会重试。
+- `/admin` 与 `/audit` 的 12 张指标卡改用 `DataMetricGrid.vue`，两页只提供指标数组；指标卡样式移入组件，`dataPage.css` 只保留页面骨架与表格。
+- `/employee` 两种工资条模式（单月工资条、新毕业生第一年）共用一个参保城市字段，城市下拉不再复制两份。
+- `scripts/verify-engines.ts` 只验生产路径 `ScenarioService`，删除旧引擎基准与对拍逻辑；`scripts/reality-check.ts` 的退休段改用 domain；`scripts/doctor.ts` 不再要求 `src/engine/README.md`。
+- `src/domain/tax/rules.ts` 删除已无引用的 `TaxEngineConfig`；store 与 `ScenarioService` 注释改为“旧引擎已删除、单一生产路径”。
+
+### Tests
+
+- 删除 `tests/engines.spec.ts` 与 `tests/parity/`。
+- 新增 `tests/ruleInvariants.spec.ts`：保留与实现无关的数据诚实/端点校验/退休边界断言（三城来源完整、官方参数、税率表、4000 元减除分支、计发基数、139 计发月数、0.6 下限等），共 42 条。
+- `tests/dedupe.spec.ts` 新增 6 条 0.0.43 断言：`src/engine` 不存在、生产文件不引用 engine、Tax/Retirement 走 domain、三页共用 `useCityRules`、Admin/Audit 共用 `DataMetricGrid`、EmployeeView 只剩一个参保城市字段。
+- `tests/architecture.spec.ts` 改为断言 `src/engine` 不存在且生产代码不得 import `engine/`；`tests/pensionSeries.spec.ts` 改为 domain 基准；`tests/uxDebt.spec.ts` 退休页契约改为 `projectView`。
+- 全量：**66 文件 / 841 单测通过**（`npm run check` 360.56s）；E2E **9 文件 / 138 条通过**（桌面 + 移动，6.3m）。
+- 构建 23.84s；`dist` 3.48 MB（assets 2.59 MB）；PWA 60 条 / 2,832.17 KiB；首屏 410K gzip；`doctor` 全部通过。
+
+### Docs
+
+- `ARCHITECTURE.md`、`AGENTS.md`、`CONTRIBUTING.zh-CN.md`、`docs/ENGINEERING.md` 删除旧引擎口径，改为“单一计算路径”。
+- `docs/FRONTEND-CONSOLIDATION.md` 新增 0.0.43 已完成表与“审查后明确不合并”；`docs/AUDIT-2026-11-19.md` 新增第 51 节，并把旧“保留为 oracle”结论标注为已删除。
+- `ROADMAP.md`、`docs/POSITIONING.md`、`docs/VERSIONING.md`、`docs/DATA-VERIFICATION-MEDICAL-2026-11-20.md` 同步到 0.0.43；五处版本号一致。
+
 ## [0.0.42] — 2026-11-21
 
 这一轮做的是“重复实现审计”：不是看页面像不像，而是查同一份事实/同一套状态机/同一组默认值有没有被写了两遍。没有新增页面，也没有改政策数值。

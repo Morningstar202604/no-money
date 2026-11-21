@@ -9,7 +9,8 @@
  * - 对外返回的 ScenarioResult 沿用 `src/types` 契约，单位为**元**
  * - 分↔元换算只发生在本文件末尾的 `toResult`，业务代码里不得再出现裸换算
  *
- * 与旧 ScenarioEngine 的数值等价性由 tests/parity/old-vs-domain.spec.ts 保证。
+ * 0.0.43 起旧 `src/engine` 已删除，本文件是唯一的端到端场景计算路径；
+ * 数值由 tests/application/** 与金样本回归锁定，不再与另一套旧实现对拍。
  */
 
 import type {

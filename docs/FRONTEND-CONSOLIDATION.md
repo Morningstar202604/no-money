@@ -221,6 +221,27 @@
 - 页面文案、入口标题、官方链接只允许一个来源；复制粘贴视为缺陷。
 - 版本：纯去重/小修走 PATCH，例如 `3.6.1`；新增页面或新能力才走 MINOR。
 
+## 已完成（0.0.43）
+
+这一轮分两层：先删掉已经被新实现完全替代的旧引擎，再把界面里剩下的“小状态机 / 小选项 / 小卡片”查一遍。原则仍是“第二个真实使用方出现才抽公共件”。
+
+| 重复点 | 原来 | 现在 |
+|---|---|---|
+| 旧引擎 | `src/engine` 的 4 个类与 README 仍在仓库；`ScenarioEngine`/`IncomeEngine` 只被 parity 测试和自检脚本使用，`TaxEngine`/`BenefitEngine` 还被两个面板使用，旧税法的费用减除口径与新 domain 已不同 | `TaxOptimizer` → `calcLaborAnnual` / `calcSoleProprietorship`；`RetirementPlanner` → `projectRetirement`；`pensionSeries` → domain 纯函数；删除 `src/engine`、两个 parity spec 与旧 `engines.spec`；`verify-engines` 只验生产路径 |
+| 34 城加载状态机 | `/policy` 仍自建 `freshnessRules` / `freshnessLoading` / `freshnessError` / `freshnessRequested`，并用本地文案拼缺失提示，没有 try/finally | `/policy` 改用 `useCityRules()`；composable 增加幂等 `load()` 与显式 `reload()`；`cityRuleLoadNotice()` 是唯一提示文案；页面不再自己拼错误 |
+| Admin/Audit 指标卡 | 两页各手写 6 张 `.metric` 的标签/数值/脚注/色调，共 12 份重复 markup | 新增 `src/components/DataMetricGrid.vue`；两页只传 `metrics` 数组；指标语义仍各页自定，不合并“全库 225/343”与“7 项核心 186/238”口径 |
+| 工资条城市字段 | `/employee` 的“单月工资条”和“新毕业生第一年”两个分支各抄一份参保城市下拉框 | 合并为一个 `ep-form-grid` 的共享城市字段，再按模式渲染其余输入 |
+| 税负派生值 | `TaxOptimizer` 用旧引擎算年度税后，再在页面减一遍得到税后收入；核定应纳税所得额写死 `60000` | 税额、有效税率、税后收入都取自同一份 domain `TaxBreakdown`；核定减除改为规则文件的 `itrDeductionMonthly × 12` |
+| 退休参数 | 页面直接把元金额传给旧类，漏传缴费指数时旧类静默按 0.6 兜底，domain 失败也无从感知 | 新增 `projectView()`：显式传基数/指数/计发基数，`Result` 失败返回 0 值；页面只做元↔分转换 |
+
+### 审查后明确不合并（0.0.43 复核）
+
+- `EmployeeView` 的“广州 · 广东”带省份城市选项与 `CITY_OPTIONS`：只是同一注册表的不同展示，当前只有一个使用方，不新增别名。
+- `DashboardView` 的方案排行榜与 `ScenarioCompare` 的方案卡：前者是摘要表，后者是逐项明细；底层 `comparison` 已同源，展示层不强行共用一个行模型。
+- `/admin` 的 `fullyVerified` 与 `/audit` 的 `allOfficial`：名字相近但口径不同（全库来源 vs 7 项核心字段），保持两个命名并各自在页面写明分母。
+- `src/utils/cityRule.ts` 与 `src/data/cityRules.ts`：前者做完整规则校验/时间提示，后者做 34 城加载与覆盖率统计；职责不同。
+- 图表 `tooltip: { trigger: 'axis' }`、`void store.isDark`：是 ECharts 的局部配置/主题依赖，不是可复用业务逻辑；抽成构造器只会增加参数噪音。
+
 ## 已完成（0.0.42）
 
 这一轮不是“再加一层抽象”，而是先证明重复确实存在，再按“同一事实/同一状态机/同一默认值”三类收口。
@@ -249,5 +270,5 @@
 - `/start` 与 `/rights`：前者是办事清单导航，后者是补偿计算/维权指南/文书生成；入口可互相跳，正文与工具不合并。
 - `provinceChannels` 与 `cityChannels`：省级入口是兜底层，10 城深核是精确层，统一由 `resolveServiceChannel()` 解析；数据分层不等于重复数据。
 - `RightsItemCard` 与 `GuideCard`：前者是目录入口，后者是长正文；同一条目在 `/start` 展开时复用 `GuideCard`，正文只有一份。
-- `src/engine/ScenarioEngine`：仅作为对拍基准保留，生产路径是 `ScenarioService`；删掉它会失去独立 oracle，保留成本远低于“公式悄悄漂移”的风险。
+- `src/engine/ScenarioEngine`：0.0.42 曾保留为对拍 oracle；0.0.43 已按用户要求删除，生产只剩 `ScenarioService` 一条路径，旧结论不再适用。
 - `src/utils/cityRule.ts` 与 `src/data/cityRules.ts`：前者做完整规则校验/时间提示，后者做 34 城加载与覆盖率统计；职责不同，没有合并。

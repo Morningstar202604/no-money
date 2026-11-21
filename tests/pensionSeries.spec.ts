@@ -1,57 +1,70 @@
 /**
- * 个人账户增长曲线与退休引擎的口径一致性。
+ * 个人账户增长曲线与退休测算的口径一致性。
  *
  * 背景：曲线逻辑原先内联在 RetirementPlanner.vue 的 computed 里，用 (1+r)^12 按年
  * 复利、首点还先注入一年缴费——与按月复利的退休引擎相差约 9000 倍，同屏两个数字
- * 互相矛盾而单测看不见。这组断言把「曲线每个点 == 引擎余额」固定下来。
+ * 互相矛盾而单测看不见。这组断言把「曲线每个点 == domain 个人账户余额」固定下来。
+ * 0.0.43 删除旧 BenefitEngine 后，基准改为生产用的 domain 纯函数。
  */
 
 import { describe, it, expect } from 'vitest'
 import { loadAllRulesArray } from './helpers/rules'
 import { readFileSync } from 'node:fs'
-import { BenefitEngine } from '../src/engine/BenefitEngine'
+import { projectRetirement } from '../src/domain/benefit/calculator'
+import { Cent, Rate, centToYuan } from '../src/domain/shared/value-objects'
+import { adaptRetirementRule } from '../src/application/adapters/ruleAdapters'
 import { buildPensionGrowthSeries, buildPensionTiers, socialAverageWage } from '../src/utils/pensionSeries'
 import type { CityRule } from '../src/types'
 
 const rule = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8')) as CityRule
-const engine = new BenefitEngine(rule.benefit, rule.retirement)
+const retirement = adaptRetirementRule(rule.retirement)
 
 const currentAge = 25
 const retireAge = 60
 const accountMonthly = Math.round(rule.benefit.pension.baseMin * (rule.retirement.personalAccountRate ?? 0.08))
 const annualReturn = rule.retirement.assumedAnnualReturn
 
-const series = buildPensionGrowthSeries({ engine, currentAge, retireAge, accountMonthly, annualReturn })
+function accountAt(age: number): number {
+  const result = projectRetirement(
+    currentAge,
+    age,
+    Cent.create(accountMonthly * 100),
+    age - currentAge,
+    Rate.create(annualReturn),
+    retirement.paymentIndex,
+    retirement.benefitBaseMonthly,
+  )
+  return result.ok ? centToYuan(result.value.personalAccount) : Number.NaN
+}
 
-describe('增长曲线与引擎同口径', () => {
+const series = buildPensionGrowthSeries({ currentAge, retireAge, accountMonthly, annualReturn })
+
+describe('增长曲线与退休测算同口径', () => {
   it('首点余额为 0（缴费起点，不得先注入一年缴费）', () => {
     expect(series[0].age).toBe(currentAge)
     expect(series[0].balance).toBe(0)
   })
 
-  it('末点等于「缴至退休」的引擎个人账户余额', () => {
-    const full = engine.projectRetirement(currentAge, retireAge, accountMonthly, retireAge - currentAge, annualReturn)
-    expect(series[series.length - 1].balance).toBe(full.personalAccount)
+  it('末点等于「缴至退休」的 domain 个人账户余额', () => {
+    expect(series[series.length - 1].balance).toBe(accountAt(retireAge))
   })
 
-  it('每个中间点等于「只缴到该年」的引擎余额（逐年单调不减）', () => {
+  it('每个中间点等于「只缴到该年」的 domain 余额（逐年单调不减）', () => {
     for (let i = 1; i < series.length; i++) {
       const p = series[i]
-      const expected = engine.projectRetirement(currentAge, p.age, accountMonthly, p.age - currentAge, annualReturn).personalAccount
-      expect(p.balance, `${p.label} 与引擎余额不一致`).toBe(expected)
+      expect(p.balance, `${p.label} 与 domain 余额不一致`).toBe(accountAt(p.age))
       expect(p.balance, `${p.label} 余额低于上一年`).toBeGreaterThanOrEqual(series[i - 1].balance)
     }
   })
 
-  it('量级必须与引擎同阶（防再次出现按年复利导致的数千倍高估）', () => {
-    const full = engine.projectRetirement(currentAge, retireAge, accountMonthly, retireAge - currentAge, annualReturn)
+  it('量级必须与 domain 同阶（防再次出现按年复利导致的数千倍高估）', () => {
     const last = series[series.length - 1].balance
-    expect(last).toBeLessThan(full.personalAccount * 1.01)
+    expect(last).toBeLessThan(accountAt(retireAge) * 1.01)
   })
 
   it('年龄倒置或非有限时返回空序列而不是抛出', () => {
-    expect(buildPensionGrowthSeries({ engine, currentAge: 60, retireAge: 55, accountMonthly, annualReturn })).toEqual([])
-    expect(buildPensionGrowthSeries({ engine, currentAge: NaN, retireAge: 60, accountMonthly, annualReturn })).toEqual([])
+    expect(buildPensionGrowthSeries({ currentAge: 60, retireAge: 55, accountMonthly, annualReturn })).toEqual([])
+    expect(buildPensionGrowthSeries({ currentAge: NaN, retireAge: 60, accountMonthly, annualReturn })).toEqual([])
   })
 })
 
@@ -85,14 +98,22 @@ describe('缴费档次基数必须与档位标签一致', () => {
   })
 
   it('高档位养老金必须按该档自身缴费指数计算（不得全部按 0.6 下限低估）', () => {
-    const engine = new BenefitEngine(rule.benefit, rule.retirement)
     const tiers = buildPensionTiers(rule.benefit.pension.baseMin, rule.benefit.pension.baseMax)
     const social = socialAverageWage(rule.benefit.pension.baseMin, rule.benefit.pension.baseMax)
     const accountRate = rule.retirement.personalAccountRate ?? 0.08
     const years = 35
+    const retired = adaptRetirementRule(rule.retirement)
 
-    const withIndex = tiers.map(t => engine.projectRetirement(25, 60, Math.round(t.base * accountRate), years, 0.03, t.base / social).totalPension)
-    const floored = tiers.map(t => engine.projectRetirement(25, 60, Math.round(t.base * accountRate), years, 0.03).totalPension)
+    const withIndex = tiers.map(t => {
+      const r = projectRetirement(25, 60, Cent.create(Math.round(t.base * accountRate) * 100), years,
+        Rate.create(0.03), Rate.create(t.base / social), retired.benefitBaseMonthly)
+      return r.ok ? centToYuan(r.value.totalPension) : 0
+    })
+    const floored = tiers.map(t => {
+      const r = projectRetirement(25, 60, Cent.create(Math.round(t.base * accountRate) * 100), years,
+        Rate.create(0.03), Rate.create(0.6), retired.benefitBaseMonthly)
+      return r.ok ? centToYuan(r.value.totalPension) : 0
+    })
 
     // 60% 档指数约等于下限 0.6，两者只应有分位级舍入差
     expect(Math.abs(withIndex[0] - floored[0])).toBeLessThanOrEqual(1)

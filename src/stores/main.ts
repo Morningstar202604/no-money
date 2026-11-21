@@ -189,8 +189,8 @@ export const useMainStore = defineStore('main', () => {
   const compensation = ref<CompensationResult | null>(null)
   function setCompensation(r: CompensationResult | null) { compensation.value = r }
 
-  // 编排走 application 层 ScenarioService（内部已切到 domain 引擎），
-  // 与旧 ScenarioEngine 的数值等价性由 tests/parity/old-vs-domain.spec.ts 保证
+  // 编排走 application 层 ScenarioService（内部已切到 domain 引擎）。
+  // 0.0.43 已删除旧 ScenarioEngine，生产只剩这一条计算路径。
   // overrides 进入引擎构造：用户改了「自己的计价」必须重建引擎，
   // 否则引擎仍持有构造时的旧计价，改了参数数字不动
   const engine = computed(() => {

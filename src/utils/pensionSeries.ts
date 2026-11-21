@@ -5,11 +5,12 @@
  * 用 (1+r)^12 按年滚存、且先注入一年缴费再打当前年龄点，与按月复利的退休引擎
  * 相差约 9000 倍，同一页面里两个数字互相打架而单测看不见（组件内联逻辑无法断言）。
  *
- * 口径契约：第 n 个点必须等于「按第 n 年停缴」调用同一退休引擎得到的个人账户余额，
+ * 口径契约：第 n 个点必须等于「按第 n 年停缴」调用 domain 退休测算得到的个人账户余额，
  * 首点为 0。测试见 tests/pensionSeries.spec.ts，任何复利口径改动都会在那里暴露。
  */
 
-import type { BenefitEngine } from '../engine/BenefitEngine'
+import { projectRetirement } from '../domain/benefit/calculator'
+import { Cent, Rate, centToYuan, yuanToCent } from '../domain/shared/value-objects'
 
 export interface PensionGrowthPoint {
   age: number
@@ -19,22 +20,32 @@ export interface PensionGrowthPoint {
 }
 
 export function buildPensionGrowthSeries(opts: {
-  engine: BenefitEngine
   currentAge: number
   retireAge: number
   /** 月记入个人账户金额（元），即缴存额中进个账的 8% 部分 */
   accountMonthly: number
   annualReturn: number
 }): PensionGrowthPoint[] {
-  const { engine, currentAge, retireAge, accountMonthly, annualReturn } = opts
+  const { currentAge, retireAge, accountMonthly, annualReturn } = opts
   if (!Number.isFinite(currentAge) || !Number.isFinite(retireAge) || retireAge < currentAge) return []
   const points: PensionGrowthPoint[] = []
   for (let age = currentAge; age <= retireAge; age++) {
     const yearsPaid = age - currentAge
-    // 首点是缴费起点，余额为 0；不能先注入一年缴费再打当前年龄点
-    const balance = yearsPaid === 0
-      ? 0
-      : engine.projectRetirement(currentAge, age, accountMonthly, yearsPaid, annualReturn).personalAccount
+    // 首点是缴费起点，余额为 0；不能先注入一年缴费再打当前年龄点。
+    // 传 0 计发基数：本函数只取个人账户余额，基础养老金不参与这条曲线。
+    const result = yearsPaid === 0
+      ? null
+      : projectRetirement(
+          currentAge,
+          age,
+          yuanToCent(accountMonthly),
+          yearsPaid,
+          Rate.create(annualReturn),
+          Rate.create(0.6),
+          Cent.create(0),
+        )
+    if (result && !result.ok) return []
+    const balance = result ? centToYuan(result.value.personalAccount) : 0
     points.push({ age, label: `${age}岁`, balance })
   }
   return points

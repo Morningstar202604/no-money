@@ -8,39 +8,13 @@
           <b>不做模糊处理：没核实的就显示为没核实。</b>
         </p>
       </div>
-      <n-button size="small" :loading="loading" @click="load">重新统计</n-button>
+      <n-button size="small" :loading="loading" @click="reload">重新统计</n-button>
     </header>
 
     <p v-if="loadNotice" class="data-note">{{ loadNotice }}</p>
 
     <!-- 总览 -->
-    <div class="metric-row">
-      <div class="metric">
-        <span class="metric-label">城市</span>
-        <span class="metric-value">{{ rows.length }}</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">已核官方字段</span>
-        <span class="metric-value ok">{{ officialCount }}</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">官方推算字段</span>
-        <span class="metric-value derived">{{ derivedCount }}</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">待核实字段</span>
-        <span class="metric-value warn">{{ pendingCount }}</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">7 项核心字段官方率</span>
-        <span class="metric-value" :class="officialRatio >= 40 ? 'ok' : 'warn'">{{ officialRatio }}%</span>
-        <span class="metric-note">{{ officialCount }} / {{ totalCount }} 格</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">全官方城市</span>
-        <span class="metric-value" :class="allOfficial ? 'ok' : 'warn'">{{ allOfficial }} / {{ rows.length }}</span>
-      </div>
-    </div>
+    <DataMetricGrid :items="metrics" />
 
     <!-- 说明：为什么有些字段永远无法官方化 -->
     <div class="note">
@@ -117,19 +91,15 @@ import { computed, onMounted } from 'vue'
 import { NButton } from 'naive-ui'
 
 import { summarizeCityRules, CORE_COVERAGE_FIELDS } from '../data/cityRules'
+import DataMetricGrid from '../components/DataMetricGrid.vue'
 import { useCityRules } from '../composables/useCityRules'
+import { confidenceTone, confidenceLabel } from '../utils/sources'
 
 const fields = CORE_COVERAGE_FIELDS
-const { rules, loading, notice: loadNotice, load } = useCityRules()
+const { rules, loading, notice: loadNotice, load, reload } = useCityRules()
 
-function cellClass(conf?: string): string {
-  if (conf === 'official') return 'ok'
-  if (conf === 'derived') return 'derived'
-  return 'warn'
-}
-function labelOf(conf?: string): string {
-  return conf === 'official' ? '已核官方' : conf === 'derived' ? '官方推算' : '待核实占位'
-}
+const cellClass = (conf?: string): string => confidenceTone(conf)
+const labelOf = (conf?: string): string => confidenceLabel(conf)
 
 const summary = computed(() => summarizeCityRules(rules.value))
 const rows = computed(() =>
@@ -141,6 +111,24 @@ const derivedCount = computed(() => summary.value.totals.coreDerived)
 const pendingCount = computed(() => summary.value.totals.coreGaps)
 const officialRatio = computed(() => summary.value.coreCoverage.percent)
 const allOfficial = computed(() => rows.value.filter((r) => r.coreGaps === 0 && r.coreDerived === 0).length)
+
+const metrics = computed(() => [
+  { label: '城市', value: rows.value.length },
+  { label: '已核官方字段', value: officialCount.value, tone: 'ok' as const },
+  { label: '官方推算字段', value: derivedCount.value, tone: 'derived' as const },
+  { label: '待核实字段', value: pendingCount.value, tone: 'warn' as const },
+  {
+    label: '7 项核心字段官方率',
+    value: `${officialRatio.value}%`,
+    note: `${officialCount.value} / ${totalCount.value} 格`,
+    tone: (officialRatio.value >= 40 ? 'ok' : 'warn') as 'ok' | 'warn',
+  },
+  {
+    label: '全官方城市',
+    value: `${allOfficial.value} / ${rows.value.length}`,
+    tone: (allOfficial.value ? 'ok' : 'warn') as 'ok' | 'warn',
+  },
+])
 
 /** 缺口最多的前 6 城 */
 const worstCities = computed(() =>

@@ -17,7 +17,7 @@
         <n-card title="劳务报酬（当前）" class="card">
           <div class="tax-block">
             <div class="t-row"><span>年收入总额 <SourceTag source-key="taxPlatform" /></span><b>¥{{ labor.toLocaleString() }}</b></div>
-            <div class="t-row"><span>费用减除 (20%)</span><span>-{{ (labor * 0.2).toFixed(0) }}</span></div>
+            <div class="t-row"><span>费用减除</span><span>-{{ laborExpense.toLocaleString() }}</span></div>
             <div class="t-row"><span>基本减除</span><span>-60,000</span></div>
             <div class="t-row"><span>专项附加扣除</span><span>-{{ (store.personal.specialDeductionMonth * 12).toLocaleString() }}</span></div>
             <div v-if="extraAnnual > 0" class="t-row"><span>个人养老金 + 税优健康险</span><span>-{{ extraAnnual.toLocaleString() }}</span></div>
@@ -128,7 +128,9 @@ import { computed, ref } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
 import { NCard, NGrid, NGi, NAlert, NSteps, NStep, NSelect } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
-import { TaxEngine, type TaxEngineConfig } from '../../engine/TaxEngine'
+import { calcLaborAnnual, calcSoleProprietorship } from '../../domain/tax/calculator'
+import type { TaxBreakdown as DomainTaxBreakdown } from '../../domain/tax/rules'
+import { adaptLaborRule, adaptSoleProprietorshipRule, toCent, toYuan } from '../../application/adapters/ruleAdapters'
 import { round2 } from '../../utils/number'
 import { axisX, axisY, GRID, legend, chartColors } from '../../utils/chart'
 import ChartBox from '../ChartBox.vue'
@@ -138,11 +140,23 @@ import { yuanToCent } from '../../domain/shared/value-objects'
 
 const store = useMainStore()
 
-// 复用 TaxEngine（税表来自城市规则文件），不再页面内重复实现税表
-const taxEngine = computed(() => store.rule ? new TaxEngine({
-  laborRemuneration: store.rule.tax.laborRemuneration,
-  soleProprietorship: store.rule.soleProprietorship
-} as TaxEngineConfig) : null)
+// 税表来自城市规则文件；单位换算只发生在 adapter 边界，页面不碰分/元换算。
+const laborRule = computed(() => store.rule ? adaptLaborRule(store.rule.tax.laborRemuneration) : null)
+const soleDomainRule = computed(() => store.rule ? adaptSoleProprietorshipRule(store.rule.soleProprietorship) : null)
+
+/** 劳务报酬年度汇算。返回 domain 结果，税额/税率/税后收入都从同一结果派生。 */
+function calcLabor(annualIncome: number): DomainTaxBreakdown | null {
+  if (!laborRule.value) return null
+  const result = calcLaborAnnual(toCent(annualIncome), toCent(monthlyDeduction.value), laborRule.value)
+  return result.ok ? result.value : null
+}
+
+/** 个体户经营所得个税。返回 domain 结果，税额与应纳税所得额都从同一结果派生。 */
+function calcSole(annualTurnover: number): DomainTaxBreakdown | null {
+  if (!soleDomainRule.value) return null
+  const result = calcSoleProprietorship(toCent(annualTurnover), soleDomainRule.value)
+  return result.ok ? result.value : null
+}
 
 /**
  * 月度税前扣除 = 专项附加扣除 + 个人养老金（年缴/12）+ 税优健康险（年缴/12）。
@@ -159,13 +173,12 @@ const labor = computed(() => {
   const s = store.scenarios[0]
   return s ? s.income.grossIncome * 12 : 0
 })
-const laborTax = computed(() => {
-  if (!taxEngine.value) return 0
-  return taxEngine.value.calcLaborAnnual(labor.value, monthlyDeduction.value).annualTax
-})
-const taxableLabor = computed(() => Math.max(0, labor.value * 0.8 - 60000 - monthlyDeduction.value * 12))
-const laborRate = computed(() => labor.value > 0 ? (laborTax.value / labor.value * 100).toFixed(1) : '0')
-const afterLabor = computed(() => labor.value - laborTax.value)
+const laborTaxResult = computed(() => calcLabor(labor.value))
+const laborTax = computed(() => laborTaxResult.value ? toYuan(laborTaxResult.value.annualTax) : 0)
+const laborExpense = computed(() => laborTaxResult.value ? toYuan(laborTaxResult.value.expenseDeduction) : 0)
+const taxableLabor = computed(() => laborTaxResult.value ? toYuan(laborTaxResult.value.taxableIncome) : 0)
+const laborRate = computed(() => laborTaxResult.value ? (Number(laborTaxResult.value.effectiveRate) * 100).toFixed(1) : '0')
+const afterLabor = computed(() => laborTaxResult.value ? toYuan(laborTaxResult.value.afterTaxIncome) : labor.value)
 
 /** 每月发放/结算次数：平台按月合并结算为 1，按周约 4，按日约 26 */
 const paymentsPerMonth = ref(1)
@@ -201,15 +214,12 @@ const aboveVatThreshold = computed(() => monthlyTurnover.value >= (soleRule.valu
 const vatTax = computed(() => aboveVatThreshold.value ? round2(soleIncome.value * (soleRule.value?.vatRate ?? 0)) : 0)
 
 /**
- * 核定征收：应纳税所得额 = 经营额 × 行业所得率 − 费用减除（5000元/月×12）
- * 再套经营所得税率表。此处按占位行业所得率给出估算，
- * calcSoleProprietorship 统一处理取整与年度闭合，页面不再内联重算。
+ * 核定征收：应纳税所得额由 domain 一次算出，页面不再手写
+ * “经营额 × 行业所得率 − 费用减除”的第二个版本。
  */
-const soleTaxable = computed(() => Math.max(0, soleIncome.value * (soleRule.value?.itrIncomeRate ?? 0) - 60000))
-const itrTax = computed(() => {
-  if (!taxEngine.value || soleTaxable.value <= 0) return 0
-  return taxEngine.value.calcSoleProprietorship(soleIncome.value).annualTax
-})
+const soleTaxResult = computed(() => calcSole(soleIncome.value))
+const soleTaxable = computed(() => soleTaxResult.value ? toYuan(soleTaxResult.value.taxableIncome) : 0)
+const itrTax = computed(() => soleTaxResult.value ? toYuan(soleTaxResult.value.annualTax) : 0)
 
 const soleTotalTax = computed(() => round2(vatTax.value + itrTax.value))
 const afterSole = computed(() => soleIncome.value - soleTotalTax.value)
@@ -227,17 +237,20 @@ const savingRate = computed(() => laborTax.value > 0 ? (saving.value / laborTax.
 const taxCompareOption = computed<EChartsCoreOption>(() => {
   void store.isDark // 主题依赖：浅深切换后重算配色
   const incomes = [36000, 50000, 80000, 100000, 120000, 150000, 200000, 300000]
-  if (!taxEngine.value) return {}
+  if (!laborRule.value || !soleDomainRule.value) return {}
   const P = chartColors()
-  const laborTaxes = incomes.map(inc => Math.round(taxEngine.value!.calcLaborAnnual(inc, monthlyDeduction.value).annualTax))
+  const laborTaxes = incomes.map(inc => {
+    const result = calcLabor(inc)
+    return result ? Math.round(toYuan(result.annualTax)) : 0
+  })
   // 个体户口径：增值税 + 核定个税，两者相加才与左侧的"劳务报酬个税"可比。
   // 核定所得率未核到本城有效税率表时，只画增值税，避免用占位数得出"省税"结论。
   const vatOnly = incomes.map(inc => (inc / 12 >= (soleRule.value?.vatThresholdMonthly ?? Infinity) ? Math.round(round2(inc * (soleRule.value?.vatRate ?? 0))) : 0))
   const soleTaxes = itrVerified.value
     ? incomes.map(inc => {
         const vat = inc / 12 >= (soleRule.value?.vatThresholdMonthly ?? Infinity) ? round2(inc * (soleRule.value?.vatRate ?? 0)) : 0
-        const itr = taxEngine.value!.calcSoleProprietorship(inc).annualTax
-        return Math.round(vat + itr)
+        const sole = calcSole(inc)
+        return Math.round(vat + (sole ? toYuan(sole.annualTax) : 0))
       })
     : vatOnly
   return {

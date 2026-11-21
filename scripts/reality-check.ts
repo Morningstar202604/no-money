@@ -1,9 +1,9 @@
 import { readFileSync } from 'node:fs'
 import { ScenarioService } from '../src/application/scenario/ScenarioService'
 import type { ScenarioInput } from '../src/application/scenario/ScenarioService'
-import { BenefitEngine } from '../src/engine/BenefitEngine'
-import { projectRetirement as domRetire } from '../src/domain/benefit/calculator'
+import { projectRetirement } from '../src/domain/benefit/calculator'
 import { Cent, Rate } from '../src/domain/shared/value-objects'
+import { adaptRetirementRule } from '../src/application/adapters/ruleAdapters'
 
 const rule = JSON.parse(readFileSync('public/rules/guangzhou.json', 'utf8'))
 const svc = new ScenarioService(rule)
@@ -64,8 +64,9 @@ run('S5 全职缴社保(默认基数=申报收入)', { personal: { hasSocialInsu
 
 run('S6 全职缴最低基数', { personal: { hasSocialInsurance: true, pensionBase: 5521, medicalBase: 6234 } })
 
-const contrib = Cent.create(5521 * 100 * 0.08)
-const dr = domRetire(25, 60, contrib, 15, Rate.create(0.03), Rate.create(0.6), Cent.create(9493 * 100))
+const retirement = adaptRetirementRule(rule.retirement)
+const contrib = Cent.create(Math.round(5521 * 100 * 0.08))
+const dr = projectRetirement(25, 60, contrib, 15, Rate.create(0.03), retirement.paymentIndex, retirement.benefitBaseMonthly)
 if (dr.ok) {
   const v = dr.value
   console.log('\n== S7 domain口径: 25岁起按最低基数缴15年(40岁停缴)，60岁领取')
@@ -73,7 +74,12 @@ if (dr.ok) {
   console.log('  缴费 15 年（180 个月）后账户仅复利至 60 岁，计发月数按 60 岁取 139；账户只注 8% 个账部分')
 }
 
-const gz = new BenefitEngine(rule.benefit, rule.retirement)
-const r = gz.projectRetirement(25, 60, Math.round(5521 * 0.08), 35, 0.03)
-console.log('\n== 退休面板口径: 25岁起按最低基数缴至60岁（个账月注 442 元）')
-console.log('  个人账户=' + r.personalAccount + '  基础=' + r.basePension + '  个账养老金=' + r.personalPension + '  月合计=' + r.totalPension)
+const r = projectRetirement(
+  25, 60, Cent.create(Math.round(5521 * 100 * 0.08)), 35,
+  Rate.create(0.03), retirement.paymentIndex, retirement.benefitBaseMonthly,
+)
+if (r.ok) {
+  const v = r.value
+  console.log('\n== 退休面板口径: 25岁起按最低基数缴至60岁（个账月注 442 元）')
+  console.log('  个人账户=' + v.personalAccount / 100 + '  基础=' + v.basePension / 100 + '  个账养老金=' + v.personalPension / 100 + '  月合计=' + v.totalPension / 100)
+}

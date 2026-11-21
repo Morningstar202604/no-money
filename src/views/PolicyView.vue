@@ -89,7 +89,7 @@
             汇总 34 个城市规则文件的来源等级和登记日期。<b>只统计成功读取的城市</b>；读取失败的城市单独列出，不补 0、不冒充已核对。
             点开明细可切到任一城市，下面的「本城数据状态」会随之刷新。
           </p>
-          <div v-if="freshnessLoading" class="df-loading">正在读取 34 城规则…（已读取 {{ freshnessOverview.loaded }} / {{ CITY_REGISTRY.length }}）</div>
+          <div v-if="freshnessLoading" class="df-loading">正在读取 34 城规则…</div>
           <n-alert v-if="!freshnessLoading && freshnessError" type="warning" :show-icon="true" style="margin-bottom:8px">
             {{ freshnessError }}
           </n-alert>
@@ -103,8 +103,7 @@
               <span :class="{ 'df-warn': freshnessOverview.totals.staleCount > 0 }">超 12 个月 <b>{{ freshnessOverview.totals.staleCount }}</b></span>
             </div>
             <div v-if="freshnessOverview.missing.length" class="df-missing">
-              未读取：{{ freshnessOverview.missing.join('、') }}。
-              <button type="button" class="df-switch" @click="reloadFreshness">重试</button>
+              未读取城市已在上方提示中列出；总览只统计成功读取的城市，不补 0。
             </div>
             <details class="df-details">
               <summary>查看 34 城明细</summary>
@@ -157,15 +156,15 @@
           <div v-else class="policy-list">
             <FoldCard v-for="(s, key) in rule.sources" :key="key">
               <template #header>
-                <n-tag :type="s.confidence === 'official' ? 'success' : s.confidence === 'derived' ? 'warning' : 'error'"
-                       size="small" :bordered="false">{{ s.confidence }}</n-tag>
+                <n-tag :type="confidenceType(s.confidence)"
+                       size="small" :bordered="false">{{ confidenceLabel(s.confidence) }}</n-tag>
                 <span class="src-key">{{ FIELD_LABELS[key] || key }}</span>
               </template>
               <div class="src-title">{{ s.title }}<span v-if="s.docNo" class="pi-doc">{{ s.docNo }}</span></div>
               <div class="src-meta">
                 <span v-if="s.issuedBy">{{ s.issuedBy }} · </span>
                 <span v-if="s.effectiveFrom">生效：{{ s.effectiveFrom }} · </span>
-                <span>{{ s.confidence === 'unverified' ? '登记于' : '核对于' }} {{ s.retrievedAt }}</span>
+                <span>{{ retrievedDateVerb(s.confidence) }} {{ s.retrievedAt }}</span>
               </div>
               <p v-if="s.note" class="src-note">{{ s.note }}</p>
               <a v-if="s.url" :href="s.url" target="_blank" rel="noopener noreferrer" class="pi-link">查看原文 ↗</a>
@@ -317,15 +316,14 @@ import { computed, ref, watch } from 'vue'
 import { NCard, NTabs, NTabPane, NGrid, NGi, NTag, NSteps, NStep, NEmpty, NInput, NRadioGroup, NRadioButton, NAlert } from 'naive-ui'
 import { useMainStore } from '../stores/main'
 import { CITY_REGISTRY } from '../data/cities'
-import { loadCityRules } from '../data/cityRules'
-import type { CityRule } from '../types'
-import { SOURCE_LABELS, sourceLabel } from '../utils/sources'
+import { useTabQuery } from '../composables/useTabQuery'
+import { useCityRules } from '../composables/useCityRules'
+import { SOURCE_LABELS, sourceLabel, confidenceType, confidenceLabel, retrievedDateVerb } from '../utils/sources'
 import { assetUrl } from '../utils/asset'
 import FoldCard from '../components/FoldCard.vue'
 import RealityList from '../components/RealityList.vue'
 import GuideCard from '../components/GuideCard.vue'
 import KbResultCard from '../components/KbResultCard.vue'
-import { useTabQuery } from '../composables/useTabQuery'
 import { REALITY_FACTS, REALITY_CATEGORY_ORDER, REALITY_CATEGORY_LABELS } from '../utils/reality'
 import { splitManualGuides } from '../data/rights/manual'
 import { POLICIES, RELIEF_GUIDE, PROVINCE_POLICY_CHECKLIST, type PolicyStatus } from '../data/policies'
@@ -345,38 +343,22 @@ const sourceFreshness = computed(() => summarizeSourceFreshness(rule.value?.sour
 const unverifiedSourceLabels = computed(() => sourceFreshness.value.unverifiedKeys.map(sourceLabel))
 
 /* ---------- 34 城总览 ---------- */
-const freshnessRules = ref<Record<string, Pick<CityRule, 'sources'> | null>>({})
-const freshnessLoading = ref(false)
-const freshnessError = ref('')
-let freshnessRequested = false
-
-async function loadFreshnessOverview(force = false) {
-  if (freshnessLoading.value) return
-  if (freshnessRequested && !force) return
-  freshnessRequested = true
-  freshnessLoading.value = true
-  freshnessError.value = ''
-  // 与 /admin、/audit 共用同一套 34 城加载与索引回退：
-  // 之前这里自己 Promise.all 34 个 fetch，索引缺失时没有统一兜底，
-  // 同一份规则在三个页面可能显示不同的城市集合。
-  const loaded = await loadCityRules(import.meta.env.BASE_URL)
-  freshnessRules.value = Object.fromEntries(loaded.rules.map((rule) => [rule.city, rule]))
-  freshnessError.value = loaded.missing.length
-    ? `有 ${loaded.missing.length} 城规则读取失败；总览只统计成功读取的城市，未读取的不会补 0。`
-    : ''
-  freshnessLoading.value = false
-}
-
-function reloadFreshness() {
-  freshnessRequested = false
-  void loadFreshnessOverview(true)
-}
+const {
+  rules: freshnessRules,
+  loading: freshnessLoading,
+  notice: freshnessError,
+  load: loadFreshnessOverview,
+  reload: reloadFreshness,
+} = useCityRules()
+const freshnessByCity = computed(() =>
+  Object.fromEntries(freshnessRules.value.map((rule) => [rule.city, rule])),
+)
 
 function switchCity(city: string) {
   void store.setCity(city)
 }
 
-const freshnessOverview = computed(() => summarizeCityFreshness(CITY_REGISTRY, freshnessRules.value))
+const freshnessOverview = computed(() => summarizeCityFreshness(CITY_REGISTRY, freshnessByCity.value))
 const kbJsonUrl = assetUrl('knowledge/kb.json')
 const kbReadmeUrl = assetUrl('knowledge/README.md')
 

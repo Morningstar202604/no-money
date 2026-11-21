@@ -41,7 +41,9 @@
         >新毕业生第一年</button>
       </div>
 
-      <div v-if="mode === 'monthly'" class="ep-form-grid">
+      <div class="ep-form-grid">
+        <!-- 两种模式共用同一个参保城市字段：此前两个分支各抄一份，切模式时
+             下拉的 loading / changeCity 行为可能分叉 -->
         <label class="ep-field">
           <span class="ep-label">参保城市</span>
           <n-select
@@ -53,118 +55,109 @@
           />
         </label>
 
-        <label class="ep-field">
-          <span class="ep-label">税前月薪（应发）</span>
-          <n-input-number
-            v-model:value="monthlyGross"
-            :min="0"
-            :precision="2"
-            :show-button="false"
-            size="large"
-            placeholder="例如 10000"
-          />
-        </label>
+        <template v-if="mode === 'monthly'">
+          <label class="ep-field">
+            <span class="ep-label">税前月薪（应发）</span>
+            <n-input-number
+              v-model:value="monthlyGross"
+              :min="0"
+              :precision="2"
+              :show-button="false"
+              size="large"
+              placeholder="例如 10000"
+            />
+          </label>
 
-        <label class="ep-field">
-          <span class="ep-label">个人五险一金合计</span>
-          <n-input-number
-            v-model:value="monthlySocialFund"
-            :min="0"
-            :precision="2"
-            :show-button="false"
-            size="large"
-            placeholder="工资条上“个人”列合计"
-          />
-          <span class="ep-hint">只填个人扣款，不含单位缴的部分；不知道可先填 0，结果会偏高。</span>
-        </label>
+          <label class="ep-field">
+            <span class="ep-label">个人五险一金合计</span>
+            <n-input-number
+              v-model:value="monthlySocialFund"
+              :min="0"
+              :precision="2"
+              :show-button="false"
+              size="large"
+              placeholder="工资条上“个人”列合计"
+            />
+            <span class="ep-hint">只填个人扣款，不含单位缴的部分；不知道可先填 0，结果会偏高。</span>
+          </label>
 
-        <label class="ep-field">
-          <span class="ep-label">专项附加扣除 / 月</span>
-          <n-input-number
-            v-model:value="monthlySpecialDeduction"
-            :min="0"
-            :precision="2"
-            :show-button="false"
-            size="large"
-            placeholder="没有填 0"
-          />
-        </label>
-      </div>
+          <label class="ep-field">
+            <span class="ep-label">专项附加扣除 / 月</span>
+            <n-input-number
+              v-model:value="monthlySpecialDeduction"
+              :min="0"
+              :precision="2"
+              :show-button="false"
+              size="large"
+              placeholder="没有填 0"
+            />
+          </label>
+        </template>
 
-      <div v-else class="ep-form-grid">
-        <label class="ep-field">
-          <span class="ep-label">参保城市</span>
-          <n-select
-            :value="store.work.city"
-            :options="cityOptions"
-            :loading="store.loading"
-            size="large"
-            @update:value="changeCity"
-          />
-        </label>
+        <template v-else>
+          <label class="ep-field">
+            <span class="ep-label">试用期月薪（应发）</span>
+            <n-input-number
+              v-model:value="probationMonthlyGross"
+              :min="0"
+              :precision="2"
+              :show-button="false"
+              size="large"
+              placeholder="按合同填；没有试用期填 0"
+            />
+          </label>
 
-        <label class="ep-field">
-          <span class="ep-label">试用期月薪（应发）</span>
-          <n-input-number
-            v-model:value="probationMonthlyGross"
-            :min="0"
-            :precision="2"
-            :show-button="false"
-            size="large"
-            placeholder="按合同填；没有试用期填 0"
-          />
-        </label>
+          <label class="ep-field">
+            <span class="ep-label">试用期月数</span>
+            <n-input-number
+              v-model:value="probationMonths"
+              :min="0"
+              :max="12"
+              :precision="0"
+              :show-button="false"
+              size="large"
+              placeholder="例如 3"
+            />
+            <span class="ep-hint">按合同填，平台不判断试用期长度或工资是否合法。</span>
+          </label>
 
-        <label class="ep-field">
-          <span class="ep-label">试用期月数</span>
-          <n-input-number
-            v-model:value="probationMonths"
-            :min="0"
-            :max="12"
-            :precision="0"
-            :show-button="false"
-            size="large"
-            placeholder="例如 3"
-          />
-          <span class="ep-hint">按合同填，平台不判断试用期长度或工资是否合法。</span>
-        </label>
+          <label class="ep-field">
+            <span class="ep-label">转正后月薪（应发）</span>
+            <n-input-number
+              v-model:value="regularMonthlyGross"
+              :min="0"
+              :precision="2"
+              :show-button="false"
+              size="large"
+              placeholder="例如 10000"
+            />
+          </label>
 
-        <label class="ep-field">
-          <span class="ep-label">转正后月薪（应发）</span>
-          <n-input-number
-            v-model:value="regularMonthlyGross"
-            :min="0"
-            :precision="2"
-            :show-button="false"
-            size="large"
-            placeholder="例如 10000"
-          />
-        </label>
+          <label class="ep-field">
+            <span class="ep-label">个人五险一金 / 月</span>
+            <n-input-number
+              v-model:value="monthlySocialFund"
+              :min="0"
+              :precision="2"
+              :show-button="false"
+              size="large"
+              placeholder="工资条上“个人”列合计"
+            />
+            <span class="ep-hint">试用期和转正后不同时填平均；只填个人扣款，不推断单位费率。</span>
+          </label>
 
-        <label class="ep-field">
-          <span class="ep-label">个人五险一金 / 月</span>
-          <n-input-number
-            v-model:value="monthlySocialFund"
-            :min="0"
-            :precision="2"
-            :show-button="false"
-            size="large"
-            placeholder="工资条上“个人”列合计"
-          />
-          <span class="ep-hint">试用期和转正后不同时填平均；只填个人扣款，不推断单位费率。</span>
-        </label>
-
-        <label class="ep-field">
-          <span class="ep-label">专项附加扣除 / 月</span>
-          <n-input-number
-            v-model:value="monthlySpecialDeduction"
-            :min="0"
-            :precision="2"
-            :show-button="false"
-            size="large"
-            placeholder="没有填 0"
-          />
-        </label>
+          <label class="ep-field">
+            <span class="ep-label">专项附加扣除 / 月</span>
+            <n-input-number
+              v-model:value="monthlySpecialDeduction"
+              :min="0"
+              :precision="2"
+              :show-button="false"
+              size="large"
+              placeholder="没有填 0"
+            />
+          </label>
+        </template>
       </div>
 
       <n-alert v-if="mode === 'monthly' && inputError" type="warning" :show-icon="true" style="margin-top:12px">

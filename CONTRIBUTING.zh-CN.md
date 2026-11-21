@@ -18,7 +18,7 @@ Node 22+。桌面端需要 Rust 工具链（`npm run tauri:dev`）。
 
 1. **先跑一遍 `npm test`**，确认基线全绿再改
 2. **读相邻代码**：项目有明确分层（见 `ARCHITECTURE.md`），照现有模式写
-3. **改计算逻辑要同步对拍基准**：`ScenarioService` 的任何评分/文案改动都要同步 `src/engine/ScenarioEngine.ts`，否则 `tests/parity/` 的 213 例会红
+3. **计算只有一条路径**：`ScenarioService` 与 `domain/*` 是唯一实现；改公式要同步更新 `tests/domain/**` 与金样本断言，不存在“旧引擎对拍”可同步
 4. **数据诚实是硬约束**：不得为新增城市编造社保基数、最低工资数值。没有官方原文就标 `unverified` 并在 note 写明「不可对外引用」
 
 ## 代码约定

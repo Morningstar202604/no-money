@@ -15,34 +15,7 @@
     <p v-if="loadNotice" class="data-note">{{ loadNotice }}</p>
 
     <!-- 总览指标 -->
-    <div class="metric-row">
-      <div class="metric">
-        <span class="metric-label">城市总数</span>
-        <span class="metric-value">{{ rows.length }}</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">已完全核验</span>
-        <span class="metric-value ok">{{ fullyVerified }}</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">部分待核实</span>
-        <span class="metric-value warn">{{ rows.length - fullyVerified }}</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">字段总数</span>
-        <span class="metric-value">{{ totalFields }}</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">全库条目官方占比</span>
-        <span class="metric-value" :class="sourceCoverage.percent >= 50 ? 'ok' : 'warn'">{{ sourceCoverage.percent }}%</span>
-        <span class="metric-note">{{ sourceCoverage.numerator }} / {{ sourceCoverage.denominator }} 条</span>
-      </div>
-      <div class="metric">
-        <span class="metric-label">7 项核心字段官方率</span>
-        <span class="metric-value" :class="coreCoverage.percent >= 50 ? 'ok' : 'warn'">{{ coreCoverage.percent }}%</span>
-        <span class="metric-note">{{ coreCoverage.numerator }} / {{ coreCoverage.denominator }} 格</span>
-      </div>
-    </div>
+    <DataMetricGrid :items="metrics" />
 
     <!-- 置信度分布图 -->
     <div class="panel">
@@ -147,6 +120,7 @@ import { ref, computed, onMounted } from 'vue'
 import { NButton, NInput } from 'naive-ui'
 
 import { summarizeCityRules } from '../data/cityRules'
+import DataMetricGrid from '../components/DataMetricGrid.vue'
 import { useCityRules } from '../composables/useCityRules'
 
 const { rules, notice: loadNotice, load } = useCityRules()
@@ -158,15 +132,33 @@ const summary = computed(() => summarizeCityRules(rules.value))
 const rows = computed(() => summary.value.rows)
 const sourceCoverage = computed(() => summary.value.sourceCoverage)
 const coreCoverage = computed(() => summary.value.coreCoverage)
+const fullyVerified = computed(() => rows.value.filter((r) => r.unverified === 0).length)
+const totalFields = computed(() => summary.value.totals.sources)
+
+const metrics = computed(() => [
+  { label: '城市总数', value: rows.value.length },
+  { label: '已完全核验', value: fullyVerified.value, tone: 'ok' as const },
+  { label: '部分待核实', value: rows.value.length - fullyVerified.value, tone: 'warn' as const },
+  { label: '字段总数', value: totalFields.value },
+  {
+    label: '全库条目官方占比',
+    value: `${sourceCoverage.value.percent}%`,
+    note: `${sourceCoverage.value.numerator} / ${sourceCoverage.value.denominator} 条`,
+    tone: (sourceCoverage.value.percent >= 50 ? 'ok' : 'warn') as 'ok' | 'warn',
+  },
+  {
+    label: '7 项核心字段官方率',
+    value: `${coreCoverage.value.percent}%`,
+    note: `${coreCoverage.value.numerator} / ${coreCoverage.value.denominator} 格`,
+    tone: (coreCoverage.value.percent >= 50 ? 'ok' : 'warn') as 'ok' | 'warn',
+  },
+])
 
 const filteredRows = computed(() => {
   const q = filter.value.trim().toLowerCase()
   if (!q) return rows.value
   return rows.value.filter((r) => r.id.includes(q) || r.name.includes(q))
 })
-
-const fullyVerified = computed(() => rows.value.filter((r) => r.unverified === 0).length)
-const totalFields = computed(() => summary.value.totals.sources)
 
 const confidenceCounts = computed(() => ({
   official: summary.value.totals.official,

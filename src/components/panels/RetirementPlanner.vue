@@ -60,7 +60,7 @@
     </n-card>
 
     <!-- 规则未就绪时不渲染 0 值：¥0 预估养老金会被读成真实结论 -->
-    <n-skeleton v-if="!engine" height="120px" style="margin-top: 12px" />
+    <n-skeleton v-if="!retirementRule" height="120px" style="margin-top: 12px" />
     <div v-else class="kpi-row" style="margin-top: 12px">
       <div class="stat">
         <span class="stat-label">{{ store.personal.expectedRetireAge }}岁预估月养老金</span>
@@ -266,7 +266,9 @@ import { computed } from 'vue'
 import type { EChartsCoreOption } from 'echarts/core'
 import { NCard, NGrid, NGi, NTable, NAlert, NInputNumber, NTag, NButton, NSkeleton } from 'naive-ui'
 import { useMainStore } from '../../stores/main'
-import { BenefitEngine } from '../../engine/BenefitEngine'
+import { projectRetirement } from '../../domain/benefit/calculator'
+import { centToYuan, Rate, yuanToCent } from '../../domain/shared/value-objects'
+import { adaptRetirementRule } from '../../application/adapters/ruleAdapters'
 import { issuanceMonthsForAge } from '../../utils/issuanceMonths'
 import { calcPensionActuarial } from '../../domain/benefit/actuarial'
 import { compareSocialVsSelf } from '../../domain/benefit/selfFunded'
@@ -284,7 +286,42 @@ import {
 } from '../../domain/benefit/actuarial'
 
 const store = useMainStore()
-const engine = computed(() => store.rule ? new BenefitEngine(store.rule.benefit, store.rule.retirement) : null)
+const retirementRule = computed(() => store.rule ? adaptRetirementRule(store.rule.retirement) : null)
+
+interface RetirementView {
+  totalPension: number
+  personalAccount: number
+  basePension: number
+  personalPension: number
+  months: number
+}
+
+/**
+ * 页面只做「元 ↔ 分」边界转换，退休公式全部走 domain。
+ * 旧 BenefitEngine 的 6 参数重载曾让调用方漏传缴费指数时静默按 0.6 兜底，
+ * 这里改成显式传参 + Result 检查，domain 失败时返回 null 而不是出 NaN。
+ */
+function projectView(monthlyAccount: number, years: number, paymentIndex: number): RetirementView | null {
+  const rule = retirementRule.value
+  if (!rule) return null
+  const result = projectRetirement(
+    store.personal.currentAge,
+    store.personal.expectedRetireAge,
+    yuanToCent(monthlyAccount),
+    years,
+    Rate.create(annualReturn.value),
+    Rate.create(Number.isFinite(paymentIndex) ? paymentIndex : 0.6),
+    rule.benefitBaseMonthly,
+  )
+  if (!result.ok) return null
+  return {
+    totalPension: centToYuan(result.value.totalPension),
+    personalAccount: centToYuan(result.value.personalAccount),
+    basePension: centToYuan(result.value.basePension),
+    personalPension: centToYuan(result.value.personalPension),
+    months: result.value.months,
+  }
+}
 /**
  * 个人账户记账利率：用户设定优先，否则用本城规则里的默认假设。
  * 此前本文件各处兜底值不一致（0.05 / 0.03 混用），同一页面不同图表
@@ -361,20 +398,19 @@ const accountMonthly = computed(() => {
  */
 const contributionYears = computed(() => Math.max(1, store.personal.expectedRetireAge - store.personal.currentAge))
 
-const retireResult = computed(() => {
-  if (!engine.value) return { totalPension: 0, personalAccount: 0, basePension: 0, personalPension: 0, months: 0 }
-  // 缴费指数必须与当前测算基数一致：不传时引擎按法定下限 0.6 兜底，
+const retireResult = computed<RetirementView>(() => {
+  if (!retirementRule.value) return { totalPension: 0, personalAccount: 0, basePension: 0, personalPension: 0, months: 0 }
+  // 缴费指数必须与当前测算基数一致：不传时 domain 按法定下限 0.6 兜底，
   // 选了 100%/200% 档的用户首屏基础养老金被大幅低估，且与下方档次对比图互相打架
   const socialAvg = socialAverageWage(
     store.rule?.benefit.pension.baseMin ?? 0,
     store.rule?.benefit.pension.baseMax,
   )
-  return engine.value.projectRetirement(
-    store.personal.currentAge, store.personal.expectedRetireAge,
-    accountMonthly.value, contributionYears.value,
-    annualReturn.value,
-    effectivePensionBase.value / socialAvg,
-  )
+  return projectView(
+    accountMonthly.value,
+    contributionYears.value,
+    socialAvg > 0 ? effectivePensionBase.value / socialAvg : 0.6,
+  ) ?? { totalPension: 0, personalAccount: 0, basePension: 0, personalPension: 0, months: 0 }
 })
 
 const issuanceMonths = computed(() => issuanceMonthsForAge(store.personal.expectedRetireAge))
@@ -435,7 +471,7 @@ const fifteenYearCost = computed(() => {
 
 const tierOption = computed<EChartsCoreOption>(() => {
   void store.isDark // 主题依赖：浅深切换后重算配色
-  if (!engine.value) return {}
+  if (!retirementRule.value) return {}
   const P = chartColors()
   const baseMin = store.rule?.benefit.pension.baseMin || 5000
   const baseMax = store.rule?.benefit.pension.baseMax || 26000
@@ -444,18 +480,17 @@ const tierOption = computed<EChartsCoreOption>(() => {
   // 旧的线性插值系数与档位标签脱钩，200% 档基数反而低于 150% 档，
   // 图上出现"缴得越多、养老金越少"的反向结论
   const tiers = buildPensionTiers(baseMin, baseMax)
-  const annualReturnVal = annualReturn.value
   const accountRate = store.rule?.retirement.personalAccountRate ?? 0.08
   const contribData = tiers.map(t => Math.round(t.base * rate))
   // 各档基础养老金必须按该档自身的缴费指数算（指数 = 基数 ÷ 社平）。
   // 不传指数时引擎按法定下限 0.6 兜底，会让 100%/200% 档养老金被大幅低估
   // （200%档少约 ¥2,300/月），图上呈现"多缴并不划算"的错误结论。
   const socialAvg = socialAverageWage(baseMin, baseMax)
-  const pensionData = tiers.map(t => engine.value!.projectRetirement(
-    store.personal.currentAge, store.personal.expectedRetireAge,
-    Math.round(t.base * accountRate), store.personal.expectedRetireAge - store.personal.currentAge,
-    annualReturnVal, t.base / socialAvg,
-  ).totalPension)
+  const pensionData = tiers.map(t => projectView(
+    Math.round(t.base * accountRate),
+    store.personal.expectedRetireAge - store.personal.currentAge,
+    t.base / socialAvg,
+  )?.totalPension ?? 0)
   return {
     tooltip: { trigger: 'axis' },
     legend: legend(['月养老金', '月缴费额'], P),
@@ -471,13 +506,12 @@ const tierOption = computed<EChartsCoreOption>(() => {
 
 const growthOption = computed<EChartsCoreOption>(() => {
   void store.isDark
-  if (!engine.value) return {}
+  if (!retirementRule.value) return {}
   const P = chartColors()
   const annualReturnVal = annualReturn.value
-  // 取数逻辑抽到 utils/pensionSeries（纯函数），保证本图每个点与退休引擎同口径；
+  // 取数逻辑抽到 utils/pensionSeries（纯函数），保证本图每个点与退休测算同口径；
   // 内联复利循环曾与引擎漂移约 9000 倍，且组件内无法被单测发现
   const points = buildPensionGrowthSeries({
-    engine: engine.value,
     currentAge: store.personal.currentAge,
     retireAge: store.personal.expectedRetireAge,
     accountMonthly: accountMonthly.value,
@@ -500,8 +534,7 @@ const growthOption = computed<EChartsCoreOption>(() => {
 })
 
 const compareYears = computed(() => {
-  if (!engine.value) return []
-  const annualReturnVal = annualReturn.value
+  if (!retirementRule.value) return []
   const rate = store.rule?.benefit.pension.rate || 0.2
   // 与首屏同一基数口径：用户自选优先，未选按下限
   const base = effectivePensionBase.value
@@ -523,14 +556,14 @@ const compareYears = computed(() => {
     // 缴满 N 年后停缴，养老金仍在法定退休年龄领取：
     // 缴费年限只影响基础养老金与账户累积，不改变领取时点（缴 15 年不等于 40 岁退休）。
     // 成本按全额 20% 缴费计；账户滚存只用其中 8% 的个账部分。
-    const r = engine.value!.projectRetirement(store.personal.currentAge, retireAge, accountMo, years, annualReturnVal, paymentIndex)
+    const r = projectView(accountMo, years, paymentIndex ?? 0.6)
     const paid = years * 12 * monthly
     const label = years === full ? `缴至退休（${retireAge}岁）` : `缴${years}年`
     return {
       years, label,
-      pension: r.totalPension,
-      account: r.personalAccount,
-      yearsToBreakEven: r.totalPension > 0 ? Math.round((paid / (r.totalPension * 12)) * 10) / 10 : 0,
+      pension: r?.totalPension ?? 0,
+      account: r?.personalAccount ?? 0,
+      yearsToBreakEven: r && r.totalPension > 0 ? Math.round((paid / (r.totalPension * 12)) * 10) / 10 : 0,
     }
   })
 })

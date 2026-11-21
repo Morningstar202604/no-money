@@ -27,11 +27,27 @@ export function sourceLabel(key: string): string {
 /** 置信度 → 短标签。official=已回溯官方原文；derived=据官方口径推算；unverified=无权威来源，仅占位 */
 export const CONFIDENCE_LABELS: Record<SourceRef['confidence'], string> = {
   official: '已核官方',
-  derived: '推算口径',
-  unverified: '待核验',
+  derived: '官方推算',
+  unverified: '待核实占位',
+}
+
+/** 置信度的唯一色阶映射：policy 的 tag 与 audit 的单元格都从这里派生，不再各写一套三元表达式 */
+export function confidenceTone(c?: string): 'ok' | 'derived' | 'warn' {
+  return c === 'official' ? 'ok' : c === 'derived' ? 'derived' : 'warn'
 }
 
 /** 置信度 → naive-ui tag 语义色，chip 与政策页保持一致 */
-export function confidenceType(c: SourceRef['confidence']): 'success' | 'warning' | 'error' {
-  return c === 'official' ? 'success' : c === 'derived' ? 'warning' : 'error'
+export function confidenceType(c?: string): 'success' | 'warning' | 'error' {
+  const tone = confidenceTone(c)
+  return tone === 'ok' ? 'success' : tone === 'derived' ? 'warning' : 'error'
+}
+
+/** 置信度 → 中文短标签；未知值按“待核实占位”处理，不让脏值泄漏到界面 */
+export function confidenceLabel(c?: string): string {
+  return c === 'official' || c === 'derived' ? CONFIDENCE_LABELS[c] : CONFIDENCE_LABELS.unverified
+}
+
+/** 日期前缀：unverified 从未核对过，只能写“登记于”；其余写“核对于” */
+export function retrievedDateVerb(c?: string): '登记于' | '核对于' {
+  return c === 'unverified' ? '登记于' : '核对于'
 }

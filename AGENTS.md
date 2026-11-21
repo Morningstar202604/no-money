@@ -56,7 +56,6 @@ src/
 cli/               Command line entry
 mcp/               MCP server (stdio transport)
 server/            HTTP API (Node native http)
-src/engine/        Legacy engines — deprecated, allowed importers only (see below)
 ```
 
 **Dependency direction is one-way:** `views → components → stores → application → domain`.
@@ -70,13 +69,12 @@ and that class of bug is nearly impossible to find because each entry point test
 
 `tests/architecture.spec.ts` enforces this and the module boundaries below.
 
-### Legacy engine rule
+### Single calculation path
 
-`src/engine/*` is retained only for parity tests and two panels that have not migrated yet
-(`TaxOptimizer`, `RetirementPlanner`; `pensionSeries` imports a type). **Do not add new imports**
-from `src/engine` in views/components/stores/application/domain. New work goes in `src/domain` +
-`src/application`. Removing the legacy path requires deleting the parity test first — see
-[`src/engine/README.md`](src/engine/README.md).
+`src/engine` was deleted in 0.0.43 after `TaxOptimizer`, `RetirementPlanner` and
+`pensionSeries` moved to `src/domain` + `src/application/adapters`. There is no legacy engine
+fallback: new work goes in `src/domain` + `src/application`, and `tests/architecture.spec.ts`
+fails if `src/engine` is re-introduced or any source file imports an `engine/` path.
 
 ## Data policy — the rule that overrides everything
 

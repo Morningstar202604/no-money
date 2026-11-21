@@ -17,8 +17,6 @@ src/
 │   ├── compensation/ CompensationService：五类维权场景的金额与依据
 │   └── adapters/    元↔分、legacy 规则 → domain 规则的唯一转换处
 ├── kernel/          对外计算契约（calculate.ts），CLI / API / MCP / Web 共用
-├── engine/          旧引擎（deprecated）：ScenarioEngine/IncomeEngine 仅对拍；
-│                    TaxEngine/BenefitEngine 仍被两个面板使用，见 engine/README.md
 ├── stores/          Pinia：参数、规则加载、我的清单本机持久化（I/O 都在这一层）
 ├── composables/     AI 对话（流式 SSE、离线知识库兜底）
 ├── data/            城市 / 省级入口 / 权益内容目录（`rights/catalog.ts`，含 L1/L2 等级）
@@ -110,16 +108,15 @@ components / views 渲染
 |---|---|
 | `tests/domain/` | 纯函数单测（含手算基准） |
 | `tests/application/` | 服务层编排 |
-| `tests/parity/` | 新旧引擎对拍（21 个用例），重构护栏 |
 | `tests/stores/` | 状态、持久化、跨城切换 |
 | `tests/wiring/` | 组件接线回归（防「改了一处忘另一处」） |
 | `tests/components/` | 组件挂载级回归（happy-dom）：补偿时序、文书金额与按月分段、页签配置 |
 | `tests/data/` | 省份归属映射（决定是否引用地方性法规） |
 | `tests/rulesGate.spec.ts` | 规则文件溯源门禁 |
 | `tests/cities.spec.ts` | 34 城数据完整性 |
-| `tests/architecture.spec.ts` | 分层/内核/旧引擎边界门禁 |
+| `tests/architecture.spec.ts` | 分层/内核/单一计算路径门禁 |
 
-`npm test` 一条命令覆盖全部（当前 51 文件 / 1,102 项）；`npm run verify` 额外跑引擎自检；
+`npm test` 一条命令覆盖全部（当前 66 文件 / 841 项）；`npm run verify` 额外跑生产路径引擎自检；
 `npm run kb:check` 校验 `public/knowledge/kb.json` 与数据源逐字段同步；
 `npm run typecheck`（src）与 `npm run typecheck:test`（tests + scripts）分别把关类型；
 `npm run doctor` 做跨切面一致性检查（体积、文档、PWA、数据）。

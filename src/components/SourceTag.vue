@@ -15,7 +15,7 @@
     <div class="st-pop">
       <div class="st-pop-head">
         <n-tag :type="confidenceType(source.confidence)" size="tiny" :bordered="false">
-          {{ CONFIDENCE_LABELS[source.confidence] }}
+          {{ confidenceLabel(source.confidence) }}
         </n-tag>
         <span class="st-pop-label">{{ label || sourceLabel(sourceKey) }}</span>
       </div>
@@ -26,7 +26,7 @@
         <span v-if="source.effectiveFrom">生效：{{ source.effectiveFrom }}</span>
         <!-- unverified 条目写「核对于」是假信息：它从未被核对过，
              只是录入日期。占位条目必须如实写「登记于」 -->
-        <span>{{ source.confidence === 'unverified' ? '登记于' : '核对于' }} {{ source.retrievedAt }}</span>
+        <span>{{ retrievedDateVerb(source.confidence) }} {{ source.retrievedAt }}</span>
       </div>
       <p v-if="source.note" class="st-pop-note">{{ source.note }}</p>
       <p v-if="source.confidence === 'unverified'" class="st-pop-warn">
@@ -41,7 +41,7 @@
 import { computed } from 'vue'
 import { NPopover, NTag } from 'naive-ui'
 import { useMainStore } from '../stores/main'
-import { sourceLabel, confidenceType, CONFIDENCE_LABELS } from '../utils/sources'
+import { sourceLabel, confidenceType, confidenceLabel, retrievedDateVerb } from '../utils/sources'
 
 const props = defineProps<{
   /** rule.sources 的键，如 pension / minimumWage / income */
