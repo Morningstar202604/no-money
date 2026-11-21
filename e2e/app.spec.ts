@@ -41,6 +41,15 @@ test.describe('应用可用性', () => {
     await expect(page.getByRole('complementary', { name: '参数设置' })).toBeVisible()
     await dismissOnboarding(page)
 
+    // 顶栏不再用“部分待核验”一刀切，给出官方覆盖率与具体待核验字段。
+    // 移动端顶栏按设计隐藏徽章（避免横向溢出），只跑桌面断言。
+    if ((page.viewportSize()?.width ?? 0) >= 768) {
+      const status = page.locator('.status-badge')
+      await expect(status).toBeVisible()
+      await expect(status).toContainText(/官方 \d+\/\d+ 项/)
+      await expect(status.locator('.status-label')).toHaveAttribute('title', /待核验：/)
+    }
+
     // 核心结果必须渲染出真实数字，而不是 0 或空
     await expect(page.getByText('月净收入（假设）')).toBeVisible()
     const netText = await page.getByText(/^¥[\d,]+\.\d$/).first().textContent()

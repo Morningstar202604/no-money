@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { RightsItem } from '../src/data/rights/catalog'
-import { buildChecklistHtml, buildChecklistText } from '../src/utils/checklistExport'
+import { buildChecklistHtml, buildChecklistShareText, buildChecklistText } from '../src/utils/checklistExport'
 
 const saved: RightsItem = {
   id: 'right-test-a',
@@ -74,5 +74,28 @@ describe('清单导出/打印', () => {
     const html = buildChecklistHtml([saved], makeDone([]), '2026-11-19')
     expect(html).toContain('待办')
     expect(html).toContain('本平台不代办、不代缴')
+  })
+
+  it('分享条数传 0 或负数时至少带 1 件，不静默发空消息', () => {
+    const zero = buildChecklistShareText([saved, doneItem], { date: '2026-11-19', maxItems: 0 })
+    expect(zero).toContain('测试待办：社保卡激活')
+    expect(zero).toContain('还有 1 件没放进这条消息')
+
+    const negative = buildChecklistShareText([saved, doneItem], { date: '2026-11-19', maxItems: -1 })
+    expect(negative).toContain('测试待办：社保卡激活')
+    expect(negative).toContain('还有 1 件没放进这条消息')
+  })
+
+  it('分享条数传 NaN 时回退到默认 8 件，不把清单截成空', () => {
+    const text = buildChecklistShareText([saved, doneItem], { date: '2026-11-19', maxItems: Number.NaN })
+    expect(text).toContain('测试待办：社保卡激活')
+    expect(text).toContain('测试已办：医保备案')
+    expect(text).not.toContain('没放进这条消息')
+  })
+
+  it('截断提示指向「我的清单」，不假设用户装了 App', () => {
+    const text = buildChecklistShareText([saved, doneItem], { date: '2026-11-19', maxItems: 1 })
+    expect(text).toContain('回到「我的清单」看全清单')
+    expect(text).not.toContain('打开 App')
   })
 })

@@ -159,6 +159,7 @@ import { CITY_CHANNELS } from '../data/cityChannels'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 import { downloadTextFile } from '../utils/download'
 import { buildChecklistHtml, buildChecklistShareText, buildChecklistText } from '../utils/checklistExport'
+import { localDateString } from '../utils/localDate'
 import { shareErrorMessage, shareRightsText } from '../utils/rightsShare'
 
 const PageHeading = createPageHeading('start')
@@ -217,7 +218,7 @@ async function shareChecklist() {
       '我的办事清单',
       buildChecklistShareText(myItems.value, {
         done: checklist.isDone,
-        date: new Date().toISOString().slice(0, 10),
+        date: localDateString(),
       }),
     )
     actionNote.value = mode === 'shared' ? '已打开系统分享，可直接发给工友。' : '已复制整张清单，可直接发给工友。'
@@ -230,7 +231,7 @@ async function shareChecklist() {
 }
 
 function exportChecklist() {
-  const date = new Date().toISOString().slice(0, 10)
+  const date = localDateString()
   const ok = downloadTextFile({
     filename: `没钱-我的清单-${date}.txt`,
     content: buildChecklistText(myItems.value, checklist.isDone, date),

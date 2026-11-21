@@ -5,13 +5,14 @@
  * 不含身份证、手机号、银行卡，适合发给家人或带到窗口。
  */
 import type { RightsItem } from '../data/rights/catalog'
+import { localDateString } from './localDate'
 
 function status(item: RightsItem, done: (id: string) => boolean): string {
   return done(item.id) ? '已办' : '待办'
 }
 
 function exportedAt(): string {
-  return new Date().toISOString().slice(0, 10)
+  return localDateString()
 }
 
 function listHeading(title?: string): string {
@@ -70,7 +71,9 @@ export function buildChecklistShareText(
 ): string {
   const done = options.done ?? (() => false)
   const date = options.date ?? exportedAt()
-  const maxItems = options.maxItems ?? 8
+  // 0、负数或 NaN 会让 slice 少带或反向截断；分享至少带 1 件，上限由产品决定为 8 件。
+  const requestedMax = options.maxItems ?? 8
+  const maxItems = Number.isFinite(requestedMax) ? Math.max(1, Math.floor(requestedMax)) : 8
   const doneCount = items.filter((item) => done(item.id)).length
   const lines = [
     listHeading(options.title),
@@ -94,7 +97,7 @@ export function buildChecklistShareText(
   })
 
   if (items.length > maxItems) {
-    lines.push(`还有 ${items.length - maxItems} 件没放进这条消息；打开 App 看全清单。`, '')
+    lines.push(`还有 ${items.length - maxItems} 件没放进这条消息；回到「我的清单」看全清单。`, '')
   }
 
   lines.push('提醒：金额、比例、截止日期以当地最新文件为准；本平台不代办、不代缴。', '来自「没钱 No Money」')

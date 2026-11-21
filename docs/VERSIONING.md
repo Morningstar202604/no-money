@@ -46,7 +46,7 @@
 1. 取下一个 `0.0.x` 号；只改第三段。
 2. 同步版本：
    ```bash
-   node scripts/bump-version.mjs 0.0.36
+   node scripts/bump-version.mjs 0.0.37
    ```
    再同步 `package-lock.json` 与 `src-tauri/Cargo.lock` 的根版本。
 3. 更新 `CHANGELOG.md`：新增 `[0.0.x] — 日期` 段，按 Added / Changed / Data / Tests / Docs 归类。
@@ -61,13 +61,13 @@
 5. 提交 `feat(...)` / `fix(...)` / `chore(release): 0.0.x`。
 6. 打 annotated tag：
    ```bash
-   git tag -a v0.0.36 -m "0.0.36"
+   git tag -a v0.0.37 -m "0.0.37"
    ```
 7. 推送 `main` 与 tag 到五个远端。
 
 ## Pre-release
 
-需要试跑时用 `0.0.36-alpha.1`；只放在短分支，不打到 `main`，不作为正式发布。
+需要试跑时用 `0.0.37-alpha.1`；只放在短分支，不打到 `main`，不作为正式发布。
 
 ## Changelog discipline
 

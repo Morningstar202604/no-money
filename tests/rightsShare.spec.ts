@@ -60,6 +60,13 @@ describe('分享通道', () => {
     await expect(shareRightsText('标题', '正文')).rejects.toBe(abort)
   })
 
+  it('取消信号不依赖 DOMException 构造函数，按 name 识别', async () => {
+    const abort = Object.assign(new Error('用户取消'), { name: 'AbortError' })
+    vi.stubGlobal('navigator', { share: vi.fn().mockRejectedValue(abort), clipboard: { writeText: vi.fn() } })
+
+    await expect(shareRightsText('标题', '正文')).rejects.toBe(abort)
+  })
+
   it('系统分享失败时退回剪贴板', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined)
     vi.stubGlobal('navigator', {
@@ -131,6 +138,10 @@ describe('整张清单分享文案', () => {
 describe('分享错误文案', () => {
   it('用户取消返回 null，不冒充成功', () => {
     expect(shareErrorMessage(new DOMException('取消', 'AbortError'))).toBeNull()
+  })
+
+  it('没有 DOMException 的取消信号也返回 null', () => {
+    expect(shareErrorMessage(Object.assign(new Error('取消'), { name: 'AbortError' }))).toBeNull()
   })
 
   it('不支持时保留可操作的中文说明，其它失败给通用提示', () => {

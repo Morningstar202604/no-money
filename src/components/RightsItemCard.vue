@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onUnmounted, ref } from 'vue'
 import { RIGHTS_CATEGORY_LABELS, type RightsItem } from '../data/rights/catalog'
 import GuideCard from './GuideCard.vue'
 import { GUIDE_ITEMS } from '../utils/livingGuide'
@@ -132,6 +132,16 @@ const done = computed(() => checklist.isDone(props.item.id))
 const sharing = ref(false)
 const shareFeedback = ref('')
 let feedbackTimer: ReturnType<typeof setTimeout> | undefined
+
+onUnmounted(() => {
+  // 卡片随清单切换/详情关闭被卸载后，3 秒定时器仍会持有组件引用；
+  // 清掉它，避免卸载后的状态写入和无谓的定时器堆积。
+  if (feedbackTimer) {
+    clearTimeout(feedbackTimer)
+    feedbackTimer = undefined
+  }
+})
+
 async function onShare() {
   if (sharing.value) return
   sharing.value = true

@@ -10,9 +10,10 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ## Where we are now
 
-**0.0.36** is the current baseline. The product direction is settled — a rights-navigation and
+**0.0.37** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
-new-grad first-year mode, plain-language guide search, guide sharing and whole-checklist sharing are shipped:
+new-grad first-year mode, plain-language guide search, guide sharing, whole-checklist sharing and
+the checklist export/share edge fixes are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -35,6 +36,20 @@ content tests. The calculator and all routes still work.
 six-section nav, standalone guide page and new-grad first-year mode are shipped; 3.8.0 also ships the rights guide, the freshness gate, failure-to-issue automation,
 repository automation, the employee wage-slip slice, seven ready-made checklists and the
 content-review loop. Page-level deadline hints exist, but there is no push service or account.
+
+---
+
+## 0.0.37 — Checklist date, share boundary and cleanup fixes (shipped 2026-11-21)
+
+**Goal: close the small correctness gaps left by 0.0.36 without touching policy data.**
+
+- [x] Local-date helper: exports/shares no longer write yesterday's date between 00:00–08:00 CST
+- [x] Checklist share `maxItems` clamps to at least 1; `0`/negative/`NaN` can't produce an empty or reversed slice
+- [x] Truncation hint says 「回到「我的清单」」 instead of assuming an installed App
+- [x] AbortError detected by `name` in WebViews without `DOMException`; cancel stays silent
+- [x] `RightsItemCard` clears its 3-second feedback timer on unmount
+- [x] No policy data or confidence changes
+- [ ] Data gaps unchanged: 7 derived pension bases, 34 cities `verified=false` (platform rates still unverified), resident mode and 10 real-user tests remain open
 
 ---
 

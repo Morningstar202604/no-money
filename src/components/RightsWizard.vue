@@ -160,6 +160,7 @@ import { resolveServiceChannel } from '../data/cityChannels'
 import { buildRightsAiPrompt } from '../utils/rightsAiPrompt'
 import { downloadTextFile } from '../utils/download'
 import { buildChecklistHtml, buildChecklistShareText, buildChecklistText } from '../utils/checklistExport'
+import { localDateString } from '../utils/localDate'
 import { shareErrorMessage, shareRightsText } from '../utils/rightsShare'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 
@@ -227,7 +228,7 @@ function saveAll() {
 
 function exportCurrent() {
   if (!result.value.length) return
-  const date = new Date().toISOString().slice(0, 10)
+  const date = localDateString()
   const ok = downloadTextFile({
     filename: `没钱-${currentTitle.value}-${date}.txt`,
     content: buildChecklistText(result.value, checklist.isDone, date, currentTitle.value),
@@ -242,7 +243,7 @@ function printCurrent() {
     actionNote.value = '浏览器拦截了打印窗口，请允许弹窗，或先「导出这张清单」。'
     return
   }
-  const date = new Date().toISOString().slice(0, 10)
+  const date = localDateString()
   win.document.write(buildChecklistHtml(result.value, checklist.isDone, date, currentTitle.value))
   win.document.close()
   win.opener = null
@@ -260,7 +261,7 @@ async function shareCurrent() {
       buildChecklistShareText(result.value, {
         done: checklist.isDone,
         title: currentTitle.value,
-        date: new Date().toISOString().slice(0, 10),
+        date: localDateString(),
       }),
     )
     actionNote.value = mode === 'shared' ? '已打开系统分享，可直接发给工友。' : '已复制整张清单，可直接发给工友。'

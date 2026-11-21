@@ -64,8 +64,12 @@
           <div class="status-badge" v-if="store.rule">
             <span class="status-dot" :class="store.rule.verified ? 'verified' : 'partial'" />
             <span class="status-text">{{ store.rule.cityName }} · {{ store.rule.year }}版</span>
-            <span class="status-label" :class="store.rule.verified ? 'verified' : 'partial'">
-              {{ store.rule.verified ? '历史已核验' : '部分待核验' }}
+            <span
+              class="status-label"
+              :class="store.rule.verified ? 'verified' : 'partial'"
+              :title="sourceStatusTitle"
+            >
+              {{ sourceStatusLabel }}
             </span>
           </div>
 
@@ -193,6 +197,8 @@ import CommandPalette from '../components/CommandPalette.vue'
 import FeedbackButton from '../components/FeedbackButton.vue'
 import type { Command } from '../utils/commandPalette'
 import { downloadTextFile } from '../utils/download'
+import { summarizeSourceFreshness } from '../utils/sourceFreshness'
+import { sourceLabel } from '../utils/sources'
 
 // Icons
 import {
@@ -213,6 +219,26 @@ import {
 const router = useRouter()
 const route = useRoute()
 const store = useMainStore()
+
+/**
+ * 顶栏数据状态：34 城 `verified` 仍是“全字段 official”总标记，当前全是 false。
+ * 只显示“部分待核验”会把“官方已核 9 项、只差平台单价”说得像整城不可信；
+ * 这里直接给官方覆盖率，并把待核验字段放进 title，不改变数据标记。
+ */
+const sourceFreshness = computed(() => summarizeSourceFreshness(store.rule?.sources))
+const sourceStatusLabel = computed(() => {
+  if (!store.rule) return ''
+  if (store.rule.verified) return '历史已核验'
+  return `官方 ${sourceFreshness.value.official}/${sourceFreshness.value.total} 项`
+})
+const sourceStatusTitle = computed(() => {
+  const summary = sourceFreshness.value
+  const pending = summary.unverifiedKeys.map(sourceLabel)
+  const parts = [`已核官方 ${summary.official}/${summary.total} 项`]
+  if (summary.derived) parts.push(`按官方口径推算 ${summary.derived} 项`)
+  if (pending.length) parts.push(`待核验：${pending.join('、')}`)
+  return parts.join('；')
+})
 
 const activeKey = computed(() => {
   if (route.name === 'Start') return route.query.entry === 'benefits' ? 'Benefits' : 'Start'
@@ -677,6 +703,7 @@ onUnmounted(() => {
   border-radius: var(--radius-full);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
 .status-label.verified {

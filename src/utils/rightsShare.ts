@@ -8,9 +8,19 @@ import type { RightsItem } from '../data/rights/catalog'
 
 export type RightsShareMode = 'shared' | 'copied'
 
+/**
+ * 用户取消系统分享的信号。
+ * 不用 `instanceof DOMException`：部分旧 WebView 没有 DOMException 构造函数，
+ * 取消会被误判成失败并再弹一次错误；按 `name` 判断更稳。
+ */
+function isAbortError(error: unknown): boolean {
+  return typeof error === 'object' && error !== null
+    && 'name' in error && (error as { name?: unknown }).name === 'AbortError'
+}
+
 /** 系统分享被用户取消时返回 null；其它失败给一句能照做的中文。 */
 export function shareErrorMessage(error: unknown): string | null {
-  if (typeof DOMException !== 'undefined' && error instanceof DOMException && error.name === 'AbortError') {
+  if (isAbortError(error)) {
     return null
   }
   return error instanceof Error && error.message.includes('不支持')
@@ -57,7 +67,7 @@ export async function shareRightsText(title: string, text: string): Promise<Righ
       await navigator.share({ title, text })
       return 'shared'
     } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') throw error
+      if (isAbortError(error)) throw error
     }
   }
   if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {

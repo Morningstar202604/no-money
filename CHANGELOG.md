@@ -3,6 +3,35 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
 
+## [0.0.37] — 2026-11-21
+
+修 0.0.36 遗留的三个小问题：导出/分享日期按 UTC 切日、分享条数边界可能发空、分享提示定时器没在卸载时清理。政策数值、官方入口和置信度零改动。
+
+### Fixed
+
+- 新增 `src/utils/localDate.ts`：导出 txt、打印页和整张清单分享统一用本地日期，中国时区 00:00–08:00 不再写成前一天。
+- `buildChecklistShareText` 的 `maxItems` 收敛为至少 1 件；传 `0`、负数或 `NaN` 时不会发出空清单或反向截掉末尾。
+- 分享超过上限的提示从「打开 App」改为「回到「我的清单」看全清单」，不再假设用户装了客户端。
+- `shareErrorMessage` 与 `shareRightsText` 改用 `name === 'AbortError'` 判断取消；没有 `DOMException` 构造函数的旧 WebView 也能静默处理取消，不再误报分享失败。
+- `RightsItemCard` 在 `onUnmounted` 清理 3 秒分享提示定时器，避免卡片卸载后仍持有组件引用。
+- 顶栏数据状态从“部分待核验”改为“官方 N/M 项”，悬停显示按官方口径推算几项、具体哪几项待核验；34 城 `verified` 标记本身不变，避免把平台单价缺失说成整城不可信。
+
+### Tests
+
+- 新增 `tests/localDate.spec.ts` 3 条：凌晨、跨年、月日补零。
+- `tests/checklistExport.spec.ts` 新增 3 条：`0`/负数至少带 1 件、`NaN` 回退 8 件、截断提示不假设 App。
+- `tests/rightsShare.spec.ts` 新增 2 条：取消信号不依赖 `DOMException` 构造函数、错误文案同样返回 null。
+- 全量：**64 文件 / 1,242 单测通过**；E2E **8 文件 / 130 条通过**（顶栏覆盖率断言加在既有桌面用例里，不新增条数）。
+- 构建 22.88s；`dist` 3.47 MB（assets 2.58 MB）；PWA 55 条 / 2,823.05 KiB；首屏 409K gzip。
+
+### Data
+
+- 政策数据零改动：343 条来源仍为 official 225 / derived 50 / unverified 68；养老金计发基数 official 27 / derived 7 / unverified 0；34 城 `verified` 仍全部 `false`。
+
+### Docs
+
+- CHANGELOG / ROADMAP / POSITIONING / ENGINEERING / AUDIT / VERSIONING 同步；五处版本号统一为 `0.0.37`。
+
 ## [0.0.36] — 2026-11-21
 
 把「我的清单」和向导生成的清单变成一段能直接发给工友的文案。仍然不碰任何政策数值、入口或置信度。
