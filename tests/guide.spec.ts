@@ -82,10 +82,13 @@ describe('民生手册接线', () => {
     }
   })
 
-  it('PolicyView 渲染了全部手册条目', () => {
+  it('PolicyView 只渲染手册独有正文，其余改入口', () => {
     const policy = read('src/views/PolicyView.vue')
-    expect(policy).toMatch(/GUIDE_ITEMS/)
-    expect(policy).toMatch(/GUIDE_GROUP_ORDER/)
+    expect(policy).toMatch(/splitManualGuides/)
+    expect(policy).toMatch(/manualLinks/)
+    expect(policy).toMatch(/manualFull/)
+    expect(policy).not.toMatch(/GUIDE_ITEMS/)
+    expect(policy).not.toMatch(/GUIDE_GROUP_ORDER/)
   })
 
   it('RightsItemCard 对指南条目复用 GuideCard，不再手写第二套详情', () => {

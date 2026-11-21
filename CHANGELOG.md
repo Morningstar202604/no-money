@@ -3,6 +3,33 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
 
+## [0.0.40] — 2026-11-21
+
+把 `/policy?tab=manual` 的 23 张全文卡收口：21 条只留入口，2 条手册独有概念保留正文。没有新增页面，也没有改政策数值。
+
+### Changed
+
+- 新增 `src/data/rights/manual.ts`：按 `RIGHTS_CATALOG`、`rightsForEntry` 与 `guidesForCategory` 的现有关系派生分流，不写死“21 条 / 2 条”。能落到办事入口或教程页的，`/policy` 只给入口；两边都没有的概念条目才保留正文。
+- `/policy?tab=manual` 改为两块：`手册入口：21 条正文已去重` 给 21 个链接；`手册正文：仅 2 条站内无入口` 用 `GuideCard` 保留 `guide-retire-age`、`guide-ltc-insurance`。不再把 23 条正文铺一遍。
+- 21 条里 20 条按第一个命中的四入口落到 `/start?entry=tasks|benefits|social`；`guide-pension-exit` 不在首页，落到 `/guides?cat=retire`。
+- 知识库部分未动：`buildStaticKbEntries` 与 409 条 `/knowledge/kb.json` 的收录取数保持原样。
+
+### Tests
+
+- 新增 `tests/manualDedupe.spec.ts` 4 条：21/2 分流、条目唯一、`/start` 目标确实在该页签、`pension-exit` 落 `/guides?cat=retire`。
+- 既有 E2E「政策页首屏只有四组」扩展：断言手册页只剩 2 张 `.guide-card`，并从“不想交了，能退多少钱？”点进 `/guides?cat=retire`；桌面 + 移动各跑一次，不新增 E2E 条数。
+- 全量：**66 文件 / 1,258 单测通过**（`npm run check` 359.31s）；E2E **8 文件 / 136 条通过**（桌面 + 移动，5.2m）。
+- 构建 23.08s；`dist` 3.48 MB（assets 2.59 MB）；PWA 55 条 / 2,832.59 KiB；首屏 409K gzip。
+
+### Data
+
+- 政策数据零改动：343 条来源仍为 official 225 / derived 50 / unverified 68；养老金计发基数 official 27 / derived 7 / unverified 0；34 城 `verified` 仍全部 `false`。
+
+### Docs
+
+- CHANGELOG / ROADMAP / FRONTEND-CONSOLIDATION / POSITIONING / ENGINEERING / AUDIT / VERSIONING 同步；五处版本号统一为 `0.0.40`。
+- `/admin` 与 `/audit` 的 34 城加载/统计仍未抽共用模块，66% 与 78% 两个“官方覆盖”指标的分母标签仍未统一（P2）。
+
 ## [0.0.39] — 2026-11-21
 
 先把前端去重的四个低风险口子收掉：页面标题单一来源、`/rights` 页签可深链、`/start` 补上首页没展开的 5 条 L2、`/scenario` 有站内入口。没有新增页面，也没有改政策数值。

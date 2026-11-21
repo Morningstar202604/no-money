@@ -217,16 +217,42 @@
             每条一个实际问题、一句人话结论、关键数字与办理步骤，并附
             <strong>官方原文链接</strong>（gov.cn 政策库 / 部委官网逐个核验，可点开对照）。
             数字若与参保地口径不同，以当地经办机构为准；拨 <strong>12333</strong> 能一次问清。
+            正文只维护一份：能在「办事入口」或「怎么弄」直接照办的，这里不再复制全文。
           </p>
         </n-card>
+
         <n-card
-          v-for="g in guideGroups"
-          :key="g.key"
           class="card"
           style="margin-top: 12px"
-          :title="g.label"
+          :title="`手册入口：${manualLinks.length} 条正文已去重`"
         >
-          <GuideCard v-for="item in g.items" :key="item.id" :item="item" />
+          <p class="desc manual-desc">
+            这 {{ manualLinks.length }} 条的步骤、材料和官方原文已经只维护在「办事入口」或「怎么弄」；
+            这里只给入口，点过去看全文。
+          </p>
+          <div class="manual-links">
+            <router-link
+              v-for="link in manualLinks"
+              :key="link.item.id"
+              class="manual-link"
+              :to="link.to"
+            >
+              <b>{{ link.item.question }}</b>
+              <span>{{ link.targetLabel }} →</span>
+            </router-link>
+          </div>
+        </n-card>
+
+        <n-card
+          class="card"
+          style="margin-top: 12px"
+          :title="`手册正文：仅 ${manualFull.length} 条站内无入口`"
+        >
+          <p class="desc manual-desc">
+            这 {{ manualFull.length }} 条是手册独有的概念，办事入口和教程页都没有对应卡片；
+            正文继续留在这里，避免为了去重把内容删掉。
+          </p>
+          <GuideCard v-for="item in manualFull" :key="item.id" :item="item" />
         </n-card>
 
         <h2 class="group-title">知识库</h2>
@@ -300,7 +326,7 @@ import GuideCard from '../components/GuideCard.vue'
 import KbResultCard from '../components/KbResultCard.vue'
 import { useTabQuery } from '../composables/useTabQuery'
 import { REALITY_FACTS, REALITY_CATEGORY_ORDER, REALITY_CATEGORY_LABELS } from '../utils/reality'
-import { GUIDE_ITEMS, GUIDE_GROUP_ORDER, GUIDE_GROUP_LABELS } from '../utils/livingGuide'
+import { splitManualGuides } from '../data/rights/manual'
 import { POLICIES, RELIEF_GUIDE, PROVINCE_POLICY_CHECKLIST, type PolicyStatus } from '../data/policies'
 import { resolveServiceChannel } from '../data/cityChannels'
 import { summarizeCityFreshness, summarizeSourceFreshness } from '../utils/sourceFreshness'
@@ -434,11 +460,7 @@ const realityGroups = REALITY_CATEGORY_ORDER.map(key => ({
   facts: REALITY_FACTS.filter(f => f.category === key),
 }))
 
-const guideGroups = GUIDE_GROUP_ORDER.map(key => ({
-  key,
-  label: GUIDE_GROUP_LABELS[key],
-  items: GUIDE_ITEMS.filter(i => i.group === key),
-}))
+const { links: manualLinks, full: manualFull } = splitManualGuides()
 
 // 与面板上的「依据」chip 共用一份映射，避免两处漂移
 const FIELD_LABELS = SOURCE_LABELS
@@ -481,6 +503,27 @@ const reliefGuide = RELIEF_GUIDE
   border-left: 2px solid var(--color-text-warning);
   padding: 6px 8px;
   border-radius: 0 3px 3px 0;
+}
+
+/* ---------- 手册入口 ---------- */
+.manual-desc { margin-bottom: 10px; }
+.manual-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.manual-link {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  text-decoration: none;
+}
+.manual-link:hover { border-color: var(--color-primary-400); background: var(--color-bg-brand-light); }
+.manual-link b { font-size: var(--font-size-sm); line-height: 1.5; color: var(--color-text-primary); overflow-wrap: anywhere; }
+.manual-link span { font-size: var(--font-size-xs); color: var(--color-text-brand); }
+@media (max-width: 700px) {
+  .manual-links { grid-template-columns: 1fr; }
 }
 
 /* ---------- 34 城数据新鲜度 ---------- */

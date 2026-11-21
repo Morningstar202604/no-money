@@ -101,7 +101,16 @@
 - `/start?entry=social` 在四入口实际覆盖的 25 条 L2 之外，补出未被覆盖的 5 条 L2（养老退出、退休办理、失业登记、灵活就业登记、养老金认证）。补位逻辑从 `RIGHTS_CATALOG` 与 `rightsForEntry` 派生，只给入口，不复制全文；全文仍在 `/guides`。
 - `/dashboard` 的“见方案对比页”改为可点的 `/scenario` 链接；`/scenario` 不再只有路由、没有站内入口。
 - 测试守住单一来源：`tests/uxDebt.spec.ts` 检查路由与 `PageHeading` 引用共享标题表、11 个 key 齐全、总览有 `/scenario` 链接；`RightsView` 挂载测试补真实 router，避免 `useTabQuery` 在无路由环境取 `undefined`。
-- **仍未做**：`/policy?tab=manual` 的 23 张全文卡还没收口；计划 0.0.40 只保留 2 条独有 L1 概念卡（`guide-retire-age`、`guide-ltc-insurance`），其余改成 `/start` / `/guides` 入口，知识库不动。
+- **0.0.40 已接续**：`/policy?tab=manual` 只保留 2 条独有 L1 概念卡（`guide-retire-age`、`guide-ltc-insurance`），其余 21 条改成 `/start` / `/guides` 入口，知识库不动。
+
+## 已完成（0.0.40）
+
+- `/policy?tab=manual` 不再铺 23 张 `GuideCard`：新增 `src/data/rights/manual.ts`，按现有 `RIGHTS_CATALOG` / `rightsForEntry` / `guidesForCategory` 关系派生“入口 / 正文”两组，不写死条数。
+- 21 条只留入口：20 条按第一个命中的四入口落到 `/start?entry=tasks|benefits|social`；`guide-pension-exit` 在首页没有对应卡，落到 `/guides?cat=retire`。
+- 只保留 `guide-retire-age`、`guide-ltc-insurance` 两条手册独有概念正文；它们没有办事卡或教程卡，删掉就真的没地方看。
+- 入口卡只写问题和目标页，不复制步骤、材料、官方链接；正文仍只维护在 `livingGuide.ts` / `RIGHTS_CATALOG` 一处。
+- 知识库未动：`buildStaticKbEntries` 与 409 条 `/knowledge/kb.json` 的收录取数保持原样。
+- 测试：`tests/manualDedupe.spec.ts` 4 条；E2E 既有政策页用例扩展为断言 2 张 `.guide-card` 并可跳到 `/guides?cat=retire`。
 
 ## 下一步：按这个顺序合，不要一次重排
 
@@ -122,9 +131,9 @@
 
 **不合并**：`/start` 不吞掉 `/dashboard` 的计算功能；计算仍是工具，只是不再抢首屏。
 
-### P1-2 民生手册与权益目录：一份内容，两种用法（3.6.4 已完成详情复用）
+### P1-2 民生手册与权益目录：一份内容，两种用法（3.6.4 详情复用，0.0.40 列表去重）
 
-**现状**
+**原现状（0.0.39 之前）**
 
 - `src/utils/livingGuide.ts` 是 23 条手册原文；`src/data/rights/catalog.ts` 把同一批内容映射成 `RightsItem`。
 - `/policy?tab=manual` 用 `GuideCard` 展示 23 条；`/start` 用 `RightsItemCard` 展示同一批条目。
@@ -138,6 +147,8 @@
 - 保留 `/policy` 的政策原文、溯源、现实口径；这些是“查依据”，不是“办事清单”。
 
 **验收（3.6.4 已达成）**：同一 `guideId` 只存在一处正文；改一条政策只需要改 `livingGuide.ts` 一处。`RightsItemCard` 的展开详情复用 `GuideCard`，并有契约测试防止再手写第二套。
+
+**0.0.40 已落地列表去重**：新增 `src/data/rights/manual.ts`，从 `RIGHTS_CATALOG` / `rightsForEntry` / `guidesForCategory` 派生分流。21 条正文已存在于 `/start` 或 `/guides` 的，`/policy` 只保留入口（20 条 `/start?entry=`，`guide-pension-exit` → `/guides?cat=retire`）；只有 `guide-retire-age`、`guide-ltc-insurance` 两条站内无入口的概念条目保留 `GuideCard`。手册页断言 `.guide-card` 数量为 2，知识库的 409 条导出未动。
 
 ### P1-3 `/policy` 八个页签压成四组（3.6.3 已完成外层分组，P1-2 负责正文去重）
 

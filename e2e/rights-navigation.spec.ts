@@ -48,6 +48,14 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await page.locator('.n-tabs-tab').filter({ hasText: '手册与知识库' }).click()
     await expect(page.getByText('民生手册', { exact: true })).toBeVisible()
     await expect(page.getByText('知识库', { exact: true })).toBeVisible()
+
+    await expect(page.getByText('手册入口：21 条正文已去重')).toBeVisible()
+    await expect(page.getByText('手册正文：仅 2 条站内无入口')).toBeVisible()
+    await expect(page.locator('.guide-card')).toHaveCount(2)
+
+    await page.getByRole('link', { name: /不想交了，能退多少钱/ }).click()
+    await expect(page).toHaveURL(/\/guides\?cat=retire/)
+    await expect(page.getByText('照着这张清单办，不用再到处问')).toBeVisible()
   })
 
   test('常见情况一键出清单，不用走完三步', async ({ page }) => {

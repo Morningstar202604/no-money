@@ -10,11 +10,11 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ## Where we are now
 
-**0.0.39** is the current baseline. The product direction is settled — a rights-navigation and
+**0.0.40** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
 new-grad first-year mode, plain-language guide search, guide sharing, whole-checklist sharing,
-the checklist export/share edge fixes, a local phone-calendar reminder and four front-end
-dedupe fixes are shipped:
+the checklist export/share edge fixes, a local phone-calendar reminder, four front-end
+dedupe fixes and the `/policy` manual-body dedupe are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -40,6 +40,20 @@ content-review loop. Page-level deadline hints and a user-set `.ics` phone-calen
 
 ---
 
+## 0.0.40 — Manual-page dedupe: 21 entries, 2 bodies (shipped 2026-11-21)
+
+**Goal: stop `/policy?tab=manual` from rendering 23 full texts while the same bodies already live in `/start` and `/guides`, without deleting the two concepts that have no other home.**
+
+- [x] `src/data/rights/manual.ts` splits the 23 manual items from existing catalog/entry/guide relations, not a hardcoded count
+- [x] 21 items become entry links: 20 `/start?entry=` + `guide-pension-exit` → `/guides?cat=retire`
+- [x] Only `guide-retire-age` and `guide-ltc-insurance` keep `GuideCard` full text
+- [x] Knowledge base (`buildStaticKbEntries`, 409-entry `/knowledge/kb.json`) untouched
+- [x] 4 unit tests for the split; existing E2E policy test asserts 2 cards and the `/guides?cat=retire` jump
+- [x] No policy data or confidence changes
+- [ ] `/admin` and `/audit` still load 34-city rules separately and label official coverage with different denominators (P2)
+
+**Not done:** resident mode and 10 real-user tests remain open.
+
 ## 0.0.39 — Front-end dedupe: titles, tab deep links, 5 missing L2 entries (shipped 2026-11-21)
 
 **Goal: close the four low-risk front-end duplication gaps before touching the `/policy` manual body, without adding pages or changing policy numbers.**
@@ -50,7 +64,7 @@ content-review loop. Page-level deadline hints and a user-set `.ics` phone-calen
 - [x] `/dashboard` 「见方案对比页」 is a real link to `/scenario`; `/scenario` is no longer route-only
 - [x] `tests/uxDebt.spec.ts` guards title single-source and the `/scenario` link; `RightsView` mount tests get a real router
 - [x] 8 files / 136 E2E across desktop and mobile; no policy data or confidence changes
-- [ ] `/policy?tab=manual` still renders 23 full-text cards; 0.0.40 keeps only the 2 unique L1 concept cards and turns the rest into `/start` / `/guides` entries
+- [x] `/policy?tab=manual` keeps only the 2 unique L1 concept cards and turns the other 21 into `/start` / `/guides` entries (0.0.40)
 - [ ] `/admin` and `/audit` still load 34-city rules separately and label official coverage with different denominators (P2)
 
 **Not done:** resident mode and 10 real-user tests remain open.

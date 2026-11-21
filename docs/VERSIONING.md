@@ -26,7 +26,7 @@
 
 ## 历史切换
 
-- 2026-11-21：`3.10.1` → **`0.0.35`**。`0.0.35` 是 CHANGELOG 第 35 个版本段；后续依次为 `0.0.36`、`0.0.37`、`0.0.38`、`0.0.39`。
+- 2026-11-21：`3.10.1` → **`0.0.35`**。`0.0.35` 是 CHANGELOG 第 35 个版本段；后续依次为 `0.0.36`、`0.0.37`、`0.0.38`、`0.0.39`、`0.0.40`。
 - `v3.x` 的 tag 与提交不删除、不改写；新版本从当前 `main` 继续。
 
 ## Version locations
@@ -48,7 +48,7 @@
 1. 取下一个 `0.0.x` 号；只改第三段。
 2. 同步版本：
    ```bash
-   node scripts/bump-version.mjs 0.0.39
+   node scripts/bump-version.mjs 0.0.40
    ```
    再同步 `package-lock.json` 与 `src-tauri/Cargo.lock` 的根版本。
 3. 更新 `CHANGELOG.md`：新增 `[0.0.x] — 日期` 段，按 Added / Changed / Data / Tests / Docs 归类。
@@ -63,13 +63,13 @@
 5. 提交 `feat(...)` / `fix(...)` / `chore(release): 0.0.x`。
 6. 打 annotated tag：
    ```bash
-   git tag -a v0.0.39 -m "0.0.39"
+   git tag -a v0.0.40 -m "0.0.40"
    ```
 7. 推送 `main` 与 tag 到五个远端。
 
 ## Pre-release
 
-需要试跑时用 `0.0.39-alpha.1`；只放在短分支，不打到 `main`，不作为正式发布。
+需要试跑时用 `0.0.40-alpha.1`；只放在短分支，不打到 `main`，不作为正式发布。
 
 ## Changelog discipline
 
