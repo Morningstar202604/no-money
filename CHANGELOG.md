@@ -3,6 +3,35 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
 
+## [0.0.39] — 2026-11-21
+
+先把前端去重的四个低风险口子收掉：页面标题单一来源、`/rights` 页签可深链、`/start` 补上首页没展开的 5 条 L2、`/scenario` 有站内入口。没有新增页面，也没有改政策数值。
+
+### Fixed
+
+- 新增 `src/app/pageTitles.ts`，`PAGE_TITLES` 覆盖 start / dashboard / employee / scenario / planning / rights / guides / policy / admin / audit / notfound 11 个页面；`router.ts` 的 `meta.title` 与 `PageHeading` 的 sr-only h1 都从这一张表取，不再逐字复制。
+- `/rights` 改用 `useTabQuery`：`?tab=compensation|guide|document` 可深链，点页签写回 query，默认仍是补偿计算。
+- `/start?entry=trouble` 三张快捷卡分别落到 `/rights?tab=compensation`、`?tab=guide`、`?tab=document`；点“维权指南”和“文书生成”不再都停在补偿计算。
+- `/start?entry=social` 新增“还有 5 条：养老、失业与登记”：`guide-pension-exit`、`right-retire-process`、`right-unemployment-registration`、`right-flex-registration`、`right-pension-certification`。补位逻辑从 `RIGHTS_CATALOG` 与四入口实际覆盖集合派生，只给 `/guides?cat=` 入口，不复制全文。
+- `/dashboard` 的“见方案对比页”改成可点的 `/scenario` 链接；`/scenario` 不再只有路由、没有站内入口。
+
+### Tests
+
+- `tests/uxDebt.spec.ts` 新增页面标题单一来源断言（11 个 key 必须齐全，`PageHeading` 不得复制标题字面量）和总览 `/scenario` 链接断言。
+- `tests/components/RightsView.tabs.mount.spec.ts` 补真实 memory router，`useTabQuery` 在测试挂载时不再读到 `undefined` 路由。
+- `e2e/rights-navigation.spec.ts` 新增 2 条：三个快捷入口各自落页签；社保入口补齐 5 条 L2 并可跳 `/guides?cat=retire`。
+- 全量：**65 文件 / 1,254 单测通过**（`npm run check` 360.73s）；E2E **8 文件 / 136 条通过**（桌面 + 移动，6.4m）。
+- 构建 23.82s；`dist` 3.48 MB（assets 2.59 MB）；PWA 54 条 / 2,830.24 KiB；首屏 409K gzip。
+
+### Data
+
+- 政策数据零改动：343 条来源仍为 official 225 / derived 50 / unverified 68；养老金计发基数 official 27 / derived 7 / unverified 0；34 城 `verified` 仍全部 `false`。
+
+### Docs
+
+- CHANGELOG / ROADMAP / FRONTEND-CONSOLIDATION / POSITIONING / ENGINEERING / AUDIT / VERSIONING 同步；五处版本号统一为 `0.0.39`。
+- `/policy?tab=manual` 的 23 张全文卡仍未收口，留给 0.0.40；`/admin` 与 `/audit` 的分母标签（P2）仍未统一。
+
 ## [0.0.38] — 2026-11-21
 
 给「我的清单」加一条不依赖后端的提醒路径：用户自己选日期，导出 `.ics` 到手机日历。没有新增政策数值，也没有假装平台会推送。

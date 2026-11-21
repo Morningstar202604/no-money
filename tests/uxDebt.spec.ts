@@ -58,6 +58,7 @@ describe('页签与 URL 双向同步', () => {
     'src/views/PolicyView.vue',
     'src/views/PlanningView.vue',
     'src/views/ScenarioView.vue',
+    'src/views/RightsView.vue',
   ] as const) {
     it(`${file} 复用统一的 useTabQuery，不复制同步逻辑`, () => {
       const src = read(file)
@@ -72,6 +73,36 @@ describe('页签与 URL 双向同步', () => {
     expect(src).toMatch(/route\.query\.tab/)
     expect(src).toMatch(/router\.replace\(/)
     expect(src).toMatch(/computed<T>/)
+  })
+})
+
+describe('页面标题单一来源', () => {
+  const titles = read('src/app/pageTitles.ts')
+  const router = read('src/app/router.ts')
+  const heading = read('src/components/PageHeading.ts')
+
+  it('路由与 sr-only h1 都从 pageTitles.ts 取标题', () => {
+    expect(router, '路由必须引用共享标题表').toContain("from './pageTitles'")
+    expect(heading, '页面标题必须引用共享标题表').toContain("from '../app/pageTitles'")
+    for (const key of [
+      'start', 'dashboard', 'employee', 'scenario', 'planning',
+      'rights', 'guides', 'policy', 'admin', 'audit', 'notfound',
+    ] as const) {
+      expect(titles, `pageTitles.ts 缺少 ${key}`).toContain(`${key}:`)
+      expect(router, `路由 ${key} 必须使用 PAGE_TITLES.${key}`).toContain(`PAGE_TITLES.${key}`)
+    }
+  })
+
+  it('页面组件不再各写一份标题字面量', () => {
+    expect(heading, 'PageHeading 不得复制标题文案').not.toMatch(/start:\s*'办事入口/)
+    expect(heading).not.toContain('政策百科与民生手册')
+  })
+})
+
+describe('总览页的方案对比入口', () => {
+  it('总览必须能点进 /scenario，而不是只有一句“见方案对比页”', () => {
+    const dashboard = read('src/views/DashboardView.vue')
+    expect(dashboard).toMatch(/to="\/scenario"/)
   })
 })
 

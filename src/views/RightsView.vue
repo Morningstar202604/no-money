@@ -25,13 +25,17 @@
 import { createPageHeading } from '../components/PageHeading'
 const PageHeading = createPageHeading('rights')
 
-import { provide, ref } from 'vue'
+import { provide } from 'vue'
 import { NTabs, NTabPane } from 'naive-ui'
 import RightsCompensation from '../components/panels/RightsCompensation.vue'
 import RightsGuide from '../components/panels/RightsGuide.vue'
 import DocumentGenerator from '../components/panels/DocumentGenerator.vue'
+import { useTabQuery } from '../composables/useTabQuery'
 
-// 维权是一条链路：算补偿 → 查指南 → 出文书，面板间通过该 ref 切换
-const tab = ref('compensation')
+const TAB_NAMES = ['compensation', 'guide', 'document'] as const
+
+// 维权是一条链路：算补偿 → 查指南 → 出文书，面板间通过该 ref 切换。
+// 页签同时写回 ?tab=，让 /start 的三个快捷入口能落到各自面板，而不是全停在补偿计算。
+const tab = useTabQuery(TAB_NAMES, 'compensation')
 provide('rightsTab', tab)
 </script>

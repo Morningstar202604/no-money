@@ -151,6 +151,27 @@
       <div class="start-list">
         <RightsItemCard v-for="item in list" :key="item.id" :item="item" />
       </div>
+
+      <!-- 四个入口按高频截断，但“30 条可办清单”不能有 5 条在首页找不到。
+           这里只补入口，不复制全文：点进去由 /guides 的分类页展示完整教程。 -->
+      <div v-if="extraL2.length" class="start-extra">
+        <div class="start-list-head">
+          <h4 class="start-sub-title">还有 {{ extraL2.length }} 条：养老、失业与登记</h4>
+          <p class="start-section-desc">这 {{ extraL2.length }} 条被四个入口的高频截断挡在外面，完整教程在「怎么弄」；点一条直接到对应分类。</p>
+        </div>
+        <div class="start-extra-grid">
+          <button
+            v-for="item in extraL2"
+            :key="item.id"
+            type="button"
+            class="start-quick-card start-extra-card"
+            @click="router.push(`/guides?cat=${item.category}`)"
+          >
+            <b>{{ item.title }}</b>
+            <span>去「怎么弄」看完整步骤 →</span>
+          </button>
+        </div>
+      </div>
     </section>
 
     <section v-else class="start-section">
@@ -159,13 +180,13 @@
         <p class="start-section-desc">欠薪、辞退、工伤、扣款——不要只和对方口头拉扯；先把证据固定下来，再找对部门。</p>
       </div>
       <div class="start-quick">
-        <button type="button" class="start-quick-card" @click="router.push('/rights')">
+        <button type="button" class="start-quick-card" @click="router.push('/rights?tab=compensation')">
           <b>补偿计算</b><span>经济补偿/赔偿金试算</span>
         </button>
-        <button type="button" class="start-quick-card" @click="router.push('/rights')">
+        <button type="button" class="start-quick-card" @click="router.push('/rights?tab=guide')">
           <b>维权指南</b><span>5 步流程 + 法援/工会入口</span>
         </button>
-        <button type="button" class="start-quick-card" @click="router.push('/rights')">
+        <button type="button" class="start-quick-card" @click="router.push('/rights?tab=document')">
           <b>文书生成</b><span>仲裁申请书/被迫解除通知等</span>
         </button>
       </div>
@@ -201,6 +222,12 @@ const router = useRouter()
 const route = useRoute()
 
 const entryTabs = RIGHTS_ENTRIES.map(({ key, index, title, desc }) => ({ key, index, label: title, desc }))
+
+/** 四个入口实际覆盖的 L2；用于把被高频截断挡在外面的条目补成入口，避免首页宣称 30 条却只能找到 25 条。 */
+const coveredL2Ids = new Set(
+  RIGHTS_ENTRIES.flatMap(({ key }) => rightsForEntry(key).map((item) => item.id)),
+)
+const extraL2 = RIGHTS_CATALOG.filter((item) => item.level === 'L2' && !coveredL2Ids.has(item.id))
 
 function readEntry(): EntryKey {
   const q = route.query.entry
@@ -354,6 +381,15 @@ function clearReminders() {
 .start-section-title { margin: 0; font-size: var(--font-size-lg); color: var(--color-text-primary); }
 .start-section-desc { margin: 0; font-size: var(--font-size-sm); line-height: 1.6; color: var(--color-text-secondary); }
 .start-list { display: flex; flex-direction: column; gap: 10px; }
+.start-sub-title { margin: 0; font-size: var(--font-size-md); color: var(--color-text-primary); }
+.start-extra {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 4px; padding-top: 10px;
+  border-top: 1px dashed var(--color-border-primary);
+}
+.start-extra-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.start-extra-card b { font-size: var(--font-size-xs); }
+.start-extra-card span { color: var(--color-text-brand); }
 .start-quick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .start-quick-card {
   display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
@@ -445,6 +481,7 @@ function clearReminders() {
 @media (max-width: 700px) {
   .start-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .start-quick { grid-template-columns: 1fr; }
+  .start-extra-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .start-hero { padding: 16px; }

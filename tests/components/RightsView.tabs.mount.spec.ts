@@ -15,20 +15,32 @@ import { mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
 import { createPinia, setActivePinia } from 'pinia'
 import { NMessageProvider } from 'naive-ui'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import RightsView from '../../src/views/RightsView.vue'
 import { useMainStore } from '../../src/stores/main'
 
+const Blank = defineComponent({ render: () => h('div') })
+
 /** 复用同一个 pinia 才能模拟"同一会话内离开再回来"；每次新建等于重开会话 */
-function mountView(existingPinia?: ReturnType<typeof createPinia>) {
+async function mountView(existingPinia?: ReturnType<typeof createPinia>) {
   const pinia = existingPinia ?? createPinia()
   setActivePinia(pinia)
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes: [
+      { path: '/rights', component: Blank },
+      { path: '/:pathMatch(.*)*', component: Blank },
+    ],
+  })
+  await router.push('/rights?tab=compensation')
+  await router.isReady()
   const Wrapper = defineComponent({
     setup() {
       return () => h(NMessageProvider, null, { default: () => h(RightsView) })
     },
   })
   return {
-    wrapper: mount(Wrapper, { global: { plugins: [pinia] }, attachTo: document.body }),
+    wrapper: mount(Wrapper, { global: { plugins: [pinia, router] }, attachTo: document.body }),
     store: useMainStore(),
   }
 }
@@ -39,7 +51,7 @@ beforeEach(() => {
 
 describe('维权页签结构', () => {
   it('三个页签都渲染出来', async () => {
-    const { wrapper } = mountView()
+    const { wrapper } = await mountView()
     await nextTick()
     await nextTick()
 
@@ -52,7 +64,7 @@ describe('维权页签结构', () => {
   })
 
   it('页签数量为 3，顺序是 补偿 → 指南 → 文书（主链路顺序）', async () => {
-    const { wrapper } = mountView()
+    const { wrapper } = await mountView()
     await nextTick()
     await nextTick()
     await new Promise((r) => setTimeout(r, 150))
@@ -69,7 +81,7 @@ describe('维权页签结构', () => {
 
 describe('补偿结果的生命周期', () => {
   it('补偿结果写入后，切换页签不会丢失', async () => {
-    const { wrapper, store } = mountView()
+    const { wrapper, store } = await mountView()
     await nextTick()
     await nextTick()
     await new Promise((r) => setTimeout(r, 150))
@@ -94,7 +106,7 @@ describe('补偿结果的生命周期', () => {
     const pinia = createPinia()
     setActivePinia(pinia)
 
-    const first = mountView(pinia)
+    const first = await mountView(pinia)
     await nextTick()
     await new Promise((r) => setTimeout(r, 150))
 
@@ -103,7 +115,7 @@ describe('补偿结果的生命周期', () => {
     first.wrapper.unmount()
 
     // 离开权益页再回来：复用同一个 pinia
-    const second = mountView(pinia)
+    const second = await mountView(pinia)
     await nextTick()
     await new Promise((r) => setTimeout(r, 200))
 

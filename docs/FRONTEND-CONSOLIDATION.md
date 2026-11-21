@@ -94,6 +94,15 @@
 - 34 行使用可换行 flex 行，移动端不设横向滚动；本城行标「当前」，避免用户误以为总览是只读快照。
 - E2E 在原数据溯源用例内扩展，不新增顶级页签；单测只覆盖纯汇总函数，不模拟网络。
 
+## 已完成（0.0.39）
+
+- 页面标题收口到 `src/app/pageTitles.ts`：`router.ts` 的 `meta.title` 与 `PageHeading` 的 sr-only h1 都从这一张表取，11 个 key 不再各写一份字面量。`PageHeading` 只保留 `createPageHeading`，标题本身不复制。
+- `/rights` 三个页签接入 `useTabQuery`：`?tab=compensation|guide|document` 可深链；`/start?entry=trouble` 的“补偿计算 / 维权指南 / 文书生成”三张快捷卡分别落到对应页签，不再全部停在补偿计算。没有新增页面或第二套页签状态。
+- `/start?entry=social` 在四入口实际覆盖的 25 条 L2 之外，补出未被覆盖的 5 条 L2（养老退出、退休办理、失业登记、灵活就业登记、养老金认证）。补位逻辑从 `RIGHTS_CATALOG` 与 `rightsForEntry` 派生，只给入口，不复制全文；全文仍在 `/guides`。
+- `/dashboard` 的“见方案对比页”改为可点的 `/scenario` 链接；`/scenario` 不再只有路由、没有站内入口。
+- 测试守住单一来源：`tests/uxDebt.spec.ts` 检查路由与 `PageHeading` 引用共享标题表、11 个 key 齐全、总览有 `/scenario` 链接；`RightsView` 挂载测试补真实 router，避免 `useTabQuery` 在无路由环境取 `undefined`。
+- **仍未做**：`/policy?tab=manual` 的 23 张全文卡还没收口；计划 0.0.40 只保留 2 条独有 L1 概念卡（`guide-retire-age`、`guide-ltc-insurance`），其余改成 `/start` / `/guides` 入口，知识库不动。
+
 ## 下一步：按这个顺序合，不要一次重排
 
 ### P1-1 首页归位：`/start` 是唯一的“办事首页”（已在 3.6.2 完成）

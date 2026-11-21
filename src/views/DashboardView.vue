@@ -72,7 +72,7 @@
         {{ store.comparison?.best?.work.dailyOrders }}单/天 ·
         {{ store.comparison?.best?.work.workDaysMonth }}天/月
       </span>
-      <span class="kpi-scope-hint">左侧「当前方案」的数字见方案对比页</span>
+      <span class="kpi-scope-hint">左侧「当前方案」的数字见 <router-link class="link-brand calc-scope-link" to="/scenario">方案对比页</router-link></span>
     </div>
 
     <!-- KPI Row：数字用滚动动画呈现，让"拖滑块 → 数字变化"的因果可见 -->

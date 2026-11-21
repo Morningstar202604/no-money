@@ -1,26 +1,27 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { PAGE_TITLES } from './pageTitles'
 
 export const router = createRouter({
   // 用构建期 base：部署到 /app/ 时路由前缀与资源前缀一致，否则深链全部 404
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', redirect: '/start' },
-    { path: '/start', name: 'Start', component: () => import('../views/RightsStartView.vue'), meta: { title: '办事入口 — 该做什么、能拿什么、去哪办' } },
-    { path: '/dashboard', name: 'Dashboard', component: () => import('../views/DashboardView.vue'), meta: { title: '总览 — 月净收入与权益评分' } },
+    { path: '/start', name: 'Start', component: () => import('../views/RightsStartView.vue'), meta: { title: PAGE_TITLES.start } },
+    { path: '/dashboard', name: 'Dashboard', component: () => import('../views/DashboardView.vue'), meta: { title: PAGE_TITLES.dashboard } },
     // 企业职工工资条口径：不套骑手按单模型，独立一页，不占主导航
-    { path: '/employee', name: 'Employee', component: () => import('../views/EmployeeView.vue'), meta: { title: '企业职工 — 工资条算到手' } },
-    { path: '/guides', name: 'Guides', component: () => import('../views/GuidesView.vue'), meta: { title: '怎么弄 — 办事教程、材料与官方入口' } },
-    { path: '/scenario', name: 'Scenario', component: () => import('../views/ScenarioView.vue'), meta: { title: '方案对比与收支明细' } },
-    { path: '/planning', name: 'Planning', component: () => import('../views/PlanningView.vue'), meta: { title: '税务优化与养老规划' } },
-    { path: '/rights', name: 'Rights', component: () => import('../views/RightsView.vue'), meta: { title: '权益护航 — 补偿计算与文书' } },
-    { path: '/policy', name: 'Policy', component: () => import('../views/PolicyView.vue'), meta: { title: '政策百科与民生手册' } },
+    { path: '/employee', name: 'Employee', component: () => import('../views/EmployeeView.vue'), meta: { title: PAGE_TITLES.employee } },
+    { path: '/guides', name: 'Guides', component: () => import('../views/GuidesView.vue'), meta: { title: PAGE_TITLES.guides } },
+    { path: '/scenario', name: 'Scenario', component: () => import('../views/ScenarioView.vue'), meta: { title: PAGE_TITLES.scenario } },
+    { path: '/planning', name: 'Planning', component: () => import('../views/PlanningView.vue'), meta: { title: PAGE_TITLES.planning } },
+    { path: '/rights', name: 'Rights', component: () => import('../views/RightsView.vue'), meta: { title: PAGE_TITLES.rights } },
+    { path: '/policy', name: 'Policy', component: () => import('../views/PolicyView.vue'), meta: { title: PAGE_TITLES.policy } },
     // 数据管理后台：统计 34 城规则覆盖率并跑一致性检查。
     // 不做登录：它管理的是公开只读的规则文件，没有需要保护的私有数据。
-    { path: '/admin', name: 'Admin', component: () => import('../views/AdminView.vue'), meta: { title: '数据管理后台' } },
+    { path: '/admin', name: 'Admin', component: () => import('../views/AdminView.vue'), meta: { title: PAGE_TITLES.admin } },
     // 数据核验对账页：面向用户的"这个数能不能信"，与 /admin 的治理视角互补
-    { path: '/audit', name: 'Audit', component: () => import('../views/AuditView.vue'), meta: { title: '数据核验对账' } },
+    { path: '/audit', name: 'Audit', component: () => import('../views/AuditView.vue'), meta: { title: PAGE_TITLES.audit } },
     // 未知路径显式 404：静默重定向会让用户以为地址是对的（深链写错也无从发现）
-    { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/NotFoundView.vue'), meta: { title: '页面不存在' } },
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: () => import('../views/NotFoundView.vue'), meta: { title: PAGE_TITLES.notfound } },
   ],
   // 页面切换回到顶部：长页（政策百科）滚到底再切页会从旧滚动位置开始渲染
   scrollBehavior() {
@@ -28,7 +29,7 @@ export const router = createRouter({
   },
 })
 
-// 每个路由更新标题：五个页面共用 index.html 的同一个 title 时，浏览器历史、
+// 每个路由更新标题：所有页面共用 index.html 的同一个 title 时，浏览器历史、
 // 标签页与分享卡片都无法区分页面，深链粘贴出去也看不出是哪一页
 const APP_NAME = '没钱 No Money'
 router.afterEach((to) => {

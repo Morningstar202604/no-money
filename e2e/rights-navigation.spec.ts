@@ -124,6 +124,40 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByRole('button', { name: /补偿计算/ })).toBeVisible()
   })
 
+  test('遇到麻烦的三个快捷入口落到各自页签', async ({ page }) => {
+    await page.goto('/start?entry=trouble')
+    await dismissOnboarding(page)
+
+    await page.getByRole('button', { name: /维权指南/ }).click()
+    await expect(page).toHaveURL(/\/rights\?tab=guide/)
+    await expect(page.getByText('维权行动指南 — 从取证到仲裁')).toBeVisible({ timeout: 15_000 })
+
+    await page.goto('/start?entry=trouble')
+    await page.getByRole('button', { name: /文书生成/ }).click()
+    await expect(page).toHaveURL(/\/rights\?tab=document/)
+    await expect(page.getByText('法律文书生成器 — 一键生成可提交的正式文件')).toBeVisible({ timeout: 15_000 })
+  })
+
+  test('社保入口补上首页未展开的 5 条 L2', async ({ page }) => {
+    await page.goto('/start?entry=social')
+    await dismissOnboarding(page)
+
+    await expect(page.getByText('还有 5 条：养老、失业与登记')).toBeVisible()
+    for (const title of [
+      '不想交了，能退多少钱？',
+      '退休办理：提前 3 个月准备',
+      '失业登记：领失业金、找工作前先办这一件事',
+      '灵活就业登记：参保、领补贴的前置步骤',
+      '养老金领取资格认证：每年一次，别让养老金停发',
+    ]) {
+      await expect(page.getByText(title, { exact: true }).first()).toBeVisible()
+    }
+
+    await page.getByRole('button', { name: /退休办理/ }).click()
+    await expect(page).toHaveURL(/\/guides\?cat=retire/)
+    await expect(page.getByText('照着这张清单办，不用再到处问')).toBeVisible()
+  })
+
   test('北京生成清单后显示社保/医保/公积金/就业四类本地官方入口', async ({ page }) => {
     await page.goto('/start')
     await dismissOnboarding(page)
