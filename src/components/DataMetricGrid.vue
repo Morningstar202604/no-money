@@ -67,9 +67,9 @@ defineProps<{
   font-variant-numeric: tabular-nums;
 }
 
-.metric-value.ok { color: var(--color-success-600); }
-.metric-value.derived { color: var(--color-info-600); }
-.metric-value.warn { color: var(--color-warning-600); }
+.metric-value.ok { color: var(--color-text-success); }
+.metric-value.derived { color: var(--color-text-info); }
+.metric-value.warn { color: var(--color-text-warning); }
 
 @media (max-width: 900px) {
   .metric-row { grid-template-columns: repeat(2, 1fr); }

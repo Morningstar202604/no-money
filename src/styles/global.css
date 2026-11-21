@@ -148,8 +148,8 @@ code, pre {
 .text-success { color: var(--color-text-success); }
 .text-warning { color: var(--color-text-warning); }
 .text-danger { color: var(--color-text-danger); }
-.text-safe { color: var(--color-success-600) !important; }
-.text-warn { color: var(--color-warning-600) !important; }
+.text-safe { color: var(--color-text-success) !important; }
+.text-warn { color: var(--color-text-warning) !important; }
 
 /* ---------- Shared visual atoms ----------
    只抽稳定复用的小原子；不引入新框架，也不把业务卡合成万能卡。 */
@@ -167,7 +167,10 @@ code, pre {
 
 .link-brand {
   color: var(--color-text-brand);
-  text-decoration: none;
+  /* 正文内链接不能只靠颜色区分：同一段里 #0f766e 与 #475569 只有 1.38:1，
+     低于 WCAG 1.4.1 要求的 3:1；下划线是不依赖色觉的区分方式。 */
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 /* ---------- KPI 行（仪表盘 / 退休规划共用） ---------- */
@@ -275,11 +278,11 @@ code, pre {
   font-family: var(--font-family-num);
   white-space: nowrap;
 }
-.d-row b.danger { color: var(--color-danger-600); }
+.d-row b.danger { color: var(--color-text-danger); }
 .d-row b.ok,
 .t-row.success b,
-.t-row.total b.ok { color: var(--color-success-600); }
-.t-row.danger b { color: var(--color-danger-600); }
+.t-row.total b.ok { color: var(--color-text-success); }
+.t-row.danger b { color: var(--color-text-danger); }
 
 .d-row.total,
 .t-row.total {

@@ -157,7 +157,7 @@ onMounted(() => {
 .matrix td { padding: var(--space-2); border-bottom: 1px solid var(--surface-border); text-align: center; }
 .matrix tr:hover td { background: var(--surface-1); }
 .sticky-col { text-align: left !important; white-space: nowrap; }
-.gap-zero { color: var(--color-success-600); }
+.gap-zero { color: var(--color-text-success); }
 
 .cell { display: inline-block; width: 14px; height: 14px; border-radius: 3px; }
 .cell.ok { background: var(--color-success-500); }

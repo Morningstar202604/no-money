@@ -73,7 +73,7 @@
           <div>本应用自身没有后端；对话历史默认只保留在当前标签页内存中，只有你主动选择在本机记住时才会写入 localStorage。关闭 AI 后不会自动发送对话；但「测试连接」仍会向你填写的接口发起请求。</div>
         </n-alert>
 
-        <n-form-item label="启用 AI"><n-switch v-model:value="config.enabled" /></n-form-item>
+        <n-form-item label="启用 AI"><n-switch v-model:value="config.enabled" aria-label="启用 AI" /></n-form-item>
         <n-form-item label="Endpoint">
           <n-input v-model:value="config.endpoint" placeholder="https://api.deepseek.com/v1/chat/completions" />
         </n-form-item>
@@ -310,7 +310,7 @@ function saveAndClose() {
 .chat-fab {
   position: fixed; bottom: 24px; right: 24px;
   width: 48px; height: 48px; border-radius: 12px;
-  background: var(--color-primary-500); color: var(--color-text-inverse);
+  background: var(--color-primary-500); color: var(--color-text-on-primary);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 8px rgba(13,148,136,0.25);
@@ -372,7 +372,7 @@ function saveAndClose() {
   border-radius: 6px; font-size: 13px; line-height: 1.6;
   white-space: pre-wrap; word-break: break-word;
 }
-.msg.user .msg-bubble { background: var(--color-primary-500); color: var(--color-text-inverse); }
+.msg.user .msg-bubble { background: var(--color-primary-500); color: var(--color-text-on-primary); }
 .msg.assistant .msg-bubble { background: var(--color-bg-tertiary); color: var(--color-text-primary); }
 
 .cursor { animation: blink 0.8s infinite; }

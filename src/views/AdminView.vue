@@ -22,13 +22,13 @@
       <h2 class="panel-title">全库溯源条目置信度分布</h2>
       <div class="bar-stack" role="img" :aria-label="`官方 ${confidenceCounts.official} 条，推算 ${confidenceCounts.derived} 条，未核实 ${confidenceCounts.unverified} 条`">
         <div class="bar official" :style="{ flexGrow: confidenceCounts.official || 0.001 }">
-          <span v-if="confidenceCounts.official">{{ confidenceCounts.official }}</span>
+          <span v-if="confidenceCounts.official" aria-hidden="true">{{ confidenceCounts.official }}</span>
         </div>
         <div class="bar derived" :style="{ flexGrow: confidenceCounts.derived || 0.001 }">
-          <span v-if="confidenceCounts.derived">{{ confidenceCounts.derived }}</span>
+          <span v-if="confidenceCounts.derived" aria-hidden="true">{{ confidenceCounts.derived }}</span>
         </div>
         <div class="bar unverified" :style="{ flexGrow: confidenceCounts.unverified || 0.001 }">
-          <span v-if="confidenceCounts.unverified">{{ confidenceCounts.unverified }}</span>
+          <span v-if="confidenceCounts.unverified" aria-hidden="true">{{ confidenceCounts.unverified }}</span>
         </div>
       </div>
       <div class="legend">
@@ -226,13 +226,14 @@ onMounted(async () => {
   justify-content: center;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-semibold);
-  color: #fff;
+  /* 白字压 success-600 / warning-600 只有 3.3 / 3.2:1；深色字两档都过 4.5。 */
+  color: var(--color-text-on-primary);
   transition: flex-grow var(--duration-slow) var(--ease-out);
   min-width: 2px;
 }
 
 .bar.official { background: var(--color-success-600); }
-.bar.derived { background: var(--color-info-600); }
+.bar.derived { background: var(--color-info-600); color: #fff; }
 .bar.unverified { background: var(--color-warning-600); }
 
 .legend { margin-top: var(--space-3); }
@@ -322,7 +323,7 @@ onMounted(async () => {
   margin: var(--space-2) 0 0;
   padding-left: var(--space-5);
   font-size: var(--font-size-sm);
-  color: var(--color-danger-600);
+  color: var(--color-text-danger);
 }
 
 </style>

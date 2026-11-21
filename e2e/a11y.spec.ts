@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { dismissOnboarding } from './helpers'
 
 /**
  * 无障碍与语义结构 E2E
@@ -65,6 +66,56 @@ test.describe('语义结构', () => {
       }
     }
     expect(unnamed, `存在没有可访问名称的按钮：\n${unnamed.join('\n')}`).toHaveLength(0)
+  })
+
+  test('关键页面的标题、滑块、对话框和数字按钮都有可访问名称', async ({ page }) => {
+    const routes = ['/dashboard', '/scenario', '/planning', '/rights', '/policy', '/employee', '/admin']
+    for (const route of routes) {
+      await page.goto(route)
+      await dismissOnboarding(page)
+      await expect(page.locator('main')).toBeVisible()
+      await expect
+        .poll(() => page.evaluate(() => {
+          const issues: string[] = []
+          document.querySelectorAll('[role="heading"]:not([aria-level])').forEach((el) => {
+            issues.push(`heading 缺 aria-level: ${el.textContent?.trim().slice(0, 20)}`)
+          })
+          document.querySelectorAll('[role="slider"]').forEach((el) => {
+            if (!el.getAttribute('aria-label') && !el.getAttribute('aria-labelledby')) {
+              issues.push(`slider 缺名称: ${el.className}`)
+            }
+          })
+          document.querySelectorAll('[role="dialog"]').forEach((el) => {
+            if (!el.getAttribute('aria-label') && !el.getAttribute('aria-labelledby')) {
+              issues.push(`dialog 缺名称: ${el.className}`)
+            }
+          })
+          document.querySelectorAll('.n-input-number .n-input__suffix button').forEach((el) => {
+            if (!el.getAttribute('aria-label') && !el.getAttribute('aria-labelledby') && !el.textContent?.trim()) {
+              issues.push('数字输入按钮缺名称')
+            }
+          })
+          return issues
+        }), { timeout: 5000 })
+        .toEqual([])
+    }
+  })
+
+  test('首次引导弹窗有可访问名称', async ({ page }) => {
+    await page.goto('/dashboard')
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(dialog).toHaveAccessibleName('先看这里：你该办哪几件事？')
+    await dialog.getByRole('button', { name: '开始调整参数' }).click()
+  })
+
+  test('正文里的品牌链接不只靠颜色区分', async ({ page }) => {
+    await page.goto('/planning')
+    await dismissOnboarding(page)
+    const link = page.locator('.tax-guide-link a').first()
+    await expect(link).toBeVisible()
+    const decoration = await link.evaluate((el) => getComputedStyle(el).textDecorationLine)
+    expect(decoration).toContain('underline')
   })
 
   test('键盘可以到达命令面板并完成一次操作', async ({ page }) => {

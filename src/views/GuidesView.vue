@@ -154,10 +154,10 @@ function setCategory(next: GuideFilterKey) {
   font-size: var(--font-size-sm); cursor: pointer;
 }
 .guides-chip span { color: var(--color-text-tertiary); font-size: var(--font-size-xs); }
-.guides-chip.active { border-color: var(--color-primary-500); background: var(--color-primary-50); color: var(--color-primary-600); font-weight: 650; }
+.guides-chip.active { border-color: var(--color-primary-500); background: var(--color-primary-50); color: var(--color-text-brand); font-weight: 650; }
 .guides-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; align-items: start; }
 .guides-foot { margin: 2px 0 0; font-size: var(--font-size-xs); line-height: 1.7; color: var(--color-text-tertiary); }
-.guides-foot a { color: var(--color-primary-600); text-decoration: underline; }
+.guides-foot a { color: var(--color-text-brand); text-decoration: underline; }
 @media (max-width: 640px) {
   .guides-hero { padding: 18px; }
   .guides-title { font-size: var(--font-size-xl); }

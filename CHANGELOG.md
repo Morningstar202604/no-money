@@ -3,6 +3,32 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.MINOR.PATCH` 三段式，默认只递增末段；架构/依赖边界级切换才升 MINOR；历史 `3.x` 标签保留。
 
+## [0.1.1] — 2026-11-22
+
+纯可访问性小版本，不新增业务功能。把 0.1.0 新信息架构里「能看但看不清、能点但读屏叫不出名字」的问题收口到可回归的门禁。
+
+### Fixed
+
+- 浅色语义文字色从 600 档降到 700 档：品牌色白底 3.74:1 → 5.47:1，成功色 3.30:1 → 5.02:1，警告色 3.19:1 → 4.84:1，危险色在浅红底 4.41:1 → 5.91:1；深色主题原本达标的 400/亮色档不动。
+- `RightsItemCard`、`RightsWizard`、`DataMetricGrid`、`SourceTag`、`AdminView` 等直接把 600 档当文字色的位置改走语义 token，深色主题不再跟着浅色值走。
+- naive-ui 补齐：`NCard` 的 `role="heading"` 补 `aria-level`；`NSlider` 按字段标签补名称；`NInputNumber` 加减按钮补“减少/增加数值”；`NModal` 的卡片对话框补标题；开关补 `aria-label`。
+- `Tag` / `Tabs` / `Steps` / `Button` 的主题覆盖改到语义文字色：页签 2.37:1、标签 3.07:1、未激活步骤 1.78:1、text 按钮 2.48:1 均回到 4.5:1 以上。
+- 正文内的品牌链接加下划线，不再只靠颜色与周围文字区分（WCAG 1.4.1）。
+- 主色底上的白字统一改为 `--color-text-on-primary`：聊天用户气泡、地图选中城市、向导进度、结果总额等不再出现 2.48:1 的白字。
+
+### Tests
+
+- 新增 `tests/a11yContrast.spec.ts`：直接解析 `variables.css`、解开 `var()` 链并做 alpha 合成，锁浅色/深色语义文字对白底、浅品牌底、成功/警告/危险底的 4.5:1。
+- 新增 `tests/naiveA11y.spec.ts` 与 `e2e/a11y.spec.ts`：标题层级、滑块、数字按钮、对话框、正文链接下划线在真实 DOM 里可验证。
+- 单测 71 文件 / 900 条全过（5m39s）；E2E 11 文件 / 152 条全过（6.6 分钟），4 张视觉基线在既定容差内通过。
+- Lighthouse 12 移动端 `accessibility`：`/start`、`/dashboard`、`/employee`、`/guides`、`/scenario`、`/planning`、`/rights`、`/policy`、`/admin`、`/audit` **10/10 路由 1.00**，`color-contrast`、`aria-*`、`button-name`、`link-in-text-block` 全部 0 失败。
+
+### Docs
+
+- `ROADMAP.md` 把「Accessibility and plain-language pass」拆开：可访问性已交付，白话改写仍开放；`naive-ui` 首屏拆分标记为 0.1.0 已完成。
+- `docs/ENGINEERING.md` 记录 10 路 Lighthouse 结果、对比度门禁与 naive-ui ARIA 补齐层的边界。
+- 版本五处统一为 `0.1.1`。
+
 ## [0.1.0] — 2026-11-22
 
 首个 MINOR，只做一件事：把 naive-ui 从首屏静态依赖链里拆出去。首页不再为了一个主题容器下载 176K gzip 的组件库，4G 下先看到品牌页，进「算一算」才加载计算器需要的组件。

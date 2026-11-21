@@ -188,10 +188,10 @@ async function onShare() {
   border: 1px solid var(--color-border-primary);
   color: var(--color-text-tertiary);
 }
-.rc-level.level-l2 { color: var(--color-success-700); border-color: var(--color-success-500); background: var(--color-success-50); }
+.rc-level.level-l2 { color: var(--color-text-success); border-color: var(--color-success-500); background: var(--color-success-50); }
 .rc-conf { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
-.rc-conf.conf-official { color: var(--color-success-600); }
-.rc-conf.conf-unverified { color: var(--color-warning-600); }
+.rc-conf.conf-official { color: var(--color-text-success); }
+.rc-conf.conf-unverified { color: var(--color-text-warning); }
 .rc-title { margin: 0; font-size: var(--font-size-md); line-height: 1.4; color: var(--color-text-primary); }
 .rc-one { margin: 0; font-size: var(--font-size-sm); line-height: 1.65; color: var(--color-text-secondary); }
 .rc-block { display: flex; gap: 8px; font-size: var(--font-size-sm); line-height: 1.6; }

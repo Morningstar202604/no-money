@@ -3,18 +3,18 @@
 This is a working roadmap, not a promise. Priorities shift when real user feedback arrives —
 especially data corrections, because a wrong policy number is worse than a missing feature.
 
-Version format: `0.0.x`，前两段固定、末段每次发布递增；历史 `3.x` 标签保留。
+Version format: `0.MINOR.PATCH`，默认只递增 PATCH；架构/依赖边界级切换才升 MINOR；历史 `3.x` 标签保留。
 See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ---
 
 ## Where we are now
 
-**0.1.0** is the current baseline. The product direction is settled — a rights-navigation and
+**0.1.1** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
 new-grad first-year mode, plain-language guide search, guide sharing, whole-checklist sharing,
 the checklist export/share edge fixes, a local phone-calendar reminder, four front-end
-dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup, the cross-module duplicate audit, the legacy-engine removal, and the coverage / cycle / visual gates, the first-paint shell and home declutter, and the first-screen dependency split, are shipped:
+dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup, the cross-module duplicate audit, the legacy-engine removal, and the coverage / cycle / visual gates, the first-paint shell and home declutter, the first-screen dependency split, and the accessibility pass, are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -45,6 +45,10 @@ dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cle
   an async `NaiveShell`, makes the wizard and home notices native, and cuts first-screen JS
   from 410K to 193K gzip; `simulate` LCP 2.3s now passes, devtools 4x CPU TBT ~600ms
   remains the open gap
+- 0.1.1 completes the accessibility pass on the new IA: semantic text colors move to AA-safe
+  700 shades, naive-ui headings/sliders/number buttons/dialogs get ARIA names, tags/tabs/steps
+  and text buttons get contrast-safe theme values, and in-text brand links gain underlines;
+  Lighthouse `accessibility` is **1.00 on all 10 routes**
 
 **What is shipped:** `/start` with four entries; a 3-step wizard; a **60-item `RightsItem` catalog**
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
@@ -52,13 +56,29 @@ local checklist persistence with deadline-first hints, TXT/ICS export and print/
 content tests. The calculator and all routes still work.
 3.6.2 makes `/start` the default home; 3.6.3 groups `/policy` into four tabs; 3.6.4 reuses the same `GuideCard` in `/start` details; 3.6.5 unifies city/province service channels behind one resolver; 3.6.6 reaches 60 items and makes the checklist exportable; 3.6.7 adds four one-click common situations; 3.6.8 ranks the generated result list and highlights the first action; 3.6.9 adds a handoff to calculate / ask AI / read policy; 3.6.10 pre-fills that AI prompt with the current city and first checklist item; 3.6.11 states the flexible-work-only calculator scope and adds a per-city data-freshness summary; 3.7.0 adds an employee wage-slip page at `/employee`, with annual comprehensive-income tax and a no-rider-sidebar layout; 3.7.1 expands the policy data-source tab into a 34-city freshness overview; 3.7.2 turns freshness into a local/CI gate with a monthly workflow; 3.7.3 makes a failed month open or update an issue instead of only showing a red run; 3.7.4 trims the public README and syncs the five hosting mirrors; 3.7.5 fixes the CI preview bind so browser smoke tests start on GitHub runners; 3.7.6 records the one Cargo advisory with no compatible fix; 3.8.0 makes the seven checklists first-class and wires the content-review/contributor loop; 3.8.1 verifies 2026 pension bases for the first five cities (Shanghai, Jinan, Fuzhou, Nanchang, Kunming) against official notices; 3.8.2 completes the remaining fifteen (Changchun, Guiyang, Harbin, Haikou, Hefei, Hohhot, Lanzhou, Lhasa, Nanning, Shenyang, Shijiazhuang, Taiyuan, Urumqi, Xining, Yinchuan), with 12 direct official min/max and 3 derived from official average wages at the statutory 60%/300%; 3.8.3 verifies five minimum wages; 3.8.4 closes the field: all 34 cities now have an official current minimum-wage standard; 3.8.5 splits medical base and rate provenance and replaces the 26-city 4500/22500/8% placeholder with city-specific 2026 official or derived values; 3.8.6 closes the pension benefit base: 34/34 cities have a checkable value (21 official / 13 derived / 0 unverified), adds `benefitBaseYear` so a 2025 carried-forward base is never presented as a 2026 published one, and corrects Changsha from 6843 (contribution benchmark) to 7694 (benefit base); 3.8.7 re-checks the 13 derived pension bases: five (Chongqing, Shanghai, Taiyuan, Hangzhou, Guiyang) move to official, eight stay derived, Lanzhou's 7594/2025 year mismatch is corrected to 7746/2025, and Zhengzhou's 6401 is confirmed as the 2023 base rather than a competing 2025 value; 3.8.8 closes the medical leftovers: Xi'an moves from unverified to official (4990 / 8% / 8 yuan large-medical, 407.2/month), Zhengzhou corrects 9% to the net 10% and 521.6/month, Shijiazhuang's expired 6.5% is downgraded to derived, Hohhot folds long-term care and large-medical into 35.31/month, Urumqi models the actual 503.62/678.5 collection with fixed add-ons, and Wuhan separates the 7587 medical base from the 7496 pension base; 3.8.9 closes the eight-city pension-base re-check: Xi'an 7881/2025 moves to official on the `陕人社函〔2025〕425号` scan, seven cities stay derived (Chengdu 8462, Haikou 8188, Hohhot 8430, Lanzhou 7746, Urumqi 8744, Wuhan 9112, Zhengzhou 6738), and Zhengzhou's `豫人社办〔2025〕73号` page is recorded with its attachment mismatch.
 
-**What is not done yet:** resident / urban-rural resident calculation mode; 10 real-user tests. The
+**What is not done yet:** resident / urban-rural resident calculation mode; 10 real-user tests; the
+plain-language rewrite of long policy sentences. The accessibility pass is shipped in 0.1.1. The
 18 guide-scope L2 entries now each have a user-phrase test and a working search alias. The
 six-section nav, standalone guide page and new-grad first-year mode are shipped; 3.8.0 also ships the rights guide, the freshness gate, failure-to-issue automation,
 repository automation, the employee wage-slip slice, seven ready-made checklists and the
 content-review loop. Page-level deadline hints and a user-set `.ics` phone-calendar export exist, but there is no push service or account.
 
 ---
+
+## 0.1.1 — Accessibility pass on the new IA (shipped 2026-11-22)
+
+**Goal: make the new information architecture readable and operable for keyboard / screen-reader / low-vision users, without adding features.**
+
+- [x] Light-theme semantic text tokens move from 600 to 700 shades; brand/success/warning/danger text all reach WCAG AA 4.5:1 on white and their tinted backgrounds. Dark-theme 400/bright values are unchanged and re-tested.
+- [x] Direct 600-shade text usages in `RightsItemCard`, `RightsWizard`, `DataMetricGrid`, `SourceTag`, `AdminView` and shared CSS move to semantic tokens, so dark mode does not inherit light-only values.
+- [x] naive-ui ARIA gaps patched: card headings get `aria-level`, sliders get field-derived names, number-input +/- buttons get names, preset-card dialogs get titles, switches get `aria-label`.
+- [x] `Tag` / `Tabs` / `Steps` / text `Button` theme values use semantic text colors; tab 2.37:1, tag 3.07:1, wait-step 1.78:1 and text-button 2.48:1 all clear 4.5:1.
+- [x] White text on primary surfaces moves to `--color-text-on-primary`; user chat bubbles, selected map city, wizard progress and result totals no longer sit at 2.48:1.
+- [x] In-text brand links gain underlines (WCAG 1.4.1), not color alone.
+- [x] Lighthouse 12 mobile `accessibility`: **1.00 on `/start`, `/dashboard`, `/employee`, `/guides`, `/scenario`, `/planning`, `/rights`, `/policy`, `/admin`, `/audit`**; `color-contrast`, `aria-*`, `button-name`, `link-in-text-block` zero failures.
+- [x] `tests/a11yContrast.spec.ts` parses `variables.css`, resolves `var()` chains and alpha composites; `tests/naiveA11y.spec.ts` + `e2e/a11y.spec.ts` lock the DOM relationships.
+- [x] Unit 71 files / 900 tests; E2E 11 files / 152 tests; build 23.79s; PWA 2,852.26 KiB.
+- [ ] Plain-language pass on the new IA remains open: rewrite the remaining long policy sentences and jargon without changing numbers or legal meaning.
 
 ## 0.1.0 — First-screen dependency boundary (shipped 2026-11-22)
 
@@ -421,11 +441,14 @@ social insurance, medical insurance, housing fund and employment services.
       no account, no notification permission
 - [x] "遇到麻烦" path already links to the 5-step guide, 4 document templates, labor inspection /
       arbitration / legal-aid entries (reused, not duplicated)
-- [ ] Accessibility and plain-language pass on the new IA
+- [x] Accessibility pass on the new IA — 0.1.1: 10/10 routes Lighthouse accessibility 1.00;
+      contrast tokens, headings, sliders, number buttons, dialogs and in-text links fixed
+- [ ] Plain-language pass on the new IA — rewrite remaining long policy sentences and jargon
+      without changing numbers or legal meaning
 
 **Acceptance:** a worker can move from "I don't know what to do" to a printed checklist without
 creating an account; every deadline is explained, not just displayed. **3.6.6 meets the first half;
-the accessibility pass remains.**
+the accessibility pass shipped in 0.1.1; the plain-language pass remains.**
 
 ---
 
@@ -815,7 +838,7 @@ five mirrors on `main` + `v3.8.7`.
 
 - [x] Remove `src/engine` after `TaxOptimizer` / `RetirementPlanner` migrate to `domain/` (done in 0.0.43)
 - [ ] Move `src/utils/livingGuide.ts` content into `src/data/rights/` with typed `RightsItem`s
-- [ ] Split `naive-ui` first-screen chunk if a lighter component set becomes viable
+- [x] Split `naive-ui` first-screen chunk (0.1.0: 176K gzip is now an on-demand chunk, not in the entry preload)
 - [ ] Windows installer signing / auto-update check
 
 ---

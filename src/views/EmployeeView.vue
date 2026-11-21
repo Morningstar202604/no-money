@@ -342,7 +342,7 @@ function money(value: number): string {
 .ep-form-card { margin-bottom: 12px; }
 .ep-mode-tabs { display: flex; gap: 4px; margin-bottom: 14px; padding: 4px; border: 1px solid var(--color-border-primary); border-radius: var(--radius-md); background: var(--color-bg-secondary); }
 .ep-mode-tab { flex: 1; min-height: 32px; padding: 6px 10px; border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-text-secondary); font-size: var(--font-size-sm); font-weight: 600; cursor: pointer; }
-.ep-mode-tab.active { background: var(--color-bg-primary); color: var(--color-primary-600); box-shadow: var(--color-shadow-sm); }
+.ep-mode-tab.active { background: var(--color-bg-primary); color: var(--color-text-brand); box-shadow: var(--color-shadow-sm); }
 .ep-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .ep-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .ep-label { font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-primary); }

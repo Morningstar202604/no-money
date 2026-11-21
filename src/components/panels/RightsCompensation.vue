@@ -73,12 +73,12 @@
             </div>
             <div class="form-item">
               <label>是否已签书面合同</label>
-              <n-switch v-model:value="form.wage.hasContract" @update:value="calc()" />
+              <n-switch v-model:value="form.wage.hasContract" aria-label="是否已签书面合同" @update:value="calc()" />
               <p class="form-note">{{ form.wage.hasContract ? '有书面合同' : '无书面合同 — 可另主张二倍工资差额（第2个月起，最多11个月）' }}</p>
             </div>
             <div class="form-item">
               <label>是否已以欠薪为由书面解除</label>
-              <n-switch v-model:value="form.wage.forcedQuit" @update:value="calc()" />
+              <n-switch v-model:value="form.wage.forcedQuit" aria-label="是否已以欠薪为由书面解除" @update:value="calc()" />
               <p class="form-note">《劳动合同法》第38条要求先送达解除通知，才能主张第46条经济补偿</p>
             </div>
           </div>
@@ -127,7 +127,7 @@
             </div>
             <div class="form-item">
               <label>已参加工伤保险</label>
-              <n-switch v-model:value="form.injury.hasInsurance" @update:value="calc()" />
+              <n-switch v-model:value="form.injury.hasInsurance" aria-label="已参加工伤保险" @update:value="calc()" />
               <p class="form-note">{{ form.injury.hasInsurance ? '已参保：基金支付部分待遇' : '未参保：第62条—全部待遇由用人单位按条例标准支付' }}</p>
             </div>
             <p class="form-note">注：平台按单缴费的职业伤害保障试点待遇项目少于工伤保险，本页按工伤保险口径计算，若实际走职伤渠道需重新核算。</p>
@@ -182,7 +182,7 @@
             </div>
             <div class="form-item">
               <label>已确认存在劳动关系</label>
-              <n-switch v-model:value="form.algo.hasLaborRelation" @update:value="calc()" />
+              <n-switch v-model:value="form.algo.hasLaborRelation" aria-label="已确认存在劳动关系" @update:value="calc()" />
               <p class="form-note">无劳动关系时，算法争议通常只能按民事服务合同/侵权路径主张，仲裁一般不受理</p>
             </div>
             <p class="form-note">本页所有金额均为估算，算法规则造成的收入差额举证难度大，实际胜诉金额往往低于估算值。</p>
@@ -503,7 +503,7 @@ calc()
 .scenario-card:hover { border-color: var(--color-text-brand); }
 .scenario-card.active { border-color: var(--color-text-brand); background: rgba(13,148,136,0.04); }
 .sc-icon { width: 28px; height: 28px; margin: 0 auto 6px; border-radius: 50%; background: var(--color-bg-tertiary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--color-text-secondary); }
-.scenario-card.active .sc-icon { background: var(--color-primary-500); color: var(--color-text-inverse); }
+.scenario-card.active .sc-icon { background: var(--color-primary-500); color: var(--color-text-on-primary); }
 .sc-name { font-size: 12px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 2px; }
 .sc-basis { font-size: 10px; color: var(--color-text-tertiary); }
 
@@ -515,7 +515,7 @@ calc()
 
 .result-total {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 16px; background: var(--color-primary-500); color: var(--color-text-inverse);
+  padding: 10px 16px; background: var(--color-primary-500); color: var(--color-text-on-primary);
   border-radius: 6px; margin-bottom: 12px;
 }
 .result-total span { font-size: 12px; opacity: 0.85; }

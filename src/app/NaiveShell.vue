@@ -7,18 +7,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import {
   NConfigProvider, NMessageProvider,
   darkTheme, lightTheme, type GlobalThemeOverrides,
 } from 'naive-ui'
 import { useMainStore } from '../stores/main'
+import { installNaiveA11y } from './naiveA11y'
 
 // naive-ui 的主题/消息容器从 App 根组件挪到这里，只被使用 naive 组件的页面按需加载。
 // 首屏（/start）全部用原生控件，因此首包不再下载 176K gzip 的 naive-ui。
 const store = useMainStore()
 
 const theme = computed(() => (store.isDark ? darkTheme : lightTheme))
+
+// 库自身的 heading/slider/数字按钮缺 ARIA 名称，挂载后统一补齐（见 naiveA11y.ts）
+onMounted(() => installNaiveA11y())
 
 function readToken(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
@@ -89,10 +93,31 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
       colorSuccess: 'var(--color-success-50)',
       colorWarning: 'var(--color-warning-50)',
       colorError: 'var(--color-danger-50)',
-      textColorInfo: 'var(--color-primary-600)',
-      textColorSuccess: 'var(--color-success-600)',
-      textColorWarning: 'var(--color-warning-600)',
-      textColorError: 'var(--color-danger-600)',
+      textColorInfo: 'var(--color-text-brand)',
+      textColorSuccess: 'var(--color-text-success)',
+      textColorWarning: 'var(--color-text-warning)',
+      textColorError: 'var(--color-text-danger)',
+    },
+    Tabs: {
+      // 选中页签的 600 档品牌色放在页签条浅底上只有 2.37:1；
+      // 语义文字色在浅色主题是 700 档、深色主题是 400 档，两边都达标。
+      tabTextColorActiveLine: 'var(--color-text-brand)',
+      tabTextColorHoverLine: 'var(--color-text-brand)',
+      tabTextColorActiveBar: 'var(--color-text-brand)',
+      tabTextColorHoverBar: 'var(--color-text-brand)',
+      tabTextColorActiveCard: 'var(--color-text-brand)',
+    },
+    Steps: {
+      // naive-ui 默认未激活步骤用 textColorDisabled（#c2c2c2），
+      // 白底只有 1.78:1；等待中的步骤仍是给用户看的说明，必须能读。
+      headerTextColorProcess: 'var(--color-text-primary)',
+      descriptionTextColorProcess: 'var(--color-text-secondary)',
+      headerTextColorWait: 'var(--color-text-tertiary)',
+      descriptionTextColorWait: 'var(--color-text-tertiary)',
+      indicatorTextColorWait: 'var(--color-text-tertiary)',
+      headerTextColorFinish: 'var(--color-text-tertiary)',
+      descriptionTextColorFinish: 'var(--color-text-tertiary)',
+      indicatorTextColorFinish: 'var(--color-text-tertiary)',
     },
     Menu: {
       itemTextColor: 'var(--color-text-secondary)',
@@ -134,6 +159,11 @@ const themeOverrides = computed<GlobalThemeOverrides>(() => {
       textColorHoverPrimary: 'var(--color-text-on-primary)',
       textColorPressedPrimary: 'var(--color-text-on-primary)',
       textColorFocusPrimary: 'var(--color-text-on-primary)',
+      // text 类型主按钮默认用 primaryColor（#14b8a6）当文字色，白底 2.48:1。
+      textColorTextPrimary: 'var(--color-text-brand)',
+      textColorTextHoverPrimary: 'var(--color-text-brand)',
+      textColorTextPressedPrimary: 'var(--color-text-brand)',
+      textColorTextFocusPrimary: 'var(--color-text-brand)',
     },
     Modal: {
       color: 'var(--color-bg-primary)',

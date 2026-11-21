@@ -412,14 +412,14 @@ const evidenceList = [
 }
 .qn-item:last-child { border-right: none; }
 .qn-item:hover { background: var(--color-bg-secondary); }
-.qn-item.active { background: var(--color-primary-500); color: var(--color-text-inverse); }
+.qn-item.active { background: var(--color-primary-500); color: var(--color-text-on-primary); }
 .qn-num {
   width: 20px; height: 20px; border-radius: 50%;
   background: var(--color-bg-tertiary); color: var(--color-text-secondary);
   display: flex; align-items: center; justify-content: center;
   font-size: 11px; font-weight: 700;
 }
-.qn-item.active .qn-num { background: rgba(255,255,255,0.25); color: var(--color-text-inverse); }
+.qn-item.active .qn-num { background: rgba(255,255,255,0.25); color: var(--color-text-on-primary); }
 .qn-name { font-size: 13px; font-weight: 500; }
 
 .step-body { display: flex; flex-direction: column; gap: 10px; }

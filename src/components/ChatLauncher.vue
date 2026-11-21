@@ -49,7 +49,7 @@ onUnmounted(() => window.removeEventListener('app:open-ai', openFromEvent))
 .chat-fab {
   position: fixed; bottom: 24px; right: 24px;
   width: 48px; height: 48px; border-radius: 12px;
-  background: var(--color-primary-500); color: var(--color-text-inverse);
+  background: var(--color-primary-500); color: var(--color-text-on-primary);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 8px rgba(13,148,136,0.25);

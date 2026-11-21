@@ -8,18 +8,19 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/组件/规则测试 | **69 文件 / 861 项全过**，耗时 5m33s |
-| E2E | **11 文件 / 146 项全过**（含 4 条视觉基线、首帧壳与 naive-ui 拆包断言，6.3 分钟） |
+| 单元/组件/规则测试 | **71 文件 / 900 项全过**，耗时 5m39s |
+| E2E | **11 文件 / 152 项全过**（含 4 条视觉基线、首帧壳、naive-ui 拆包与 ARIA 关系断言，6.6 分钟） |
+| 可访问性 | 10 条路由 Lighthouse 12 mobile `accessibility` **1.00**；`color-contrast` / `aria-*` / `button-name` / `link-in-text-block` 0 失败 |
 | 覆盖率 | `domain` + `application`：语句 **90.6%** / 分支 **80.19%** / 函数 **96.36%** / 行 **94.96%**，四项门槛均 80% |
-| 依赖环 | `dependency-cruiser` 扫描 `src`（含 `.vue`）：**142 模块 / 332 依赖 / 0 环** |
+| 依赖环 | `dependency-cruiser` 扫描 `src`（含 `.vue`）：**143 模块 / 333 依赖 / 0 环** |
 | 视觉回归 | 首页首屏 + 向导第二步，桌面/移动共 4 张基线；桌面 4% / 移动 6% 像素容差，向导固定滚动位置，另锁 4 入口/4 身份/无横向溢出 |
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
 | 知识库 | `kb:check` 409 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
-| 构建 | 23.14s；`dist` **3.50 MB**（assets 2.60 MB）；首屏 **193K gzip**（预算 300K） |
-| PWA | 75 条 precache（72 个去重文件）/ **2,849.51 KiB（约 2.78 MB）**（预算 3 MB） |
+| 构建 | 23.79s；`dist` **3.50 MB**（assets 2.61 MB）；首屏 **193K gzip**（预算 300K） |
+| PWA | 75 条 precache（72 个去重文件）/ **2,852.26 KiB（约 2.78 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（25 个关键文件、版本三处一致、34 城、PWA、体积、文档、首屏依赖） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |
@@ -84,6 +85,20 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 默认环境变量可能指向 `/opt/vm/preinstall/ms-playwright`（旧 chromium-1169），会报浏览器缺失。
 这是环境差异，不是测试失败。
+
+### 可访问性
+
+- 语义文字色只走 `--color-text-*` 语义 token；浅色 700 档 / 深色 400 或亮色档都必须对白底、
+  浅品牌底和浅成功/警告/危险底 ≥ 4.5:1。`tests/a11yContrast.spec.ts` 直接解析
+  `variables.css` 并解开 `var()` 链，改值会重新计算，不锁死十六进制。
+- 正文内的品牌链接必须带下划线：`#0f766e` 与 `#475569` 在正文里只有 1.38:1，
+  仅靠颜色无法区分（WCAG 1.4.1）。
+- naive-ui 2.38 自身漏掉的 ARIA 由 `src/app/naiveA11y.ts` 补齐：卡片标题层级、滑块名称、
+  数字输入加减按钮、preset-card 对话框名称。业务侧另外显式给开关和引导弹窗加名称；
+  补齐层只补缺失属性，不覆盖已有名称。
+- 发布前对 `/start`、`/dashboard`、`/employee`、`/guides`、`/scenario`、`/planning`、
+  `/rights`、`/policy`、`/admin`、`/audit` 跑 Lighthouse 12 mobile `accessibility`，
+  任何一项低于 1.00 都要先定位，不把失败项写成“已知问题”。
 
 ## 3. 性能与加载策略
 
@@ -215,7 +230,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 指标
 
-- 测试：861 项（69 个文件；含架构门禁、权益导航、34 城加载与覆盖分母、值对象/Result/错误工厂边界）；覆盖率已接入 CI，`domain` + `application` 四项均 ≥80%（语句 90.6% / 分支 80.19% / 函数 96.36% / 行 94.96%）。
+- 测试：900 项（71 个文件；含架构门禁、权益导航、34 城加载与覆盖分母、值对象/Result/错误工厂边界、语义色对比度与 naive-ui ARIA 关系）；覆盖率已接入 CI，`domain` + `application` 四项均 ≥80%（语句 90.6% / 分支 80.19% / 函数 96.36% / 行 94.96%）。
 - 质量门禁：`npm run test:coverage` 与 `npm run lint:cycles` 已进入 CI；循环依赖 0 环；视觉回归 4 张基线。
 - 首屏：193K gzip；PWA：2.78 MB（75 条 precache / 72 个去重文件）；`dist`：3.50 MB（assets 2.60 MB）。
 - 数据：343 条来源，official 225（65.6%）、derived 50、unverified 68；34 城；0 城全部字段 official。34 城医保基数 official 33 / derived 1（郑州按社平 80% 派生）；医保费率 official 27 / derived 7 / unverified 0（西安 2026 已升 official，石家庄到期降 derived）；34 城最低工资全部 official；养老基数 official 31 / derived 3；养老金计发基数 official 27 / derived 7 / unverified 0（西安 7881 凭陕人社函〔2025〕425号扫描件升 official；2026 已公布 10 城，其余 24 城按 2025 年预发）。
@@ -224,7 +239,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 - 前端去重（0.0.39–0.0.41）：页面标题只在 `src/app/pageTitles.ts` 维护；`/rights` 三页签可深链；`/start?entry=social` 补 5 条未展开 L2；`/dashboard` 可点进 `/scenario`；`/policy?tab=manual` 只保留 2 条站内无入口的概念正文，其余 21 条改入口；`/admin` 与 `/audit` 共用 `src/data/cityRules.ts`，明确 225/343 条与 186/238 格两个分母。
 - 新毕业生：`/employee` 支持试用期 + 转正两段工资；12 个月变额求和算年度个税，两段月到手按年度平均税负折算并标注；居民模式仍缺城市级缴费数据。
 - 清单提醒：`checklistCalendar` 生成 RFC 5545 `.ics`，日期只存本机；中国时间 09:00，3 天前与当天两次提醒；不接账号、推送或云端日历。
-- 可用性：E2E 146 项（11 个文件，桌面 + 移动）；首帧壳先可见、路由就绪后移除；首页不请求 naive-ui；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、清单日历提醒、新毕业生双段工资、`/rights` 页签深链、`/start` 的 5 条补位、`/policy` 手册入口与 `/admin` 两个覆盖分母有 E2E；首页首屏与向导第二步有视觉基线；清单导出/打印/.ics 有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
+- 可用性：E2E 152 项（11 个文件，桌面 + 移动）；首帧壳先可见、路由就绪后移除；首页不请求 naive-ui；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、清单日历提醒、新毕业生双段工资、`/rights` 页签深链、`/start` 的 5 条补位、`/policy` 手册入口与 `/admin` 两个覆盖分母有 E2E；标题层级、滑块、数字按钮、对话框与正文链接有 ARIA/下划线断言；首页首屏与向导第二步有视觉基线；清单导出/打印/.ics 有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 
 ## 6. 模块化与架构边界
 
@@ -268,6 +283,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 | 接线 | 静态契约 | 仅路由表/页签/静默失败等无法挂载的结构 |
 | E2E | 真实路径 | 桌面 + 移动；离线、分享、导入导出；首页/向导视觉基线 |
 | 架构 | 分层/入口/单一计算路径/依赖环 | `tests/architecture.spec.ts` + `npm run lint:cycles` |
+| 可访问性 | 语义色对比度、标题层级、控件名称、正文链接 | `tests/a11yContrast.spec.ts`（token/alpha 合成）+ `tests/naiveA11y.spec.ts` + `e2e/a11y.spec.ts`；Lighthouse 10 路由人工触发 |
 
 源码文本断言只允许「静态接线契约」，不得断言样式/布局；新增此类测试必须在注释里
 说明为什么不能挂载。

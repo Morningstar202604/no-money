@@ -282,5 +282,5 @@ const taxCompareOption = computed<EChartsCoreOption>(() => {
   color: var(--color-text-secondary);
 }
 .tax-guide-link b { color: var(--color-text-primary); }
-.tax-guide-link a { color: var(--color-text-brand); }
+.tax-guide-link a { color: var(--color-text-brand); text-decoration: underline; text-underline-offset: 2px; }
 </style>

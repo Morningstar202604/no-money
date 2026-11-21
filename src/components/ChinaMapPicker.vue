@@ -189,7 +189,7 @@ onBeforeUnmount(() => {
 .cmp-city.active {
   background: var(--color-bg-brand);
   border-color: var(--color-bg-brand);
-  color: var(--color-text-inverse);
+  color: var(--color-text-on-primary);
   font-weight: 600;
 }
 

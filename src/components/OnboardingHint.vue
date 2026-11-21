@@ -5,6 +5,7 @@
     preset="card"
     class="onb-modal"
     title="先看这里：你该办哪几件事？"
+    aria-label="先看这里：你该办哪几件事？"
     :style="{ width: 'min(620px, 94vw)', maxHeight: 'calc(100dvh - 32px)', display: 'flex', flexDirection: 'column' }"
     :closable="true"
     content-style="overflow-y: auto; min-height: 0; flex: 1 1 auto;"

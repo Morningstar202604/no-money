@@ -332,7 +332,7 @@
 
         <div class="ps-item ps-switch-row">
           <span class="ps-label">已缴社保</span>
-          <n-switch v-model:value="store.personal.hasSocialInsurance" size="small" />
+          <n-switch v-model:value="store.personal.hasSocialInsurance" size="small" aria-label="已缴社保" />
         </div>
 
         <div v-if="medicalTiers.length > 0" class="ps-item">
@@ -787,7 +787,7 @@ const autoMedicalBase = computed(() => autoBase(medicalBaseMin.value, medicalBas
 .ps-persist-error {
   font-size: 10px;
   line-height: 1.6;
-  color: var(--color-danger-600);
+  color: var(--color-text-danger);
   background: var(--color-danger-50);
   border: 1px solid var(--color-danger-200);
   border-radius: 3px;
