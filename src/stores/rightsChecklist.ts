@@ -5,6 +5,8 @@
  * 目的：用户下次打开还能接着办；换设备不迁移、不上传、不需要账号。
  */
 import { defineStore } from 'pinia'
+import { normalizeReminderDate } from '../utils/checklistCalendar'
+import { localDateString } from '../utils/localDate'
 
 export const RIGHTS_CHECKLIST_STORAGE_KEY = 'nomoney_rights_checklist_v1'
 
@@ -12,6 +14,8 @@ export interface RightsChecklistEntry {
   saved: boolean
   done: boolean
   updatedAt: string
+  /** 用户自选的日历提醒日期，YYYY-MM-DD；没有就不写 */
+  remindAt?: string
 }
 
 type ChecklistEntries = Record<string, RightsChecklistEntry>
@@ -33,16 +37,14 @@ function readEntries(): ChecklistEntries {
         done: v.done,
         updatedAt: typeof v.updatedAt === 'string' ? v.updatedAt : '',
       }
+      const remindAt = normalizeReminderDate(v.remindAt)
+      if (remindAt) entries[id].remindAt = remindAt
     }
     return entries
   } catch {
     // 隐私模式/存储损坏：按空清单处理，不阻断页面
     return {}
   }
-}
-
-function isoDate(): string {
-  return new Date().toISOString().slice(0, 10)
 }
 
 export const useRightsChecklistStore = defineStore('rightsChecklist', {
@@ -56,13 +58,15 @@ export const useRightsChecklistStore = defineStore('rightsChecklist', {
     doneCount: (state) => Object.values(state.entries).filter((e) => e.done).length,
     isSaved: (state) => (id: string) => Boolean(state.entries[id]?.saved),
     isDone: (state) => (id: string) => Boolean(state.entries[id]?.done),
+    remindAt: (state) => (id: string) => state.entries[id]?.remindAt,
+    reminderCount: (state) => Object.values(state.entries).filter((e) => e.remindAt).length,
   },
 
   actions: {
     ensure(id: string): RightsChecklistEntry {
       const current = this.entries[id]
       if (current) return current
-      const entry: RightsChecklistEntry = { saved: false, done: false, updatedAt: isoDate() }
+      const entry: RightsChecklistEntry = { saved: false, done: false, updatedAt: localDateString() }
       this.entries[id] = entry
       return entry
     },
@@ -72,7 +76,7 @@ export const useRightsChecklistStore = defineStore('rightsChecklist', {
       try {
         const cleaned: ChecklistEntries = {}
         for (const [id, entry] of Object.entries(this.entries)) {
-          if (entry.saved || entry.done) cleaned[id] = entry
+          if (entry.saved || entry.done || entry.remindAt) cleaned[id] = entry
         }
         if (Object.keys(cleaned).length === 0) {
           localStorage.removeItem(RIGHTS_CHECKLIST_STORAGE_KEY)
@@ -84,10 +88,26 @@ export const useRightsChecklistStore = defineStore('rightsChecklist', {
       }
     },
 
+    /** 设置/清除日历提醒；设置时把条目录入清单，日期非法按清除处理 */
+    setReminder(id: string, date: string | null | undefined): string | null {
+      const normalized = normalizeReminderDate(date)
+      const entry = this.ensure(id)
+      if (normalized) {
+        entry.remindAt = normalized
+        entry.saved = true
+      } else {
+        delete entry.remindAt
+      }
+      entry.updatedAt = localDateString()
+      if (!entry.saved && !entry.done && !entry.remindAt) delete this.entries[id]
+      this.persist()
+      return normalized
+    },
+
     toggleSaved(id: string) {
       const entry = this.ensure(id)
       entry.saved = !entry.saved
-      entry.updatedAt = isoDate()
+      entry.updatedAt = localDateString()
       if (!entry.saved && !entry.done) delete this.entries[id]
       this.persist()
     },
@@ -99,7 +119,7 @@ export const useRightsChecklistStore = defineStore('rightsChecklist', {
         const entry = this.ensure(id)
         if (!entry.saved) {
           entry.saved = true
-          entry.updatedAt = isoDate()
+          entry.updatedAt = localDateString()
           added += 1
         }
       }
@@ -110,7 +130,7 @@ export const useRightsChecklistStore = defineStore('rightsChecklist', {
     toggleDone(id: string) {
       const entry = this.ensure(id)
       entry.done = !entry.done
-      entry.updatedAt = isoDate()
+      entry.updatedAt = localDateString()
       if (!entry.saved && !entry.done) delete this.entries[id]
       this.persist()
     },
@@ -118,7 +138,7 @@ export const useRightsChecklistStore = defineStore('rightsChecklist', {
     clearDone() {
       for (const [id, entry] of Object.entries(this.entries)) {
         entry.done = false
-        entry.updatedAt = isoDate()
+        entry.updatedAt = localDateString()
         if (!entry.saved) delete this.entries[id]
       }
       this.persist()

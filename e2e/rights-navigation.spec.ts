@@ -1,3 +1,4 @@
+import { readFile } from 'node:fs/promises'
 import { test, expect } from '@playwright/test'
 
 async function dismissOnboarding(page: import('@playwright/test').Page) {
@@ -203,6 +204,41 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     expect(text).toContain('去哪办：')
     expect(text).toContain('来自「没钱 No Money」')
     expect(text).not.toContain('undefined')
+  })
+
+  test('我的清单可设提醒日期并导出手机日历', async ({ page }) => {
+    await page.goto('/start')
+    await dismissOnboarding(page)
+
+    const firstCard = page.locator('.right-card').first()
+    await firstCard.getByRole('button', { name: '加入清单' }).click()
+
+    const reminderInput = page.locator('.start-remind-input').first()
+    await expect(reminderInput).toBeVisible()
+    const remindDate = new Date()
+    remindDate.setDate(remindDate.getDate() + 10)
+    const isoDate = `${remindDate.getFullYear()}-${String(remindDate.getMonth() + 1).padStart(2, '0')}-${String(remindDate.getDate()).padStart(2, '0')}`
+    await reminderInput.fill(isoDate)
+    await expect(page.locator('.start-mine-note')).toContainText('已设提醒')
+
+    const downloadPromise = page.waitForEvent('download')
+    await page.getByRole('button', { name: '加入手机日历' }).click()
+    const download = await downloadPromise
+    expect(download.suggestedFilename()).toMatch(/^没钱-办事提醒-\d{4}-\d{2}-\d{2}\.ics$/)
+    const path = await download.path()
+    expect(path).toBeTruthy()
+    const ics = await readFile(path!, 'utf8')
+    expect(ics).toContain('BEGIN:VCALENDAR')
+    expect(ics).toContain(`DTSTART:${isoDate.replaceAll('-', '')}T010000Z`)
+    expect(ics).toContain('TRIGGER:-P3D')
+    expect(ics).toContain('办事提醒：')
+    expect(ics).not.toContain('salary')
+    expect(ics).not.toContain('identity')
+    await expect(page.locator('.start-mine-note')).toContainText('已生成 .ics')
+
+    await page.reload()
+    await dismissOnboarding(page)
+    await expect(page.locator('.start-remind-input').first()).toHaveValue(isoDate)
   })
 
   test('六段导航：怎么弄进入独立教程页，可按公积金筛选', async ({ page }) => {

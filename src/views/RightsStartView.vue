@@ -57,6 +57,36 @@
         </button>
         <button type="button" class="start-mine-btn" @click="printChecklist">打印清单</button>
       </div>
+      <div v-if="myUndone.length" class="start-remind">
+        <div class="start-remind-head">
+          <b>手机日历提醒</b>
+          <span>可选 · 只写进你的日历</span>
+        </div>
+        <p class="start-remind-desc">给要办的条目选一个日期，导出 .ics；日历会在 3 天前和当天 9:00 提醒。</p>
+        <div class="start-remind-list">
+          <label v-for="item in myUndone" :key="item.id" class="start-remind-row">
+            <span class="start-remind-item">{{ item.title }}</span>
+            <input
+              class="start-remind-input"
+              type="date"
+              :min="today"
+              :value="checklist.remindAt(item.id) ?? ''"
+              :aria-label="`${item.title} 的提醒日期`"
+              @change="onReminderChange(item.id, $event)"
+            />
+          </label>
+        </div>
+        <div class="start-remind-actions">
+          <button
+            type="button"
+            class="start-mine-btn"
+            :disabled="!reminderItems.length"
+            @click="exportCalendar"
+          >加入手机日历</button>
+          <button v-if="reminderItems.length" type="button" class="start-mine-btn" @click="clearReminders">清除全部提醒</button>
+          <span v-if="!reminderItems.length" class="start-remind-hint">选了日期才能导出</span>
+        </div>
+      </div>
       <p v-if="actionNote" class="start-mine-note" role="status">{{ actionNote }}</p>
     </section>
 
@@ -158,6 +188,7 @@ import { RIGHTS_CATALOG, rightsForEntry, type RightsItem } from '../data/rights/
 import { CITY_CHANNELS } from '../data/cityChannels'
 import { useRightsChecklistStore } from '../stores/rightsChecklist'
 import { downloadTextFile } from '../utils/download'
+import { buildChecklistIcs } from '../utils/checklistCalendar'
 import { buildChecklistHtml, buildChecklistShareText, buildChecklistText } from '../utils/checklistExport'
 import { localDateString } from '../utils/localDate'
 import { shareErrorMessage, shareRightsText } from '../utils/rightsShare'
@@ -186,7 +217,10 @@ const myItems = computed<RightsItem[]>(() =>
   RIGHTS_CATALOG.filter((item) => checklist.isSaved(item.id) || checklist.isDone(item.id)),
 )
 const myDone = computed(() => myItems.value.filter((item) => checklist.isDone(item.id)).length)
+const myUndone = computed(() => myItems.value.filter((item) => !checklist.isDone(item.id)))
 const myPct = computed(() => (myItems.value.length ? Math.round((myDone.value / myItems.value.length) * 100) : 0))
+const today = computed(() => localDateString())
+const reminderItems = computed(() => myUndone.value.filter((item) => checklist.remindAt(item.id)))
 const deadlineItems = computed(() => myItems.value.filter((item) => item.deadline && !checklist.isDone(item.id)))
 const deadlinePreview = computed(() => {
   const shown = deadlineItems.value.slice(0, 3).map((item) => `${item.title}（${item.deadline}）`)
@@ -251,6 +285,40 @@ function printChecklist() {
   win.focus()
   window.setTimeout(() => win.print(), 200)
   actionNote.value = '已打开打印页；在打印窗口选「另存为 PDF」。'
+}
+
+function onReminderChange(id: string, event: Event) {
+  const value = (event.target as HTMLInputElement).value
+  const saved = checklist.setReminder(id, value)
+  actionNote.value = saved
+    ? `已设提醒：${saved}；导出日历后生效。`
+    : '已清除这条提醒。'
+}
+
+function exportCalendar() {
+  const content = buildChecklistIcs(myUndone.value, {
+    remindAt: checklist.remindAt,
+    done: checklist.isDone,
+    generatedAt: new Date(),
+  })
+  if (!content) {
+    actionNote.value = '先给至少一条要办的条目选日期，再导出日历。'
+    return
+  }
+  const date = localDateString()
+  const ok = downloadTextFile({
+    filename: `没钱-办事提醒-${date}.ics`,
+    content,
+    mimeType: 'text/calendar;charset=utf-8',
+  })
+  actionNote.value = ok
+    ? '已生成 .ics；打开文件后确认加入手机日历。'
+    : '当前浏览器不支持下载，可换手机自带浏览器再试。'
+}
+
+function clearReminders() {
+  for (const item of myUndone.value) checklist.setReminder(item.id, null)
+  actionNote.value = '已清除本清单的全部提醒。'
 }
 </script>
 
@@ -347,6 +415,32 @@ function printChecklist() {
 }
 .start-mine-btn:hover { border-color: var(--color-primary-500); color: var(--color-text-brand); }
 .start-mine-btn:disabled { opacity: .55; cursor: wait; }
+.start-remind {
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 10px 12px;
+  border: 1px dashed var(--color-border-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+}
+.start-remind-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.start-remind-head b { font-size: var(--font-size-xs); color: var(--color-text-primary); }
+.start-remind-head span { font-size: 10px; color: var(--color-text-tertiary); }
+.start-remind-desc { margin: 0; font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-tertiary); }
+.start-remind-list { display: flex; flex-direction: column; gap: 6px; }
+.start-remind-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 8px; align-items: center;
+  font-size: var(--font-size-xs);
+}
+.start-remind-item { min-width: 0; color: var(--color-text-secondary); line-height: 1.5; }
+.start-remind-input {
+  width: 100%; min-height: 32px; padding: 0 8px;
+  border: 1px solid var(--color-border-primary); border-radius: var(--radius-sm);
+  background: var(--color-bg-secondary); color: var(--color-text-secondary);
+  font: inherit;
+}
+.start-remind-input:focus { outline: 2px solid var(--color-primary-500); outline-offset: 1px; }
+.start-remind-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.start-remind-hint { font-size: 10px; color: var(--color-text-tertiary); }
 
 @media (max-width: 700px) {
   .start-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -355,5 +449,6 @@ function printChecklist() {
 @media (max-width: 480px) {
   .start-hero { padding: 16px; }
   .start-tabs { grid-template-columns: 1fr; }
+  .start-remind-row { grid-template-columns: 1fr; gap: 2px; }
 }
 </style>

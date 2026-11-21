@@ -78,4 +78,31 @@ describe('我的清单本机持久化', () => {
     const store = freshStore()
     expect(store.trackedCount).toBe(0)
   })
+
+  it('设置提醒后刷新仍在，非法日期按清除处理', () => {
+    const store = freshStore()
+    expect(store.setReminder('right-injury-report', '2026-12-01')).toBe('2026-12-01')
+    expect(store.isSaved('right-injury-report')).toBe(true)
+    expect(store.remindAt('right-injury-report')).toBe('2026-12-01')
+    expect(store.reminderCount).toBe(1)
+
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const reloaded = useRightsChecklistStore()
+    expect(reloaded.remindAt('right-injury-report')).toBe('2026-12-01')
+
+    expect(reloaded.setReminder('right-injury-report', '2026-02-30')).toBeNull()
+    expect(reloaded.remindAt('right-injury-report')).toBeUndefined()
+    expect(reloaded.isSaved('right-injury-report')).toBe(true)
+  })
+
+  it('提醒日期只写日期，不写城市、工资或身份', () => {
+    const store = freshStore()
+    store.setReminder('right-housing-fund', '2026-12-15')
+    const raw = localStorage.getItem(RIGHTS_CHECKLIST_STORAGE_KEY) ?? ''
+    expect(raw).toContain('2026-12-15')
+    expect(raw).not.toContain('city')
+    expect(raw).not.toContain('salary')
+    expect(raw).not.toContain('identity')
+  })
 })
