@@ -23,7 +23,7 @@ A wrong number is worse than a missing feature.
 ```bash
 npm ci                    # install
 npm run dev               # web dev server (port 3000)
-npm test                  # 858 unit/component/rule tests
+npm test                  # 861 unit/component/rule tests
 npm run test:coverage     # domain + application 覆盖率门禁（四项均 80%）
 npm run lint:cycles       # 含 .vue 的循环依赖扫描
 npm run typecheck         # source typecheck
@@ -34,7 +34,7 @@ npm run kb:check          # knowledge base sync check
 npm run verify:entrypoints# CLI / API / MCP / Web share one kernel
 npm run build             # typecheck + production build
 npm run doctor            # cross-cutting health check (bundle, docs, PWA, data)
-npm run test:e2e          # 144 Playwright tests (desktop + mobile)
+npm run test:e2e          # 146 Playwright tests (desktop + mobile)
 npm run cli -- --help     # CLI
 npm run mcp               # MCP server (stdio)
 npm run api               # HTTP API (port 8787)
@@ -111,7 +111,7 @@ Every content item also carries `lastVerified`; stale items are re-labelled "待
 
 ## Performance and loading budgets
 
-- First-screen JS ≤ **500K gzip**; total `dist` ≤ **5 MB**; PWA precache ≤ **3 MB**.
+- First-screen JS ≤ **300K gzip**; total `dist` ≤ **5 MB**; PWA precache ≤ **3 MB**. `doctor` also fails if echarts / naive-ui enter the entry modulepreload.
 - ECharts must stay lazy (route-level chunk), never in the first-screen bundle.
 - Views are route-lazy; heavy optional panels should be lazy too.
 - Sub-path deployment (`VITE_BASE=/app/`) must work for routes, assets, PWA `start_url`/`scope`

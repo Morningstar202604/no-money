@@ -108,13 +108,15 @@ describe('导航接线：六段导航的 key / path / 高亮映射', () => {
 describe('AI 助手接线', () => {
   const layout = read('src/layouts/MainLayout.vue')
 
-  it('MainLayout 渲染了 ChatAssistant 组件', () => {
-    expect(layout).toMatch(/<ChatAssistant\b/)
-    expect(layout).toMatch(/import ChatAssistant from/)
+  it('MainLayout 只渲染轻量启动器，AI 面板按需加载', () => {
+    expect(layout).toMatch(/<ChatLauncher\b/)
+    expect(layout).toMatch(/import ChatLauncher from/)
+    const launcher = read('src/components/ChatLauncher.vue')
+    expect(launcher).toMatch(/defineAsyncComponent\(\(\) => import\('\.\/ChatAssistant\.vue'\)\)/)
   })
 
   it('不存在未被渲染的重复触发器', () => {
-    // ChatAssistant 自带悬浮按钮，额外的 Trigger 只会产生两个 FAB 且无人监听 open 事件
+    // ChatLauncher 提供唯一的原生悬浮按钮，面板内部不再重复挂一个 FAB
     expect(layout).not.toMatch(/ChatAssistantTrigger/)
   })
 
@@ -157,14 +159,29 @@ describe('AI 助手接线', () => {
   })
 })
 
-describe('naive-ui Provider 唯一性', () => {
+describe('naive-ui 首屏隔离', () => {
   const app = read('src/App.vue')
   const layout = read('src/layouts/MainLayout.vue')
+  const outlet = read('src/app/ViewOutlet.vue')
+  const shell = read('src/app/NaiveShell.vue')
+  const router = read('src/app/router.ts')
 
-  it('只有 App.vue 提供 n-message-provider', () => {
-    expect(app).toMatch(/<n-message-provider>/)
-    // 嵌套两层会让 useMessage() 归属不确定
-    expect(layout).not.toMatch(/<n-message-provider/)
+  it('App.vue 不再静态挂载 naive-ui Provider', () => {
+    expect(app).not.toMatch(/from 'naive-ui'/)
+    expect(app).not.toMatch(/<n-config-provider|<n-message-provider/)
+  })
+
+  it('MainLayout 不静态导入 naive-ui 组件', () => {
+    expect(layout).not.toMatch(/from 'naive-ui'/)
+    expect(layout).not.toMatch(/<n-button|<n-select/)
+  })
+
+  it('非 /start 页面通过异步 NaiveShell 获得主题与消息容器', () => {
+    expect(outlet).toMatch(/defineAsyncComponent\(\(\) => import\('\.\/NaiveShell\.vue'\)\)/)
+    expect(outlet).toMatch(/v-if="Boolean\(route\.name\) && route\.meta\.nativeUi !== true"/)
+    expect(shell).toMatch(/<n-config-provider/)
+    expect(shell).toMatch(/<n-message-provider>/)
+    expect(router).toMatch(/path: '\/start'.*nativeUi: true/)
   })
 })
 

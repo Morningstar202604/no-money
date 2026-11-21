@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { dismissOnboarding } from './helpers'
 
 /**
  * 视觉回归锁两张「用户第一眼」页面：首页四入口首屏与向导第二步。
@@ -9,14 +10,6 @@ import { test, expect } from '@playwright/test'
  *   - 结构断言（4 个入口 / 4 种身份 / 无横向溢出）负责精确部分，
  *     截图负责「入口消失、卡片塌陷、整块空白」这类粗错
  */
-async function dismissOnboarding(page: import('@playwright/test').Page) {
-  const start = page.getByRole('button', { name: '开始调整参数' })
-  if (await start.count()) {
-    await start.click()
-    await expect(start).toHaveCount(0)
-  }
-}
-
 function pixelTolerance() {
   return test.info().project.name.includes('mobile') ? 0.06 : 0.04
 }

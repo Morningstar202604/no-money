@@ -37,15 +37,17 @@ describe('告警组件渲染', () => {
 })
 
 describe('告警主题 token 完整性', () => {
-  const app = readFileSync('src/App.vue', 'utf8')
+  // 0.1.0 把 naive-ui 主题从 App.vue 挪到异步 NaiveShell；两处合并检查，
+  // 避免以后再把 alert token 引用搬去别处时这条测试静默空转。
+  const themeSources = [readFileSync('src/App.vue', 'utf8'), readFileSync('src/app/NaiveShell.vue', 'utf8')].join('\n')
   const css = readFileSync('src/styles/variables.css', 'utf8')
 
-  it('App.vue 引用的每一个告警 CSS 变量都必须在 variables.css 中定义', () => {
-    const used = [...app.matchAll(/var\((--color-alert-[a-z-]+)\)/g)].map((m) => m[1])
+  it('App.vue / NaiveShell 引用的每一个告警 CSS 变量都必须在 variables.css 中定义', () => {
+    const used = [...themeSources.matchAll(/var\((--color-alert-[a-z-]+)\)/g)].map((m) => m[1])
     // 断言不是空集：如果以后有人删掉所有 token 引用，这条会失败而不是静默通过
     expect(used.length).toBeGreaterThan(10)
     for (const token of new Set(used)) {
-      expect(css, `App.vue 引用了未定义的 CSS 变量 ${token}`).toContain(`${token}:`)
+      expect(css, `主题源引用了未定义的 CSS 变量 ${token}`).toContain(`${token}:`)
     }
   })
 

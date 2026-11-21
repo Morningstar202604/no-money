@@ -312,7 +312,7 @@ function checkBundleSize() {
     )
   }
 
-  // 首屏 JS 预算（gzip）：超过 500K 说明有库被同步引入
+  // 首屏 JS 预算（gzip）：超过 300K 说明有库被同步引入；0.1.0 拆掉 naive-ui 后从 410K 降到这里
   const html = readFileSync(join(distDir, 'index.html'), 'utf8')
   const entryChunks = Array.from(new Set(html.match(/assets\/[a-zA-Z0-9_-]+\.js/g) ?? []))
   let gzTotal = 0
@@ -321,13 +321,14 @@ function checkBundleSize() {
     if (existsSync(f)) gzTotal += gzipSync(readFileSync(f)).length
   }
   const gzKb = Math.round(gzTotal / 1024)
-  if (gzKb > 500) fail('首屏 JS 预算', gzKb + 'K gzip，超过 500K（检查是否有库被同步引入）')
-  else pass('首屏 JS 预算', gzKb + 'K gzip（预算 500K）')
+  if (gzKb > 300) fail('首屏 JS 预算', gzKb + 'K gzip，超过 300K（检查是否有库被同步引入）')
+  else pass('首屏 JS 预算', gzKb + 'K gzip（预算 300K）')
 
-  // 首屏不该加载 echarts（它是懒加载块）
+  // 首屏不该加载 echarts / naive-ui（都是按需块）
   const indexHtml = readFileSync(join(distDir, 'index.html'), 'utf8')
   if (indexHtml.includes('echarts')) fail('首屏依赖', 'echarts 被预加载进首屏')
-  else pass('首屏依赖', 'echarts 未进首屏（懒加载生效）')
+  else if (indexHtml.includes('naive-ui')) fail('首屏依赖', 'naive-ui 被预加载进首屏')
+  else pass('首屏依赖', 'echarts / naive-ui 均未进首屏（按需加载）')
 }
 
 // ---------- 8. 文档与对外口径 ----------
@@ -450,7 +451,9 @@ function checkPwa() {
   if (hasSw) {
     const sw = readFileSync(join(distDir, 'sw.js'), 'utf8')
     const entries = (sw.match(/url:/g) ?? []).length
-    if (entries > 60) warn('PWA 预缓存', `${entries} 条，接近/超过 60 条，检查是否把大文件 precache`)
+    // 0.1.0 拆分首屏后路由/组件 chunk 变多，但总预缓存体积仍低于 3 MB；
+    // 条目数本身不是问题，90 条只作为「是否把大文件逐个塞进来」的粗略警戒线。
+    if (entries > 90) warn('PWA 预缓存', `${entries} 条，接近/超过 90 条，检查是否把大文件 precache`)
     else pass('PWA 预缓存', `${entries} 条`)
 
     // PWA 预缓存体积：sw.js 的 precacheAndRoute 清单里逐条 url，累加 dist 内实际文件。

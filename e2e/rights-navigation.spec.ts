@@ -1,13 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { test, expect } from '@playwright/test'
-
-async function dismissOnboarding(page: import('@playwright/test').Page) {
-  const start = page.getByRole('button', { name: '开始调整参数' })
-  if (await start.count()) {
-    await start.click()
-    await expect(start).toHaveCount(0)
-  }
-}
+import { dismissOnboarding } from './helpers'
 
 test.describe('权益导航 P0：四入口与三步向导', () => {
   test('根路径默认进入办事页，四个入口可见可点', async ({ page }) => {
@@ -170,8 +163,7 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await page.goto('/start')
     await dismissOnboarding(page)
 
-    await page.locator('#rw-city').click()
-    await page.getByText('北京', { exact: true }).last().click()
+    await page.locator('#rw-city').selectOption('beijing')
     await page.getByRole('button', { name: '下一步' }).click()
     await page.getByRole('button', { name: '下一步' }).click()
     await page.getByRole('button', { name: '生成我的清单' }).click()
@@ -188,8 +180,7 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await page.goto('/start')
     await dismissOnboarding(page)
 
-    await page.locator('#rw-city').click()
-    await page.getByText('东莞', { exact: true }).last().click()
+    await page.locator('#rw-city').selectOption('dongguan')
     await page.getByRole('button', { name: '下一步' }).click()
     await page.getByRole('button', { name: '下一步' }).click()
     await page.getByRole('button', { name: '生成我的清单' }).click()

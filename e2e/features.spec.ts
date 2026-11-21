@@ -1,9 +1,5 @@
 import { test, expect } from '@playwright/test'
-
-async function dismissOnboarding(page: import('@playwright/test').Page) {
-  const start = page.getByRole('button', { name: '开始调整参数' })
-  if (await start.count()) await start.click()
-}
+import { dismissOnboarding } from './helpers'
 
 /** 移动端侧边栏默认收起，参数控件要先展开才可见 */
 async function openSidebar(page: import('@playwright/test').Page) {

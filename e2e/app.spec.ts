@@ -1,15 +1,5 @@
 import { test, expect } from '@playwright/test'
-
-/** 首次引导弹窗会挡住主内容，测试里统一先关掉 */
-async function dismissOnboarding(page: import('@playwright/test').Page) {
-  const start = page.getByRole('button', { name: '开始调整参数' })
-  if (await start.count()) {
-    // 引导弹窗现在被压到 header 层级之下（z-index 150），其 role 不再是 dialog，
-    // 因此改为断言「主按钮消失」这个可观察结果，而不是猜 role。
-    await start.click()
-    await expect(start).toHaveCount(0)
-  }
-}
+import { dismissOnboarding } from './helpers'
 
 /**
  * 移动端侧边栏默认收起，参数控件不可见。
@@ -141,8 +131,9 @@ test.describe('应用可用性', () => {
     await dismissOnboarding(page)
 
     await page.getByRole('button', { name: 'AI 助手' }).click()
-    const body = await page.locator('body').innerText()
-    expect(body).toMatch(/AI|助手/)
+    // 面板在 0.1.0 起按需加载：先等它真的挂载，再读文案。
+    await expect(page.locator('.chat-panel')).toBeVisible()
+    await expect(page.locator('.chat-panel')).toContainText(/AI 助手/)
 
     // 默认状态下不应写入任何对话历史
     const hist = await page.evaluate(() => localStorage.getItem('nomoney_chat_hist'))

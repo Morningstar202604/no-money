@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { dismissOnboarding } from './helpers'
 
 /**
  * 命令面板 E2E
@@ -10,7 +11,7 @@ import { test, expect } from '@playwright/test'
 test.describe('命令面板', () => {
   test('Ctrl+K 能唤起面板，ESC 能关闭', async ({ page }) => {
     await page.goto('/dashboard')
-    await page.getByRole('button', { name: '开始调整参数' }).click().catch(() => {})
+    await dismissOnboarding(page)
 
     await page.keyboard.press('Control+k')
     const palette = page.getByRole('dialog', { name: '命令面板' })
@@ -23,7 +24,7 @@ test.describe('命令面板', () => {
 
   test('输入城市名并回车会真的切换城市', async ({ page }) => {
     await page.goto('/dashboard')
-    await page.getByRole('button', { name: '开始调整参数' }).click().catch(() => {})
+    await dismissOnboarding(page)
     await expect(page.locator('body')).toContainText('广州')
 
     await page.keyboard.press('Control+k')
@@ -44,7 +45,7 @@ test.describe('命令面板', () => {
 
   test('方向键可以移动选中项，选中项有 aria-selected', async ({ page }) => {
     await page.goto('/dashboard')
-    await page.getByRole('button', { name: '开始调整参数' }).click().catch(() => {})
+    await dismissOnboarding(page)
 
     await page.keyboard.press('Control+k')
     const input = page.getByRole('combobox')
@@ -60,7 +61,7 @@ test.describe('命令面板', () => {
 
   test('搜不到结果时给出可操作提示，而不是空白', async ({ page }) => {
     await page.goto('/dashboard')
-    await page.getByRole('button', { name: '开始调整参数' }).click().catch(() => {})
+    await dismissOnboarding(page)
 
     await page.keyboard.press('Control+k')
     await page.getByRole('combobox').fill('zzzzz')
@@ -72,7 +73,7 @@ test.describe('命令面板', () => {
 
   test('面板打开时按 Tab 不会把焦点漏到页面背后', async ({ page }) => {
     await page.goto('/dashboard')
-    await page.getByRole('button', { name: '开始调整参数' }).click().catch(() => {})
+    await dismissOnboarding(page)
 
     await page.keyboard.press('Control+k')
     const input = page.getByRole('combobox')
@@ -85,7 +86,7 @@ test.describe('命令面板', () => {
 
   test('点击头部搜索按钮也能打开面板（移动端没有键盘快捷键）', async ({ page }) => {
     await page.goto('/dashboard')
-    await page.getByRole('button', { name: '开始调整参数' }).click().catch(() => {})
+    await dismissOnboarding(page)
 
     // 宽屏下按钮可见
     await page.setViewportSize({ width: 1440, height: 900 })

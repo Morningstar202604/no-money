@@ -85,7 +85,7 @@
           </button>
 
           <!-- AI 助手：组件自带悬浮按钮与面板，勿再叠加额外的触发器 -->
-          <ChatAssistant :scenarios="store.scenarios" />
+          <ChatLauncher :scenarios="store.scenarios" />
         </div>
       </div>
     </header>
@@ -129,7 +129,7 @@
         </div>
 
         <div class="sidebar-content" v-show="!sidebarCollapsed">
-          <ParamSidebar />
+          <NaiveShell><ParamSidebar /></NaiveShell>
         </div>
 
         <div class="sidebar-collapsed-hint" v-show="sidebarCollapsed">
@@ -140,8 +140,8 @@
 
       <!-- Content -->
       <main class="content" :class="{ 'content-full': sidebarCollapsed || !showSidebar, 'content-no-sidebar': !showSidebar }">
-        <!-- 提示容器由 App.vue 的 n-message-provider 统一提供，
-             此处再嵌套一层会导致 useMessage() 归属不确定 -->
+        <!-- naive-ui 的消息容器由各页面/侧栏自己的 NaiveShell 提供，
+             这里不再挂全局 provider，避免首屏同步下载整套 naive-ui -->
 
         <div v-if="store.loadError" class="global-alert error">
           <AlertIcon class="icon" />
@@ -149,9 +149,9 @@
             <p class="alert-title">政策规则加载失败</p>
             <p>{{ store.loadError }}</p>
           </div>
-          <n-button size="small" @click="store.loadRule(store.work.city)" variant="outlined">
+          <button type="button" class="retry-button" @click="store.loadRule(store.work.city)">
             重新加载
-          </n-button>
+          </button>
         </div>
 
         <div v-if="store.rule" class="global-alert info" role="status">
@@ -185,13 +185,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, type Component } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, defineAsyncComponent, type Component } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NButton } from 'naive-ui'
 import { useMainStore } from '../stores/main'
 import { CITY_OPTIONS } from '../data/cities'
-import ParamSidebar from '../components/ParamSidebar.vue'
-import ChatAssistant from '../components/ChatAssistant.vue'
+import ChatLauncher from '../components/ChatLauncher.vue'
 import ViewOutlet from '../app/ViewOutlet.vue'
 import CommandPalette from '../components/CommandPalette.vue'
 import FeedbackButton from '../components/FeedbackButton.vue'
@@ -215,6 +213,10 @@ import {
   AlertIcon,
   MenuIcon,
 } from '../components/icons'
+
+// 首屏不下载 naive-ui 专用组件：进算一算页/用户点 AI 时才加载
+const ParamSidebar = defineAsyncComponent(() => import('../components/ParamSidebar.vue'))
+const NaiveShell = defineAsyncComponent(() => import('../app/NaiveShell.vue'))
 
 const router = useRouter()
 const route = useRoute()
@@ -944,6 +946,22 @@ onUnmounted(() => {
   color: var(--color-danger-600);
   margin: 0;
 }
+
+/* 原生重试按钮：错误态才出现，不为一颗按钮把 naive-ui 拉回首屏 */
+.retry-button {
+  flex-shrink: 0;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+.retry-button:hover { border-color: var(--color-primary-500); color: var(--color-primary-600); }
+.retry-button:focus-visible { outline: 2px solid var(--color-primary-500); outline-offset: 2px; }
 
 /* ---------- Mobile Menu Button ---------- */
 /* 仅移动端显示：桌面端侧栏常驻，不需要汉堡按钮 */

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <!-- Floating trigger -->
-    <button class="chat-fab" @click="open = !open" :class="{ active: open }" aria-label="AI 助手" :aria-expanded="open">
+    <!-- Floating trigger（嵌入模式由外部的原生启动按钮负责） -->
+    <button v-if="!embedded" class="chat-fab" @click="open = !open" :class="{ active: open }" aria-label="AI 助手" :aria-expanded="open">
       <svg v-if="!open" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
@@ -18,9 +18,12 @@
         </n-alert>
         <div class="chat-head">
           <span class="ch-title">AI 助手</span>
-          <n-tag v-if="isOnline && config.enabled && config.apiKey" size="small" type="success" :bordered="false">在线</n-tag>
-          <n-tag v-else-if="config.enabled && !config.apiKey" size="small" type="warning" :bordered="false">已启用 · 未填 Key</n-tag>
-          <n-tag v-else size="small" :bordered="false">离线模式</n-tag>
+          <span class="chat-head-status">
+            <n-tag v-if="isOnline && config.enabled && config.apiKey" size="small" type="success" :bordered="false">在线</n-tag>
+            <n-tag v-else-if="config.enabled && !config.apiKey" size="small" type="warning" :bordered="false">已启用 · 未填 Key</n-tag>
+            <n-tag v-else size="small" :bordered="false">离线模式</n-tag>
+            <button v-if="embedded" type="button" class="chat-close" aria-label="关闭 AI 助手" @click="closePanel">关闭</button>
+          </span>
         </div>
 
         <p v-if="prefilled" class="chat-context" role="status">已带入当前清单，确认后点发送；可先改。</p>
@@ -138,18 +141,24 @@ import { useMainStore } from '../stores/main'
 import { validateEndpoint, deriveModelsUrl } from '../utils/endpoint'
 import type { ScenarioResult } from '../types'
 
-const props = defineProps<{ scenarios: ScenarioResult[] }>()
+const props = defineProps<{ scenarios: ScenarioResult[]; embedded?: boolean; initialPrompt?: string }>()
+const emit = defineEmits<{ close: [] }>()
 const message = useMessage()
 const store = useMainStore()
 
 const { config, messages, isStreaming, isOnline, showSettings, storageWarning, sendMessage, stopStreaming, clearHistory, updateConfig, buildOutboundPreview } = useAIChat()
 
-const open = ref(false)
+const open = ref(Boolean(props.embedded))
 const input = ref('')
 const prefilled = ref(false)
 const inputRef = ref<InputInst | null>(null)
 const bodyRef = ref<HTMLElement>()
 const testing = ref(false)
+
+function closePanel() {
+  open.value = false
+  emit('close')
+}
 
 /** 实时显示 Key 将发往哪个主机；非 https 或非法地址直接标红 */
 const endpointCheck = computed(() => validateEndpoint(config.value.endpoint))
@@ -245,7 +254,16 @@ function openFromEvent(event: Event) {
   prefilled.value = true
   void nextTick(() => inputRef.value?.focus())
 }
-onMounted(() => window.addEventListener('app:open-ai', openFromEvent))
+onMounted(() => {
+  window.addEventListener('app:open-ai', openFromEvent)
+  // 懒挂载时事件已经发生过：消费父组件留下的预填问题
+  const initial = props.initialPrompt?.trim()
+  if (initial) {
+    input.value = initial
+    prefilled.value = true
+    void nextTick(() => inputRef.value?.focus())
+  }
+})
 onUnmounted(() => window.removeEventListener('app:open-ai', openFromEvent))
 
 async function testConnection() {
@@ -319,6 +337,14 @@ function saveAndClose() {
   padding: 12px 16px 0;
 }
 .ch-title { font-weight: 600; color: var(--color-text-primary); font-size: 14px; }
+.chat-head-status { display: flex; align-items: center; gap: 6px; }
+.chat-close {
+  min-height: 28px; padding: 0 8px;
+  border: 1px solid var(--color-border-primary); border-radius: var(--radius-sm);
+  background: transparent; color: var(--color-text-secondary); font-family: inherit; font-size: 11px; cursor: pointer;
+}
+.chat-close:hover { color: var(--color-text-primary); border-color: var(--color-primary-500); }
+.chat-close:focus-visible { outline: 2px solid var(--color-primary-500); outline-offset: 1px; }
 
 .chat-body {
   flex: 1; overflow-y: auto; padding: 10px 14px;

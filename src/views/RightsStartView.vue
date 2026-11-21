@@ -124,9 +124,9 @@
         <h3 class="start-section-title">可能能领到的钱</h3>
         <p class="start-section-desc">先确认自己是否符合条件，再看当地标准。没有官方原文的条目不进来；金额一律写“按当地标准”。</p>
       </div>
-      <n-alert type="info" :show-icon="true" style="margin-bottom: 10px">
+      <div class="start-note start-note-info" role="note">
         这些是“可能领到”，不是“人人都有”。先打 12333 或当地经办机构确认资格，再准备材料。
-      </n-alert>
+      </div>
       <div class="start-list">
         <RightsItemCard v-for="item in list" :key="item.id" :item="item" />
       </div>
@@ -200,7 +200,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { NAlert } from 'naive-ui'
 import { createPageHeading } from '../components/PageHeading'
 import RightsWizard from '../components/RightsWizard.vue'
 import RightsItemCard from '../components/RightsItemCard.vue'
@@ -367,6 +366,13 @@ function clearReminders() {
   border-top: 1px dashed var(--color-border-primary); padding-top: 8px;
 }
 .start-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.start-note {
+  margin-bottom: 10px; padding: 9px 12px;
+  border: 1px solid var(--color-border-primary); border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-secondary);
+  background: var(--color-bg-secondary);
+}
+.start-note-info { border-color: var(--color-alert-border-info); background: var(--color-alert-bg-info); color: var(--color-alert-text-info); }
 .start-entry-hint { margin: -2px 0 0; font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-tertiary); }
 .start-tab {
   display: flex; align-items: center; gap: 8px; padding: 10px 12px; cursor: pointer;

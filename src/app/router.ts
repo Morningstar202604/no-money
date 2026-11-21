@@ -6,7 +6,7 @@ export const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', redirect: '/start' },
-    { path: '/start', name: 'Start', component: () => import('../views/RightsStartView.vue'), meta: { title: PAGE_TITLES.start } },
+    { path: '/start', name: 'Start', component: () => import('../views/RightsStartView.vue'), meta: { title: PAGE_TITLES.start, nativeUi: true } },
     { path: '/dashboard', name: 'Dashboard', component: () => import('../views/DashboardView.vue'), meta: { title: PAGE_TITLES.dashboard } },
     // 企业职工工资条口径：不套骑手按单模型，独立一页，不占主导航
     { path: '/employee', name: 'Employee', component: () => import('../views/EmployeeView.vue'), meta: { title: PAGE_TITLES.employee } },

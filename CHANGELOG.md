@@ -1,7 +1,42 @@
 # 更新日志
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
+版本口径：`0.MINOR.PATCH` 三段式，默认只递增末段；架构/依赖边界级切换才升 MINOR；历史 `3.x` 标签保留。
+
+## [0.1.0] — 2026-11-22
+
+首个 MINOR，只做一件事：把 naive-ui 从首屏静态依赖链里拆出去。首页不再为了一个主题容器下载 176K gzip 的组件库，4G 下先看到品牌页，进「算一算」才加载计算器需要的组件。
+
+### Added
+
+- `src/app/NaiveShell.vue`：主题与消息容器的异步外壳，只在需要 naive-ui 的页面/侧栏/AI 面板挂载；`App.vue` 不再持有全局 Provider。
+- `src/components/ChatLauncher.vue`：原生悬浮按钮，点击后才 `defineAsyncComponent` 加载 AI 面板。
+- `e2e/start-shell.spec.ts` 新增拆包断言：`/start` 的网络请求中不得出现 `naive-ui`，进入 `/dashboard` 后才出现。
+
+### Changed
+
+- `MainLayout` 不再静态导入 naive-ui；`ParamSidebar` 改为异步组件，`/start`、`/rights`、`/policy` 等页面既不挂侧栏也不下载组件库。
+- `RightsWizard` 的城市选择、上一步/下一步/生成/导出/分享/打印按钮全部改为原生控件；`RightsStartView` 的「可能领到」提示条改为原生提示块。
+- AI 悬浮按钮仍固定在右下角；向导按钮改为原生控件后，4 张视觉基线在既定容差内通过。
+
+### Performance
+
+- 首屏 JS（gzip）：**410K → 193K**；`naive-ui` 682K 原始 / 176K gzip 变为按需 chunk，不在入口 `modulepreload` 中。
+- Lighthouse 12 移动端 `simulate` 连跑 5 次：FCP 2.2–2.3s、LCP 2.3s、CLS 0，TBT 中位数 50ms（0–333ms，5 次中 2 次超过 200ms），score 中位数 0.95（0.88–0.96）。
+- Lighthouse 12 移动端 `devtools`（4G 150ms/1.6Mbps + 4x CPU）连跑 3 次：FCP/LCP 1.6s、CLS 0、TBT 约 600ms、score 0.83–0.84；**4x CPU 下 TBT 仍超 200ms**，不写成绿灯。
+- 构建 23.14s；`dist` 3.50 MB（assets 2.60 MB）；PWA 75 条 / 2,849.51 KiB（约 2.78 MB）。
+
+### Tests
+
+- 单测 69 文件 / 861 条全过，5m33s；E2E 11 文件 / 146 条全过，6.3 分钟（新增拆包断言 1 条 × 桌面/移动 2 个项目）。
+- E2E 的 `dismissOnboarding` 统一改为等待 `/dashboard` 的按需引导弹窗，避免页面 chunk 还没到就被当成“没有弹窗”。
+- `doctor` 首屏预算收到 300K，并新增「echarts / naive-ui 不得进首屏」检查。
+
+### Docs
+
+- `docs/VERSIONING.md` 把版本口径从固定 `0.0.x` 改为 `0.MINOR.PATCH`：默认只加 PATCH，架构/依赖边界级切换才升 MINOR。
+- `docs/ENGINEERING.md` 记录 410K→193K、两套 Lighthouse 口径与首屏门禁；`ROADMAP.md` 把 0.1.0 作为当前基线。
+- 版本五处统一为 `0.1.0`。
 
 ## [0.0.45] — 2026-11-21
 

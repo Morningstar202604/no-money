@@ -29,17 +29,13 @@
 
     <div v-if="step === 1" class="rw-step">
       <label class="rw-label" for="rw-city">你在哪个城市工作 / 参保？</label>
-      <n-select
-        id="rw-city"
-        v-model:value="city"
-        :options="CITY_OPTIONS"
-        filterable
-        placeholder="选城市"
-        style="max-width: 360px"
-      />
+      <select id="rw-city" v-model="city" class="rw-select" aria-label="你在哪个城市工作或参保">
+        <option value="" disabled>选城市</option>
+        <option v-for="o in CITY_OPTIONS" :key="o.value" :value="o.value">{{ o.label }}</option>
+      </select>
       <p class="rw-hint">只用于给你本地办事入口；不会改你左侧当前的测算城市。</p>
       <div class="rw-actions">
-        <n-button type="primary" :disabled="!city" @click="step = 2">下一步</n-button>
+        <button type="button" class="rw-btn rw-btn-primary" :disabled="!city" @click="step = 2">下一步</button>
       </div>
     </div>
 
@@ -60,8 +56,8 @@
         </button>
       </div>
       <div class="rw-actions">
-        <n-button @click="step = 1">上一步</n-button>
-        <n-button type="primary" @click="step = 3">下一步</n-button>
+        <button type="button" class="rw-btn" @click="step = 1">上一步</button>
+        <button type="button" class="rw-btn rw-btn-primary" @click="step = 3">下一步</button>
       </div>
     </div>
 
@@ -82,8 +78,8 @@
         </button>
       </div>
       <div class="rw-actions">
-        <n-button @click="step = 2">上一步</n-button>
-        <n-button type="primary" @click="generate">生成我的清单</n-button>
+        <button type="button" class="rw-btn" @click="step = 2">上一步</button>
+        <button type="button" class="rw-btn rw-btn-primary" @click="generate">生成我的清单</button>
       </div>
     </div>
 
@@ -93,7 +89,7 @@
           <span class="rw-kicker">你的清单</span>
           <h3 class="rw-result-title">{{ resultTitle }}</h3>
         </div>
-        <n-button text size="small" @click="reset">重新选</n-button>
+        <button type="button" class="rw-btn-text" @click="reset">重新选</button>
       </div>
 
       <p class="rw-result-lead">
@@ -114,10 +110,10 @@
       </p>
 
       <div class="rw-toolbar" aria-label="清单操作">
-        <n-button size="small" @click="saveAll">全部加入我的清单</n-button>
-        <n-button size="small" @click="exportCurrent">导出这张清单</n-button>
-        <n-button size="small" @click="printCurrent">打印</n-button>
-        <n-button size="small" :loading="sharingCurrent" @click="shareCurrent">分享这张清单</n-button>
+        <button type="button" class="rw-btn rw-btn-sm" @click="saveAll">全部加入我的清单</button>
+        <button type="button" class="rw-btn rw-btn-sm" @click="exportCurrent">导出这张清单</button>
+        <button type="button" class="rw-btn rw-btn-sm" @click="printCurrent">打印</button>
+        <button type="button" class="rw-btn rw-btn-sm" :disabled="sharingCurrent" @click="shareCurrent">{{ sharingCurrent ? '分享中…' : '分享这张清单' }}</button>
         <span v-if="actionNote" class="rw-action-note" role="status">{{ actionNote }}</span>
       </div>
 
@@ -133,8 +129,8 @@
       </div>
 
       <div class="rw-actions rw-actions-end">
-        <n-button @click="reset">重新选</n-button>
-        <n-button type="primary" ghost @click="browse">看全部条目</n-button>
+        <button type="button" class="rw-btn" @click="reset">重新选</button>
+        <button type="button" class="rw-btn rw-btn-primary-ghost" @click="browse">看全部条目</button>
       </div>
     </div>
   </section>
@@ -142,7 +138,6 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { NButton, NSelect } from 'naive-ui'
 import { CITY_OPTIONS } from '../data/cities'
 import { useMainStore } from '../stores/main'
 import RightsItemCard from './RightsItemCard.vue'
@@ -325,6 +320,30 @@ function askAi() {
 .rw-step { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
 .rw-label { font-size: var(--font-size-sm); font-weight: 600; color: var(--color-text-primary); }
 .rw-hint { margin: 0; font-size: var(--font-size-xs); line-height: 1.6; color: var(--color-text-tertiary); }
+.rw-select {
+  width: 100%; max-width: 360px; min-height: 36px;
+  padding: 0 10px; border: 1px solid var(--color-border-primary); border-radius: var(--radius-sm);
+  background: var(--color-bg-primary); color: var(--color-text-primary); font-family: inherit; font-size: var(--font-size-sm);
+}
+.rw-select:focus-visible { outline: 2px solid var(--color-primary-500); outline-offset: 1px; }
+.rw-btn, .rw-btn-primary, .rw-btn-primary-ghost, .rw-btn-text {
+  min-height: 34px; padding: 0 14px; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: var(--font-size-sm); font-weight: 500; cursor: pointer;
+}
+.rw-btn { border: 1px solid var(--color-border-primary); background: var(--color-bg-primary); color: var(--color-text-primary); }
+.rw-btn:hover { border-color: var(--color-primary-500); color: var(--color-primary-600); }
+.rw-btn-primary { border: 1px solid var(--color-primary-500); background: var(--color-primary-500); color: var(--color-text-on-primary); }
+.rw-btn-primary:hover { background: var(--color-primary-600); border-color: var(--color-primary-600); }
+.rw-btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+.rw-btn-primary-ghost { border: 1px solid var(--color-primary-500); background: transparent; color: var(--color-primary-600); }
+.rw-btn-primary-ghost:hover { background: var(--color-primary-50); }
+.rw-btn-text { min-height: 30px; padding: 0 8px; border: 0; background: transparent; color: var(--color-primary-600); }
+.rw-btn-text:hover { background: var(--color-primary-50); }
+.rw-btn:focus-visible, .rw-btn-primary:focus-visible, .rw-btn-primary-ghost:focus-visible, .rw-btn-text:focus-visible, .rw-btn-sm:focus-visible {
+  outline: 2px solid var(--color-primary-500); outline-offset: 2px;
+}
+.rw-btn-sm { min-height: 30px; padding: 0 10px; font-size: var(--font-size-xs); }
+.rw-btn-sm:disabled { opacity: .55; cursor: not-allowed; }
 .rw-choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .rw-choices-wide { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .rw-template {

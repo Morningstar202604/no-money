@@ -95,7 +95,8 @@ components / views 渲染
 ## 加载与性能
 
 - 页面按路由懒加载；ECharts 只在图表页异步加载，不进首屏。
-- 首屏 JS 预算 **500K gzip**；`dist` 总量 **5MB**；PWA precache **3MB**（当前 2.85MB）。
+- naive-ui 不挂根组件：`App.vue` 只留原生骨架，`NaiveShell.vue` 异步提供主题与消息容器，`/start` 不使用它。首屏从 410K 降到 193K gzip，`doctor` 锁 300K 预算并禁止 echarts / naive-ui 进首屏。
+- 首屏 JS 预算 **300K gzip**；`dist` 总量 **5MB**；PWA precache **3MB**（当前 2.78MB）。
 - PWA：app shell precache；`rules/*.json` 与 `knowledge/*.json` 用 StaleWhileRevalidate；
   不缓存用户输入。
 - 子路径部署：`VITE_BASE` 同时作用于路由、资源、manifest `start_url`/`scope` 与
@@ -116,10 +117,10 @@ components / views 渲染
 | `tests/cities.spec.ts` | 34 城数据完整性 |
 | `tests/architecture.spec.ts` | 分层/内核/单一计算路径门禁 |
 
-`npm test` 一条命令覆盖全部（当前 69 文件 / 858 项）；`npm run test:coverage` 对
+`npm test` 一条命令覆盖全部（当前 69 文件 / 861 项）；`npm run test:coverage` 对
 `domain` + `application` 设 80% 四项门槛；`npm run lint:cycles` 扫描含 `.vue` 的循环依赖；
 `npm run verify` 额外跑生产路径引擎自检；`e2e/visual.spec.ts` 锁首页与向导的桌面/移动基线；
-`e2e/start-shell.spec.ts` 锁首帧壳在 JS 到达前可见、路由就绪后移除；
+`e2e/start-shell.spec.ts` 锁首帧壳在 JS 到达前可见、路由就绪后移除，并断言首页不请求 naive-ui；
 `npm run kb:check` 校验 `public/knowledge/kb.json` 与数据源逐字段同步；
 `npm run typecheck`（src）与 `npm run typecheck:test`（tests + scripts）分别把关类型；
 `npm run doctor` 做跨切面一致性检查（体积、文档、PWA、数据）。
