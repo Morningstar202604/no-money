@@ -11,7 +11,7 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 - `npm run test:coverage`：只考核 `src/domain/**` 与 `src/application/**`，四项门槛均为 80%；HTML / JSON 报告输出到 `coverage/`。
 - `npm run lint:cycles`：`dependency-cruiser` 扫描 `src`（含 `.vue`），0 环；配置在 `.dependency-cruiser.cjs`。
-- `e2e/visual.spec.ts`：首页四入口首屏 + 向导第二步，桌面/移动共 4 张基线，允许 2% 像素差异。
+- `e2e/visual.spec.ts`：首页四入口首屏 + 向导第二步，桌面/移动共 4 张基线；桌面 4% / 移动 6% 像素容差；另锁 4 个入口、4 种身份、无横向溢出，向导截屏前固定滚动位置以避开固定导航。
 - 新增 `tests/domain/shared/valueObjects.spec.ts`、`tests/domain/shared/result.spec.ts`、`tests/application/errors.spec.ts`，把分/税率的非法输入、Result 分支与错误工厂从“顺手覆盖”补成显式契约。
 
 ### Changed

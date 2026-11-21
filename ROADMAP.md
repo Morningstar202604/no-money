@@ -61,7 +61,7 @@ content-review loop. Page-level deadline hints and a user-set `.ics` phone-calen
 - [x] Baseline before the boundary tests was 77.38% branch coverage. New value-object / Result / AppError tests move it to **80.19%**, statements **90.6%**, functions **96.36%**, lines **94.96%**.
 - [x] CI runs coverage instead of bare `npm test` and uploads the HTML/JSON report; no separate “coverage job” that can silently drift.
 - [x] `npm run lint:cycles` uses `dependency-cruiser` on `src` including `.vue`; 140 modules / 326 dependencies, 0 cycles.
-- [x] `e2e/visual.spec.ts` locks the home first screen and wizard step 2 on desktop + mobile; 4 baselines, 2% pixel tolerance.
+- [x] `e2e/visual.spec.ts` locks the home first screen and wizard step 2 on desktop + mobile; 4 baselines, 4% desktop / 6% mobile pixel tolerance, plus exact 4-entry / 4-identity / no-horizontal-overflow assertions.
 - [x] `docs/ENGINEERING.md` records coverage/cycles/visual baselines; the risk register no longer lists “no visual regression” as open.
 - [ ] Lighthouse 4G budgets, the dependency major-upgrade wave and Windows installer signing remain open.
 
