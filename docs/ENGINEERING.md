@@ -8,14 +8,17 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/组件/规则测试 | **66 文件 / 841 项全过**，耗时 360.56s |
-| E2E | **9 文件 / 138 项全过**（desktop-chromium + mobile-chromium，6.3m） |
+| 单元/组件/规则测试 | **69 文件 / 858 项全过**，耗时 364.13s |
+| E2E | **10 文件 / 142 项全过**（含 4 条视觉基线，5.3 分钟） |
+| 覆盖率 | `domain` + `application`：语句 **90.6%** / 分支 **80.19%** / 函数 **96.36%** / 行 **94.96%**，四项门槛均 80% |
+| 依赖环 | `dependency-cruiser` 扫描 `src`（含 `.vue`）：**140 模块 / 326 依赖 / 0 环** |
+| 视觉回归 | 首页首屏 + 向导第二步，桌面/移动共 4 张基线，2% 像素容差 |
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
 | 知识库 | `kb:check` 409 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
-| 构建 | 23.84s；`dist` **3.48 MB**（assets 2.59 MB）；首屏 **410K gzip**（预算 500K） |
+| 构建 | 24.82s；`dist` **3.48 MB**（assets 2.59 MB）；首屏 **410K gzip**（预算 500K） |
 | PWA | 60 条 precache / **2,832.17 KiB（约 2.77 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（26 个关键文件、版本三处一致、34 城、PWA、体积、文档） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
@@ -184,9 +187,9 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 | R6 | major 依赖长期不升 | 高 | 中 | 权益 P0 后逐个升级，完整门禁 | 延后 |
 | R7 | 权益内容深度不足 | 高 | 高 | 3.6.6 已建 60 条（23 迁移 + 20 新增 L2 + 17 条 L1），30 条 L2、30 条 L1；10 城四类入口 | 达标，长尾继续补 |
 | R8 | 34 城平台单价全为 unverified | 确定 | 高 | 只做「算一算」，不当工资展示；用户自填单价 | 接受 |
-| R9 | 无视觉回归 | 高 | 中 | P1 加四入口/向导截图对比 | 待办 |
+| R9 | 无视觉回归 | 高 | 中 | `e2e/visual.spec.ts` 四张基线（首页 + 向导，桌面 + 移动） | 已接（0.0.44） |
 | R10 | `rules:verify` 不在 CI | 中 | 低 | 本地快照 + 手动跑；或 CI 生成快照 | 接受 |
-| R11 | `madge` 无法解析 `.vue` | 高 | 低 | 架构测试 + build/typecheck 兜底；P1 换 dependency-cruiser | 接受 |
+| R11 | `madge` 无法解析 `.vue` | 高 | 低 | `dependency-cruiser` 扫描 `src`（含 `.vue`），0 环；架构测试 + build/typecheck 兜底 | 已接（0.0.44） |
 | R12 | `naive-ui` 首屏 176K | 中 | 低 | 在预算内；逼近 450K 时再优化 | 接受 |
 
 ### 运营节奏
@@ -200,15 +203,16 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 指标
 
-- 测试：1,262 项（67 个文件；含 5 项架构门禁 + 权益导航/城市入口/教程筛选/大白话搜索/权益与清单分享/清单本地日期/分享条数边界/清单日历提醒/新毕业生变额工资/页面标题单一来源/手册入口分流/34 城加载与覆盖分母测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
-- 首屏：409K gzip；PWA：2.77 MB（56 条 precache）；`dist`：3.48 MB（assets 2.59 MB）。
+- 测试：858 项（69 个文件；含架构门禁、权益导航、34 城加载与覆盖分母、值对象/Result/错误工厂边界）；覆盖率已接入 CI，`domain` + `application` 四项均 ≥80%（语句 90.6% / 分支 80.19% / 函数 96.36% / 行 94.96%）。
+- 质量门禁：`npm run test:coverage` 与 `npm run lint:cycles` 已进入 CI；循环依赖 0 环；视觉回归 4 张基线。
+- 首屏：410K gzip；PWA：2.77 MB（60 条 precache）；`dist`：3.48 MB（assets 2.59 MB）。
 - 数据：343 条来源，official 225（65.6%）、derived 50、unverified 68；34 城；0 城全部字段 official。34 城医保基数 official 33 / derived 1（郑州按社平 80% 派生）；医保费率 official 27 / derived 7 / unverified 0（西安 2026 已升 official，石家庄到期降 derived）；34 城最低工资全部 official；养老基数 official 31 / derived 3；养老金计发基数 official 27 / derived 7 / unverified 0（西安 7881 凭陕人社函〔2025〕425号扫描件升 official；2026 已公布 10 城，其余 24 城按 2025 年预发）。
 - 内容：`RightsItem` 60 条（23 条迁移 + 20 条新增 L2 + 17 条 L1）；其中 30 条 L2、30 条 L1；已到 60+ 目标。
 - 教程：`/guides` 只列 8 类 18 条 L2（social / medical / housing / unemployment / birth / injury / retire / subsidy）；每条有至少一条用户原话别名，支持大白话搜索；权益卡可系统分享或复制文案给工友，我的清单/向导结果可整张分享；L1 留在「该做什么」，高温/税优/维权不进首屏。
 - 前端去重（0.0.39–0.0.41）：页面标题只在 `src/app/pageTitles.ts` 维护；`/rights` 三页签可深链；`/start?entry=social` 补 5 条未展开 L2；`/dashboard` 可点进 `/scenario`；`/policy?tab=manual` 只保留 2 条站内无入口的概念正文，其余 21 条改入口；`/admin` 与 `/audit` 共用 `src/data/cityRules.ts`，明确 225/343 条与 186/238 格两个分母。
 - 新毕业生：`/employee` 支持试用期 + 转正两段工资；12 个月变额求和算年度个税，两段月到手按年度平均税负折算并标注；居民模式仍缺城市级缴费数据。
 - 清单提醒：`checklistCalendar` 生成 RFC 5545 `.ics`，日期只存本机；中国时间 09:00，3 天前与当天两次提醒；不接账号、推送或云端日历。
-- 可用性：E2E 138 项（9 个文件，桌面 + 移动）；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、清单日历提醒、新毕业生双段工资、`/rights` 页签深链、`/start` 的 5 条补位、`/policy` 手册入口与 `/admin` 两个覆盖分母有 E2E；清单导出/打印/.ics 有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
+- 可用性：E2E 142 项（10 个文件，桌面 + 移动）；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、清单日历提醒、新毕业生双段工资、`/rights` 页签深链、`/start` 的 5 条补位、`/policy` 手册入口与 `/admin` 两个覆盖分母有 E2E；首页首屏与向导第二步有视觉基线；清单导出/打印/.ics 有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 
 ## 6. 模块化与架构边界
 
@@ -250,8 +254,8 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 | 服务 | `application` 编排 | 不 mock 公式，只 mock I/O |
 | 组件 | 挂载级 | 交互、空态、错误态、窄屏 |
 | 接线 | 静态契约 | 仅路由表/页签/静默失败等无法挂载的结构 |
-| E2E | 真实路径 | 桌面 + 移动；离线、分享、导入导出 |
-| 架构 | 分层/入口/引擎 | `tests/architecture.spec.ts` |
+| E2E | 真实路径 | 桌面 + 移动；离线、分享、导入导出；首页/向导视觉基线 |
+| 架构 | 分层/入口/单一计算路径/依赖环 | `tests/architecture.spec.ts` + `npm run lint:cycles` |
 
 源码文本断言只允许「静态接线契约」，不得断言样式/布局；新增此类测试必须在注释里
 说明为什么不能挂载。

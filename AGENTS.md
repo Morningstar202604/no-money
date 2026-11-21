@@ -23,16 +23,18 @@ A wrong number is worse than a missing feature.
 ```bash
 npm ci                    # install
 npm run dev               # web dev server (port 3000)
-npm test                  # 1,100+ unit/parity/component tests
+npm test                  # 858 unit/component/rule tests
+npm run test:coverage     # domain + application 覆盖率门禁（四项均 80%）
+npm run lint:cycles       # 含 .vue 的循环依赖扫描
 npm run typecheck         # source typecheck
 npm run typecheck:test    # test typecheck
-npm run verify            # engine identity self-check
+npm run verify            # production ScenarioService self-check
 npm run verify:reality    # data reality check
 npm run kb:check          # knowledge base sync check
 npm run verify:entrypoints# CLI / API / MCP / Web share one kernel
 npm run build             # typecheck + production build
 npm run doctor            # cross-cutting health check (bundle, docs, PWA, data)
-npm run test:e2e          # 110 Playwright tests (desktop + mobile)
+npm run test:e2e          # 142 Playwright tests (desktop + mobile)
 npm run cli -- --help     # CLI
 npm run mcp               # MCP server (stdio)
 npm run api               # HTTP API (port 8787)

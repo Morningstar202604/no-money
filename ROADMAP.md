@@ -10,11 +10,11 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ## Where we are now
 
-**0.0.43** is the current baseline. The product direction is settled — a rights-navigation and
+**0.0.44** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
 new-grad first-year mode, plain-language guide search, guide sharing, whole-checklist sharing,
 the checklist export/share edge fixes, a local phone-calendar reminder, four front-end
-dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup, the cross-module duplicate audit and the legacy-engine removal are shipped:
+dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup, the cross-module duplicate audit, the legacy-engine removal, and the coverage / cycle / visual gates are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -35,6 +35,9 @@ dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cle
   `pensionSeries` to `domain`, and collapses the remaining small UI state machines: one 34-city
   loader state for `/policy`, one metric-grid component for `/admin` + `/audit`, and one
   contribution-city field behind both `/employee` modes
+- 0.0.44 adds the missing quality gates: domain/application coverage at 80% for all four metrics,
+  a `.vue`-aware circular-dependency scan, and four visual baselines for the home first screen
+  and wizard step 2
 
 **What is shipped:** `/start` with four entries; a 3-step wizard; a **60-item `RightsItem` catalog**
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
@@ -49,6 +52,18 @@ repository automation, the employee wage-slip slice, seven ready-made checklists
 content-review loop. Page-level deadline hints and a user-set `.ics` phone-calendar export exist, but there is no push service or account.
 
 ---
+
+## 0.0.44 — Quality gates: coverage, cycles, visual baselines (shipped 2026-11-21)
+
+**Goal: make the three “green but unmeasured” areas fail loudly instead of relying on review.**
+
+- [x] `npm run test:coverage` measures only `src/domain/**` and `src/application/**`; a threshold of 80% applies to statements, branches, functions and lines.
+- [x] Baseline before the boundary tests was 77.38% branch coverage. New value-object / Result / AppError tests move it to **80.19%**, statements **90.6%**, functions **96.36%**, lines **94.96%**.
+- [x] CI runs coverage instead of bare `npm test` and uploads the HTML/JSON report; no separate “coverage job” that can silently drift.
+- [x] `npm run lint:cycles` uses `dependency-cruiser` on `src` including `.vue`; 140 modules / 326 dependencies, 0 cycles.
+- [x] `e2e/visual.spec.ts` locks the home first screen and wizard step 2 on desktop + mobile; 4 baselines, 2% pixel tolerance.
+- [x] `docs/ENGINEERING.md` records coverage/cycles/visual baselines; the risk register no longer lists “no visual regression” as open.
+- [ ] Lighthouse 4G budgets, the dependency major-upgrade wave and Windows installer signing remain open.
 
 ## 0.0.43 — Legacy engine removal and small-unit dedupe (shipped 2026-11-21)
 
@@ -756,11 +771,11 @@ five mirrors on `main` + `v3.8.7`.
 
 ### P1
 
-- [ ] Visual regression on the four home entries and the 3-step wizard (Playwright screenshots)
-- [ ] Coverage report published in CI; target 80% on `domain/` + `application/`
+- [x] Visual regression on the home first screen and the 3-step wizard (4 Playwright baselines, 0.0.44)
+- [x] Coverage report published in CI; 80% threshold on `domain/` + `application/` (0.0.44)
 - [ ] Dependency upgrade wave: pinia 4 / vue-router 5 / vite 8 / TypeScript 7, one major per PR,
       full gate each time
-- [ ] Circular-dependency scan that understands `.vue` (dependency-cruiser or madge with a Vue parser)
+- [x] Circular-dependency scan that understands `.vue` (dependency-cruiser, 0 cycles; 0.0.44)
 - [ ] Lighthouse CI on a 4G profile: LCP < 2.5s, CLS < 0.1, TBT < 200ms
 - [x] PWA precache budget check in `doctor` (done; 2.72 MB, warn at 3 MB)
 

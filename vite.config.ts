@@ -26,6 +26,21 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.{spec,test}.ts'],
+    // 覆盖率只考核可执行的计算层：domain 公式 + application 编排。
+    // 组件/页面由 E2E 管，不拉进来稀释分母；类型声明文件也不计入。
+    coverage: {
+      provider: 'v8',
+      include: ['src/domain/**/*.ts', 'src/application/**/*.ts'],
+      exclude: ['src/domain/**/rules.ts', 'src/domain/**/index.ts'],
+      reporter: ['text-summary', 'text', 'json-summary', 'html'],
+      reportsDirectory: 'coverage',
+      thresholds: {
+        statements: 80,
+        branches: 80,
+        functions: 80,
+        lines: 80,
+      },
+    },
   },
   plugins: [
     vue({

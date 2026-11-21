@@ -30,7 +30,8 @@ Requirements: Node 22+, npm 10+.
 ```bash
 npm run typecheck
 npm run typecheck:test
-npm test
+npm run lint:cycles
+npm run test:coverage
 npm run verify
 npm run verify:reality
 npm run kb:check

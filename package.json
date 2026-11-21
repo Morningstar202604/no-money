@@ -1,6 +1,6 @@
 {
   "name": "no-money",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "private": true,
   "type": "module",
   "description": "面向中国劳动者的权益导航与办事平台：该做什么、能领什么、去哪办。",
@@ -20,7 +20,7 @@
     "verify:reality": "tsx scripts/reality-check.ts",
     "kb:check": "tsx scripts/export-kb.ts --check",
     "lint": "vue-tsc --noEmit",
-    "check": "npm run lint && npm run typecheck:test && npm test && npm run verify && npm run freshness:check",
+    "check": "npm run lint && npm run typecheck:test && npm run lint:cycles && npm run test:coverage && npm run verify && npm run freshness:check",
     "test:e2e": "npm run build && playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:install": "playwright install --with-deps chromium",
@@ -36,7 +36,9 @@
     "rules:snapshot": "node scripts/rules-snapshot.mjs snapshot",
     "rules:verify": "node scripts/rules-snapshot.mjs verify",
     "rules:rollback": "node scripts/rules-snapshot.mjs rollback",
-    "freshness:check": "tsx scripts/freshness-check.ts"
+    "freshness:check": "tsx scripts/freshness-check.ts",
+    "test:coverage": "vitest run --coverage",
+    "lint:cycles": "depcruise src --config .dependency-cruiser.cjs"
   },
   "dependencies": {
     "echarts": "^6.1.0",
@@ -51,7 +53,9 @@
     "@tauri-apps/cli": "^2.12.4",
     "@types/node": "^26.6.6",
     "@vitejs/plugin-vue": "^5.1.0",
+    "@vitest/coverage-v8": "^4.1.12",
     "@vue/test-utils": "^2.5.1",
+    "dependency-cruiser": "^18.8.0",
     "happy-dom": "21.0.4",
     "rollup-plugin-visualizer": "^7.1.1",
     "tsx": "^4.23.15",

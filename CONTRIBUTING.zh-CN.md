@@ -8,6 +8,8 @@
 npm ci
 npm run dev        # http://localhost:3000
 npm test           # 全量测试（含规则溯源门禁）
+npm run test:coverage # domain + application 覆盖率门禁（四项均 80%）
+npm run lint:cycles   # 含 .vue 的循环依赖扫描
 npm run verify     # 引擎自检（失败会 exit 1）
 npm run build      # 类型检查 + 构建
 ```

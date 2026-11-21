@@ -36,8 +36,19 @@ jobs:
       - name: Typecheck (tests and scripts)
         run: npm run typecheck:test
 
-      - name: Unit, parity and component tests
-        run: npm test
+      - name: Dependency cycles (including .vue)
+        run: npm run lint:cycles
+
+      - name: Unit, component and coverage tests
+        run: npm run test:coverage
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
 
       - name: Engine self-check
         run: npm run verify

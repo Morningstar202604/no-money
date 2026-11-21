@@ -3,6 +3,33 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
 
+## [0.0.44] — 2026-11-21
+
+这一轮不新增功能，补的是“工程绿灯之外还没有指标”的三件事：覆盖率门禁、循环依赖扫描、首页视觉回归。
+
+### Added
+
+- `npm run test:coverage`：只考核 `src/domain/**` 与 `src/application/**`，四项门槛均为 80%；HTML / JSON 报告输出到 `coverage/`。
+- `npm run lint:cycles`：`dependency-cruiser` 扫描 `src`（含 `.vue`），0 环；配置在 `.dependency-cruiser.cjs`。
+- `e2e/visual.spec.ts`：首页四入口首屏 + 向导第二步，桌面/移动共 4 张基线，允许 2% 像素差异。
+- 新增 `tests/domain/shared/valueObjects.spec.ts`、`tests/domain/shared/result.spec.ts`、`tests/application/errors.spec.ts`，把分/税率的非法输入、Result 分支与错误工厂从“顺手覆盖”补成显式契约。
+
+### Changed
+
+- CI 的 `verify` job 改为跑覆盖率而不是裸 `npm test`：覆盖率低于门槛直接失败，并上传 `coverage/` 报告；新增循环依赖步骤。
+- 覆盖率基线：语句 90.6% / 分支 80.19% / 函数 96.36% / 行 94.96%。补边界测试前分支为 77.38%，低于 80% 目标。
+
+### Tests
+
+- 新增 17 条边界测试，单测从 66 文件 / 841 条增至 69 文件 / 858 条。
+- E2E 从 9 文件 / 138 条增至 10 文件 / 142 条（新增 4 条视觉回归），本轮全量 142 条 5.3 分钟全过。
+- 构建 24.82s；`dist` 3.48 MB；首屏 410K gzip；PWA 60 条 / 2,832.17 KiB。
+
+### Docs
+
+- `docs/ENGINEERING.md` 增加覆盖率/循环依赖/视觉回归基线，风险登记 R9 从“无视觉回归”改为已接；`ROADMAP.md` 勾掉 P1 的覆盖率、视觉回归、循环依赖三项。
+- 版本五处统一为 `0.0.44`。
+
 ## [0.0.43] — 2026-11-21
 
 这一轮做两件事：删掉已经没人用的旧引擎，再把界面里比“页面”更小的重复单元收掉——加载状态机、指标卡、城市字段、页面派生值。不新增页面，也不改政策数值。
