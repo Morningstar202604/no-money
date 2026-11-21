@@ -4,12 +4,14 @@
       <div>
         <h1 class="audit-title">数据核验对账</h1>
         <p class="audit-sub">
-          每一格代表一座城市的一个政策参数。绿色＝已核到官方原文，蓝色＝据官方口径推算，黄色＝占位待核实。
+          34 城 × 7 项核心字段，每一格代表一座城市的一个政策参数。绿色＝已核到官方原文，蓝色＝据官方口径推算，黄色＝占位待核实。
           <b>不做模糊处理：没核实的就显示为没核实。</b>
         </p>
       </div>
       <n-button size="small" :loading="running" @click="runVerify">重新统计</n-button>
     </header>
+
+    <p v-if="loadNotice" class="data-note">{{ loadNotice }}</p>
 
     <!-- 总览 -->
     <div class="metric-row">
@@ -30,8 +32,9 @@
         <span class="metric-value warn">{{ pendingCount }}</span>
       </div>
       <div class="metric">
-        <span class="metric-label">官方覆盖率</span>
+        <span class="metric-label">7 项核心字段官方率</span>
         <span class="metric-value" :class="officialRatio >= 40 ? 'ok' : 'warn'">{{ officialRatio }}%</span>
+        <span class="metric-note">{{ officialCount }} / {{ totalCount }} 格</span>
       </div>
       <div class="metric">
         <span class="metric-label">全官方城市</span>
@@ -67,13 +70,13 @@
           <tbody>
             <tr v-for="r in rows" :key="r.id">
               <td class="sticky-col">
-                <b>{{ r.city }}</b>
+                <b>{{ r.name }}</b>
                 <span class="city-id">{{ r.id }}</span>
               </td>
               <td v-for="f in fields" :key="f.key">
-                <i class="cell" :class="cellClass(r[f.key])" :title="labelOf(r[f.key])" />
+                <i class="cell" :class="cellClass(r.core[f.key])" :title="labelOf(r.core[f.key])" />
               </td>
-              <td class="num" :class="{ 'gap-zero': r.gaps === 0 }">{{ r.gaps }}</td>
+              <td class="num" :class="{ 'gap-zero': r.coreGaps === 0 }">{{ r.coreGaps }}</td>
             </tr>
           </tbody>
         </table>
@@ -88,8 +91,8 @@
       </p>
       <ol class="todo-list">
         <li v-for="r in worstCities" :key="r.id">
-          <b>{{ r.city }}</b> — {{ r.gaps }} 个字段待核实<span v-if="r.derived">，{{ r.derived }} 个官方推算</span>
-          <span class="todo-fields">{{ r.missingFields.join('、') }}</span>
+          <b>{{ r.name }}</b> — {{ r.coreGaps }} 个字段待核实<span v-if="r.coreDerived">，{{ r.coreDerived }} 个官方推算</span>
+          <span class="todo-fields">{{ r.missingCoreFields.join('、') }}</span>
         </li>
       </ol>
     </div>
@@ -103,7 +106,7 @@
  * 为什么单独做一页：
  * /admin 给的是"覆盖率统计"，但用户真正需要的问题是
  * 「我现在看到的这个数字，哪个字段没核实、我该不该信」。
- * 这一页把 34 城 × 6 类核心字段做成矩阵，
+ * 这一页把 34 城 × 7 类核心字段做成矩阵，
  * 绿色/黄色一眼可辨——这是产品"诚实"承诺的可视化落地，不是装饰。
  *
  * 与 /admin 的分工：
@@ -113,39 +116,17 @@
 import { ref, computed, onMounted } from 'vue'
 import { NButton } from 'naive-ui'
 
-interface CityRuleLike {
-  city: string
-  cityName: string
-  sources?: Record<string, { confidence?: string }>
-}
+import {
+  loadCityRules,
+  summarizeCityRules,
+  CORE_COVERAGE_FIELDS,
+  type CityRule,
+  type CityRuleLoadResult,
+} from '../data/cityRules'
 
-interface Row {
-  id: string
-  city: string
-  pension?: string
-  retirement?: string
-  minWage?: string
-  medical?: string
-  medicalRate?: string
-  tax?: string
-  income?: string
-  gaps: number
-  derived: number
-  missingFields: string[]
-}
-
-const FIELDS = [
-  { key: 'pension' as const, label: '养老缴费基数' },
-  { key: 'retirement' as const, label: '养老金计发基数' },
-  { key: 'minWage' as const, label: '最低工资' },
-  { key: 'medical' as const, label: '医保缴费基数' },
-  { key: 'medicalRate' as const, label: '医保费率' },
-  { key: 'tax' as const, label: '个税税率表' },
-  { key: 'income' as const, label: '平台计价' },
-]
-const fields = FIELDS
-
-const rows = ref<Row[]>([])
+const fields = CORE_COVERAGE_FIELDS
+const rules = ref<CityRule[]>([])
+const loadResult = ref<CityRuleLoadResult | null>(null)
 const running = ref(false)
 
 function cellClass(conf?: string): string {
@@ -157,65 +138,38 @@ function labelOf(conf?: string): string {
   return conf === 'official' ? '已核官方' : conf === 'derived' ? '官方推算' : '待核实占位'
 }
 
-const totalCount = computed(() => rows.value.length * fields.length)
-const officialCount = computed(
-  () => rows.value.reduce((n, r) => n + fields.filter((f) => r[f.key] === 'official').length, 0),
+const summary = computed(() => summarizeCityRules(rules.value))
+const rows = computed(() =>
+  [...summary.value.rows].sort((a, b) => b.coreGaps - a.coreGaps || b.coreDerived - a.coreDerived),
 )
-const derivedCount = computed(() => rows.value.reduce((n, r) => n + r.derived, 0))
-const pendingCount = computed(() => rows.value.reduce((n, r) => n + r.gaps, 0))
-const officialRatio = computed(() =>
-  totalCount.value ? Math.round((officialCount.value / totalCount.value) * 100) : 0,
-)
-const allOfficial = computed(() => rows.value.filter((r) => r.gaps === 0 && r.derived === 0).length)
+const totalCount = computed(() => summary.value.totals.coreFields)
+const officialCount = computed(() => summary.value.totals.coreOfficial)
+const derivedCount = computed(() => summary.value.totals.coreDerived)
+const pendingCount = computed(() => summary.value.totals.coreGaps)
+const officialRatio = computed(() => summary.value.coreCoverage.percent)
+const allOfficial = computed(() => rows.value.filter((r) => r.coreGaps === 0 && r.coreDerived === 0).length)
+
+const loadNotice = computed(() => {
+  if (!loadResult.value) return ''
+  const parts: string[] = []
+  if (loadResult.value.usedRegistryFallback) {
+    parts.push('城市索引不可用或不完整，已回退到内置 34 城注册表')
+  }
+  if (loadResult.value.missing.length) {
+    parts.push(`${loadResult.value.missing.length} 城规则读取失败：${loadResult.value.missing.join('、')}`)
+  }
+  return parts.join('；')
+})
 
 /** 缺口最多的前 6 城 */
 const worstCities = computed(() =>
-  [...rows.value].sort((a, b) => b.gaps - a.gaps).slice(0, 6),
+  [...rows.value].sort((a, b) => b.coreGaps - a.coreGaps).slice(0, 6),
 )
 
 async function load(): Promise<void> {
-  const res = await fetch(`${import.meta.env.BASE_URL}city-index.json`).catch(() => null)
-  const ids: string[] = res?.ok
-    ? await res.json()
-    : ['beijing','shanghai','guangzhou','shenzhen','hangzhou','chengdu','wuhan','xian']
-
-  const loaded: Row[] = []
-  for (const id of ids) {
-    try {
-      const r = await fetch(`${import.meta.env.BASE_URL}rules/${id}.json`)
-      if (!r.ok) continue
-      const rule = (await r.json()) as CityRuleLike
-      const s = rule.sources ?? {}
-      const row: Row = {
-        id: rule.city,
-        city: rule.cityName,
-        pension: s.pension?.confidence,
-        retirement: s.retirement?.confidence,
-        minWage: s.minimumWage?.confidence,
-        medical: s.medical?.confidence,
-        medicalRate: s.medicalRate?.confidence,
-        tax: s.tax?.confidence,
-        income: s.income?.confidence,
-        gaps: 0,
-        derived: 0,
-        missingFields: [],
-      }
-      for (const f of fields) {
-        if (row[f.key] === 'official') continue
-        if (row[f.key] === 'derived') {
-          row.derived++
-        } else {
-          row.gaps++
-          row.missingFields.push(f.label)
-        }
-      }
-      loaded.push(row)
-    } catch {
-      /* 单城失败不阻断整页 */
-    }
-  }
-  // 缺口多的排前面：用户打开就想看"哪里最不可信"
-  rows.value = loaded.sort((a, b) => b.gaps - a.gaps || b.derived - a.derived)
+  const loaded = await loadCityRules(import.meta.env.BASE_URL)
+  loadResult.value = loaded
+  rules.value = loaded.rules
 }
 
 async function runVerify(): Promise<void> {
@@ -246,9 +200,17 @@ onMounted(() => {
 .metric { padding: var(--space-4); background: var(--color-bg-primary); border: 1px solid var(--color-border-primary); border-radius: var(--radius-lg); display: flex; flex-direction: column; gap: var(--space-1); }
 .metric-label { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
 .metric-value { font-size: var(--font-size-2xl); font-weight: var(--font-weight-bold); font-family: var(--font-family-num); color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.metric-note { font-size: var(--font-size-xs); color: var(--color-text-tertiary); font-variant-numeric: tabular-nums; }
 .metric-value.ok { color: var(--color-success-600); }
 .metric-value.derived { color: var(--color-info-600); }
 .metric-value.warn { color: var(--color-warning-600); }
+
+.data-note {
+  margin: 0 0 var(--space-4); padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-warning-200); border-radius: var(--radius-md);
+  background: var(--color-warning-50); font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
 
 .note {
   padding: var(--space-3) var(--space-4); margin-bottom: var(--space-4);

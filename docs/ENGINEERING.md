@@ -8,15 +8,15 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/对拍/组件测试 | **66 文件 / 1,258 项全过**，耗时 359.31s |
-| E2E | **8 文件 / 136 项全过**（desktop-chromium + mobile-chromium，5.2m） |
+| 单元/对拍/组件测试 | **67 文件 / 1,262 项全过**，耗时 360.13s |
+| E2E | **9 文件 / 138 项全过**（desktop-chromium + mobile-chromium，5.7m） |
 | 类型检查 | `typecheck` + `typecheck:test` 通过 |
 | 引擎闭合 | `verify` 通过 |
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
 | 知识库 | `kb:check` 409 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
-| 构建 | 23.08s；`dist` **3.48 MB**（assets 2.59 MB）；首屏 **409K gzip**（预算 500K） |
-| PWA | 55 条 precache / **2,832.59 KiB（约 2.77 MB）**（预算 3 MB） |
+| 构建 | 19.89s；`dist` **3.48 MB**（assets 2.59 MB）；首屏 **409K gzip**（预算 500K） |
+| PWA | 56 条 precache / **2,835.51 KiB（约 2.77 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（26 个关键文件、版本三处一致、34 城、PWA、体积、文档） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |
@@ -25,12 +25,14 @@
 
 | chunk | 大小 | 说明 |
 |---|---:|---|
-| `index` | 75.23K | 应用入口 + 布局 + 首屏组件 |
+| `index` | 72.33K | 应用入口 + 布局 + 首屏组件 |
 | `naive-ui` | 176.19K | 首屏最大依赖 |
 | `vendor-misc` | 117.65K | 其余运行时依赖 |
 | `vendor-util` | 29.89K | 工具库 |
 | `vendor-vue` | 20.01K | Vue 运行时 |
 | `RightsView` | 27.03K | 路由懒加载 |
+| `AdminView` | 3.08K | 34 城治理面板，复用 `cityRules` |
+| `AuditView` | 2.45K | 34 × 7 核验矩阵，复用 `cityRules` |
 | `RightsItemCard` | 4.42K | 权益卡入口，详情按需拆到 GuideCard |
 | `RightsStartView` | 12.31K | 办事首页与我的清单，含整张清单分享 |
 | `EmployeeView` | 5.28K | 企业职工工资条页，路由懒加载 |
@@ -198,15 +200,15 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 指标
 
-- 测试：1,258 项（66 个文件；含 5 项架构门禁 + 权益导航/城市入口/教程筛选/大白话搜索/权益与清单分享/清单本地日期/分享条数边界/清单日历提醒/新毕业生变额工资/页面标题单一来源/手册入口分流测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
-- 首屏：409K gzip；PWA：2.77 MB（55 条 precache）；`dist`：3.48 MB（assets 2.59 MB）。
+- 测试：1,262 项（67 个文件；含 5 项架构门禁 + 权益导航/城市入口/教程筛选/大白话搜索/权益与清单分享/清单本地日期/分享条数边界/清单日历提醒/新毕业生变额工资/页面标题单一来源/手册入口分流/34 城加载与覆盖分母测试）；覆盖率报告待接入（目标 domain/application ≥80%）。
+- 首屏：409K gzip；PWA：2.77 MB（56 条 precache）；`dist`：3.48 MB（assets 2.59 MB）。
 - 数据：343 条来源，official 225（65.6%）、derived 50、unverified 68；34 城；0 城全部字段 official。34 城医保基数 official 33 / derived 1（郑州按社平 80% 派生）；医保费率 official 27 / derived 7 / unverified 0（西安 2026 已升 official，石家庄到期降 derived）；34 城最低工资全部 official；养老基数 official 31 / derived 3；养老金计发基数 official 27 / derived 7 / unverified 0（西安 7881 凭陕人社函〔2025〕425号扫描件升 official；2026 已公布 10 城，其余 24 城按 2025 年预发）。
 - 内容：`RightsItem` 60 条（23 条迁移 + 20 条新增 L2 + 17 条 L1）；其中 30 条 L2、30 条 L1；已到 60+ 目标。
 - 教程：`/guides` 只列 8 类 18 条 L2（social / medical / housing / unemployment / birth / injury / retire / subsidy）；每条有至少一条用户原话别名，支持大白话搜索；权益卡可系统分享或复制文案给工友，我的清单/向导结果可整张分享；L1 留在「该做什么」，高温/税优/维权不进首屏。
-- 前端去重（0.0.39–0.0.40）：页面标题只在 `src/app/pageTitles.ts` 维护；`/rights` 三页签可深链；`/start?entry=social` 补 5 条未展开 L2；`/dashboard` 可点进 `/scenario`；`/policy?tab=manual` 只保留 2 条站内无入口的概念正文，其余 21 条改入口。
+- 前端去重（0.0.39–0.0.41）：页面标题只在 `src/app/pageTitles.ts` 维护；`/rights` 三页签可深链；`/start?entry=social` 补 5 条未展开 L2；`/dashboard` 可点进 `/scenario`；`/policy?tab=manual` 只保留 2 条站内无入口的概念正文，其余 21 条改入口；`/admin` 与 `/audit` 共用 `src/data/cityRules.ts`，明确 225/343 条与 186/238 格两个分母。
 - 新毕业生：`/employee` 支持试用期 + 转正两段工资；12 个月变额求和算年度个税，两段月到手按年度平均税负折算并标注；居民模式仍缺城市级缴费数据。
 - 清单提醒：`checklistCalendar` 生成 RFC 5545 `.ics`，日期只存本机；中国时间 09:00，3 天前与当天两次提醒；不接账号、推送或云端日历。
-- 可用性：E2E 136 项（8 个文件，桌面 + 移动）；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、清单日历提醒、新毕业生双段工资、`/rights` 页签深链、`/start` 的 5 条补位与 `/policy` 手册入口有 E2E；清单导出/打印/.ics 有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
+- 可用性：E2E 138 项（9 个文件，桌面 + 移动）；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、清单日历提醒、新毕业生双段工资、`/rights` 页签深链、`/start` 的 5 条补位、`/policy` 手册入口与 `/admin` 两个覆盖分母有 E2E；清单导出/打印/.ics 有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 
 ## 6. 模块化与架构边界
 
@@ -230,7 +232,7 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 ### 内容层
 
-权益内容应放在 `src/data/rights/`（3.5.0 建立，3.5.1 增加清单 store，3.6.0 增加 30 条 L2），使用 `RightsItem` 类型；城市入口在 `src/data/cityChannels.ts`（10 城 × 4 类），与 `provinceChannels.ts` 分层。
+权益内容应放在 `src/data/rights/`（3.5.0 建立，3.5.1 增加清单 store，3.6.0 增加 30 条 L2），使用 `RightsItem` 类型；城市入口在 `src/data/cityChannels.ts`（10 城 × 4 类），与 `provinceChannels.ts` 分层；34 城规则加载与覆盖率统计只在 `src/data/cityRules.ts`，页面不再各自 fetch 与 reduce。
 不要继续往 `src/utils/livingGuide.ts` 堆字符串。内容层不参与计算内核，
 不 import `domain` 的金额函数。
 

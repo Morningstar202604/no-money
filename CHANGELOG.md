@@ -3,6 +3,34 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
 
+## [0.0.41] — 2026-11-21
+
+把 `/admin` 与 `/audit` 各自维护的 34 城加载和“官方覆盖率”收口：两个页面现在用同一份统计，页面上的每个百分比都写明分子/分母。没有新增页面，也没有改政策数值。
+
+### Changed
+
+- 新增 `src/data/cityRules.ts`：统一加载 `city-index.json`、并行读取 34 份规则、记录缺失城市，并提供 `summarizeCityRules()`。
+- 索引缺失或不完整时回退到 `CITY_REGISTRY` 的 34 城，不再使用 `/admin` 的 38 项数组和 `/audit` 的 8 项数组；后者在索引文件缺失时原来只会加载 7 城。
+- `/admin` 的“官方来源占比”改为“全库条目官方占比”：**225 / 343 条 = 66%**，与全库置信度分布使用同一个分母。
+- `/admin` 与 `/audit` 都显示“7 项核心字段官方率”：**186 / 238 格 = 78%**，对应 34 城 × 7 项核心字段矩阵。
+- `/admin` 城市表列改为“全库条目官方率”，行内直接显示 `225/343 · 66%`；`/audit` 指标下标明 `186/238 格`。
+- 34 份规则改为并行读取；索引或单城失败会在页面顶部提示，不再静默把城市数量变少。
+
+### Tests
+
+- 新增 `tests/cityRules.spec.ts` 4 条：真实数据 343/225/50/68 与核心 186/238、每城 7 项明细、索引缺失/8 城索引回退到 34 城、完整索引下单城失败只进 `missing`。
+- 新增 `e2e/admin.spec.ts`：断言 34 行城市、66%/225/343 与 78%/186/238 两个分母；`e2e/audit.spec.ts` 改为断言 `7 项核心字段官方率` 与 `186 / 238 格`。
+- 全量：**67 文件 / 1,262 单测通过**（`npm run check` 360.13s）；E2E **9 文件 / 138 条通过**（桌面 + 移动，5.7m）。
+- 构建 19.89s；`dist` 3.48 MB（assets 2.59 MB）；PWA 56 条 / 2,835.51 KiB；首屏 409K gzip。
+
+### Data
+
+- 政策数据零改动：343 条来源仍为 official 225 / derived 50 / unverified 68；养老金计发基数 official 27 / derived 7 / unverified 0；34 城 `verified` 仍全部 `false`。
+
+### Docs
+
+- CHANGELOG / ROADMAP / FRONTEND-CONSOLIDATION / POSITIONING / ENGINEERING / AUDIT / VERSIONING 同步；五处版本号统一为 `0.0.41`。
+
 ## [0.0.40] — 2026-11-21
 
 把 `/policy?tab=manual` 的 23 张全文卡收口：21 条只留入口，2 条手册独有概念保留正文。没有新增页面，也没有改政策数值。
@@ -57,7 +85,7 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 ### Docs
 
 - CHANGELOG / ROADMAP / FRONTEND-CONSOLIDATION / POSITIONING / ENGINEERING / AUDIT / VERSIONING 同步；五处版本号统一为 `0.0.39`。
-- `/policy?tab=manual` 的 23 张全文卡仍未收口，留给 0.0.40；`/admin` 与 `/audit` 的分母标签（P2）仍未统一。
+- `/policy?tab=manual` 的 23 张全文卡仍未收口，留给 0.0.40；`/admin` 与 `/audit` 的分母标签（P2）仍未统一；0.0.41 已收口。
 
 ## [0.0.38] — 2026-11-21
 

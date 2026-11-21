@@ -4,7 +4,7 @@
       <div>
         <h1 class="admin-title">数据管理后台</h1>
         <p class="admin-sub">
-          34 座城市规则的核验状态、字段覆盖率与一致性检查。本页只读，不修改任何规则。
+          34 座城市规则的核验状态、全库条目与 7 项核心字段的官方覆盖率，以及一致性检查。本页只读，不修改任何规则。
         </p>
       </div>
       <div class="admin-actions">
@@ -12,11 +12,13 @@
       </div>
     </header>
 
+    <p v-if="loadNotice" class="data-note">{{ loadNotice }}</p>
+
     <!-- 总览指标 -->
     <div class="metric-row">
       <div class="metric">
         <span class="metric-label">城市总数</span>
-        <span class="metric-value">{{ cities.length }}</span>
+        <span class="metric-value">{{ rows.length }}</span>
       </div>
       <div class="metric">
         <span class="metric-label">已完全核验</span>
@@ -24,22 +26,28 @@
       </div>
       <div class="metric">
         <span class="metric-label">部分待核实</span>
-        <span class="metric-value warn">{{ cities.length - fullyVerified }}</span>
+        <span class="metric-value warn">{{ rows.length - fullyVerified }}</span>
       </div>
       <div class="metric">
         <span class="metric-label">字段总数</span>
         <span class="metric-value">{{ totalFields }}</span>
       </div>
       <div class="metric">
-        <span class="metric-label">官方来源占比</span>
-        <span class="metric-value" :class="officialRatio >= 50 ? 'ok' : 'warn'">{{ officialRatio }}%</span>
+        <span class="metric-label">全库条目官方占比</span>
+        <span class="metric-value" :class="sourceCoverage.percent >= 50 ? 'ok' : 'warn'">{{ sourceCoverage.percent }}%</span>
+        <span class="metric-note">{{ sourceCoverage.numerator }} / {{ sourceCoverage.denominator }} 条</span>
+      </div>
+      <div class="metric">
+        <span class="metric-label">7 项核心字段官方率</span>
+        <span class="metric-value" :class="coreCoverage.percent >= 50 ? 'ok' : 'warn'">{{ coreCoverage.percent }}%</span>
+        <span class="metric-note">{{ coreCoverage.numerator }} / {{ coreCoverage.denominator }} 格</span>
       </div>
     </div>
 
     <!-- 置信度分布图 -->
     <div class="panel">
-      <h2 class="panel-title">全库字段置信度分布</h2>
-      <div class="bar-stack" role="img" :aria-label="`官方 ${confidenceCounts.official} 项，推算 ${confidenceCounts.derived} 项，未核实 ${confidenceCounts.unverified} 项`">
+      <h2 class="panel-title">全库溯源条目置信度分布</h2>
+      <div class="bar-stack" role="img" :aria-label="`官方 ${confidenceCounts.official} 条，推算 ${confidenceCounts.derived} 条，未核实 ${confidenceCounts.unverified} 条`">
         <div class="bar official" :style="{ flexGrow: confidenceCounts.official || 0.001 }">
           <span v-if="confidenceCounts.official">{{ confidenceCounts.official }}</span>
         </div>
@@ -51,9 +59,9 @@
         </div>
       </div>
       <div class="legend">
-        <span><i class="dot official" /> 官方原文 {{ confidenceCounts.official }}</span>
-        <span><i class="dot derived" /> 由官方数据推算 {{ confidenceCounts.derived }}</span>
-        <span><i class="dot unverified" /> 未核实占位 {{ confidenceCounts.unverified }}</span>
+        <span><i class="dot official" /> 官方原文 {{ confidenceCounts.official }} 条</span>
+        <span><i class="dot derived" /> 由官方数据推算 {{ confidenceCounts.derived }} 条</span>
+        <span><i class="dot unverified" /> 未核实占位 {{ confidenceCounts.unverified }} 条</span>
       </div>
     </div>
 
@@ -73,7 +81,7 @@
               <th class="num">官方</th>
               <th class="num">推算</th>
               <th class="num">未核实</th>
-              <th>覆盖率</th>
+              <th>全库条目官方率</th>
               <th>状态</th>
             </tr>
           </thead>
@@ -83,20 +91,20 @@
                 <b>{{ row.name }}</b>
                 <span class="city-id">{{ row.id }}</span>
               </td>
-              <td>{{ row.year }}</td>
-              <td class="num">{{ row.total }}</td>
+              <td>{{ row.year ?? "—" }}</td>
+              <td class="num">{{ row.totalSources }}</td>
               <td class="num">{{ row.official }}</td>
               <td class="num">{{ row.derived }}</td>
               <td class="num">{{ row.unverified }}</td>
               <td>
                 <div class="mini-bar">
-                  <div class="mini-fill" :style="{ width: row.ratio + '%' }" />
+                  <div class="mini-fill" :style="{ width: row.officialRatio + '%' }" />
                 </div>
-                <span class="mini-text">{{ row.ratio }}%</span>
+                <span class="mini-text">{{ row.official }}/{{ row.totalSources }} · {{ row.officialRatio }}%</span>
               </td>
               <td>
-                <span class="badge" :class="row.ratio >= 80 ? 'ok' : row.ratio >= 40 ? 'warn' : 'bad'">
-                  {{ row.ratio >= 80 ? '良好' : row.ratio >= 40 ? '待补' : '缺口大' }}
+                <span class="badge" :class="row.officialRatio >= 80 ? 'ok' : row.officialRatio >= 40 ? 'warn' : 'bad'">
+                  {{ row.officialRatio >= 80 ? '良好' : row.officialRatio >= 40 ? '待补' : '缺口大' }}
                 </span>
               </td>
             </tr>
@@ -132,56 +140,29 @@
  * 等于为了"看起来专业"引入整套鉴权、部署、运维成本，而它管理的数据本来就是公开只读的。
  * 这里直接把规则文件当数据源，在浏览器里做统计——零部署、零账号、打开即用。
  *
- * 但它解决的问题是真实的：34 个城市 × 9 类字段 = 300+ 条溯源记录，
+ * 但它解决的问题是真实的：34 个城市 × 10–12 条来源 = 343 条溯源记录，
  * 光靠人眼看不出哪座城市缺哪一项。这个页面把覆盖率变成可比较的数字。
  */
 import { ref, computed, onMounted } from 'vue'
 import { NButton, NInput } from 'naive-ui'
 
-interface CityRuleLike {
-  city: string
-  cityName: string
-  year: number
-  lastCheckedAt?: string
-  verified?: boolean
-  sources?: Record<string, { confidence?: string; title?: string }>
-}
+import {
+  loadCityRules,
+  summarizeCityRules,
+  type CityRule,
+  type CityRuleLoadResult,
+} from '../data/cityRules'
 
-interface Row {
-  id: string
-  name: string
-  year: number
-  total: number
-  official: number
-  derived: number
-  unverified: number
-  ratio: number
-}
-
-const cities = ref<CityRuleLike[]>([])
+const rules = ref<CityRule[]>([])
+const loadResult = ref<CityRuleLoadResult | null>(null)
 const filter = ref('')
 const running = ref(false)
 const checkResult = ref<{ total: number; passed: number; failed: number; failures: string[] } | null>(null)
 
-const rows = computed<Row[]>(() =>
-  cities.value.map((c) => {
-    const srcs = Object.values(c.sources ?? {})
-    const official = srcs.filter((s) => s.confidence === 'official').length
-    const derived = srcs.filter((s) => s.confidence === 'derived').length
-    const unverified = srcs.filter((s) => s.confidence !== 'official' && s.confidence !== 'derived').length
-    const total = srcs.length || 1
-    return {
-      id: c.city,
-      name: c.cityName,
-      year: c.year,
-      total: srcs.length,
-      official,
-      derived,
-      unverified,
-      ratio: Math.round((official / total) * 100),
-    }
-  }),
-)
+const summary = computed(() => summarizeCityRules(rules.value))
+const rows = computed(() => summary.value.rows)
+const sourceCoverage = computed(() => summary.value.sourceCoverage)
+const coreCoverage = computed(() => summary.value.coreCoverage)
 
 const filteredRows = computed(() => {
   const q = filter.value.trim().toLowerCase()
@@ -190,50 +171,32 @@ const filteredRows = computed(() => {
 })
 
 const fullyVerified = computed(() => rows.value.filter((r) => r.unverified === 0).length)
-const totalFields = computed(() => rows.value.reduce((s, r) => s + r.total, 0))
+const totalFields = computed(() => summary.value.totals.sources)
 
-const confidenceCounts = computed(() => {
-  const acc = { official: 0, derived: 0, unverified: 0 }
-  for (const r of rows.value) {
-    acc.official += r.official
-    acc.derived += r.derived
-    acc.unverified += r.unverified
+const confidenceCounts = computed(() => ({
+  official: summary.value.totals.official,
+  derived: summary.value.totals.derived,
+  unverified: summary.value.totals.unverified,
+}))
+
+const loadNotice = computed(() => {
+  if (!loadResult.value) return ''
+  const parts: string[] = []
+  if (loadResult.value.usedRegistryFallback) {
+    parts.push('城市索引不可用或不完整，已回退到内置 34 城注册表')
   }
-  return acc
-})
-
-const officialRatio = computed(() => {
-  const total = confidenceCounts.value.official + confidenceCounts.value.derived + confidenceCounts.value.unverified
-  return total ? Math.round((confidenceCounts.value.official / total) * 100) : 0
+  if (loadResult.value.missing.length) {
+    parts.push(`${loadResult.value.missing.length} 城规则读取失败：${loadResult.value.missing.join('、')}`)
+  }
+  return parts.join('；')
 })
 
 async function loadCities(): Promise<void> {
-  // 索引放在 public/ 根下，不放 rules/ 里：rules/ 被多个测试当作「城市规则文件」
-  // 整体扫描，塞一个 index.json 进去会让 34 城变成 35 个文件，门禁全红。
-  const indexRes = await fetch(`${import.meta.env.BASE_URL}city-index.json`).catch(() => null)
-  let ids: string[]
-  if (indexRes?.ok) {
-    ids = await indexRes.json()
-  } else {
-    // 没有索引文件时用已知的 34 城列表兜底
-    ids = [
-      'beijing','changchun','changsha','chengdu','chongqing','dalian','dongguan','fuzhou',
-      'guangzhou','guiyang','haikou','hangzhou','harbin','hefei','hohhot','jinan','kunming',
-      'lanzhou','lhasa','nanchang','nanjing','nanning','ningbo','qingdao','sanya','shanghai',
-      'shenyang','shenzhen','shijiazhuang','suzhou','taiyuan','tianjin','urumqi','wuhan','xian','xining','yinchuan','zhengzhou',
-    ]
-  }
-
-  const loaded: CityRuleLike[] = []
-  for (const id of ids) {
-    try {
-      const res = await fetch(`${import.meta.env.BASE_URL}rules/${id}.json`)
-      if (res.ok) loaded.push(await res.json())
-    } catch {
-      /* 单个城市失败不阻断整页 */
-    }
-  }
-  cities.value = loaded
+  // city-index.json 放在 public/ 根下，不放 rules/ 里：rules/ 被多个测试当作
+  // 「城市规则文件」整体扫描，塞一个 index.json 进去会多算一座城。
+  const loaded = await loadCityRules(import.meta.env.BASE_URL)
+  loadResult.value = loaded
+  rules.value = loaded.rules
 }
 
 async function runCheck(): Promise<void> {
@@ -248,7 +211,7 @@ async function runCheck(): Promise<void> {
 
     let passed = 0
     const failures: string[] = []
-    for (const c of cities.value) {
+    for (const c of rules.value) {
       try {
         const r = await calculate({ city: c.city }, loader)
         if (!(r.netMonthly > 0)) throw new Error('净收入非正')
@@ -260,7 +223,7 @@ async function runCheck(): Promise<void> {
       }
     }
     checkResult.value = {
-      total: cities.value.length,
+      total: rules.value.length,
       passed,
       failed: failures.length,
       failures,
@@ -281,6 +244,16 @@ onMounted(async () => {
   padding: var(--space-6);
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.data-note {
+  margin: 0 0 var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-warning-200);
+  border-radius: var(--radius-md);
+  background: var(--color-warning-50);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .admin-head {
@@ -308,7 +281,7 @@ onMounted(async () => {
 
 .metric-row {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-3);
   margin-bottom: var(--space-5);
 }
@@ -333,6 +306,12 @@ onMounted(async () => {
   font-weight: var(--font-weight-bold);
   font-family: var(--font-family-num);
   color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-note {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
   font-variant-numeric: tabular-nums;
 }
 

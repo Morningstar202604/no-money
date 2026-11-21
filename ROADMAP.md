@@ -10,11 +10,11 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ## Where we are now
 
-**0.0.40** is the current baseline. The product direction is settled — a rights-navigation and
+**0.0.41** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
 new-grad first-year mode, plain-language guide search, guide sharing, whole-checklist sharing,
 the checklist export/share edge fixes, a local phone-calendar reminder, four front-end
-dedupe fixes and the `/policy` manual-body dedupe are shipped:
+dedupe fixes, the `/policy` manual-body dedupe and the 34-city loading/coverage cleanup are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -25,6 +25,9 @@ dedupe fixes and the `/policy` manual-body dedupe are shipped:
 - [docs/REALITY-AND-SCOPE.md](docs/REALITY-AND-SCOPE.md) — 12 real-world blockers, 8 paths,
   60+ rights inventory, L1/L2/L3 standard, four home entries, 3-step onboarding, nine-section
   content template, four-level confidence, assistant + 7 templates, policy anchors
+- `/admin` and `/audit` now share `src/data/cityRules.ts`: one 34-city load path, exact
+  numerators/denominators for “all-source” 225/343 and “7 core fields” 186/238, no per-page
+  38/8 fallback lists
 
 **What is shipped:** `/start` with four entries; a 3-step wizard; a **60-item `RightsItem` catalog**
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
@@ -40,6 +43,19 @@ content-review loop. Page-level deadline hints and a user-set `.ics` phone-calen
 
 ---
 
+## 0.0.41 — 34-city loading and coverage denominators (shipped 2026-11-21)
+
+**Goal: stop `/admin` and `/audit` from loading 34-city rules separately and showing two “official coverage” numbers without denominators.**
+
+- [x] `src/data/cityRules.ts` is the only loader/summarizer; both pages import it
+- [x] Fallback list comes from `CITY_REGISTRY` (34 cities), not a page-local 38-item or 8-item array; incomplete/missing `city-index.json` falls back instead of silently shrinking the matrix
+- [x] “全库条目官方占比” is explicitly `225 / 343 条` (66%); “7 项核心字段官方率” is `186 / 238 格` (78%); both are computed from the same summary
+- [x] Admin shows both denominators; Audit shows the 7-core denominator in the metric and the matrix keeps 34 × 7 cells
+- [x] 4 unit tests for real totals, per-city core split, index fallback and single-city missing; 1 new `/admin` E2E and the existing `/audit` E2E assert the exact denominators
+- [x] No policy data or confidence changes
+
+**Not done:** resident mode and 10 real-user tests remain open.
+
 ## 0.0.40 — Manual-page dedupe: 21 entries, 2 bodies (shipped 2026-11-21)
 
 **Goal: stop `/policy?tab=manual` from rendering 23 full texts while the same bodies already live in `/start` and `/guides`, without deleting the two concepts that have no other home.**
@@ -50,7 +66,7 @@ content-review loop. Page-level deadline hints and a user-set `.ics` phone-calen
 - [x] Knowledge base (`buildStaticKbEntries`, 409-entry `/knowledge/kb.json`) untouched
 - [x] 4 unit tests for the split; existing E2E policy test asserts 2 cards and the `/guides?cat=retire` jump
 - [x] No policy data or confidence changes
-- [ ] `/admin` and `/audit` still load 34-city rules separately and label official coverage with different denominators (P2)
+- [x] `/admin` and `/audit` share one 34-city loader and label both coverage denominators; landed in 0.0.41
 
 **Not done:** resident mode and 10 real-user tests remain open.
 
@@ -65,7 +81,7 @@ content-review loop. Page-level deadline hints and a user-set `.ics` phone-calen
 - [x] `tests/uxDebt.spec.ts` guards title single-source and the `/scenario` link; `RightsView` mount tests get a real router
 - [x] 8 files / 136 E2E across desktop and mobile; no policy data or confidence changes
 - [x] `/policy?tab=manual` keeps only the 2 unique L1 concept cards and turns the other 21 into `/start` / `/guides` entries (0.0.40)
-- [ ] `/admin` and `/audit` still load 34-city rules separately and label official coverage with different denominators (P2)
+- [x] `/admin` and `/audit` share one 34-city loader and label both coverage denominators; landed in 0.0.41
 
 **Not done:** resident mode and 10 real-user tests remain open.
 

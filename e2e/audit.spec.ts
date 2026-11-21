@@ -28,13 +28,18 @@ test.describe('数据核验对账', () => {
 
     // 覆盖率数字必须是 0-100 的整数（不是占位符）
     const ratioText = await page
-      .locator('.metric', { hasText: '官方覆盖率' })
+      .locator('.metric', { hasText: '7 项核心字段官方率' })
       .locator('.metric-value')
       .innerText()
     const ratio = Number(ratioText.replace('%', ''))
     expect(Number.isFinite(ratio)).toBe(true)
     expect(ratio).toBeGreaterThanOrEqual(0)
     expect(ratio).toBeLessThanOrEqual(100)
+
+    // 分母必须写在页面上：34 城 × 7 项核心字段 = 238 格
+    await expect(
+      page.locator('.metric', { hasText: '7 项核心字段官方率' }).locator('.metric-note'),
+    ).toHaveText('186 / 238 格')
   })
 
   test('未核实字段有可区分的视觉标记，且带解释性 title', async ({ page }) => {
