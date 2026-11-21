@@ -381,6 +381,9 @@ function clearReminders() {
 .start-section-title { margin: 0; font-size: var(--font-size-lg); color: var(--color-text-primary); }
 .start-section-desc { margin: 0; font-size: var(--font-size-sm); line-height: 1.6; color: var(--color-text-secondary); }
 .start-list { display: flex; flex-direction: column; gap: 10px; }
+/* 首屏只渲染视口内卡片；下方卡片交给浏览器按需布局，减少 4G 手机上的首屏样式/布局开销。
+   contain-intrinsic-size 给未渲染卡片一个接近真实的高度，滚动条不会先短后长。 */
+.start-list > * { content-visibility: auto; contain-intrinsic-size: auto 180px; }
 .start-sub-title { margin: 0; font-size: var(--font-size-md); color: var(--color-text-primary); }
 .start-extra {
   display: flex; flex-direction: column; gap: 8px;

@@ -3,6 +3,35 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.0.x` 三段式，前两段固定，末段每次发布递增；历史 `3.x` 标签保留。
 
+## [0.0.45] — 2026-11-21
+
+这一轮不新增业务功能，只修用户第一眼能感知的两件事：4G 下先看到品牌页，而不是几秒白屏；首页只留权益导航，不再挂「算一算」的骑手参数栏。
+
+### Added
+
+- `index.html` 首帧壳：HTML/CSS 到达即显示品牌、标题与「60 条权益 / 30 条可办清单 / 34 城政策规则 / 10 城本地入口」进度提示；Vue 首个路由渲染完成后整块移除，应用级错误兜底也会先移除它。
+- `e2e/start-shell.spec.ts`：延迟入口 JS 1.2s，断言首帧壳先可见、路由就绪后被移除、首页没有参数栏、`/dashboard` 有参数栏。
+
+### Changed
+
+- 参数侧栏收口到「算一算」三个页面（`/dashboard`、`/scenario`、`/planning`）；`/start`、`/rights`、`/policy`、`/admin`、`/audit` 不再挂按单参数。移动端首页同时去掉「打开参数设置」汉堡按钮，切页时自动收起抽屉遮罩。
+- 首页条目列表加 `content-visibility: auto` 与 `contain-intrinsic-size`，只先布局视口内卡片；下方卡片随滚动渲染。
+- 视觉基线 4 张重新生成：首页桌面宽度变大、移动端去掉汉堡按钮，向导第二步同步变宽。
+
+### Performance
+
+- Lighthouse 12 移动端：`simulate` 下 FCP/LCP 3.6s、TBT 130ms、CLS 0；`devtools` 4G + 4x CPU 下 FCP/LCP 1.7s、TBT 700ms、CLS 0。LCP 2.5s 与 TBT 200ms 两个预算仍未达标，主因是 176K gzip 的 `naive-ui` 根级 chunk；本轮不把未达标指标写成绿灯。
+- 首屏 JS 仍约 410K gzip；首帧壳只把「白屏等待」变成「可读的品牌页」，不减少下载量。
+
+### Tests
+
+- 单测 69 文件 / 858 条；E2E 11 文件 / 144 条（新增 1 个文件 1 条 × 桌面/移动 2 个项目），6.5 分钟全过。构建 24.51s；PWA 60 条 / 2,836.72 KiB。
+
+### Docs
+
+- `docs/ENGINEERING.md` 记录首帧壳、参数栏范围与两组 Lighthouse 实测；`ROADMAP.md` 把 0.0.45 作为当前基线，Lighthouse 仍未打勾。
+- 版本五处统一为 `0.0.45`。
+
 ## [0.0.44] — 2026-11-21
 
 这一轮不新增功能，补的是“工程绿灯之外还没有指标”的三件事：覆盖率门禁、循环依赖扫描、首页视觉回归。

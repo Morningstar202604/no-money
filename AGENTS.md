@@ -34,7 +34,7 @@ npm run kb:check          # knowledge base sync check
 npm run verify:entrypoints# CLI / API / MCP / Web share one kernel
 npm run build             # typecheck + production build
 npm run doctor            # cross-cutting health check (bundle, docs, PWA, data)
-npm run test:e2e          # 142 Playwright tests (desktop + mobile)
+npm run test:e2e          # 144 Playwright tests (desktop + mobile)
 npm run cli -- --help     # CLI
 npm run mcp               # MCP server (stdio)
 npm run api               # HTTP API (port 8787)

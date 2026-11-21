@@ -133,8 +133,11 @@ describe('主布局渲染', () => {
       attachTo: document.body,
     })
     await nextTick()
+    await router.isReady()
+    await router.push('/dashboard')
     await nextTick()
-
+    await nextTick()
+    expect(wrapper.find('#params-sidebar').exists(), '算一算页应挂参数侧栏').toBe(true)
     const alert = wrapper.find('.n-alert')
     expect(alert.exists(), '规则提示必须渲染为真实的 naive-ui Alert（.n-alert）').toBe(true)
     expect(alert.text(), '提示文案必须可见').toContain('未回溯官方原文')

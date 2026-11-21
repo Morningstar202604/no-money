@@ -1,6 +1,6 @@
 [package]
 name = "no-money"
-version = "0.0.44"
+version = "0.0.45"
 description = "没钱 No Money — 灵活就业者收入精算与权益决策平台"
 authors = ["badhope"]
 edition = "2021"

@@ -119,6 +119,7 @@ components / views 渲染
 `npm test` 一条命令覆盖全部（当前 69 文件 / 858 项）；`npm run test:coverage` 对
 `domain` + `application` 设 80% 四项门槛；`npm run lint:cycles` 扫描含 `.vue` 的循环依赖；
 `npm run verify` 额外跑生产路径引擎自检；`e2e/visual.spec.ts` 锁首页与向导的桌面/移动基线；
+`e2e/start-shell.spec.ts` 锁首帧壳在 JS 到达前可见、路由就绪后移除；
 `npm run kb:check` 校验 `public/knowledge/kb.json` 与数据源逐字段同步；
 `npm run typecheck`（src）与 `npm run typecheck:test`（tests + scripts）分别把关类型；
 `npm run doctor` 做跨切面一致性检查（体积、文档、PWA、数据）。

@@ -185,7 +185,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, type Component } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, type Component } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { NButton } from 'naive-ui'
 import { useMainStore } from '../stores/main'
@@ -251,8 +251,10 @@ const sidebarCollapsed = ref(false)
 const mobileSidebarOpen = ref(false)
 const isDark = computed(() => store.isDark)
 const isMobile = ref(false)
-/** 企业职工工资条与办事教程页不显示骑手参数栏，避免把按单参数带进无关场景 */
-const showSidebar = computed(() => !['Employee', 'Guides'].includes(String(route.name)))
+/** 参数栏只服务「算一算」：首页/权益/政策/数据页不挂骑手参数，避免把按单模型带进无关场景 */
+const showSidebar = computed(() => ['Dashboard', 'Scenario', 'Planning'].includes(String(route.name)))
+// 切到无参数栏的页面时，先收掉移动端抽屉遮罩，否则 aside 已移除、遮罩仍盖住整页
+watch(() => route.name, () => { mobileSidebarOpen.value = false })
 
 /** 命令面板开关：⌘K / Ctrl+K 唤起 */
 const paletteOpen = ref(false)

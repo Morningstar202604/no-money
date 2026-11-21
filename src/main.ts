@@ -4,6 +4,11 @@ import App from './App.vue'
 import { router } from './app/router'
 
 const app = createApp(App)
+const bootShell = document.getElementById('boot')
+
+function removeBootShell() {
+  bootShell?.remove()
+}
 
 // 无全局错误边界时，组件内异常会静默中断渲染并留下空白页。
 // 这里给出用户可见的提示，并监听 router 的 chunk 失败事件。
@@ -17,6 +22,7 @@ app.config.errorHandler = (err, _instance, info) => {
 }
 
 function showFatalError(message: string) {
+  removeBootShell()
   const el = document.getElementById('app')
   if (!el) return
   // 用 DOM API 而非 innerHTML 拼接：err.message 可能内嵌用户可篡改的
@@ -49,6 +55,12 @@ window.addEventListener('app:chunk-error', () => {
 app.use(createPinia())
 app.use(router)
 app.mount('#app')
+
+// 首帧壳在路由首个页面真正渲染后再移除：只等 app.mount 会露出空白，
+// 只等 networkidle 又会把品牌页留得过久。双 rAF 等这一帧绘制完成。
+router.isReady().finally(() => {
+  requestAnimationFrame(() => requestAnimationFrame(removeBootShell))
+})
 
 // PWA 注册：让浏览器知道这个站点可安装、可离线。
 // registerType 是 autoUpdate，新版本会在后台装好，下次打开自动生效——

@@ -42,6 +42,74 @@
       color: #e8eef6;
     }
     #app { height: 100%; }
+
+    /* 首帧壳：JS 下载/解析期间先给一块可读的品牌页，避免 4G 下 4 秒白屏。
+       只做品牌与进度提示，不复制首页内容；Vue 路由就绪后整块移除。 */
+    #boot {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(1200px 600px at 15% 0%, #ccfbf1 0%, transparent 60%),
+        #f8fafc;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    html[data-theme='dark'] #boot {
+      background:
+        radial-gradient(1200px 600px at 15% 0%, #10312f 0%, transparent 60%),
+        #0b1626;
+      color: #e8eef6;
+    }
+    #boot .boot-inner { width: min(760px, 100%); }
+    #boot .boot-brand {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 28px;
+      font-size: 15px; font-weight: 700; letter-spacing: .01em;
+    }
+    #boot .boot-mark {
+      display: inline-grid; place-items: center;
+      width: 38px; height: 38px; border-radius: 10px;
+      background: #0d9488; color: #fff;
+      box-shadow: 0 6px 18px rgb(13 148 136 / 24%);
+    }
+    #boot .boot-mark svg { width: 20px; height: 20px; }
+    #boot .boot-muted { color: #64748b; font-weight: 500; }
+    html[data-theme='dark'] #boot .boot-muted { color: #94a3b8; }
+    #boot .boot-title {
+      margin: 0 0 18px;
+      font-size: clamp(32px, 5.6vw, 52px);
+      font-weight: 780; line-height: 1.14; letter-spacing: -.03em;
+    }
+    #boot .boot-title span { display: block; color: #0d9488; }
+    #boot .boot-lead {
+      margin: 0 0 26px;
+      max-width: 620px;
+      font-size: 15px; line-height: 1.8; color: #475569;
+    }
+    html[data-theme='dark'] #boot .boot-lead { color: #a8b6c8; }
+    #boot .boot-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    #boot .boot-chip {
+      padding: 7px 12px;
+      border: 1px solid #cbd5e1; border-radius: 999px;
+      font-size: 12px; color: #334155; background: rgb(255 255 255 / 72%);
+    }
+    html[data-theme='dark'] #boot .boot-chip {
+      border-color: #2b3b52; color: #cbd5e1; background: rgb(17 28 46 / 72%);
+    }
+    #boot .boot-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #64748b; }
+    #boot .boot-dot { width: 7px; height: 7px; border-radius: 50%; background: #0d9488; }
+    #boot .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    }
+    @media (max-width: 640px) {
+      #boot { padding: 18px; align-items: flex-start; padding-top: 12vh; }
+      #boot .boot-brand { margin-bottom: 22px; }
+      #boot .boot-title { font-size: clamp(30px, 8.8vw, 42px); }
+      #boot .boot-lead { font-size: 14px; }
+    }
   </style>
   <script>
     ;(function () {
@@ -55,6 +123,28 @@
   </script>
 </head>
 <body>
+  <div id="boot" role="status" aria-live="polite" aria-label="正在加载">
+    <div class="boot-inner" aria-hidden="true">
+      <div class="boot-brand">
+        <span class="boot-mark">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="currentColor"/></svg>
+        </span>
+        <span>没钱 <span class="boot-muted">· 劳动者权益导航</span></span>
+      </div>
+      <p class="boot-title">该做什么、能拿什么，<span>去哪办</span></p>
+      <p class="boot-lead">不注册、不填身份证和工资。把该办的事、能领的钱、去哪办，一条条摊开；每一步都写清楚时限、材料和官方入口。先选一个入口，3 步给你 3–7 条能照着办的清单。算收入只是后面的工具，不是主线；先办该办的，再算能拿多少。</p>
+      <div class="boot-chips">
+        <span class="boot-chip">60 条权益</span>
+        <span class="boot-chip">30 条可办清单</span>
+        <span class="boot-chip">34 城政策规则</span>
+        <span class="boot-chip">10 城本地入口</span>
+        <span class="boot-chip">本机计算 · 不上传</span>
+      </div>
+      <p class="boot-status"><i class="boot-dot"></i>正在加载办事清单…</p>
+    </div>
+    <span class="sr-only">正在加载页面，请稍候。</span>
+  </div>
+  <noscript><style>#boot{display:none}</style></noscript>
   <div id="app"></div>
   <noscript>
     <div style="padding:32px;text-align:center;font-size:14px;line-height:1.8">

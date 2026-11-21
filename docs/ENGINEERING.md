@@ -9,7 +9,7 @@
 | 项目 | 结果 |
 |---|---|
 | 单元/组件/规则测试 | **69 文件 / 858 项全过**，耗时 364.13s |
-| E2E | **10 文件 / 142 项全过**（含 4 条视觉基线，5.3 分钟） |
+| E2E | **11 文件 / 144 项全过**（含 4 条视觉基线与首帧壳，6.5 分钟） |
 | 覆盖率 | `domain` + `application`：语句 **90.6%** / 分支 **80.19%** / 函数 **96.36%** / 行 **94.96%**，四项门槛均 80% |
 | 依赖环 | `dependency-cruiser` 扫描 `src`（含 `.vue`）：**140 模块 / 326 依赖 / 0 环** |
 | 视觉回归 | 首页首屏 + 向导第二步，桌面/移动共 4 张基线；桌面 4% / 移动 6% 像素容差，向导固定滚动位置，另锁 4 入口/4 身份/无横向溢出 |
@@ -18,8 +18,8 @@
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
 | 知识库 | `kb:check` 409 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
-| 构建 | 24.82s；`dist` **3.48 MB**（assets 2.59 MB）；首屏 **410K gzip**（预算 500K） |
-| PWA | 60 条 precache / **2,832.17 KiB（约 2.77 MB）**（预算 3 MB） |
+| 构建 | 24.51s；`dist` **3.48 MB**（assets 2.59 MB）；首屏 **410K gzip**（预算 500K） |
+| PWA | 60 条 precache（57 个去重文件）/ **2,836.72 KiB（约 2.77 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（26 个关键文件、版本三处一致、34 城、PWA、体积、文档） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |
@@ -91,12 +91,14 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 | 指标 | 预算 | 当前 | 触发动作 |
 |---|---:|---:|---|
-| 首屏 JS（gzip） | 500K | 408K | 超 500K 阻断 |
-| `dist` 总量 | 5 MB | 3.46 MB（assets 2.57 MB） | 超 5 MB 阻断 |
-| PWA precache | 3 MB | 2.73 MB | 超 3 MB 警告，超 3.2 MB 阻断 |
-| 单 chunk | 1 MB | 864K（echarts） | 超 1 MB 检查是否同步引入 |
-| LCP（4G） | 2.5s | 未测 | P1 接 Lighthouse CI |
-| CLS | 0.1 | 未测 | P1 |
+| 首屏 JS（gzip） | 500K | 410K | 超 500K 阻断 |
+| `dist` 总量 | 5 MB | 3.8 MB（assets 2.7 MB） | 超 5 MB 阻断 |
+| PWA precache | 3 MB | 2,836.72 KiB | 超 3 MB 警告，超 3.2 MB 阻断 |
+| 单 chunk | 1 MB | 865K（echarts） | 超 1 MB 检查是否同步引入 |
+| FCP（4G） | 2.5s | 3.6s simulate / 1.7s devtools | 记录；simulate 未达 |
+| LCP（4G） | 2.5s | 3.6s simulate / 1.7s devtools | 记录；simulate 未达 |
+| CLS | 0.1 | 0 | 达标 |
+| TBT（4G，4x CPU） | 200ms | 130ms simulate / 700ms devtools | 记录；低端 CPU 未达 |
 
 ### 加载策略
 
@@ -108,9 +110,14 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
    - 不缓存用户输入、AI Key、对话内容；
    - `navigateFallback` 与 `start_url`/`scope` 跟随 `VITE_BASE`，支持 `/app/` 子路径。
 4. **chunk 加载失败**：路由守卫捕获动态 import 失败，提示刷新；不把白屏留给用户。
-5. **首屏组件**：`ChatAssistant` 与 `CommandPalette` 目前静态 import，但二者都不大；
-   若首屏逼近 450K，优先把 `CommandPalette` 改成 `v-if="paletteOpen"` + 异步组件，
-   而不是删功能。
+5. **首屏壳**：`index.html` 在入口 JS 到达前渲染品牌、标题与目录计数；`src/main.ts`
+   等 `router.isReady()` 后双 rAF 移除，应用级错误兜底也先移除。它改善的是“白屏时间”，
+   不减少 410K 首屏 JS；LCP 的 simulate 口径仍按关键链算 3.6s。
+6. **首页减负**：`ParamSidebar` 只在 `/dashboard`、`/scenario`、`/planning` 挂载，首页/
+   权益/政策/数据页不再挂按单参数；首页条目列表用 `content-visibility: auto` 延后屏外布局。
+7. **首屏组件**：`ChatAssistant` 与 `CommandPalette` 仍静态 import；`naive-ui` 根级 chunk
+   176K gzip 是 LCP/TBT 的主要剩余成本，拆包前不把 Lighthouse 设成阻断门禁，
+   避免用宽松阈值换“绿灯”。
 
 ### 子路径部署
 
@@ -205,14 +212,14 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 
 - 测试：858 项（69 个文件；含架构门禁、权益导航、34 城加载与覆盖分母、值对象/Result/错误工厂边界）；覆盖率已接入 CI，`domain` + `application` 四项均 ≥80%（语句 90.6% / 分支 80.19% / 函数 96.36% / 行 94.96%）。
 - 质量门禁：`npm run test:coverage` 与 `npm run lint:cycles` 已进入 CI；循环依赖 0 环；视觉回归 4 张基线。
-- 首屏：410K gzip；PWA：2.77 MB（60 条 precache）；`dist`：3.48 MB（assets 2.59 MB）。
+- 首屏：410K gzip；PWA：2.77 MB（60 条 precache / 57 个去重文件）；`dist`：3.48 MB（assets 2.59 MB）。
 - 数据：343 条来源，official 225（65.6%）、derived 50、unverified 68；34 城；0 城全部字段 official。34 城医保基数 official 33 / derived 1（郑州按社平 80% 派生）；医保费率 official 27 / derived 7 / unverified 0（西安 2026 已升 official，石家庄到期降 derived）；34 城最低工资全部 official；养老基数 official 31 / derived 3；养老金计发基数 official 27 / derived 7 / unverified 0（西安 7881 凭陕人社函〔2025〕425号扫描件升 official；2026 已公布 10 城，其余 24 城按 2025 年预发）。
 - 内容：`RightsItem` 60 条（23 条迁移 + 20 条新增 L2 + 17 条 L1）；其中 30 条 L2、30 条 L1；已到 60+ 目标。
 - 教程：`/guides` 只列 8 类 18 条 L2（social / medical / housing / unemployment / birth / injury / retire / subsidy）；每条有至少一条用户原话别名，支持大白话搜索；权益卡可系统分享或复制文案给工友，我的清单/向导结果可整张分享；L1 留在「该做什么」，高温/税优/维权不进首屏。
 - 前端去重（0.0.39–0.0.41）：页面标题只在 `src/app/pageTitles.ts` 维护；`/rights` 三页签可深链；`/start?entry=social` 补 5 条未展开 L2；`/dashboard` 可点进 `/scenario`；`/policy?tab=manual` 只保留 2 条站内无入口的概念正文，其余 21 条改入口；`/admin` 与 `/audit` 共用 `src/data/cityRules.ts`，明确 225/343 条与 186/238 格两个分母。
 - 新毕业生：`/employee` 支持试用期 + 转正两段工资；12 个月变额求和算年度个税，两段月到手按年度平均税负折算并标注；居民模式仍缺城市级缴费数据。
 - 清单提醒：`checklistCalendar` 生成 RFC 5545 `.ics`，日期只存本机；中国时间 09:00，3 天前与当天两次提醒；不接账号、推送或云端日历。
-- 可用性：E2E 142 项（10 个文件，桌面 + 移动）；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、清单日历提醒、新毕业生双段工资、`/rights` 页签深链、`/start` 的 5 条补位、`/policy` 手册入口与 `/admin` 两个覆盖分母有 E2E；首页首屏与向导第二步有视觉基线；清单导出/打印/.ics 有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
+- 可用性：E2E 144 项（11 个文件，桌面 + 移动）；首帧壳先可见、路由就绪后移除；六段导航、`/guides` 分类筛选与大白话搜索、权益卡分享、整张清单分享、清单日历提醒、新毕业生双段工资、`/rights` 页签深链、`/start` 的 5 条补位、`/policy` 手册入口与 `/admin` 两个覆盖分母有 E2E；首页首屏与向导第二步有视觉基线；清单导出/打印/.ics 有下载断言；无 Crash-free 指标（无后端、无埋点，不做假指标）。
 
 ## 6. 模块化与架构边界
 

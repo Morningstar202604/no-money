@@ -10,11 +10,11 @@ See [docs/VERSIONING.md](docs/VERSIONING.md) for the release rule.
 
 ## Where we are now
 
-**0.0.44** is the current baseline. The product direction is settled — a rights-navigation and
+**0.0.45** is the current baseline. The product direction is settled — a rights-navigation and
 public-service guide for workers — and the six-section navigation, standalone guide page,
 new-grad first-year mode, plain-language guide search, guide sharing, whole-checklist sharing,
 the checklist export/share edge fixes, a local phone-calendar reminder, four front-end
-dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup, the cross-module duplicate audit, the legacy-engine removal, and the coverage / cycle / visual gates are shipped:
+dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cleanup, the cross-module duplicate audit, the legacy-engine removal, and the coverage / cycle / visual gates, plus the first-paint shell and home declutter, are shipped:
 
 - [docs/POSITIONING.md](docs/POSITIONING.md) — one-sentence positioning, audience, three questions,
   IA v2, content model, P0/P1/P2, explicit non-goals
@@ -38,6 +38,9 @@ dedupe fixes, the `/policy` manual-body dedupe, the 34-city loading/coverage cle
 - 0.0.44 adds the missing quality gates: domain/application coverage at 80% for all four metrics,
   a `.vue`-aware circular-dependency scan, and four visual baselines for the home first screen
   and wizard step 2
+- 0.0.45 adds a static first-frame shell (brand and progress before JS arrives), removes the
+  rider-parameter sidebar from `/start`, `/rights`, `/policy`, `/admin` and `/audit`, and
+  `content-visibility` for below-fold cards; Lighthouse numbers are recorded, not green-washed
 
 **What is shipped:** `/start` with four entries; a 3-step wizard; a **60-item `RightsItem` catalog**
 (23 migrated + 20 new L2 + 17 L1), **30 items at L2**, **30 at L1**; **10 cities with four local official entries**;
@@ -52,6 +55,18 @@ repository automation, the employee wage-slip slice, seven ready-made checklists
 content-review loop. Page-level deadline hints and a user-set `.ics` phone-calendar export exist, but there is no push service or account.
 
 ---
+
+## 0.0.45 — First-paint shell and home declutter (shipped 2026-11-21)
+
+**Goal: make the first 4G visit show something readable before the SPA arrives, and stop putting calculator parameters in front of the rights-first home.**
+
+- [x] `index.html` ships a static `#boot` shell with brand, headline and catalog counts; `src/main.ts` removes it after the first route is ready, and the fatal-error path removes it too.
+- [x] `e2e/start-shell.spec.ts` delays the entry JS, asserts the shell is visible, then gone, and that `/start` has no parameter sidebar while `/dashboard` does.
+- [x] `MainLayout` mounts `ParamSidebar` only on `/dashboard`, `/scenario` and `/planning`; mobile home no longer shows the parameter hamburger; route changes close the drawer overlay.
+- [x] Below-fold cards on `/start` use `content-visibility: auto` + `contain-intrinsic-size`, so the first layout does not pay for all 30 cards.
+- [x] Four visual baselines regenerated after the width/header changes.
+- [x] Lighthouse 12 mobile measured: `simulate` FCP/LCP 3.6s / TBT 130ms / CLS 0; `devtools` 4G + 4x CPU FCP/LCP 1.7s / TBT 700ms / CLS 0. LCP 2.5s and TBT 200ms are **not** met; the 176K gzip `naive-ui` root chunk remains the blocker.
+- [ ] Turning Lighthouse into a blocking CI gate waits for a real `naive-ui` split or removal; 0.0.45 only records the numbers.
 
 ## 0.0.44 — Quality gates: coverage, cycles, visual baselines (shipped 2026-11-21)
 
@@ -776,7 +791,7 @@ five mirrors on `main` + `v3.8.7`.
 - [ ] Dependency upgrade wave: pinia 4 / vue-router 5 / vite 8 / TypeScript 7, one major per PR,
       full gate each time
 - [x] Circular-dependency scan that understands `.vue` (dependency-cruiser, 0 cycles; 0.0.44)
-- [ ] Lighthouse CI on a 4G profile: LCP < 2.5s, CLS < 0.1, TBT < 200ms
+- [ ] Lighthouse CI on a 4G profile: LCP < 2.5s, CLS < 0.1, TBT < 200ms. 0.0.45 measured the current gap (LCP 3.6s simulate / 1.7s devtools; TBT 130ms simulate / 700ms devtools), so this stays open until the `naive-ui` root chunk is split.
 - [x] PWA precache budget check in `doctor` (done; 2.72 MB, warn at 3 MB)
 
 ### P2
