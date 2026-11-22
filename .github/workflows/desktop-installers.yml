@@ -1,0 +1,59 @@
+name: Desktop installers
+
+# 只在 tag 或手动触发时构建，避免每次 push 都跑 Windows 打包。
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    name: Windows installer (NSIS + MSI)
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+          cache-on-failure: true
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      # tauri.conf.json 的 beforeBuildCommand 会先跑 npm run build，
+      # 再由 Tauri 打出 NSIS 与 MSI 两个安装包。
+      - name: Build Tauri bundles
+        run: npm run tauri:build
+
+      - name: List bundles
+        shell: pwsh
+        run: Get-ChildItem -Recurse src-tauri/target/release/bundle | Select-Object FullName, Length
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: no-money-${{ github.ref_name }}-windows
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: error
+          retention-days: 30
