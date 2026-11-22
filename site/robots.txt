@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://morningstar202604.github.io/no-money/sitemap.xml

@@ -4,7 +4,7 @@
 
 给中国劳动者的一份说人话的权益与办事指南。
 
-[English](README.md) · [**简体中文**](README.zh-CN.md)
+[English](README.md) · [**简体中文**](README.zh-CN.md) · [官网](https://morningstar202604.github.io/no-money/)
 
 <img src="docs/screenshots/demo.gif" alt="输入城市名，回车后数字随之更新" width="720" />
 

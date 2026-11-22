@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>没钱 No Money — 劳动者权益导航与办事平台</title>
+  <meta name="description" content="社保怎么登记，医保断了怎么办，哪些钱本来可以领，老板不发工资该找谁。按你的城市和处境，把该做什么、能拿什么、去哪办排成一份有先后的清单。Windows 桌面版 0.1.2 已发布。" />
+  <meta name="theme-color" content="#f4f0e6" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://morningstar202604.github.io/no-money/" />
+  <link rel="icon" href="assets/brand/icon-256.png" sizes="256x256" />
+  <link rel="apple-touch-icon" href="assets/brand/icon-256.png" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="没钱 No Money" />
+  <meta property="og:title" content="没钱 No Money — 先把该办的事，办对。" />
+  <meta property="og:description" content="给中国劳动者的一份说人话的权益与办事指南。34 座城市、7 类现成清单、18 条办事教程；不代办，不代缴，不编金额。" />
+  <meta property="og:url" content="https://morningstar202604.github.io/no-money/" />
+  <meta property="og:image" content="https://morningstar202604.github.io/no-money/assets/brand/og-cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="没钱 No Money — 先把该办的事，办对。" />
+  <meta name="twitter:description" content="社保、医保、公积金、欠薪、工伤、辞退：把该做什么、能拿什么、去哪办排成一份清单。" />
+  <meta name="twitter:image" content="https://morningstar202604.github.io/no-money/assets/brand/og-cover.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "没钱 No Money",
+    "alternateName": "No Money",
+    "description": "给中国劳动者的一份说人话的权益与办事指南，覆盖社保、医保、公积金、欠薪、工伤、辞退与税务测算。",
+    "url": "https://morningstar202604.github.io/no-money/",
+    "downloadUrl": "https://github.com/Morningstar202604/no-money/releases/download/v0.1.2/NoMoney_0.1.2_x64-setup.exe",
+    "softwareVersion": "0.1.2",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Windows 10, Windows 11",
+    "inLanguage": "zh-CN",
+    "license": "https://github.com/Morningstar202604/no-money/blob/main/LICENSE",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" }
+  }
+  </script>
+
+  <style>
+    /* ===== 设计变量 ===== */
+    :root {
+      --paper: #f4f0e6;
+      --paper-2: #fbf8f0;
+      --paper-3: #eae4d5;
+      --ink: #17211d;
+      --ink-2: #26332d;
+      --muted: #5f6a62;
+      --muted-2: #626e66;
+      --line: #d7cfbe;
+      --line-strong: #bdb29e;
+      --teal: #0f766e;
+      --teal-2: #0d9488;
+      --teal-soft: #d8eee8;
+      --teal-ink: #064e47;
+      --amber: #d99b2b;
+      --amber-soft: #f7e7b5;
+      --danger: #b45309;
+      --shadow-sm: 0 1px 0 rgba(23, 33, 29, .04), 0 10px 24px rgba(23, 33, 29, .06);
+      --shadow-lg: 0 30px 80px rgba(23, 33, 29, .15);
+      --header-bg: rgba(244, 240, 230, .82);
+      --radius-sm: 10px;
+      --radius: 18px;
+      --radius-lg: 28px;
+      --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+      --font-display: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+      --font-mono: "SFMono-Regular", "Cascadia Code", "Roboto Mono", "Noto Sans Mono CJK SC", monospace;
+      --max: 1180px;
+    }
+
+    html[data-theme="dark"] {
+      --paper: #0b1411;
+      --paper-2: #101c17;
+      --paper-3: #16251f;
+      --ink: #edf3ee;
+      --ink-2: #d5e2da;
+      --muted: #9aa89f;
+      --muted-2: #77857c;
+      --line: #2a3b33;
+      --line-strong: #41544a;
+      --teal: #5eead4;
+      --teal-2: #2dd4bf;
+      --teal-soft: #123b33;
+      --teal-ink: #c9fff4;
+      --amber: #f2c76a;
+      --amber-soft: #3a2f17;
+      --danger: #fbbf24;
+      --shadow-sm: 0 1px 0 rgba(0, 0, 0, .2), 0 12px 30px rgba(0, 0, 0, .28);
+      --shadow-lg: 0 34px 90px rgba(0, 0, 0, .5);
+      --header-bg: rgba(11, 20, 17, .82);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    h1, h2, h3, h4, p, ul, ol, figure { margin: 0; }
+    ul, ol { padding: 0; list-style: none; }
+    ::selection { background: var(--teal-2); color: #fff; }
+    :focus-visible { outline: 2px solid var(--teal-2); outline-offset: 3px; border-radius: 4px; }
+
+    .skip {
+      position: fixed;
+      left: 16px;
+      top: 12px;
+      z-index: 100;
+      padding: 8px 14px;
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 999px;
+      transform: translateY(-160%);
+      transition: transform .2s ease;
+    }
+    .skip:focus { transform: none; }
+
+    .wrap { width: min(var(--max), calc(100% - 48px)); margin-inline: auto; }
+
+    /* ===== 顶栏 ===== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--header-bg);
+      border-bottom: 1px solid transparent;
+      backdrop-filter: blur(16px) saturate(140%);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      transition: border-color .25s ease, background .25s ease;
+    }
+    .site-header.scrolled { border-bottom-color: var(--line); }
+    .header-inner {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      flex: none;
+    }
+    .brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      box-shadow: 0 4px 12px rgba(15, 118, 110, .2);
+    }
+    .brand-text { display: grid; line-height: 1.1; }
+    .brand-name { font-size: 16px; font-weight: 750; letter-spacing: -.02em; }
+    .brand-sub { font-size: 10px; color: var(--muted); letter-spacing: .08em; margin-top: 4px; }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin-left: auto;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .nav a { position: relative; padding: 4px 0; white-space: nowrap; }
+    .nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: var(--teal-2);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .2s ease;
+    }
+    .nav a:hover { color: var(--ink); }
+    .nav a:hover::after { transform: scaleX(1); }
+
+    .header-actions { display: flex; align-items: center; gap: 8px; margin-left: 4px; }
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease;
+    }
+    .icon-btn:hover { background: var(--paper-2); border-color: var(--line-strong); }
+    .icon-btn svg { width: 17px; height: 17px; }
+    .theme-btn .sun { display: none; }
+    html[data-theme="dark"] .theme-btn .sun { display: block; }
+    html[data-theme="dark"] .theme-btn .moon { display: none; }
+
+    .header-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 13px;
+      font-weight: 650;
+      white-space: nowrap;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .header-download:hover { background: var(--teal-ink); transform: translateY(-1px); }
+    .header-download svg { width: 15px; height: 15px; }
+
+    .menu-btn { display: none; }
+
+    /* ===== Hero ===== */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 72px 0 54px;
+      background:
+        radial-gradient(900px 480px at 84% 4%, rgba(13, 148, 136, .16), transparent 62%),
+        radial-gradient(700px 460px at 4% 100%, rgba(217, 155, 43, .10), transparent 60%),
+        var(--paper);
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, var(--line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+      background-size: 86px 86px;
+      opacity: .22;
+      mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
+      -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 82%);
+    }
+    .hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.03fr) minmax(0, .97fr);
+      gap: 42px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 12px 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper-2);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: .02em;
+      box-shadow: var(--shadow-sm);
+    }
+    .eyebrow .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal-2);
+      box-shadow: 0 0 0 4px var(--teal-soft);
+    }
+    .eyebrow strong { color: var(--ink); font-weight: 650; }
+
+    .hero h1 {
+      margin-top: 22px;
+      font-family: var(--font-display);
+      font-size: clamp(46px, 6.4vw, 82px);
+      line-height: 1.12;
+      letter-spacing: -.07em;
+      font-weight: 800;
+      max-width: 640px;
+    }
+    .hero h1 .accent {
+      position: relative;
+      z-index: 0;
+      display: inline-block;
+      color: var(--teal);
+    }
+    .hero h1 .accent::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: -.04em;
+      bottom: .06em;
+      height: .14em;
+      background: var(--amber-soft);
+      z-index: -1;
+      transform: skewX(-8deg);
+    }
+    .hero-copy-text {
+      margin-top: 22px;
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.9;
+    }
+    .hero-copy-text strong { color: var(--ink); font-weight: 650; }
+
+    .hero-ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 50px;
+      padding: 0 22px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 15px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
+    }
+    .btn svg { width: 17px; height: 17px; }
+    .btn-primary { background: var(--ink); color: var(--paper); box-shadow: 0 10px 24px rgba(23, 33, 29, .16); }
+    .btn-primary:hover { background: var(--teal-ink); transform: translateY(-2px); }
+    .btn-ghost { border-color: var(--line-strong); background: transparent; color: var(--ink); }
+    .btn-ghost:hover { background: var(--paper-2); transform: translateY(-2px); }
+
+    .hero-facts {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 18px;
+      margin-top: 28px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .hero-facts span { display: inline-flex; align-items: center; gap: 7px; }
+    .hero-facts svg { width: 13px; height: 13px; color: var(--teal); }
+    .hero-facts .sep { width: 1px; height: 12px; background: var(--line-strong); }
+
+    .hero-visual { position: relative; padding: 10px 0 26px; }
+    .window-frame {
+      position: relative;
+      z-index: 2;
+      border: 1px solid var(--line-strong);
+      border-radius: 20px;
+      background: var(--paper-2);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transform: perspective(1400px) rotateY(-3.5deg) rotateX(1.2deg);
+      transform-origin: 80% 50%;
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+    }
+    .window-frame:hover { transform: perspective(1400px) rotateY(0) rotateX(0) translateY(-4px); }
+    .window-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line);
+      background: var(--paper-3);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .window-dots { display: flex; gap: 5px; }
+    .window-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line-strong); }
+    .window-dots i:first-child { background: #d58f84; }
+    .window-dots i:nth-child(2) { background: var(--amber); }
+    .window-dots i:last-child { background: var(--teal-2); }
+    .window-url {
+      flex: 1;
+      margin-left: 6px;
+      padding: 4px 10px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--paper-2);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .window-frame img { width: 100%; }
+
+    .note-card {
+      position: absolute;
+      z-index: 3;
+      left: -24px;
+      bottom: 6px;
+      width: 214px;
+      padding: 15px 16px 14px;
+      border: 1px solid #d6bd7a;
+      border-radius: 3px 12px 12px 3px;
+      background: #fbf1c7;
+      color: #3d3218;
+      box-shadow: 0 18px 36px rgba(80, 62, 18, .18);
+      transform: rotate(-2.2deg);
+    }
+    .note-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--amber);
+      border-radius: 3px 0 0 3px;
+    }
+    .note-card small {
+      display: block;
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: #8a6b24;
+    }
+    .note-card strong {
+      display: block;
+      margin-top: 3px;
+      font-family: var(--font-display);
+      font-size: 22px;
+      line-height: 1.2;
+    }
+    .note-card p { margin-top: 5px; font-size: 11px; line-height: 1.55; color: #6f5a2b; }
+
+    .stat-chip {
+      position: absolute;
+      z-index: 4;
+      right: -8px;
+      top: -10px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper-2);
+      box-shadow: var(--shadow-sm);
+      font-size: 11px;
+      color: var(--muted);
+      transform: rotate(2deg);
+    }
+    .stat-chip b { color: var(--ink); font-family: var(--font-mono); font-size: 12px; }
+
+    .hero-strip {
+      position: relative;
+      margin-top: 42px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .02em;
+    }
+    .hero-strip span { display: inline-flex; align-items: center; gap: 8px; }
+    .hero-strip span::before { content: ""; width: 4px; height: 4px; border-radius: 50%; background: var(--teal-2); }
+
+    /* ===== 通用 section ===== */
+    .section { padding: 96px 0; }
+    .section-tight { padding: 72px 0; }
+    .section-head {
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+      margin-bottom: 48px;
+    }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      padding-top: 8px;
+    }
+    .kicker::before { content: ""; width: 26px; height: 1px; background: var(--teal-2); }
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4.4vw, 58px);
+      line-height: 1.22;
+      letter-spacing: -.055em;
+      font-weight: 800;
+      max-width: 760px;
+    }
+    .section-head .lede {
+      margin-top: 16px;
+      max-width: 620px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.85;
+    }
+
+    /* ===== 为什么 ===== */
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .why-card {
+      position: relative;
+      padding: 28px 26px 26px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-2);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .why-card::after {
+      content: attr(data-num);
+      position: absolute;
+      right: 16px;
+      top: 4px;
+      font-family: var(--font-display);
+      font-size: 54px;
+      line-height: 1;
+      color: var(--line);
+      opacity: .55;
+    }
+    .why-card h3 { font-size: 18px; letter-spacing: -.02em; margin-bottom: 12px; }
+    .why-card p { color: var(--muted); font-size: 14px; line-height: 1.8; }
+    .why-card strong { color: var(--ink); font-weight: 650; }
+
+    .pull-quote {
+      margin-top: 20px;
+      padding: 30px 34px;
+      border-left: 4px solid var(--teal-2);
+      background: var(--teal-soft);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .pull-quote p {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 2.8vw, 32px);
+      line-height: 1.5;
+      letter-spacing: -.04em;
+      color: var(--teal-ink);
+    }
+    .pull-quote span {
+      flex: none;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .08em;
+      color: var(--teal);
+      writing-mode: vertical-rl;
+    }
+
+    /* ===== 功能 ===== */
+    .features { border-top: 1px solid var(--line); }
+    .feature-row {
+      display: grid;
+      grid-template-columns: 96px minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 30px;
+      padding: 34px 0;
+      border-bottom: 1px solid var(--line);
+      align-items: start;
+    }
+    .feature-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--teal);
+      letter-spacing: .08em;
+      padding-top: 8px;
+    }
+    .feature-title h3 {
+      font-family: var(--font-display);
+      font-size: clamp(25px, 2.8vw, 34px);
+      line-height: 1.3;
+      letter-spacing: -.045em;
+      font-weight: 750;
+    }
+    .feature-body p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.85;
+      max-width: 560px;
+    }
+    .feature-body .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 16px;
+    }
+    .tag-list li {
+      padding: 5px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper-2);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ===== 截图 ===== */
+    .gallery-section { background: var(--paper-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .shot {
+      grid-column: span 6;
+      margin: 0;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--paper);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    .shot.wide { grid-column: span 12; }
+    .shot.card-4 { grid-column: span 6; }
+    .shot button {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: zoom-in;
+    }
+    .shot img {
+      width: 100%;
+      height: auto;
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+    }
+    .shot:hover img { transform: scale(1.025); }
+    .shot figcaption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--line);
+      background: var(--paper-2);
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .shot figcaption b { color: var(--ink); font-weight: 650; font-size: 12px; }
+    .shot figcaption span { font-family: var(--font-mono); font-size: 10px; color: var(--muted-2); }
+
+    .phone-shot {
+      grid-column: span 4;
+      justify-self: center;
+      width: min(270px, 100%);
+      padding: 10px;
+      border: 1px solid var(--line-strong);
+      border-radius: 30px;
+      background: var(--paper-3);
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+    .phone-shot::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 54px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--ink);
+      opacity: .5;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+    .phone-shot button { padding: 0; border: 0; background: transparent; cursor: zoom-in; border-radius: 20px; overflow: hidden; }
+    .phone-shot img { border-radius: 20px; }
+    .phone-shot figcaption {
+      padding: 10px 4px 2px;
+      font-size: 10px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .gallery-note {
+      grid-column: span 8;
+      align-self: center;
+      padding: 34px 36px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        radial-gradient(360px 220px at 85% 10%, rgba(13, 148, 136, .13), transparent 70%),
+        var(--paper);
+    }
+    .gallery-note .mini-kicker {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: .1em;
+      color: var(--teal);
+    }
+    .gallery-note blockquote {
+      margin: 14px 0 0;
+      font-family: var(--font-display);
+      font-size: clamp(25px, 3vw, 36px);
+      line-height: 1.5;
+      letter-spacing: -.045em;
+    }
+    .gallery-note blockquote span { color: var(--teal); }
+    .gallery-note p { margin-top: 16px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+
+    /* ===== 下载 ===== */
+    .download-section {
+      position: relative;
+      overflow: hidden;
+      padding: 96px 0;
+      background:
+        radial-gradient(900px 520px at 90% 0%, rgba(13, 148, 136, .12), transparent 62%),
+        var(--paper);
+    }
+    .download-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+      gap: 54px;
+      align-items: start;
+    }
+    .download-copy .version {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--teal);
+      letter-spacing: .08em;
+    }
+    .download-copy h2 {
+      margin-top: 14px;
+      font-family: var(--font-display);
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: 1.16;
+      letter-spacing: -.06em;
+      font-weight: 800;
+    }
+    .download-copy p {
+      margin-top: 16px;
+      max-width: 470px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.85;
+    }
+    .download-copy .os {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      margin-top: 22px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .download-copy .os span { display: inline-flex; align-items: center; gap: 6px; }
+    .download-copy .os svg { width: 14px; height: 14px; color: var(--teal); }
+
+    .mirror-box {
+      margin-top: 26px;
+      padding: 18px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius-sm);
+      background: var(--paper-2);
+    }
+    .mirror-box strong { display: block; font-size: 12px; margin-bottom: 10px; }
+    .mirror-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .mirror-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--paper);
+      font-size: 11px;
+      color: var(--muted);
+      transition: color .2s ease, border-color .2s ease;
+    }
+    .mirror-links a:hover { color: var(--ink); border-color: var(--line-strong); }
+
+    .download-cards { display: grid; gap: 12px; }
+    .download-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 20px 20px 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-2);
+      box-shadow: var(--shadow-sm);
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .download-card:hover { transform: translateY(-2px); border-color: var(--line-strong); box-shadow: var(--shadow-lg); }
+    .download-card.primary { background: #17211d; color: #f4f0e6; border-color: #17211d; }
+    .download-card.primary .dl-sub, .download-card.primary .dl-meta { color: rgba(244, 240, 230, .72); }
+    .download-card.primary .file-icon { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .18); color: #5eead4; }
+    .download-card.primary .dl-action { background: #2dd4bf; color: #06231f; }
+    .file-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--paper);
+      color: var(--teal);
+    }
+    .file-icon svg { width: 22px; height: 22px; }
+    .dl-title { display: block; font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+    .dl-sub { display: block; margin-top: 2px; font-size: 11px; color: var(--muted); }
+    .dl-meta { display: block; margin-top: 2px; font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+    .dl-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 12px;
+      font-weight: 650;
+      white-space: nowrap;
+    }
+    .dl-action svg { width: 13px; height: 13px; }
+
+    .install-note {
+      margin-top: 18px;
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--paper-2);
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .install-note strong { color: var(--ink); }
+    .install-note .warn { color: var(--danger); font-weight: 650; }
+    .install-note details { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 12px; }
+    .install-note summary { cursor: pointer; color: var(--ink); font-weight: 650; }
+    .hash {
+      display: block;
+      margin-top: 9px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: var(--paper-3);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    /* ===== 深色数据区 ===== */
+    .dark-band {
+      background: #111b17;
+      color: #eef4ef;
+      padding: 100px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .dark-band::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(700px 400px at 85% 5%, rgba(45, 212, 191, .16), transparent 65%),
+        linear-gradient(to bottom, rgba(255, 255, 255, .02), transparent 30%);
+      pointer-events: none;
+    }
+    .dark-band .wrap { position: relative; }
+    .dark-band .kicker { color: #8fb3a8; }
+    .dark-band .kicker::before { background: #2dd4bf; }
+    .dark-band h2 {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 5vw, 64px);
+      line-height: 1.2;
+      letter-spacing: -.06em;
+      max-width: 800px;
+      font-weight: 800;
+    }
+    .dark-band h2 span { color: #5eead4; }
+    .dark-band .lede { color: #a5b9b0; max-width: 650px; margin-top: 18px; font-size: 15px; line-height: 1.9; }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 48px;
+    }
+    .proof-card {
+      padding: 24px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, .035);
+    }
+    .proof-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: .04em;
+      color: #5eead4;
+    }
+    .proof-label i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .proof-card h3 { margin-top: 12px; font-size: 18px; letter-spacing: -.02em; }
+    .proof-card p { margin-top: 8px; color: #9fb3aa; font-size: 13px; line-height: 1.8; }
+    .proof-card code { color: #d6f5ec; font-family: var(--font-mono); font-size: 11px; }
+
+    .privacy-strip {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: rgba(255, 255, 255, .12);
+    }
+    .privacy-item { padding: 18px 20px; background: #111b17; }
+    .privacy-item b { display: block; font-family: var(--font-display); font-size: 26px; line-height: 1; letter-spacing: -.04em; }
+    .privacy-item span { display: block; margin-top: 8px; color: #9fb3aa; font-size: 11px; }
+
+    /* ===== FAQ ===== */
+    .faq-section { padding: 92px 0; background: var(--paper); }
+    .faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 54px; }
+    .faq-intro h2 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 46px);
+      line-height: 1.25;
+      letter-spacing: -.055em;
+    }
+    .faq-intro p { margin-top: 14px; color: var(--muted); font-size: 14px; line-height: 1.85; }
+    .faq-list { border-top: 1px solid var(--line-strong); }
+    .faq-list details { border-bottom: 1px solid var(--line); }
+    .faq-list summary {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 0;
+      cursor: pointer;
+      list-style: none;
+      font-size: 15px;
+      font-weight: 650;
+    }
+    .faq-list summary::-webkit-details-marker { display: none; }
+    .faq-list summary .plus {
+      flex: none;
+      width: 20px;
+      height: 20px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      font-size: 12px;
+      color: var(--muted);
+      transition: transform .2s ease, background .2s ease;
+    }
+    .faq-list details[open] summary .plus { transform: rotate(45deg); background: var(--teal-soft); color: var(--teal-ink); border-color: var(--teal); }
+    .faq-list details p { padding: 0 30px 18px 0; color: var(--muted); font-size: 13px; line-height: 1.9; }
+
+    /* ===== 页脚 ===== */
+    .site-footer {
+      background: #0d1512;
+      color: #e9f1ec;
+      padding: 62px 0 28px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+    }
+    .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 30px; }
+    .footer-brand img { width: 42px; height: 42px; border-radius: 11px; }
+    .footer-brand p { margin-top: 14px; max-width: 280px; color: #91a59c; font-size: 12px; line-height: 1.8; }
+    .footer-col h4 { font-size: 11px; letter-spacing: .1em; color: #7f978b; font-weight: 600; margin-bottom: 10px; }
+    .footer-col li { margin: 6px 0; }
+    .footer-col a { color: #c5d5cd; font-size: 12px; transition: color .2s ease; }
+    .footer-col a:hover { color: #5eead4; }
+    .footer-bottom {
+      margin-top: 42px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, .1);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px 20px;
+      color: #789086;
+      font-size: 10px;
+      font-family: var(--font-mono);
+    }
+    .footer-bottom span { display: inline-flex; gap: 14px; }
+    .footer-big {
+      font-family: var(--font-display);
+      font-size: clamp(54px, 9vw, 112px);
+      line-height: 1;
+      letter-spacing: -.08em;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, .20);
+      text-stroke: 1px rgba(255, 255, 255, .20);
+      margin-top: 38px;
+      user-select: none;
+    }
+
+    /* ===== 灯箱 ===== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(9, 15, 12, .82);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, visibility .2s ease;
+    }
+    .lightbox.open { opacity: 1; visibility: visible; }
+    .lightbox-inner { width: min(1120px, 100%); }
+    .lightbox img {
+      width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .16);
+      background: #0b1411;
+    }
+    .lightbox-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 12px;
+      color: #d8e6df;
+      font-size: 12px;
+    }
+    .lightbox-close {
+      position: fixed;
+      right: 20px;
+      top: 18px;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .3);
+      color: #fff;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    /* ===== 动效 ===== */
+    .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s cubic-bezier(.2, .8, .2, 1); }
+    .js .reveal.in { opacity: 1; transform: none; }
+    .hero-copy > * { animation: rise .8s cubic-bezier(.2, .8, .2, 1) both; }
+    .hero-copy > *:nth-child(2) { animation-delay: .07s; }
+    .hero-copy > *:nth-child(3) { animation-delay: .14s; }
+    .hero-copy > *:nth-child(4) { animation-delay: .21s; }
+    .hero-copy > *:nth-child(5) { animation-delay: .28s; }
+    .hero-visual { animation: rise .9s .18s cubic-bezier(.2, .8, .2, 1) both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+      .js .reveal { opacity: 1; transform: none; }
+    }
+
+    /* ===== 响应式 ===== */
+    @media (max-width: 1040px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hero h1 { max-width: 780px; }
+      .hero-visual { width: min(760px, 100%); margin-inline: auto; }
+      .download-grid { grid-template-columns: 1fr; gap: 36px; }
+      .download-copy p { max-width: 620px; }
+      .proof-grid { grid-template-columns: 1fr 1fr; }
+      .privacy-strip { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1.4fr 1fr 1fr; }
+      .footer-col:last-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 860px) {
+      .nav {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        top: 72px;
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--paper-2);
+        box-shadow: var(--shadow-lg);
+      }
+      .nav.open { display: flex; }
+      .nav a { padding: 12px; border-radius: 8px; }
+      .nav a:hover { background: var(--paper-3); }
+      .nav a::after { display: none; }
+      .header-download { display: none; }
+      .menu-btn { display: grid; }
+      .header-actions { margin-left: auto; }
+      .section-head { grid-template-columns: 1fr; gap: 18px; }
+      .kicker { padding-top: 0; }
+      .why-grid { grid-template-columns: 1fr; }
+      .feature-row { grid-template-columns: 44px 1fr; gap: 16px 18px; }
+      .feature-body { grid-column: 2; }
+      .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .shot, .shot.wide, .shot.card-4 { grid-column: span 1; }
+      .shot.wide { grid-column: span 2; }
+      .phone-shot { grid-column: span 1; }
+      .gallery-note { grid-column: span 1; padding: 26px; }
+      .download-copy h2 { font-size: clamp(36px, 8vw, 54px); }
+      .faq-grid { grid-template-columns: 1fr; gap: 30px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-col:last-child { grid-column: auto; }
+    }
+    @media (max-width: 620px) {
+      .wrap { width: calc(100% - 32px); }
+      .header-inner { min-height: 64px; gap: 12px; }
+      .brand img { width: 30px; height: 30px; }
+      .brand-name { font-size: 14px; }
+      .brand-sub { display: none; }
+      .nav { top: 64px; left: 16px; right: 16px; }
+      .hero { padding: 42px 0 38px; }
+      .hero h1 { font-size: clamp(40px, 12vw, 58px); letter-spacing: -.075em; }
+      .hero-copy-text { font-size: 15px; line-height: 1.85; }
+      .hero-ctas .btn { width: 100%; }
+      .hero-facts { gap: 8px 12px; font-size: 11px; }
+      .hero-facts .sep { display: none; }
+      .hero-visual { padding-bottom: 58px; }
+      .window-frame { transform: none; border-radius: 14px; }
+      .window-bar { height: 32px; }
+      .window-url { font-size: 9px; }
+      .note-card { left: 10px; bottom: -12px; width: 190px; padding: 12px 13px; }
+      .note-card strong { font-size: 19px; }
+      .stat-chip { right: 4px; top: -12px; font-size: 10px; padding: 7px 10px; }
+      .hero-strip { margin-top: 30px; font-size: 11px; }
+      .section { padding: 68px 0; }
+      .section-tight { padding: 54px 0; }
+      .section-head { margin-bottom: 30px; }
+      .section-head h2 { font-size: clamp(30px, 9vw, 42px); }
+      .pull-quote { padding: 22px 22px 20px; }
+      .pull-quote p { font-size: 22px; }
+      .pull-quote span { display: none; }
+      .feature-row { padding: 24px 0; }
+      .feature-title h3 { font-size: 25px; }
+      .feature-body p { font-size: 14px; }
+      .gallery-grid { grid-template-columns: 1fr; gap: 12px; }
+      .shot, .shot.wide, .shot.card-4, .phone-shot, .gallery-note { grid-column: span 1; }
+      .phone-shot { width: min(250px, 100%); margin-inline: auto; }
+      .gallery-note { padding: 24px; }
+      .download-section { padding: 68px 0; }
+      .download-card { grid-template-columns: 42px minmax(0, 1fr); gap: 12px; padding: 16px; }
+      .dl-action { grid-column: 1 / -1; justify-content: center; }
+      .file-icon { width: 42px; height: 42px; }
+      .mirror-box { padding: 14px; }
+      .dark-band { padding: 72px 0 0; }
+      .proof-grid { grid-template-columns: 1fr; }
+      .privacy-strip { grid-template-columns: 1fr 1fr; }
+      .privacy-item b { font-size: 22px; }
+      .faq-section { padding: 68px 0; }
+      .faq-list summary { font-size: 14px; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+      .footer-brand { grid-column: 1 / -1; }
+      .footer-bottom { display: block; line-height: 1.9; }
+      .footer-bottom span { display: block; }
+      .footer-big { font-size: 48px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">跳到正文</a>
+
+  <!-- ===== 顶栏 ===== -->
+  <header class="site-header" id="top">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top" aria-label="没钱 No Money 首页">
+        <img src="assets/brand/icon-256.png" alt="" width="34" height="34" />
+        <span class="brand-text">
+          <span class="brand-name">没钱 No Money</span>
+          <span class="brand-sub">劳动者办事手册</span>
+        </span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="主导航">
+        <a href="#why">为什么做</a>
+        <a href="#how">它怎么帮</a>
+        <a href="#shots">实拍</a>
+        <a href="#download">下载</a>
+        <a href="#data">数据边界</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn theme-btn" type="button" aria-label="切换深浅色主题" aria-pressed="false">
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M20.5 14.2A8.2 8.2 0 0 1 9.8 3.5 8.3 8.3 0 1 0 20.5 14.2Z"/></svg>
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.8 4.8l1.6 1.6M17.6 17.6l1.6 1.6M19.2 4.8l-1.6 1.6M6.4 17.6l-1.6 1.6"/></svg>
+        </button>
+        <a class="header-download" href="#download">
+          下载 0.1.2
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg>
+        </a>
+        <button class="icon-btn menu-btn" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="nav">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="dot"></span><strong>v0.1.2</strong> · Windows 安装包已发布</div>
+            <h1>先把该办的事，<br><span class="accent">办对。</span></h1>
+            <p class="hero-copy-text">
+              社保怎么登记，医保断了会怎样，哪些钱本来可以领，老板不发工资该找谁。
+              这里没有万能答案，只有按<strong>你的城市和处境</strong>排好的下一步。
+            </p>
+            <div class="hero-ctas">
+              <a class="btn btn-primary" href="#download">
+                下载 Windows 版
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"/></svg>
+              </a>
+              <a class="btn btn-ghost" href="#how">
+                看它怎么工作
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 12h14m0 0-5-5m5 5-5 5"/></svg>
+              </a>
+            </div>
+            <div class="hero-facts" aria-label="产品概况">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>34 座城市</span>
+              <i class="sep" aria-hidden="true"></i>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>7 类现成清单</span>
+              <i class="sep" aria-hidden="true"></i>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>18 条办事教程</span>
+              <i class="sep" aria-hidden="true"></i>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>离线可用</span>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="window-frame">
+              <div class="window-bar">
+                <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="window-url">no-money / start</span>
+              </div>
+              <img src="assets/screenshots/01-home-light-desktop.webp" alt="没钱 No Money 首页：先选城市和身份，再生成清单" width="1440" height="900" fetchpriority="high" />
+            </div>
+            <div class="stat-chip">首屏 <b>193 KB</b> gzip</div>
+            <div class="note-card" aria-hidden="true">
+              <small>第 1 件 · 先办这个</small>
+              <strong>确认劳动合同与试用期</strong>
+              <p>每份清单都标出第一步，不让用户在一堆事项里猜。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-strip" aria-label="产品原则">
+          <span>不代办</span><span>不代缴</span><span>不编金额</span><span>不编文号</span><span>不推荐贷款</span><span>数据留在本机</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 为什么 ===== -->
+    <section class="section" id="why">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">01 / 为什么做</div>
+          <div>
+            <h2>很多事不是你不会，<br>是没人一次讲清楚。</h2>
+            <p class="lede">刚出社会，最先缺的不是努力，是一份能照着办的顺序。</p>
+          </div>
+        </div>
+
+        <div class="why-grid">
+          <article class="why-card reveal" data-num="01">
+            <h3>入口散在四个官网</h3>
+            <p>社保、医保、公积金、就业，各去各的网站，各有一套说法。知道要找谁，往往比知道政策本身更难。</p>
+          </article>
+          <article class="why-card reveal" data-num="02">
+            <h3>答案都很确定，依据很少</h3>
+            <p>短视频、帖子和中介，说得都很像真的。很少有人告诉你这条依据哪份文件、哪一年、还生不生效。</p>
+          </article>
+          <article class="why-card reveal" data-num="03">
+            <h3>先办哪件，比算多少钱更急</h3>
+            <p>欠薪、医保断缴、试用期被辞退，先做什么会直接影响后面能拿什么。算钱之前，得先知道下一步。</p>
+          </article>
+        </div>
+
+        <div class="pull-quote reveal">
+          <p>先把事办成，再谈钱。<br>算钱是清单里的工具，不是整个产品。</p>
+          <span>NO MONEY / 2026</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 功能 ===== -->
+    <section class="section features" id="how">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">02 / 它怎么帮</div>
+          <div>
+            <h2>四件事，<br>按顺序摊开。</h2>
+            <p class="lede">不替你下结论，也不假装知道所有答案。把材料、时限、入口和假设，放在同一张桌面上。</p>
+          </div>
+        </div>
+
+        <div class="feature-row reveal">
+          <div class="feature-num">01</div>
+          <div class="feature-title"><h3>先给下一步，<br>不给一堆选项</h3></div>
+          <div class="feature-body">
+            <p>选城市、身份和处境，3 步生成一份清单；也可以直接打开七类现成清单。第 1 件事永远标在最前面，后面按顺序来。</p>
+            <ul class="tag-list"><li>3 步向导</li><li>7 类清单</li><li>材料与时限</li><li>官方入口</li></ul>
+          </div>
+        </div>
+
+        <div class="feature-row reveal">
+          <div class="feature-num">02</div>
+          <div class="feature-title"><h3>能主张什么，<br>列清依据</h3></div>
+          <div class="feature-body">
+            <p>欠薪、工伤、辞退、未休年假，把常见纠纷拆成可主张的项目，每条带法律依据和时限。不承诺结果，不替你做决定。</p>
+            <ul class="tag-list"><li>欠薪</li><li>工伤</li><li>辞退</li><li>未休年假</li><li>经济补偿</li></ul>
+          </div>
+        </div>
+
+        <div class="feature-row reveal">
+          <div class="feature-num">03</div>
+          <div class="feature-title"><h3>算钱时，<br>把假设摊开</h3></div>
+          <div class="feature-body">
+            <p>净收入、有效时薪、个税、养老缴费，以及新毕业生从试用期到转正的第一年。每一个数字都能看到它怎么来的。</p>
+            <ul class="tag-list"><li>到手收入</li><li>有效时薪</li><li>个税与养老</li><li>新毕业生第一年</li></ul>
+          </div>
+        </div>
+
+        <div class="feature-row reveal">
+          <div class="feature-num">04</div>
+          <div class="feature-title"><h3>不知道，<br>就说不知道</h3></div>
+          <div class="feature-body">
+            <p>每个政策数值都标官方、推算或待核验。没核到的就明说，不装作已核实；AI 只是辅助，不编金额、文号或链接。</p>
+            <ul class="tag-list"><li>official</li><li>derived</li><li>unverified</li><li>来源可查</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 截图 ===== -->
+    <section class="section gallery-section" id="shots">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">03 / 实拍</div>
+          <div>
+            <h2>不是概念图，<br>是现在的界面。</h2>
+            <p class="lede">0.1.2 的浅色、深色与手机布局。点开任意一张，可以看完整尺寸。</p>
+          </div>
+        </div>
+
+        <div class="gallery-grid">
+          <figure class="shot wide reveal">
+            <button type="button" data-full="assets/screenshots/01-home-light-desktop.webp" data-caption="首页 · 浅色 | 36px hero、规则提示收成单行，主按钮完整进首屏">
+              <img src="assets/screenshots/01-home-light-desktop.webp" alt="首页浅色模式：先选城市与身份，再生成清单" width="1440" height="900" loading="lazy" />
+            </button>
+            <figcaption><b>首页 · 浅色</b><span>1440 × 900</span></figcaption>
+          </figure>
+
+          <figure class="shot reveal">
+            <button type="button" data-full="assets/screenshots/02-dashboard-light-desktop.webp" data-caption="算一算 | 第一张 KPI「月净收入」用 32px 数字，测算前提折叠成一条摘要">
+              <img src="assets/screenshots/02-dashboard-light-desktop.webp" alt="算一算页：月净收入 KPI 与折叠的测算前提" width="1440" height="900" loading="lazy" />
+            </button>
+            <figcaption><b>算一算</b><span>1440 × 900</span></figcaption>
+          </figure>
+
+          <figure class="shot card-4 reveal">
+            <button type="button" data-full="assets/screenshots/03-rights-light-desktop.webp" data-caption="权益 | 两个前提并排收进计算器卡，五个侵权场景在首屏完整露出">
+              <img src="assets/screenshots/03-rights-light-desktop.webp" alt="权益页：两个前提并排，侵权场景完整露出" width="1440" height="900" loading="lazy" />
+            </button>
+            <figcaption><b>权益</b><span>1440 × 900</span></figcaption>
+          </figure>
+
+          <figure class="shot card-4 reveal">
+            <button type="button" data-full="assets/screenshots/04-planning-light-desktop.webp" data-caption="税务规划 | 表格行高 38px、字号 14px，页面主张放在最前面">
+              <img src="assets/screenshots/04-planning-light-desktop.webp" alt="税务规划页：放宽行高的表格与页面主张" width="1440" height="900" loading="lazy" />
+            </button>
+            <figcaption><b>税务规划</b><span>1440 × 900</span></figcaption>
+          </figure>
+
+          <figure class="shot card-4 reveal">
+            <button type="button" data-full="assets/screenshots/05-home-dark-desktop.webp" data-caption="首页 · 深色 | 墨蓝底与淡青径向光，同一套信息层级不靠白底撑">
+              <img src="assets/screenshots/05-home-dark-desktop.webp" alt="首页深色模式：墨蓝底与淡青 hero 光" width="1440" height="900" loading="lazy" />
+            </button>
+            <figcaption><b>首页 · 深色</b><span>1440 × 900</span></figcaption>
+          </figure>
+
+          <figure class="phone-shot reveal">
+            <button type="button" data-full="assets/screenshots/06-home-light-mobile.webp" data-caption="首页 · 手机 | 390 × 844：规则提示一行，主按钮完整进首屏">
+              <img src="assets/screenshots/06-home-light-mobile.webp" alt="390 宽手机上的首页：单行规则提示与完整主按钮" width="780" height="1688" loading="lazy" />
+            </button>
+            <figcaption>首页 · 手机 390 × 844</figcaption>
+          </figure>
+
+          <div class="gallery-note reveal">
+            <div class="mini-kicker">0.1.2 / VISUAL HIERARCHY</div>
+            <blockquote>“字号、留白、顺序，<br>都是办事的一部分。<span>”</span></blockquote>
+            <p>这一版没有加新功能，只把字号拉开、把首屏让出来、把“先办哪件”放回视觉中心。所有改动都有单测、E2E 与 10 条路由的可访问性回归。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 下载 ===== -->
+    <section class="download-section" id="download">
+      <div class="wrap">
+        <div class="download-grid">
+          <div class="download-copy reveal">
+            <span class="version">WINDOWS / v0.1.2</span>
+            <h2>装进电脑，<br>断网也能用。</h2>
+            <p>桌面版和网页版共用同一套计算内核。装完后不依赖浏览器，不登录账号，政策数据和清单都留在本机。</p>
+            <div class="os">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Windows 10 / 11</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>x64</span>
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>WebView2</span>
+            </div>
+            <div class="mirror-box">
+              <strong>GitHub 下载慢？用国内镜像</strong>
+              <div class="mirror-links">
+                <a href="https://gitcode.com/badhope/no-money/tree/main/releases/0.1.2" target="_blank" rel="noopener">GitCode 安装包目录 ↗</a>
+                <a href="https://gitee.com/badhope/no-money/tree/main/releases/0.1.2" target="_blank" rel="noopener">Gitee 安装包目录 ↗</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="download-cards reveal">
+            <a class="download-card primary" href="https://github.com/Morningstar202604/no-money/releases/download/v0.1.2/NoMoney_0.1.2_x64-setup.exe" target="_blank" rel="noopener">
+              <span class="file-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 12h6M9 16h6"/></svg>
+              </span>
+              <span>
+                <span class="dl-title">NSIS 安装包</span>
+                <span class="dl-sub">双击安装，适合大多数电脑</span>
+                <span class="dl-meta">.exe · 3.0 MB</span>
+              </span>
+              <span class="dl-action">下载<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11m0 0 3.5-3.5M12 15 8.5 11.5M4 20h16"/></svg></span>
+            </a>
+
+            <a class="download-card" href="https://github.com/Morningstar202604/no-money/releases/download/v0.1.2/NoMoney_0.1.2_x64_zh-CN.msi" target="_blank" rel="noopener">
+              <span class="file-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+              </span>
+              <span>
+                <span class="dl-title">MSI 安装包</span>
+                <span class="dl-sub">给需要集中部署或静默安装的电脑</span>
+                <span class="dl-meta">.msi · 4.1 MB</span>
+              </span>
+              <span class="dl-action">下载<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 4v11m0 0 3.5-3.5M12 15 8.5 11.5M4 20h16"/></svg></span>
+            </a>
+
+            <div class="install-note">
+              <strong>安装前先看这两行</strong><br>
+              <span class="warn">安装包未做代码签名</span>，Windows SmartScreen 可能提示“未知发布者”。介意的话先核对哈希，或用源码自行构建。
+              <details>
+                <summary>查看 SHA-256 与安装说明</summary>
+                <span class="hash">NoMoney_0.1.2_x64-setup.exe<br>ace9f7b2f3c76ffbcb2ac593ed525d2d39400a3e822cb0ef321b718a37b78976</span>
+                <span class="hash">NoMoney_0.1.2_x64_zh-CN.msi<br>0ecaa87145c386bd0409af474f253d02ab9f5970348f36a9d44359703013ecc4</span>
+                <a href="https://github.com/Morningstar202604/no-money/blob/main/releases/0.1.2/README.md" target="_blank" rel="noopener" style="display:inline-block;margin-top:9px;color:var(--teal);font-size:11px;">完整安装说明与校验步骤 ↗</a>
+              </details>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 数据边界 ===== -->
+    <section class="dark-band" id="data">
+      <div class="wrap">
+        <div class="reveal">
+          <div class="kicker">04 / 数据边界</div>
+          <h2 style="margin-top:20px;">它不假装<br><span>什么都知道。</span></h2>
+          <p class="lede">政策会变，城市会变，经办口径也会变。与其给一个看起来很确定的错答案，不如把来源和不确定都摆在明面上。</p>
+        </div>
+
+        <div class="proof-grid">
+          <article class="proof-card reveal">
+            <div class="proof-label"><i></i>official</div>
+            <h3>能追到文件</h3>
+            <p>每条官方数值都对应政府文件或公开来源，来源链接可点开对照。不是“网上都这么说”。</p>
+          </article>
+          <article class="proof-card reveal">
+            <div class="proof-label" style="color:#f2c76a;"><i></i>derived</div>
+            <h3>推算出来的，标出来</h3>
+            <p>由官方数字计算得出、不是直接公布的值，明确标为推算，并把算法和假设写清。</p>
+          </article>
+          <article class="proof-card reveal">
+            <div class="proof-label" style="color:#a7b8af;"><i></i>unverified</div>
+            <h3>没核到，就空着</h3>
+            <p>没有权威来源的字段只作为假设展示，不当事实。平台按单计价永远是待核验，因为它是商业价格，不是公开政策。</p>
+          </article>
+        </div>
+
+        <div class="privacy-strip reveal" aria-label="隐私与运行方式">
+          <div class="privacy-item"><b>0</b><span>后端服务</span></div>
+          <div class="privacy-item"><b>0</b><span>账号体系</span></div>
+          <div class="privacy-item"><b>0</b><span>遥测与第三方 JS</span></div>
+          <div class="privacy-item"><b>1</b><span>数据只留在本机浏览器</span></div>
+        </div>
+
+        <div class="reveal" style="padding:34px 0 50px;color:#8fa49a;font-size:12px;line-height:1.9;max-width:760px;">
+          月度新鲜度检查会在任一来源超过一年时失败，并自动开 issue 列出城市和字段。它是维护警报，不是“政策仍然有效”的证明。涉及法律或税务结论，以当地人社、医保、税务或专业人士意见为准。
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="faq-section">
+      <div class="wrap faq-grid">
+        <div class="faq-intro reveal">
+          <h2>几个<br>常被问的问题。</h2>
+          <p>如果这里没回答，去仓库开 issue，或者直接看 README 和更新日志。</p>
+        </div>
+        <div class="faq-list reveal">
+          <details>
+            <summary>这些金额准吗？<span class="plus">+</span></summary>
+            <p>它是测算，不是承诺。每个结果都能展开看到假设、公式和来源；政策数值会标注官方、推算或待核验。具体能拿多少，以当地经办机构的口径为准。</p>
+          </details>
+          <details>
+            <summary>为什么不做一键代办？<span class="plus">+</span></summary>
+            <p>不代办，不代缴，不卖课，也不推荐贷款或保险。这个产品只做一件事：把该做什么、能拿什么、去哪办讲清楚，让你自己走到官方入口。</p>
+          </details>
+          <details>
+            <summary>会上传我的信息吗？<span class="plus">+</span></summary>
+            <p>没有后端、没有账号、没有遥测，也没有第三方 JavaScript。聊天记录和 API Key 默认只留在浏览器；只有你主动勾选“记住”才会保存，AI 只把问题和计算上下文发给你自己配置的接口。</p>
+          </details>
+          <details>
+            <summary>为什么安装包会提示“未知发布者”？<span class="plus">+</span></summary>
+            <p>0.1.2 的安装包没有做代码签名证书。SmartScreen 对未签名的新程序会保守提示。下载后先核对页面里的 SHA-256，确认文件完整再运行；也可以从源码自行构建。</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== 页脚 ===== -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="assets/brand/icon-256.png" alt="" width="42" height="42" />
+          <p>没钱 No Money。给中国劳动者的一份说人话的权益与办事指南。不代办，不代缴，不编金额。</p>
+        </div>
+        <div class="footer-col">
+          <h4>产品</h4>
+          <ul>
+            <li><a href="#why">为什么做</a></li>
+            <li><a href="#how">它怎么帮</a></li>
+            <li><a href="#shots">界面实拍</a></li>
+            <li><a href="#download">Windows 下载</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>代码与文档</h4>
+          <ul>
+            <li><a href="https://github.com/Morningstar202604/no-money" target="_blank" rel="noopener">GitHub ↗</a></li>
+            <li><a href="https://gitcode.com/badhope/no-money" target="_blank" rel="noopener">GitCode ↗</a></li>
+            <li><a href="https://gitee.com/badhope/no-money" target="_blank" rel="noopener">Gitee ↗</a></li>
+            <li><a href="https://github.com/Morningstar202604/no-money/releases/tag/v0.1.2" target="_blank" rel="noopener">Release v0.1.2 ↗</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>边界</h4>
+          <ul>
+            <li><a href="https://github.com/Morningstar202604/no-money/blob/main/PRIVACY.md" target="_blank" rel="noopener">隐私说明 ↗</a></li>
+            <li><a href="https://github.com/Morningstar202604/no-money/blob/main/TERMS.md" target="_blank" rel="noopener">服务条款 ↗</a></li>
+            <li><a href="https://github.com/Morningstar202604/no-money/blob/main/docs/DEPLOYMENT.md" target="_blank" rel="noopener">自行部署 ↗</a></li>
+            <li><a href="https://github.com/Morningstar202604/no-money/blob/main/LICENSE" target="_blank" rel="noopener">MIT License ↗</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-big" aria-hidden="true">没钱 No Money</div>
+      <div class="footer-bottom">
+        <span>© 2026 没钱 No Money · v0.1.2 · MIT</span>
+        <span>34 城 · 7 类清单 · 18 条教程 · 900 单测 · 152 E2E</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== 灯箱 ===== -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="查看大图" aria-hidden="true">
+    <button class="lightbox-close" type="button" aria-label="关闭大图">✕</button>
+    <div class="lightbox-inner">
+      <img id="lightbox-img" src="" alt="" />
+      <div class="lightbox-caption"><span id="lightbox-caption"></span><span>ESC 关闭</span></div>
+    </div>
+  </div>
+
+  <script>
+    // 主题
+    (function () {
+      const root = document.documentElement;
+      const stored = localStorage.getItem('nm-theme');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const initial = stored || (prefersDark ? 'dark' : 'light');
+      root.dataset.theme = initial;
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', initial === 'dark' ? '#0b1411' : '#f4f0e6');
+    })();
+
+    document.addEventListener('DOMContentLoaded', function () {
+      document.documentElement.classList.add('js');
+
+      const root = document.documentElement;
+      const themeBtn = document.querySelector('.theme-btn');
+      const metaTheme = document.querySelector('meta[name="theme-color"]');
+      function syncThemeButton() {
+        const dark = root.dataset.theme === 'dark';
+        themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        metaTheme.setAttribute('content', dark ? '#0b1411' : '#f4f0e6');
+      }
+      syncThemeButton();
+      themeBtn.addEventListener('click', function () {
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        localStorage.setItem('nm-theme', next);
+        syncThemeButton();
+      });
+
+      // 顶栏
+      const header = document.querySelector('.site-header');
+      const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 8);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      // 手机导航
+      const menuBtn = document.querySelector('.menu-btn');
+      const nav = document.querySelector('#nav');
+      menuBtn.addEventListener('click', function () {
+        const open = nav.classList.toggle('open');
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        menuBtn.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
+      });
+      nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          nav.classList.remove('open');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.setAttribute('aria-label', '打开导航');
+        });
+      });
+
+      // 滚动出现
+      if ('IntersectionObserver' in window) {
+        const items = document.querySelectorAll('.reveal');
+        const io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in');
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: .12, rootMargin: '0px 0px -40px 0px' });
+        items.forEach(function (item) { io.observe(item); });
+      } else {
+        document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+      }
+
+      // 灯箱
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lightbox-img');
+      const lbCaption = document.getElementById('lightbox-caption');
+      const closeBtn = lightbox.querySelector('.lightbox-close');
+      let lastTrigger = null;
+
+      function openLightbox(trigger) {
+        lastTrigger = trigger;
+        lbImg.src = trigger.dataset.full;
+        lbImg.alt = trigger.querySelector('img') ? trigger.querySelector('img').alt : '';
+        lbCaption.textContent = trigger.dataset.caption || '';
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        closeBtn.focus();
+      }
+      function closeLightbox() {
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+        if (lastTrigger) lastTrigger.focus();
+      }
+      document.querySelectorAll('[data-full]').forEach(function (trigger) {
+        trigger.addEventListener('click', function () { openLightbox(trigger); });
+      });
+      closeBtn.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLightbox(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+      });
+    });
+  </script>
+</body>
+</html>

@@ -35,6 +35,7 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 
 - 新增 `releases/0.1.2/`：NSIS 安装包 3,083,844 B、MSI 安装包 4,067,328 B，附 SHA-256、安装步骤与未签名 SmartScreen 说明；GitCode / Gitee 从仓库目录交付，GitHub 三仓从 Release 附件交付。
 - `README.md` / `README.zh-CN.md` 增加 Windows 下载入口和 6 张 0.1.2 截图（首页浅色/深色、算一算、权益、税务规划、手机首页）。
+- 新增 `site/` 官网与 `.github/workflows/pages.yml`：从 `main` 分支发布 GitHub Pages，中英 README 顶部加官网入口；官网包含首屏主张、四类能力、0.1.2 实拍、Windows 下载、数据边界与 FAQ。
 
 ## [0.1.1] — 2026-11-22
 
