@@ -14,6 +14,26 @@ Work starts with questions nobody explains: how to register for social insurance
 
 No Money turns those questions into a short, ordered list. It tells you what to do first, what you may be owed, and which official channel to use. A calculator sits inside the guide as a tool, not the other way around. The assistant is optional and never invents an amount, document number, or link.
 
+## Download
+
+Windows 10 / 11 · x64 · v0.1.2
+
+- [NSIS installer](https://github.com/Morningstar202604/no-money/releases/download/v0.1.2/NoMoney_0.1.2_x64-setup.exe) · 3.0 MB
+- [MSI installer](https://github.com/Morningstar202604/no-money/releases/download/v0.1.2/NoMoney_0.1.2_x64_zh-CN.msi) · 4.1 MB
+- Mirrors: [GitCode](https://gitcode.com/badhope/no-money/tree/main/releases/0.1.2) · [Gitee](https://gitee.com/badhope/no-money/tree/main/releases/0.1.2)
+
+The installers are unsigned. Windows SmartScreen may warn about an unknown publisher; check the SHA-256 in [`releases/0.1.2/README.md`](releases/0.1.2/README.md) before running.
+
+## Screenshots
+
+| Home · light | Dashboard |
+|---|---|
+| <img src="docs/screenshots/0.1.2/01-home-light-desktop.webp" alt="Home page in light mode" width="420" /> | <img src="docs/screenshots/0.1.2/02-dashboard-light-desktop.webp" alt="Dashboard with the first KPI card highlighted" width="420" /> |
+| **Rights** | **Tax planning** |
+| <img src="docs/screenshots/0.1.2/03-rights-light-desktop.webp" alt="Rights page with two assumptions side by side" width="420" /> | <img src="docs/screenshots/0.1.2/04-planning-light-desktop.webp" alt="Tax planning table with roomier rows" width="420" /> |
+| **Home · dark** | **Home · mobile** |
+| <img src="docs/screenshots/0.1.2/05-home-dark-desktop.webp" alt="Home page in dark mode" width="420" /> | <img src="docs/screenshots/0.1.2/06-home-light-mobile.webp" alt="Home page on a 390px-wide phone" width="220" /> |
+
 ## What it helps with
 
 - **Find the next step.** Pick your city, identity, and situation, or open one of seven ready-made checklists; the first action is always highlighted.

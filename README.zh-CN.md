@@ -14,6 +14,26 @@
 
 没钱 No Money 把这些事排成一份有先后的清单：先做什么、可能能拿什么、去哪个官方入口办。算钱是清单里的工具，不是整个产品；AI 只是辅助，不编金额、文号或链接。
 
+## 下载
+
+Windows 10 / 11 · x64 · v0.1.2
+
+- [NSIS 安装包](https://github.com/Morningstar202604/no-money/releases/download/v0.1.2/NoMoney_0.1.2_x64-setup.exe) · 3.0 MB
+- [MSI 安装包](https://github.com/Morningstar202604/no-money/releases/download/v0.1.2/NoMoney_0.1.2_x64_zh-CN.msi) · 4.1 MB
+- 国内镜像：[GitCode](https://gitcode.com/badhope/no-money/tree/main/releases/0.1.2) · [Gitee](https://gitee.com/badhope/no-money/tree/main/releases/0.1.2)
+
+安装包未签名，Windows SmartScreen 可能提示“未知发布者”；运行前请先核对 [`releases/0.1.2/README.md`](releases/0.1.2/README.md) 里的 SHA-256。
+
+## 截图
+
+| 首页 · 浅色 | 算一算 |
+|---|---|
+| <img src="docs/screenshots/0.1.2/01-home-light-desktop.webp" alt="首页浅色模式" width="420" /> | <img src="docs/screenshots/0.1.2/02-dashboard-light-desktop.webp" alt="算一算页，第一张 KPI 卡突出" width="420" /> |
+| **权益** | **税务规划** |
+| <img src="docs/screenshots/0.1.2/03-rights-light-desktop.webp" alt="权益页，两个前提并排" width="420" /> | <img src="docs/screenshots/0.1.2/04-planning-light-desktop.webp" alt="税务规划表格，行高放宽" width="420" /> |
+| **首页 · 深色** | **首页 · 手机** |
+| <img src="docs/screenshots/0.1.2/05-home-dark-desktop.webp" alt="首页深色模式" width="420" /> | <img src="docs/screenshots/0.1.2/06-home-light-mobile.webp" alt="390 宽手机上的首页" width="220" /> |
+
 ## 它能帮你什么
 
 - **找到下一步。** 选城市、身份和处境，或直接打开七类现成清单；第 1 件事永远标在最前面。

@@ -31,6 +31,11 @@ All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.
 - Lighthouse 12 移动端 `accessibility`：`/start`、`/dashboard`、`/employee`、`/guides`、`/scenario`、`/planning`、`/rights`、`/policy`、`/admin`、`/audit` **10/10 路由 1.00**；`aria-allowed-role` 曾因把 `role="status"` 挂在 `<details>` 上掉到 0.99，已改为外层容器承载。
 - 版本五处统一为 `0.1.2`。
 
+### Release
+
+- 新增 `releases/0.1.2/`：NSIS 安装包 3,083,844 B、MSI 安装包 4,067,328 B，附 SHA-256、安装步骤与未签名 SmartScreen 说明；GitCode / Gitee 从仓库目录交付，GitHub 三仓从 Release 附件交付。
+- `README.md` / `README.zh-CN.md` 增加 Windows 下载入口和 6 张 0.1.2 截图（首页浅色/深色、算一算、权益、税务规划、手机首页）。
+
 ## [0.1.1] — 2026-11-22
 
 纯可访问性小版本，不新增业务功能。把 0.1.0 新信息架构里「能看但看不清、能点但读屏叫不出名字」的问题收口到可回归的门禁。
