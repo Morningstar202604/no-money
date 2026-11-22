@@ -179,7 +179,7 @@ code, pre {
   grid-template-columns: repeat(4, 1fr);
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: var(--color-shadow-sm);
   overflow: hidden;
 }
@@ -188,10 +188,18 @@ code, pre {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  padding: 16px 18px 14px;
+  padding: 18px 20px 16px;
   border-right: 1px solid var(--color-border-primary);
   transition: background var(--duration-fast) var(--ease-out);
 }
+/* 第一张卡是这组数字的主结论：给淡青底和更大的数字，
+   其余三张只做支撑，避免四个数字一样响、用户不知道先看哪个。 */
+.stat:first-child {
+  background: linear-gradient(155deg, var(--color-primary-50), var(--color-bg-primary) 72%);
+}
+.stat:first-child .stat-value { font-size: 32px; }
+.stat:first-child .stat-label { color: var(--color-text-brand); }
+.stat:first-child::before { opacity: 1; height: 3px; }
 /* 顶部 2px 强调条：悬停时显现，指向当前正在读的那张卡。
    四张卡属于同一组，但用户一次只看一个数字。 */
 .stat::before {
@@ -209,32 +217,68 @@ code, pre {
 .stat:hover::before { opacity: 1; }
 .stat:last-child { border-right: none; }
 .stat-label {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
   color: var(--color-text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 .stat-value {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   font-family: var(--font-family-num);
-  line-height: 1.25;
+  line-height: 1.2;
   /* 等宽数字：滚动动画期间字符宽度不变，整行不抖动 */
   font-variant-numeric: tabular-nums;
 }
-.stat-foot { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
+.stat-foot { font-size: var(--font-size-sm); line-height: 1.5; color: var(--color-text-tertiary); }
 
 @media (max-width: 900px) {
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .stat:nth-child(2) { border-right: none; }
   .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--color-border-primary); }
-  .stat-value { font-size: 20px; }
+  .stat-value { font-size: 24px; }
+  .stat:first-child .stat-value { font-size: 28px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .stat, .stat::before { transition: none; }
+}
+
+/* ---------- 页面主视觉：每个主页面只出现一次 ----------
+   全站卡片已经很多，再加一层普通白卡只会继续摊平层级。
+   这里用极淡青绿底 + 一条 30px 标题，告诉用户“这一页先看什么”。 */
+.page-intro {
+  margin-bottom: var(--space-4);
+  padding: 24px 26px;
+  background: var(--hero-bg);
+  border: 1px solid var(--hero-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--hero-shadow);
+}
+.page-intro-kicker {
+  font-size: var(--font-size-xs);
+  font-weight: 650;
+  color: var(--color-text-brand);
+  letter-spacing: .1em;
+}
+.page-intro h2 {
+  margin: 7px 0 0;
+  font-size: clamp(24px, 2.2vw, 30px);
+  font-weight: 750;
+  line-height: 1.3;
+  letter-spacing: -.02em;
+  color: var(--color-text-primary);
+}
+.page-intro p {
+  margin: 7px 0 0;
+  max-width: 840px;
+  font-size: var(--font-size-md);
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+@media (max-width: 640px) {
+  .page-intro { padding: 18px; }
 }
 
 /* ---------- 卡片与说明文案（面板共用） ---------- */
@@ -283,6 +327,15 @@ code, pre {
 .t-row.success b,
 .t-row.total b.ok { color: var(--color-text-success); }
 .t-row.danger b { color: var(--color-text-danger); }
+
+/* 税务页两栏都是连续数字行：行距太密时相邻金额容易串行。
+   只放宽 .t-row，不动方案对比页的 .d-row。 */
+.t-row {
+  min-height: 38px;
+  padding: 9px 0;
+  font-size: var(--font-size-base);
+}
+.t-row b { font-size: var(--font-size-base); }
 
 .d-row.total,
 .t-row.total {

@@ -8,7 +8,7 @@
 
 | 项目 | 结果 |
 |---|---|
-| 单元/组件/规则测试 | **71 文件 / 900 项全过**，耗时 5m39s |
+| 单元/组件/规则测试 | **71 文件 / 900 项全过**，耗时 6m24s |
 | E2E | **11 文件 / 152 项全过**（含 4 条视觉基线、首帧壳、naive-ui 拆包与 ARIA 关系断言，6.6 分钟） |
 | 可访问性 | 10 条路由 Lighthouse 12 mobile `accessibility` **1.00**；`color-contrast` / `aria-*` / `button-name` / `link-in-text-block` 0 失败 |
 | 覆盖率 | `domain` + `application`：语句 **90.6%** / 分支 **80.19%** / 函数 **96.36%** / 行 **94.96%**，四项门槛均 80% |
@@ -19,8 +19,8 @@
 | 现实数据 | `verify:reality` 通过（S6 全职缴最低基数、S7 退休面板口径） |
 | 知识库 | `kb:check` 409 条与数据源一致 |
 | 四入口一致 | `verify:entrypoints` 广州 6843.7 / 深圳 7924.77；34 城全部可计算 |
-| 构建 | 23.79s；`dist` **3.50 MB**（assets 2.61 MB）；首屏 **193K gzip**（预算 300K） |
-| PWA | 75 条 precache（72 个去重文件）/ **2,852.26 KiB（约 2.78 MB）**（预算 3 MB） |
+| 构建 | 34.92s（并发回归负载下）；`dist` **3.51 MB**（assets 2.62 MB）；首屏 **193K gzip**（预算 300K） |
+| PWA | 75 条 precache（72 个去重文件）/ **2,862.20 KiB（约 2.79 MB）**（预算 3 MB） |
 | 健康检查 | `doctor` 全部通过（25 个关键文件、版本三处一致、34 城、PWA、体积、文档、首屏依赖） |
 | 依赖漏洞 | `npm audit --audit-level=high` **0 vulnerabilities** |
 | 运行环境 | Node `v22.23.4`，npm `10.9.9` |
@@ -107,8 +107,8 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 | 指标 | 预算 | 当前 | 触发动作 |
 |---|---:|---:|---|
 | 首屏 JS（gzip） | 300K | 193K | 超 300K 阻断 |
-| `dist` 总量 | 5 MB | 3.50 MB（assets 2.60 MB） | 超 5 MB 阻断 |
-| PWA precache | 3 MB | 2,849.51 KiB / 75 条 | 超 3 MB 警告，超 3.2 MB 阻断 |
+| `dist` 总量 | 5 MB | 3.51 MB（assets 2.62 MB） | 超 5 MB 阻断 |
+| PWA precache | 3 MB | 2,862.20 KiB / 75 条 | 超 3 MB 警告，超 3.2 MB 阻断 |
 | 单 chunk | 1 MB | 864K（echarts，按需） | 超 1 MB 检查是否同步引入 |
 | FCP（4G） | 2.5s | 2.2–2.3s simulate / 1.6s devtools | 达标 |
 | LCP（4G） | 2.5s | 2.3s simulate / 1.6s devtools | 达标 |
@@ -231,8 +231,9 @@ PLAYWRIGHT_BROWSERS_PATH=/home/user/.cache/ms-playwright npx playwright test
 ### 指标
 
 - 测试：900 项（71 个文件；含架构门禁、权益导航、34 城加载与覆盖分母、值对象/Result/错误工厂边界、语义色对比度与 naive-ui ARIA 关系）；覆盖率已接入 CI，`domain` + `application` 四项均 ≥80%（语句 90.6% / 分支 80.19% / 函数 96.36% / 行 94.96%）。
-- 质量门禁：`npm run test:coverage` 与 `npm run lint:cycles` 已进入 CI；循环依赖 0 环；视觉回归 4 张基线。
-- 首屏：193K gzip；PWA：2.78 MB（75 条 precache / 72 个去重文件）；`dist`：3.50 MB（assets 2.60 MB）。
+- 质量门禁：`npm run test:coverage` 与 `npm run lint:cycles` 已进入 CI；循环依赖 0 环；视觉回归 4 张基线（0.1.2 按新字号与新首屏重录）。
+- 视觉层级（0.1.2）：页面主张 30–36px、分区标题 22px、卡片标题 20px、正文 14px、辅助 12px；规则提示收成单行，算一算两条警告合成一条折叠摘要，权益页两个前提并排。
+- 首屏：193K gzip；PWA：2.79 MB（75 条 precache / 72 个去重文件）；`dist`：3.51 MB（assets 2.62 MB）。
 - 数据：343 条来源，official 225（65.6%）、derived 50、unverified 68；34 城；0 城全部字段 official。34 城医保基数 official 33 / derived 1（郑州按社平 80% 派生）；医保费率 official 27 / derived 7 / unverified 0（西安 2026 已升 official，石家庄到期降 derived）；34 城最低工资全部 official；养老基数 official 31 / derived 3；养老金计发基数 official 27 / derived 7 / unverified 0（西安 7881 凭陕人社函〔2025〕425号扫描件升 official；2026 已公布 10 城，其余 24 城按 2025 年预发）。
 - 内容：`RightsItem` 60 条（23 条迁移 + 20 条新增 L2 + 17 条 L1）；其中 30 条 L2、30 条 L1；已到 60+ 目标。
 - 教程：`/guides` 只列 8 类 18 条 L2（social / medical / housing / unemployment / birth / injury / retire / subsidy）；每条有至少一条用户原话别名，支持大白话搜索；权益卡可系统分享或复制文案给工友，我的清单/向导结果可整张分享；L1 留在「该做什么」，高温/税优/维权不进首屏。

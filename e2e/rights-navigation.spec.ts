@@ -102,7 +102,7 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(page.getByText('企业职工')).toBeVisible()
     await page.getByRole('button', { name: '下一步' }).click()
     await expect(page.getByText('刚入职，先办什么')).toBeVisible()
-    await page.getByRole('button', { name: '生成我的清单' }).click()
+    await page.getByRole('button', { name: '生成我的清单', exact: true }).click()
 
     await expect(page.getByText('你的清单')).toBeVisible()
     const cards = page.locator('.rw-list .right-card')
@@ -166,7 +166,7 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await page.locator('#rw-city').selectOption('beijing')
     await page.getByRole('button', { name: '下一步' }).click()
     await page.getByRole('button', { name: '下一步' }).click()
-    await page.getByRole('button', { name: '生成我的清单' }).click()
+    await page.getByRole('button', { name: '生成我的清单', exact: true }).click()
 
     await expect(page.getByText('本地官方入口 · 北京')).toBeVisible()
     for (const label of ['社会保险', '医疗保险', '住房公积金', '就业服务']) {
@@ -183,7 +183,7 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await page.locator('#rw-city').selectOption('dongguan')
     await page.getByRole('button', { name: '下一步' }).click()
     await page.getByRole('button', { name: '下一步' }).click()
-    await page.getByRole('button', { name: '生成我的清单' }).click()
+    await page.getByRole('button', { name: '生成我的清单', exact: true }).click()
 
     await expect(page.getByText('省级官方入口 · 广东')).toBeVisible()
     await expect(page.locator('.csl-card')).toHaveCount(4)
@@ -200,7 +200,7 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
     await expect(firstCard).toBeVisible()
     await firstCard.getByRole('button', { name: '加入清单' }).click()
 
-    await expect(page.getByText('我的清单')).toBeVisible()
+    await expect(page.getByRole('heading', { name: '我的清单', exact: true })).toBeVisible()
     await expect(page.getByText(/0 \/ 1 已办/)).toBeVisible()
 
     const downloadPromise = page.waitForEvent('download')
@@ -211,7 +211,7 @@ test.describe('权益导航 P0：四入口与三步向导', () => {
 
     await page.reload()
     await dismissOnboarding(page)
-    await expect(page.getByText('我的清单')).toBeVisible()
+    await expect(page.getByRole('heading', { name: '我的清单', exact: true })).toBeVisible()
     const reloadedCard = page.locator('.right-card').first()
     await reloadedCard.getByRole('button', { name: '标记已办' }).click()
     await expect(page.getByText(/1 \/ 1 已办/)).toBeVisible()

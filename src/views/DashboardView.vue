@@ -35,32 +35,43 @@
       本城规则加载失败，以下数字无法计算。请用顶部提示的「重新加载」重试，或切换城市。
     </n-alert>
 
-    <!-- 占位数据门禁：不挡住数字，但必须让用户知道这些结论建立在假设上 -->
-    <n-alert v-else-if="provisional" type="warning" :show-icon="true" style="margin-bottom: 12px">
-      <div><b>当前结论为假设测算，不能直接用于决策</b></div>
-      <div style="margin-top:4px">
-        以下参数尚未回溯官方来源：{{ unverifiedFields.join('、') }}。
-        「最优方案」「推荐」只是按这些占位假设算出的排序——请先在左侧「我的计价」填入你 APP 里的真实单价与倍率再参考。
+    <!-- 测算前提收成一条可展开摘要：原来两条黄色警告占掉 140px，
+         把 KPI 推到首屏下。摘要把“假设测算 / 高强度方案”两个关键词留在外面，
+         细节展开才看，既不藏风险，也不挡数字。 -->
+    <details v-if="caveatCount" class="calc-caveats">
+      <summary>
+        <span class="cc-badge">测算前提</span>
+        <span v-if="provisional" class="cc-tag">假设测算</span>
+        <span v-if="overriddenFields.length" class="cc-tag">按实测参数</span>
+        <span v-if="dataReady && bestOverwork" class="cc-tag cc-tag-warn">
+          高强度方案 {{ store.comparison?.best?.work.dailyHours }}h/天
+        </span>
+        <span class="cc-more">{{ caveatCount }} 条 · 展开看依据</span>
+      </summary>
+      <div class="cc-body">
+        <div v-if="provisional" class="cc-item cc-item-warn">
+          <b>当前结论为假设测算，不能直接用于决策</b>
+          <p>
+            以下参数尚未回溯官方来源：{{ unverifiedFields.join('、') }}。
+            「最优方案」「推荐」只是按这些占位假设算出的排序——请先在左侧「我的计价」填入你 APP 里的真实单价与倍率再参考。
+          </p>
+        </div>
+        <div v-if="overriddenFields.length > 0" class="cc-item cc-item-info">
+          <b>计价参数已按你填写的实际值计算</b>
+          <p>这些是你自己的流水数据，非官方发布值。</p>
+          <p v-if="missingOverrideFields.length">
+            仍有 {{ missingOverrideFields.length }} 项沿用占位假设：{{ missingOverrideFields.join('、') }}——补全后结论才完全基于你的流水。
+          </p>
+        </div>
+        <div v-if="dataReady && bestOverwork" class="cc-item cc-item-warn">
+          <b>「{{ store.comparison?.best?.name }}」是 {{ store.comparison?.best?.work.dailyHours }} 小时/天的高强度方案</b>
+          <p>
+            按净收入排序它排第一，但日均超过 12 小时的事故与健康风险显著上升（权益评分已因此扣分）。
+            它更适合当作「上限参考」，不建议作为长期节奏——先看「当前方案」的可持续收入。
+          </p>
+        </div>
       </div>
-    </n-alert>
-    <!-- 用户已用自己的流水覆盖计价：如实说明这是「你的实测」，不是官方数据，也不再用占位值 -->
-    <n-alert v-else-if="overriddenFields.length > 0" type="success" :show-icon="true" style="margin-bottom: 12px">
-      <div>计价参数已按你填写的实际值计算（{{ overriddenFields.join('、') }}）；这些是你自己的流水数据，非官方发布值。</div>
-      <!-- 只填了部分字段时不能整块宣称「已按实测」：未填的倍率仍在用占位假设 -->
-      <div v-if="missingOverrideFields.length" style="margin-top:4px;font-size:12px">
-        仍有 {{ missingOverrideFields.length }} 项沿用占位假设：{{ missingOverrideFields.join('、') }}——补全后结论才完全基于你的流水。
-      </div>
-    </n-alert>
-
-    <!-- 最优方案是超长工时方案时必须点破：按净收入排序会天然偏向加班，
-         不提示等于用「最优」二字鼓励 12 小时以上的强度 -->
-    <n-alert v-if="dataReady && bestOverwork" type="warning" :show-icon="true" style="margin-bottom: 12px">
-      <div><b>「{{ store.comparison?.best?.name }}」是 {{ store.comparison?.best?.work.dailyHours }} 小时/天的高强度方案</b></div>
-      <div style="margin-top:4px;font-size:12px">
-        按净收入排序它排第一，但日均超过 12 小时的事故与健康风险显著上升（权益评分已因此扣分）。
-        它更适合当作「上限参考」，不建议作为长期节奏——先看「当前方案」的可持续收入。
-      </div>
-    </n-alert>
+    </details>
 
     <!-- KPI 归属说明：这三个数字是「最优方案」的，不是左侧参数那一套。
          不加这句时，用户设 10h 却看到 12h 的钱，会以为工具算错了。 -->
@@ -280,6 +291,9 @@ const oneDecimal = (n: number) => n.toFixed(1)
 const scoreFormatter = (n: number) => `${Math.round(n)}/100`
 /** 最优方案是否属于超长工时（≥12h/天）：用于在页顶明确提示，而不是默默推荐 */
 const bestOverwork = computed(() => (store.comparison?.best?.work.dailyHours ?? 0) >= 12)
+const caveatCount = computed(
+  () => (provisional.value ? 1 : 0) + (overriddenFields.value.length > 0 ? 1 : 0) + (dataReady.value && bestOverwork.value ? 1 : 0),
+)
 
 // 统一权益评分（越高越好）
 const bestScenario = computed(() => store.comparison?.best)
@@ -356,6 +370,37 @@ const pieOption = computed<EChartsCoreOption>(() => {
 .calc-scope b { color: var(--color-text-primary); }
 .calc-scope-link { display: inline-flex; align-items: center; min-height: 24px; vertical-align: middle; }
 
+/* 测算前提：折叠时只占一条，关键词仍露在外面 */
+.calc-caveats {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  background: var(--color-alert-bg-warning);
+  border: 1px solid var(--color-alert-border-warning);
+  border-radius: var(--radius-md);
+}
+.calc-caveats summary {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  min-height: 16px; cursor: pointer; list-style: none;
+}
+.calc-caveats summary::-webkit-details-marker { display: none; }
+.cc-badge {
+  flex: none; padding: 1px 8px; border-radius: var(--radius-full);
+  background: var(--color-bg-primary); color: var(--color-text-warning);
+  font-size: var(--font-size-xs); font-weight: 700;
+}
+.cc-tag {
+  padding: 1px 8px; border-radius: var(--radius-full);
+  background: rgba(180, 83, 9, .1); color: var(--color-text-primary);
+  font-size: var(--font-size-xs); font-weight: 650;
+}
+.cc-tag-warn { background: rgba(185, 28, 28, .1); color: var(--color-text-danger); }
+.cc-more { margin-left: auto; font-size: var(--font-size-xs); color: var(--color-text-secondary); }
+.cc-body { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--color-border-primary); }
+.cc-item { padding-left: 10px; border-left: 3px solid var(--color-warning-500); }
+.cc-item-info { border-left-color: var(--color-success-500); }
+.cc-item b { font-size: var(--font-size-sm); color: var(--color-text-primary); }
+.cc-item p { margin: 4px 0 0; font-size: var(--font-size-xs); line-height: 1.65; color: var(--color-text-secondary); }
+
 .kpi-scope {
   display: flex;
   align-items: baseline;
@@ -406,6 +451,9 @@ const pieOption = computed<EChartsCoreOption>(() => {
 /* 窄屏改纵向：160px 固定评分框 + 缺口列表在 390px 视口里会把文字挤成竖条。
    必须写在基础规则之后，否则同特异性下基础规则的 width/border 会覆盖它 */
 @media (max-width: 640px) {
+  .rights-entry-section { padding: 20px 18px; }
+  .rights-entry-head { flex-direction: column; gap: 14px; }
+  .rights-entry-all { width: 100%; justify-content: center; }
   .rights-row { flex-direction: column; }
   .rights-score-box {
     width: 100%;
@@ -433,17 +481,25 @@ const pieOption = computed<EChartsCoreOption>(() => {
 .vol-boundary { font-size: 11px; color: var(--color-text-tertiary); line-height: 1.6; margin: 8px 0 0; }
 /* 权益导航首屏：不依赖规则加载，规则失败时也能用 */
 .rights-entry-section {
-  margin-bottom: 12px;
-  padding: 16px;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-lg);
+  margin-bottom: 16px;
+  padding: 26px 28px;
+  background: var(--hero-bg);
+  border: 1px solid var(--hero-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--hero-shadow);
 }
-.rights-entry-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
-.rights-entry-title { margin: 0; font-size: var(--font-size-lg); color: var(--color-text-primary); }
-.rights-entry-desc { margin: 3px 0 0; max-width: 760px; font-size: var(--font-size-sm); line-height: 1.6; color: var(--color-text-secondary); }
-.rights-entry-all { flex: 0 0 auto; display: inline-flex; align-items: center; min-height: 24px; font-size: var(--font-size-xs); color: var(--color-text-brand); text-decoration: none; padding: 0 2px; }
-.rights-entry-all:hover { text-decoration: underline; }
+.rights-entry-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 10px; }
+.rights-entry-title { margin: 0; font-size: clamp(24px, 2.2vw, 30px); font-weight: 750; line-height: 1.28; letter-spacing: -.02em; color: var(--color-text-primary); }
+.rights-entry-desc { margin: 6px 0 0; max-width: 780px; font-size: var(--font-size-md); line-height: 1.7; color: var(--color-text-secondary); }
+.rights-entry-all {
+  flex: 0 0 auto; display: inline-flex; align-items: center; min-height: 42px;
+  padding: 0 18px; border-radius: var(--radius-full);
+  background: var(--color-primary-800); color: #fff;
+  font-size: var(--font-size-sm); font-weight: 650; text-decoration: none;
+  box-shadow: 0 12px 26px -16px rgba(13, 148, 136, .7);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.rights-entry-all:hover { background: var(--color-primary-900); transform: translateY(-1px); text-decoration: none; }
 .calc-divider {
   display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 10px;
   margin: 4px 0 10px; padding-top: 10px; border-top: 1px dashed var(--color-border-primary);

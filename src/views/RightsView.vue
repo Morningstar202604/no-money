@@ -1,5 +1,10 @@
 <template>
   <PageHeading />
+  <section class="page-intro">
+    <span class="page-intro-kicker">维权 · 补偿 / 指南 / 文书</span>
+    <h2>先把能拿的钱算清楚，再决定怎么谈</h2>
+    <p>同一页走完：估算补偿 → 看流程与时限 → 生成可提交的文书。金额只作谈判底稿，最终以当地标准和证据为准。</p>
+  </section>
   <!-- display-directive="show:lazy"：三个面板是同一条链路（补偿 → 指南 → 文书），
        用户会反复来回切。首次访问才挂载（lazy），访问过就保留（show），
        避免每次切换都重建表单与重算模型。

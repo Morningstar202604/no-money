@@ -154,8 +154,15 @@
           </button>
         </div>
 
-        <div v-if="store.rule" class="global-alert info" role="status">
-          <div class="alert-content"><p>{{ store.ruleTimeNotice }}</p></div>
+        <div v-if="store.rule" class="rule-notice" role="status">
+          <details class="rule-notice-details">
+            <summary>
+              <span class="rule-notice-badge">规则</span>
+              <span class="rule-notice-main">{{ store.rule.year }} 年版 · 最近核对 {{ store.rule.lastCheckedAt }}</span>
+              <span class="rule-notice-more">来源与时效说明</span>
+            </summary>
+            <p>{{ store.ruleTimeNotice }}</p>
+          </details>
         </div>
 
         <!-- Page Content -->
@@ -481,8 +488,8 @@ onUnmounted(() => {
 }
 
 .brand-icon {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-md);
   background: var(--color-primary-600);
   color: var(--color-text-on-primary);
@@ -530,11 +537,11 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
+  padding: 10px 14px;
   border-radius: var(--radius-md);
   color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
+  font-weight: 600;
   white-space: nowrap;
   transition: all var(--transition-fast);
 }
@@ -546,7 +553,8 @@ onUnmounted(() => {
 
 .nav-link.active {
   color: var(--color-text-brand);
-  background: var(--color-primary-50);
+  background: linear-gradient(180deg, var(--color-primary-50), var(--color-bg-primary));
+  box-shadow: inset 0 -2px 0 var(--color-primary-500);
 }
 
 .nav-icon {
@@ -606,8 +614,8 @@ onUnmounted(() => {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  height: 32px;
-  padding: 0 var(--space-2) 0 var(--space-3);
+  height: 36px;
+  padding: 0 var(--space-3);
   border-radius: var(--radius-md);
   border: 1px solid var(--surface-border);
   background: var(--surface-1);
@@ -915,6 +923,38 @@ onUnmounted(() => {
 
 .global-alert.info .alert-content p {
   color: var(--color-alert-text-info);
+}
+
+/* 规则时效提示：折叠成一行状态条，正文不再先吃掉 80px 首屏 */
+.rule-notice {
+  margin: 14px var(--space-4) 0;
+  padding: 8px 12px;
+  background: var(--color-alert-bg-info);
+  border: 1px solid var(--color-alert-border-info);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-alert-text-info);
+}
+.rule-notice-details summary {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 28px; cursor: pointer; list-style: none;
+}
+.rule-notice-details summary::-webkit-details-marker { display: none; }
+.rule-notice-badge {
+  flex: 0 0 auto; padding: 1px 7px; border-radius: var(--radius-full);
+  background: var(--color-bg-primary); font-size: var(--font-size-xs); font-weight: 650;
+}
+.rule-notice-main { min-width: 0; font-weight: 600; }
+.rule-notice-more { margin-left: auto; flex: 0 0 auto; font-size: var(--font-size-xs); color: var(--color-text-secondary); }
+.rule-notice-details[open] .rule-notice-more { color: var(--color-text-brand); }
+.rule-notice-details p {
+  margin: 8px 0 0; padding-top: 8px;
+  border-top: 1px dashed var(--color-border-primary);
+  font-size: var(--font-size-xs); line-height: 1.65; color: var(--color-text-secondary);
+}
+@media (max-width: 640px) {
+  .rule-notice { margin-top: 10px; }
+  .rule-notice-more { display: none; }
 }
 
 .global-alert.error {

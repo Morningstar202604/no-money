@@ -3,6 +3,34 @@
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 版本口径：`0.MINOR.PATCH` 三段式，默认只递增末段；架构/依赖边界级切换才升 MINOR；历史 `3.x` 标签保留。
 
+## [0.1.2] — 2026-11-22
+
+视觉层级小版本，不改信息架构与业务口径。解决 0.1.1「颜色能看清了，但页面还是平」的问题：字号差太小、主操作不突出、首屏被提示条占满。
+
+### Changed
+
+- 字号体系整体上调并拉开层级：辅助 12 / 正文 14 / 次级正文 15 / 分区标题 22 / 页面主张 30–36 / KPI 主数字 32；卡片标题统一 20px。
+- 页头 60 → 68px，Logo 36 → 40px，导航 12 → 14px，搜索框 32 → 36px；侧栏 296 → 288px，圆角 6/10/14/20 → 8/12/16/24。
+- `/start` hero 放大到 36px 标题，加淡青径向光、主 CTA「3 步生成我的清单」与次 CTA；四个入口改成 54px 分段选择，选中态用渐变底和底部阴影。
+- `/dashboard`「先办事，再算钱」升级为页面级 hero；KPI 第一张「月净收入」单独用淡青底和 32px 数字，其余三张降为支撑。
+- `/rights`、`/planning` 增加页面主视觉；`/rights` 结果总额 20 → 30px，桌面结果栏 sticky；`/planning` 税务表行高 34 → 38px、表内文字 12 → 14px。
+- 新增全局 `.page-intro` 主视觉与 `--hero-bg` / `--hero-border` / `--hero-shadow` 明暗主题 token。
+
+### Fixed
+
+- 顶部规则时效提示从整条横幅收成一行 `<details>`：桌面约 61 → 45px，手机一行；展开才显示完整来源与时效说明，保留 `role="status"`。
+- `/dashboard` 两条黄色警告合并为一条「测算前提」折叠摘要，关键词「假设测算」「高强度方案 12h/天」保持外露；KPI 从约 645px 上移到 485px，月净收入进入首屏。
+- `/rights` 两个前提折叠卡并排收进一张计算器卡，高度约 150 → 78px；侵权场景在首屏完整露出。
+- 主色按钮继续使用 `--color-text-on-primary` 深色字，渐变只走 primary-500/600；未为了“好看”回退到低对比白字。
+
+### Tests
+
+- `tests/layoutOverlay.spec.ts` 的全局提示定位与 `role="status"` 契约同步到新的 `.rule-notice` 结构。
+- 单测 71 文件 / 900 条全过（6m24s），覆盖率保持 90.6% / 80.19% / 96.36% / 94.96%。
+- E2E 11 文件 / 152 条全过（首轮 144 条通过、8 条因新 CTA 文案导致选择器歧义；收紧为精确名称后 `rights-navigation` 32/32 通过）；4 张视觉基线按新布局重录。
+- Lighthouse 12 移动端 `accessibility`：`/start`、`/dashboard`、`/employee`、`/guides`、`/scenario`、`/planning`、`/rights`、`/policy`、`/admin`、`/audit` **10/10 路由 1.00**；`aria-allowed-role` 曾因把 `role="status"` 挂在 `<details>` 上掉到 0.99，已改为外层容器承载。
+- 版本五处统一为 `0.1.2`。
+
 ## [0.1.1] — 2026-11-22
 
 纯可访问性小版本，不新增业务功能。把 0.1.0 新信息架构里「能看但看不清、能点但读屏叫不出名字」的问题收口到可回归的门禁。

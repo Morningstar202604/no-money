@@ -72,7 +72,7 @@ describe('主布局渲染', () => {
     await nextTick()
     await nextTick()
 
-    const alert = wrapper.find('.global-alert')
+    const alert = wrapper.find('.global-alert, .rule-notice')
     if (alert.exists()) {
       const el = alert.element as HTMLElement
       const inline = el.getAttribute('style') ?? ''
@@ -105,8 +105,8 @@ describe('主布局渲染', () => {
     // 这条用源码检查是合理的：切换条件依赖 store 数据，
     // 单测构造完整 store 的成本高于收益，真实渲染路径已由 E2E 覆盖。
     const src = readFileSync('src/layouts/MainLayout.vue', 'utf8')
-    // 模板结构：<div v-if="store.rule" class="global-alert info" role="status">
-    expect(src, '规则提示必须带 role=status').toMatch(/class="global-alert info"\s+role="status"/)
+    // 模板结构：<details v-if="store.rule" class="rule-notice" role="status">
+    expect(src, '规则提示必须带 role=status').toMatch(/class="rule-notice"\s+role="status"/)
   })
 
   it('参数侧栏只在算一算页挂载', async () => {

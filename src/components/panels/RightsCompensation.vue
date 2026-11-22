@@ -2,31 +2,33 @@
   <div>
     <!-- Header -->
     <n-card title="权益补偿计算器" class="card">
-      <FoldCard title="测算依据与用工关系前提（务必先读）">
-        <p class="desc">
-          依据《劳动合同法》《工伤保险条例》《劳动法》及人社部发〔2021〕56号等现行规定测算；
-          一次性工伤医疗/就业补助金的月数由省级政府规定，<b>当前城市为{{ store.rule?.cityName ?? '未选择' }}（{{ province || '未知省份' }}）</b>，
-          {{ province === '广东' ? '按《广东省工伤保险条例》（2019修正）第34条口径给出。' : '本产品只内置广东口径，你所在省不估算该项，页面会提示以本省实施办法为准。' }}
-          合计仅计入可直接主张项，需行政责令、劳动关系认定等前置条件的金额单列。所有结果不构成法律意见，实际维权请咨询12348法律援助热线或当地工会法律援助。
-        </p>
-        <n-alert type="warning" :show-icon="true" style="margin-top: 8px">
-          多数外卖骑手与平台被认定为"不完全符合确立劳动关系情形"，此时本页以劳动关系为前提的项目（加班费、二倍工资、违法解除赔偿金、工伤保险待遇）可能全部不适用，需改走民事服务合同/侵权路径。请先确认用工关系定性。
-        </n-alert>
-      </FoldCard>
-    </n-card>
+      <!-- 两个前提并排折叠：原来各占一张卡、约 150px，把场景选择推到首屏下。
+           合成一组后只占一个卡头高度，内容一条不少。 -->
+      <div class="prereq-grid">
+        <FoldCard title="测算依据与用工关系">
+          <p class="desc">
+            依据《劳动合同法》《工伤保险条例》《劳动法》及人社部发〔2021〕56号等现行规定测算；
+            一次性工伤医疗/就业补助金的月数由省级政府规定，<b>当前城市为{{ store.rule?.cityName ?? '未选择' }}（{{ province || '未知省份' }}）</b>，
+            {{ province === '广东' ? '按《广东省工伤保险条例》（2019修正）第34条口径给出。' : '本产品只内置广东口径，你所在省不估算该项，页面会提示以本省实施办法为准。' }}
+            合计仅计入可直接主张项，需行政责令、劳动关系认定等前置条件的金额单列。所有结果不构成法律意见，实际维权请咨询12348法律援助热线或当地工会法律援助。
+          </p>
+          <n-alert type="warning" :show-icon="true" style="margin-top: 8px">
+            多数外卖骑手与平台被认定为"不完全符合确立劳动关系情形"，此时本页以劳动关系为前提的项目（加班费、二倍工资、违法解除赔偿金、工伤保险待遇）可能全部不适用，需改走民事服务合同/侵权路径。请先确认用工关系定性。
+          </n-alert>
+        </FoldCard>
 
-    <!-- 维权现实核查：先看概率，再谈金额 -->
-    <n-card class="card" style="margin-top: 12px">
-      <FoldCard
-        title="维权现实核查 — 先说真话，再算金额"
-        :summary="conditionalSummary ? `条件项 ${conditionalSummary.count} 笔 / ¥${conditionalSummary.total.toLocaleString()}` : '7 条硬事实'"
-      >
-        <n-alert v-if="conditionalSummary" type="warning" :show-icon="true" style="margin-bottom: 12px">
-          本情景中，需要前置条件才成立的「条件项」共 {{ conditionalSummary.count }} 笔、合计 ¥{{ conditionalSummary.total.toLocaleString() }}。
-          在劳动关系未认定、行政程序未启动之前，它们大概率不会实际到手——下方第 1、2 条说的就是这件事。
-        </n-alert>
-        <RealityList :facts="rightsFacts" />
-      </FoldCard>
+        <!-- 维权现实核查：先看概率，再谈金额 -->
+        <FoldCard
+          title="维权现实核查"
+          :summary="conditionalSummary ? `条件项 ${conditionalSummary.count} 笔 / ¥${conditionalSummary.total.toLocaleString()}` : '7 条硬事实'"
+        >
+          <n-alert v-if="conditionalSummary" type="warning" :show-icon="true" style="margin-bottom: 12px">
+            本情景中，需要前置条件才成立的「条件项」共 {{ conditionalSummary.count }} 笔、合计 ¥{{ conditionalSummary.total.toLocaleString() }}。
+            在劳动关系未认定、行政程序未启动之前，它们大概率不会实际到手——下方第 1、2 条说的就是这件事。
+          </n-alert>
+          <RealityList :facts="rightsFacts" />
+        </FoldCard>
+      </div>
     </n-card>
 
     <!-- Scenario selector -->
@@ -221,8 +223,8 @@
       </n-gi>
 
       <!-- Results -->
-      <n-gi>
-        <n-card title="可主张补偿明细" class="card">
+      <n-gi class="result-col">
+        <n-card title="可主张补偿明细" class="card result-card">
           <div v-if="!result" class="result-empty">
             填写左侧参数后自动计算补偿金额
           </div>
@@ -475,6 +477,31 @@ calc()
 </script>
 
 <style scoped>
+.prereq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .prereq-grid { grid-template-columns: 1fr; }
+}
+
+/* 桌面把结果栏钉在视口内：改左侧参数时总额一直可见，不用来回滚动。
+   窄屏退回普通文档流，避免半屏高的结果卡遮住表单。 */
+.result-col {
+  align-self: start;
+  position: sticky;
+  top: calc(var(--header-height) + 16px);
+}
+.result-card {
+  max-height: calc(100vh - var(--header-height) - 28px);
+  overflow: auto;
+}
+@media (max-width: 900px) {
+  .result-col { position: static; }
+  .result-card { max-height: none; overflow: visible; }
+}
 .scenario-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -504,22 +531,25 @@ calc()
 .scenario-card.active { border-color: var(--color-text-brand); background: rgba(13,148,136,0.04); }
 .sc-icon { width: 28px; height: 28px; margin: 0 auto 6px; border-radius: 50%; background: var(--color-bg-tertiary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--color-text-secondary); }
 .scenario-card.active .sc-icon { background: var(--color-primary-500); color: var(--color-text-on-primary); }
-.sc-name { font-size: 12px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 2px; }
-.sc-basis { font-size: 10px; color: var(--color-text-tertiary); }
+.sc-name { font-size: var(--font-size-sm); font-weight: 650; color: var(--color-text-primary); margin-bottom: 2px; }
+.sc-basis { font-size: var(--font-size-xs); color: var(--color-text-tertiary); }
 
 .form-section { display: flex; flex-direction: column; gap: 10px; }
-.form-item label { font-size: 12px; color: var(--color-text-secondary); font-weight: 500; display: block; margin-bottom: 3px; }
-.form-note { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; margin-bottom: 0; line-height: 1.5; }
+.form-item label { font-size: var(--font-size-sm); color: var(--color-text-secondary); font-weight: 500; display: block; margin-bottom: 4px; }
+.form-note { font-size: var(--font-size-xs); color: var(--color-text-tertiary); margin-top: 4px; margin-bottom: 0; line-height: 1.55; }
 
 .result-empty { text-align: center; color: var(--color-text-tertiary); padding: 40px 0; font-size: 13px; }
 
 .result-total {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 16px; background: var(--color-primary-500); color: var(--color-text-on-primary);
-  border-radius: 6px; margin-bottom: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  color: var(--color-text-on-primary);
+  border-radius: var(--radius-md); margin-bottom: 14px;
+  box-shadow: 0 16px 34px -22px rgba(13, 148, 136, .72);
 }
-.result-total span { font-size: 12px; opacity: 0.85; }
-.result-total strong { font-size: 20px; }
+.result-total span { font-size: var(--font-size-sm); font-weight: 500; opacity: 0.95; }
+.result-total strong { font-size: 30px; line-height: 1.15; }
 .result-monthly {
   display: flex; justify-content: space-between; align-items: center;
   padding: 8px 16px; background: var(--color-bg-tertiary);
